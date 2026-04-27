@@ -3,21 +3,55 @@ packages:
   - packages/*
   - tools/*
 
+allowBuilds:
+  '@parcel/watcher': true
+  electron: true
+  esbuild: true
+
 catalogMode: prefer
 
-catalog:
-  "@types/node": ^24
-  typescript: ^5
-  vite: npm:@voidzero-dev/vite-plus-core@latest
-  vitest: npm:@voidzero-dev/vite-plus-test@latest
-  vite-plus: latest
+catalogs:
+  build:
+    esbuild: ^0.28.0
+  capacitor:
+    '@capacitor/cli': ^8.3.1
+    '@capacitor/core': ^8.3.1
+  electron:
+    electron: ^41.3.0
+    electron-builder: ^26.8.1
+  lint:
+    '@eslint-community/eslint-plugin-eslint-comments': ^4.7.1
+    eslint-plugin-better-tailwindcss: ^4.4.1
+    eslint-plugin-command: ^3.5.2
+  release:
+    bumpp: ^11.0.1
+  style:
+    sass: ^1.99.0
+    tailwindcss: ^4.2.4
+  types:
+    '@types/node': ^24.12.2
+    '@typescript/native-preview': 7.0.0-dev.20260328.1
+    typescript: ^6.0.3
+  utils:
+    consola: ^3.4.2
+    unconfig: ^7.5.0
+  vite:
+    '@vitejs/plugin-vue': ^6.0.6
+    '@vitejs/plugin-vue-jsx': ^5.1.5
+    vite: npm:@voidzero-dev/vite-plus-core@latest
+    vite-plus: ^0.1.19
+    vitest: npm:@voidzero-dev/vite-plus-test@latest
+    happy-dom: ^20.9.0
+  vue:
+    vue: ^3.5.33
+    vue-router: ^4.6.4
 overrides:
-  vite: "catalog:"
-  vitest: "catalog:"
+  vite: 'catalog:vite'
+  vitest: 'catalog:vite'
 peerDependencyRules:
   allowAny:
     - vite
     - vitest
   allowedVersions:
-    vite: "*"
-    vitest: "*"
+    vite: '*'
+    vitest: '*'

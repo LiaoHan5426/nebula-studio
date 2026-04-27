@@ -1,0 +1,43 @@
+{
+  "name": "electron",
+  "version": "0.0.0",
+  "description": "A starter for creating a TypeScript package.",
+  "homepage": "https://github.com/author/library#readme",
+  "bugs": {
+    "url": "https://github.com/author/library/issues"
+  },
+  "license": "MIT",
+  "author": "Author Name <author.name@mail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/author/library.git"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "main": "./dist/src/main.cjs",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "package:windows": "vp run build && vp exec electron-builder --win nsis --publish never --config.directories.output=release/windows",
+    "package:linux": "vp run build && vp exec electron-builder --linux AppImage --publish never --config.directories.output=release/linux",
+    "package:macos": "vp run build && vp exec electron-builder --mac dmg --publish never --config.directories.output=release/macos",
+    "dev": "vp dev --config vite.config.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@capacitor/core": "catalog:capacitor",
+    "@nebula-studio/capacitor-electron": "workspace:^",
+    "@nebula-studio/utils": "workspace:^"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "catalog:capacitor",
+    "@nebula-studio/vite-electron-plugin": "workspace:^",
+    "@types/node": "catalog:types",
+    "electron": "catalog:electron",
+    "electron-builder": "catalog:electron",
+    "esbuild": "catalog:build",
+    "typescript": "catalog:types",
+    "vite-plus": "catalog:vite"
+  }
+}

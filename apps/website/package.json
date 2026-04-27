@@ -5,12 +5,18 @@
   "type": "module",
   "scripts": {
     "dev": "vp dev",
+    "dev:electron": "vp dev --port 5173 --strictPort",
     "build": "tsc && vp build",
     "preview": "vp preview"
   },
+  "dependencies": {
+    "vue": "catalog:vue"
+  },
   "devDependencies": {
-    "typescript": "~6.0.2",
-    "vite": "catalog:",
-    "vite-plus": "catalog:"
+    "@vitejs/plugin-vue": "catalog:vite",
+    "sass": "catalog:style",
+    "typescript": "catalog:types",
+    "vite": "catalog:vite",
+    "vite-plus": "catalog:vite  "
   }
 }

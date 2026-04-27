@@ -6,13 +6,25 @@
   "scripts": {
     "ready": "vp check && vp run -r test && vp run -r build",
     "dev": "vp run website#dev",
-    "prepare": "vp config"
+    "dev:electron": "vp run electron#dev",
+    "check": "vp check --fix",
+    "lint": "vp lint --fix",
+    "postinstall": "pnpm -r run stub --if-present",
+    "prepare": "vp config",
+    "update:deps": "npx taze -r -w"
   },
   "devDependencies": {
-    "vite-plus": "catalog:"
+    "@vitejs/plugin-vue": "catalog:vite",
+    "@vitejs/plugin-vue-jsx": "catalog:vite",
+    "@eslint-community/eslint-plugin-eslint-comments": "catalog:lint",
+    "eslint-plugin-better-tailwindcss": "catalog:lint",
+    "eslint-plugin-command": "catalog:lint",
+    "happy-dom": "catalog:vite",
+    "vite-plus": "catalog:vite",
+    "vitest": "catalog:vite"
   },
   "engines": {
     "node": ">=22.12.0"
   },
-  "packageManager": "pnpm@10.33.0"
+  "packageManager": "pnpm@10.33.2"
 }

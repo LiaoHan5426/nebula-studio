@@ -1,5 +1,5 @@
 {
-  "name": "utils",
+  "name": "@nebula-studio/utils",
   "version": "0.0.0",
   "description": "A starter for creating a TypeScript package.",
   "homepage": "https://github.com/author/library#readme",
@@ -16,6 +16,7 @@
     "dist"
   ],
   "type": "module",
+  "types": "./src/index.ts",
   "exports": {
     ".": "./dist/index.mjs",
     "./package.json": "./package.json"
@@ -24,6 +25,7 @@
     "access": "public"
   },
   "scripts": {
+    "stub": "vp pack",
     "build": "vp pack",
     "dev": "vp pack --watch",
     "test": "vp test",
@@ -31,10 +33,13 @@
     "prepublishOnly": "vp run build"
   },
   "devDependencies": {
-    "@types/node": "^25.5.0",
-    "@typescript/native-preview": "7.0.0-dev.20260328.1",
-    "bumpp": "^11.0.1",
-    "typescript": "^6.0.2",
-    "vite-plus": "^0.1.14"
+    "@types/node": "catalog:types",
+    "@typescript/native-preview": "catalog:types",
+    "bumpp": "catalog:release",
+    "typescript": "catalog:types",
+    "vite-plus": "catalog:vite"
+  },
+  "dependencies": {
+    "consola": "catalog:utils"
   }
 }
