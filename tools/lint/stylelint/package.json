@@ -1,0 +1,41 @@
+{
+  "name": "@nebula-studio-internal/stylelint",
+  "version": "5.7.0",
+  "private": true,
+  "homepage": "https://github.com/vbenjs/vue-vben-admin",
+  "bugs": "https://github.com/vbenjs/vue-vben-admin/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vbenjs/vue-vben-admin.git",
+    "directory": "internal/lint-configs/stylelint-config"
+  },
+  "license": "MIT",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./index.mjs",
+  "module": "./index.mjs",
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "default": "./index.mjs"
+    }
+  },
+  "dependencies": {
+    "@stylistic/stylelint-plugin": "catalog:lint",
+    "stylelint-config-recess-order": "catalog:lint",
+    "stylelint-scss": "catalog:lint"
+  },
+  "devDependencies": {
+    "postcss": "catalog:style",
+    "postcss-html": "catalog:style",
+    "postcss-scss": "catalog:style",
+    "stylelint": "catalog:lint",
+    "stylelint-config-recommended": "catalog:lint",
+    "stylelint-config-recommended-scss": "catalog:lint",
+    "stylelint-config-recommended-vue": "catalog:lint",
+    "stylelint-config-standard": "catalog:lint",
+    "stylelint-order": "catalog:lint"
+  }
+}
