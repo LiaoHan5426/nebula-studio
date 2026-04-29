@@ -64,13 +64,13 @@ export function createElectronBridgeClient(
 }
 
 type GlobalBridgeTarget = {
-  __crossCraftCapElectron?: { invoke?: BridgeInvoke };
+  __nebulaStudioCapElectron?: { invoke?: BridgeInvoke };
 };
 
 export function createElectronBridgeClientFromGlobal(
   target: GlobalBridgeTarget = globalThis as unknown as GlobalBridgeTarget,
 ): ElectronBridgeClient {
-  const invoke = target.__crossCraftCapElectron?.invoke;
+  const invoke = target.__nebulaStudioCapElectron?.invoke;
 
   if (!invoke) {
     throw new BridgeError(

@@ -1,6 +1,7 @@
 import { join, resolve } from 'node:path';
 import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import { setupBridgeMainRuntime } from '@nebula-studio/capacitor-electron';
+import { allowInternalOrigins } from './modules/BlockNotAllowedOrigins';
 
 import { useLogger } from '@nebula-studio/utils';
 
@@ -21,6 +22,9 @@ function createMainWindow(): BrowserWindow {
   const devServerUrl = process.env.VITE_DEV_SERVER_URL;
   if (devServerUrl) {
     void mainWindow.loadURL(devServerUrl);
+    allowInternalOrigins(new Set([new URL(devServerUrl).origin])).enable({
+      app,
+    });
   } else {
     void mainWindow.loadFile(join(app.getAppPath(), 'www', 'index.html'));
   }
@@ -50,6 +54,9 @@ function createMainWindow(): BrowserWindow {
       'window ready-to-show in',
       `${Date.now() - startupBeginAt}ms`,
     );
+    if (process.env.NODE_ENV === 'development') {
+      mainWindow.webContents.openDevTools();
+    }
     if (!mainWindow.isDestroyed()) {
       mainWindow.show();
     }

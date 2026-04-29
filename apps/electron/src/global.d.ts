@@ -5,7 +5,7 @@ import type {
 } from '@nebula-studio/capacitor-electron';
 
 type ElectronBridgeGlobal = {
-  __crossCraftCapElectron?: {
+  __nebulaStudioCapElectron?: {
     invoke: <TMethod extends keyof MethodPayloadMap>(
       method: TMethod,
       payload: MethodPayloadMap[TMethod],

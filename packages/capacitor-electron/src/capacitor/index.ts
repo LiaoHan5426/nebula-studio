@@ -7,7 +7,7 @@ export type CapacitorContract = {
 
 export type CapacitorWindow = {
   Capacitor?: CapacitorContract;
-  __crossCraftCapElectron?: {
+  __nebulaStudioCapElectron?: {
     invoke?: (...args: unknown[]) => Promise<unknown>;
   };
 };
@@ -31,7 +31,7 @@ function resolveDefaultTarget(): CapacitorWindow {
 export function hasElectronBridge(
   target: CapacitorWindow = resolveDefaultTarget(),
 ): boolean {
-  return typeof target.__crossCraftCapElectron?.invoke === 'function';
+  return typeof target.__nebulaStudioCapElectron?.invoke === 'function';
 }
 
 export function installElectronCapacitor(

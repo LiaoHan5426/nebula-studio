@@ -17,7 +17,7 @@ describe('capacitor/index', () => {
   test('installs electron platform when bridge exists', () => {
     const target = {
       Capacitor: {},
-      __crossCraftCapElectron: {
+      __nebulaStudioCapElectron: {
         invoke: async () => ({ ok: true }),
       },
     } as CapacitorWindow;
@@ -33,7 +33,7 @@ describe('capacitor/index', () => {
       Capacitor: {
         convertFileSrc: (filePath: string) => `converted:${filePath}`,
       } satisfies CapacitorContract,
-      __crossCraftCapElectron: {
+      __nebulaStudioCapElectron: {
         invoke: async () => ({ ok: true }),
       },
     } as CapacitorWindow;
@@ -45,7 +45,7 @@ describe('capacitor/index', () => {
   test('reports bridge availability by invoke function', () => {
     const noBridge = {} as CapacitorWindow;
     const withBridge = {
-      __crossCraftCapElectron: {
+      __nebulaStudioCapElectron: {
         invoke: async () => ({ ok: true }),
       },
     } as CapacitorWindow;

@@ -32,7 +32,8 @@
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "useDefineForClassFields": true,
     "moduleResolution": "bundler",
-    "declaration": false
+    "declaration": false,
+    "types": ["vite/client"]
   },
   "include": ["src"],
   "exclude": ["**/node_modules/**", "**/dist/**"]

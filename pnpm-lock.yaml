@@ -391,6 +391,13 @@ importers:
       tw-animate-css:
         specifier: catalog:style
         version: 1.4.0
+    devDependencies:
+      vite:
+        specifier: 8.0.10
+        version: 8.0.10(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.99.0)(yaml@2.8.3)
+      vite-plus:
+        specifier: catalog:vite
+        version: 0.1.19(@types/node@25.6.0)(esbuild@0.28.0)(happy-dom@20.9.0)(jiti@2.6.1)(sass@1.99.0)(typescript@6.0.3)(vite@8.0.10(@types/node@25.6.0)(esbuild@0.28.0)(jiti@2.6.1)(sass@1.99.0)(yaml@2.8.3))(yaml@2.8.3)
 
 packages:
 

@@ -14,12 +14,12 @@ export type PreloadBridgeApi = {
 };
 
 export type PreloadExposeTarget = {
-  __crossCraftCapElectron?: PreloadBridgeApi;
+  __nebulaStudioCapElectron?: PreloadBridgeApi;
 };
 
 export function exposePreloadBridge(
   invoke: PreloadBridgeInvoke,
   target: PreloadExposeTarget = globalThis as unknown as PreloadExposeTarget,
 ): void {
-  target.__crossCraftCapElectron = { invoke };
+  target.__nebulaStudioCapElectron = { invoke };
 }

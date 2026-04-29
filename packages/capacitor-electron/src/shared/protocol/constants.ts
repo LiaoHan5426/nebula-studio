@@ -5,7 +5,7 @@ export const BRIDGE_SUPPORTED_PROTOCOL_VERSIONS = [
 ] as const;
 
 export const BRIDGE_INVOKE_CHANNEL =
-  'crosscraft:cap-electron:v1:invoke' as const;
+  'nebula-studio:electron:v1:invoke' as const;
 
 export const BRIDGE_CHANNEL_WHITELIST = [BRIDGE_INVOKE_CHANNEL] as const;
 
