@@ -1,9 +1,9 @@
-import { describe, expect, test, vi } from 'vite-plus/test';
+import { describe, expect, vi } from 'vite-plus/test';
 import { createExternalLinkService } from '../../../src/host/services/external-link.service';
 import { BRIDGE_ERROR_CODES } from '../../../src/shared/errors/codes';
 
 describe('host/services/external-link.service', () => {
-  test('opens http and https urls', async () => {
+  it('opens http and https urls', async () => {
     const openExternal = vi.fn(async () => undefined);
     const service = createExternalLinkService({ openExternal });
 
@@ -13,7 +13,7 @@ describe('host/services/external-link.service', () => {
     expect(openExternal).toHaveBeenCalledWith('https://example.com/');
   });
 
-  test('rejects malformed urls', async () => {
+  it('rejects malformed urls', async () => {
     const service = createExternalLinkService({
       openExternal: vi.fn(async () => undefined),
     });
@@ -22,7 +22,7 @@ describe('host/services/external-link.service', () => {
     });
   });
 
-  test('rejects disallowed protocols', async () => {
+  it('rejects disallowed protocols', async () => {
     const service = createExternalLinkService({
       openExternal: vi.fn(async () => undefined),
     });

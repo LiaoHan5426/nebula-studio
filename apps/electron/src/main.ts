@@ -6,13 +6,33 @@ import { allowInternalOrigins } from './modules/BlockNotAllowedOrigins';
 import { useLogger } from '@nebula-studio/utils';
 
 const { appLifecycleLogger, bridgeHealthLogger } = useLogger();
+
+/**
+ * 根据窗口名称获取对应的 preload 脚本路径
+ * @param windowName 窗口名称 (e.g., 'main', 'settings')
+ * @returns preload 脚本的绝对路径
+ */
+function getPreloadPath(windowName: string = 'main'): string {
+  // 窗口从对应的 electron-preload/{windowName} 加载
+  // 路径：electron-preload/{windowName}/dist/src/preload.cjs 或 dist/index.cjs
+  return join(
+    resolve(__dirname),
+    '..',
+    'electron-preload',
+    windowName,
+    'dist',
+    'src',
+    'preload.cjs',
+  );
+}
+
 function createMainWindow(): BrowserWindow {
   const startupBeginAt = Date.now();
   const mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
     webPreferences: {
-      preload: join(resolve(__dirname), 'preload.cjs'),
+      preload: getPreloadPath('main'),
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,

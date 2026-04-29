@@ -32,7 +32,7 @@
   },
   "scripts": {
     "build": "vp pack",
-    "stub": "pnpm build",
+    "stub": "vp run build",
     "dev": "vp pack --watch",
     "test": "vp test",
     "check": "vp check",

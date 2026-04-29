@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vite-plus/test';
+import { describe, expect } from 'vite-plus/test';
 import {
   hasElectronBridge,
   installElectronCapacitor,
@@ -6,7 +6,7 @@ import {
 import type { CapacitorContract, CapacitorWindow } from '../../src/capacitor';
 
 describe('capacitor/index', () => {
-  test('does not install electron platform without bridge', () => {
+  it('does not install electron platform without bridge', () => {
     const target = { Capacitor: {} } as CapacitorWindow;
     const patched = installElectronCapacitor({ target });
 
@@ -14,7 +14,7 @@ describe('capacitor/index', () => {
     expect(patched.isNativePlatform).toBeUndefined();
   });
 
-  test('installs electron platform when bridge exists', () => {
+  it('installs electron platform when bridge exists', () => {
     const target = {
       Capacitor: {},
       __nebulaStudioCapElectron: {
@@ -28,7 +28,7 @@ describe('capacitor/index', () => {
     expect(target.Capacitor).toBe(patched);
   });
 
-  test('keeps convertFileSrc fallback when present', () => {
+  it('keeps convertFileSrc fallback when present', () => {
     const target = {
       Capacitor: {
         convertFileSrc: (filePath: string) => `converted:${filePath}`,
@@ -42,7 +42,7 @@ describe('capacitor/index', () => {
     expect(patched.convertFileSrc?.('file://abc')).toBe('converted:file://abc');
   });
 
-  test('reports bridge availability by invoke function', () => {
+  it('reports bridge availability by invoke function', () => {
     const noBridge = {} as CapacitorWindow;
     const withBridge = {
       __nebulaStudioCapElectron: {

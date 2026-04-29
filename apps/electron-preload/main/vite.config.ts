@@ -2,11 +2,10 @@ import { defineConfig } from 'vite-plus';
 
 export default defineConfig({
   pack: {
-    entry: ['src/index.ts', 'src/capacitor/index.ts'],
+    format: ['cjs'],
+    // minify: true,
     dts: true,
-    exports: {
-      devExports: true,
-    },
+    exports: true,
   },
   lint: {
     options: {
@@ -15,4 +14,5 @@ export default defineConfig({
     },
   },
   fmt: {},
+  cache: false,
 });

@@ -57,6 +57,24 @@ const overrides: OxlintConfig = {
       },
     },
     {
+      files: [
+        '**/electron.build.js',
+        '**/electron.build.ts',
+        '**/electron.build.mjs',
+        '**/electron.build.mts',
+        '**/sync-app-config.ts',
+      ],
+      rules: {
+        'no-template-curly-in-string': 'off',
+      },
+    },
+    {
+      files: ['apps/electron-preload/**/*'],
+      rules: {
+        'no-console': 'off',
+      },
+    },
+    {
       files: ['apps/electron/**/*'],
       rules: {
         'no-console': 'off',

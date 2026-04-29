@@ -39,7 +39,7 @@ apps
 │   │   ├── main.ts
 │   │   └── preload.ts
 │   └── package.json
-├── preload
+├── electron-preload
 │   ├── app1
 │   │   ├── src
 │   │   │   ├── ...

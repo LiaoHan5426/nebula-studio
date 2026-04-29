@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vite-plus/test';
+import { describe, expect } from 'vite-plus/test';
 import {
   createElectronBridgeClient,
   createElectronBridgeClientFromGlobal,
@@ -12,7 +12,7 @@ import {
 import type { MethodResultMap } from '../../src/shared/protocol/types';
 
 describe('api/client', () => {
-  test('calls runtime.getInfo through invoke', async () => {
+  it('calls runtime.getInfo through invoke', async () => {
     const invoke: BridgeInvoke = async (method) => {
       expect(method).toBe(BRIDGE_METHODS.runtimeGetInfo);
       return {
@@ -31,7 +31,7 @@ describe('api/client', () => {
     expect(runtimeInfo.protocolVersion).toBe(BRIDGE_PROTOCOL_VERSION);
   });
 
-  test('validates openExternal input', async () => {
+  it('validates openExternal input', async () => {
     const invoke: BridgeInvoke = async () => {
       throw new Error('invoke should not be called for invalid params');
     };
@@ -41,7 +41,7 @@ describe('api/client', () => {
     });
   });
 
-  test('opens external url through invoke', async () => {
+  it('opens external url through invoke', async () => {
     const invoke: BridgeInvoke = async (method, payload) => {
       expect(method).toBe(BRIDGE_METHODS.externalOpen);
       expect(payload).toEqual({ url: 'https://example.com' });
@@ -52,7 +52,7 @@ describe('api/client', () => {
     expect(result.success).toBe(true);
   });
 
-  test('reads file through invoke', async () => {
+  it('reads file through invoke', async () => {
     const invoke: BridgeInvoke = async (method, payload) => {
       expect(method).toBe(BRIDGE_METHODS.fileRead);
       expect(payload).toEqual({ path: 'demo.txt', encoding: 'utf-8' });
@@ -69,7 +69,7 @@ describe('api/client', () => {
     expect(result.content).toBe('demo');
   });
 
-  test('throws when preload bridge is missing on global', async () => {
+  it('throws when preload bridge is missing on global', async () => {
     expect(() => createElectronBridgeClientFromGlobal({})).toThrow(
       'Preload bridge is not available',
     );

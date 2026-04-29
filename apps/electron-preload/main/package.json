@@ -1,0 +1,31 @@
+{
+  "name": "@nebula-studio-preload/main",
+  "version": "0.0.0",
+  "type": "module",
+  "private": "true",
+  "exports": {
+    ".": "./dist/index.cjs",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "stub": "vp run build",
+    "build": "vp pack",
+    "check": "vp check",
+    "prepublishOnly": "vp run build"
+  },
+  "dependencies": {
+    "@nebula-studio/capacitor-electron": "workspace:^"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:types",
+    "electron": "catalog:electron",
+    "esbuild": "catalog:build",
+    "typescript": "catalog:types",
+    "vite-plus": "catalog:vite"
+  },
+  "main": "./dist/index.cjs",
+  "types": "./dist/index.d.cts",
+  "inlinedDependencies": {
+    "electron": "41.3.0"
+  }
+}

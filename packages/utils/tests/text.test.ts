@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vite-plus/test';
+import { describe, expect } from 'vite-plus/test';
 import {
   applyReplacementRules,
   replaceOrThrow,
@@ -6,7 +6,7 @@ import {
 } from '../src/text.ts';
 
 describe('text helpers', () => {
-  test('replaceOrThrow replaces matched content', () => {
+  it('replaceOrThrow replaces matched content', () => {
     const result = replaceOrThrow(
       'version=0.1.0',
       /0\.1\.0/,
@@ -16,13 +16,13 @@ describe('text helpers', () => {
     expect(result).toBe('version=0.2.0');
   });
 
-  test('replaceOrThrow throws when pattern is missing', () => {
+  it('replaceOrThrow throws when pattern is missing', () => {
     expect(() =>
       replaceOrThrow('name=CrossCraft', /missing/, 'x', 'missing'),
     ).toThrow(/failed to update missing: pattern not found/);
   });
 
-  test('applyReplacementRules applies rules sequentially', () => {
+  it('applyReplacementRules applies rules sequentially', () => {
     const result = applyReplacementRules('appName: "A"\nversion: "1.0.0"', [
       {
         pattern: /appName:\s*"[^"]*"/,
@@ -39,7 +39,7 @@ describe('text helpers', () => {
     expect(result).toBe('appName: "CrossCraft"\nversion: "1.2.3"');
   });
 
-  test('withJsonTrailingNewline keeps stable pretty output', () => {
+  it('withJsonTrailingNewline keeps stable pretty output', () => {
     const result = withJsonTrailingNewline({
       name: 'CrossCraft',
       version: '0.1.0',

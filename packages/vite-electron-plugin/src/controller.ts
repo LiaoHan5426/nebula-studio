@@ -1,10 +1,12 @@
 import { createInterface } from 'node:readline';
 import type { Interface as ReadlineInterface } from 'node:readline';
 import type { ChildProcessWithoutNullStreams } from 'node:child_process';
+import { resolve } from 'node:path';
 import type {
   NebulaStudioElectronPluginOptions,
   SpawnCommand,
   VitePlugin,
+  AppConfigStructure,
 } from './types';
 import { logWithTag } from './logger';
 import { startCommand, stopProcess, stopMultipleProcesses } from './process';
@@ -58,27 +60,99 @@ export class NebulaStudioElectronPluginController {
     this.frontendDevCommands = normalized.frontendDevCommands;
     this.electronRuntimeCommand = this.createElectronRuntimeCommand(
       options.electronRuntimeCommand,
-      options.electronCwd ?? process.cwd(),
+      this.options.electronCwd ?? process.cwd(),
       this.frontendDevUrls,
     );
   }
 
   /**
-   * 规范化选项配置
+   * 加载 app.config.ts
+   */
+  private async loadAppConfig(
+    appConfigPath: string,
+  ): Promise<AppConfigStructure | null> {
+    try {
+      // 尝试使用 require 或 import 加载配置
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const { default: config } = await import(appConfigPath);
+      // const config = require(appConfigPath);
+      return config.default ?? config;
+    } catch (error) {
+      logWithTag(
+        'warn',
+        `Failed to load app config from ${appConfigPath}: ${String(error)}`,
+      );
+      return null;
+    }
+  }
+
+  /**
+   * 规范化选项配置，优先使用 app.config.ts 中的配置
    */
   private normalizeOptions(opts: NebulaStudioElectronPluginOptions) {
-    const frontendDevUrls: Record<string, string> = opts.frontendDevUrls ?? {
-      main: opts.frontendDevUrl ?? 'http://localhost:5173',
-    };
+    const workspaceRoot = opts.workspaceRoot ?? process.cwd();
+    let appConfig: AppConfigStructure | null = null;
 
-    const frontendDevCommands: Record<string, SpawnCommand> =
-      opts.frontendDevCommands ?? {
+    // 如果提供了 appConfigPath，则加载 app.config.ts
+    if (opts.appConfigPath) {
+      const configPath = resolve(workspaceRoot, opts.appConfigPath);
+      appConfig = this.loadAppConfig(configPath);
+    }
+
+    // 确定 electron 工作目录
+    const electronDir = appConfig?.dirs?.electron ?? 'electron';
+    const electronCwd =
+      opts.electronCwd ?? resolve(workspaceRoot, 'apps', electronDir);
+    this.options.electronCwd = electronCwd;
+
+    // 如果提供了用户的配置，则使用用户配置；否则根据 app.config.ts 生成
+    let frontendDevUrls: Record<string, string>;
+    let frontendDevCommands: Record<string, SpawnCommand>;
+
+    if (opts.frontendDevUrls || opts.frontendDevUrl) {
+      // 用户显式提供了 frontendDevUrls 或弃用的 frontendDevUrl
+      frontendDevUrls = opts.frontendDevUrls ?? {
+        main: opts.frontendDevUrl ?? 'http://localhost:5173',
+      };
+      frontendDevCommands = opts.frontendDevCommands ?? {
         main: opts.frontendDevCommand ?? {
           command: 'vp',
           args: ['run', 'frontend#dev'],
-          cwd: opts.workspaceRoot ?? process.cwd(),
+          cwd: workspaceRoot,
         },
       };
+    } else if (appConfig?.windows) {
+      // 从 app.config.ts 自动生成
+      frontendDevUrls = {};
+      frontendDevCommands = {};
+
+      let port = 5173;
+      for (const [windowName, frontendDir] of Object.entries(
+        appConfig.windows,
+      )) {
+        const urlKey = windowName;
+        const url = `http://localhost:${port}`;
+        frontendDevUrls[urlKey] = url;
+        frontendDevCommands[urlKey] = {
+          command: 'vp',
+          args: ['run', `${frontendDir}#dev:electron`],
+          cwd: workspaceRoot,
+        };
+        port++;
+      }
+    } else {
+      // 降级到默认值
+      frontendDevUrls = {
+        main: opts.frontendDevUrl ?? 'http://localhost:5173',
+      };
+      frontendDevCommands = {
+        main: opts.frontendDevCommand ?? {
+          command: 'vp',
+          args: ['run', 'frontend#dev:electron'],
+          cwd: workspaceRoot,
+        },
+      };
+    }
 
     return { frontendDevUrls, frontendDevCommands };
   }
@@ -96,7 +170,7 @@ export class NebulaStudioElectronPluginController {
     return (
       baseCommand ?? {
         command: 'vp',
-        args: ['exec', 'electron', './dist/src/main.js'],
+        args: ['exec', 'electron', './dist/src/main.cjs'],
         cwd: electronCwd,
         env: {
           VITE_DEV_SERVER_URLS: devServerUrlsEnv,

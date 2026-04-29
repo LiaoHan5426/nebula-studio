@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vite-plus/test';
+import { describe, expect } from 'vite-plus/test';
 import { createPreloadInvoker } from '../../../src/bridge/preload/invoke';
 import { BRIDGE_ERROR_CODES } from '../../../src/shared/errors/codes';
 import {
@@ -7,7 +7,7 @@ import {
 } from '../../../src/shared/protocol/constants';
 
 describe('bridge/preload/invoke', () => {
-  test('sends request to fixed invoke channel', async () => {
+  it('sends request to fixed invoke channel', async () => {
     let seenChannel = '';
     const invoke = createPreloadInvoker(async (channel, request) => {
       seenChannel = channel;
@@ -27,10 +27,10 @@ describe('bridge/preload/invoke', () => {
     });
 
     await invoke(BRIDGE_METHODS.runtimeGetInfo, {});
-    expect(seenChannel).toBe('crosscraft:cap-electron:v1:invoke');
+    expect(seenChannel).toBe('nebula-studio:electron:v1:invoke');
   });
 
-  test('throws INVALID_PARAMS when payload is invalid', async () => {
+  it('throws INVALID_PARAMS when payload is invalid', async () => {
     const invoke = createPreloadInvoker(async () => {
       throw new Error('should not be called');
     });
@@ -42,7 +42,7 @@ describe('bridge/preload/invoke', () => {
     });
   });
 
-  test('throws bridge error when response shape is invalid', async () => {
+  it('throws bridge error when response shape is invalid', async () => {
     const invoke = createPreloadInvoker(async () => ({ bad: true }));
 
     await expect(
@@ -52,7 +52,7 @@ describe('bridge/preload/invoke', () => {
     });
   });
 
-  test('maps error response to thrown BridgeError', async () => {
+  it('maps error response to thrown BridgeError', async () => {
     const invoke = createPreloadInvoker(async (_channel, request) => ({
       ok: false as const,
       requestId: request.requestId,
@@ -70,7 +70,7 @@ describe('bridge/preload/invoke', () => {
     });
   });
 
-  test('includes traceId from error response details', async () => {
+  it('includes traceId from error response details', async () => {
     const invoke = createPreloadInvoker(async (_channel, request) => ({
       ok: false as const,
       requestId: request.requestId,

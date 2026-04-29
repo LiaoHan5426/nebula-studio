@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vite-plus/test';
+import { describe, expect } from 'vite-plus/test';
 import {
   isBridgeRequest,
   isBridgeResponse,
@@ -13,7 +13,7 @@ import {
 } from '../../../src/shared/protocol/constants';
 
 describe('shared/schema/validators', () => {
-  test('validates bridge request and response shapes', () => {
+  it('validates bridge request and response shapes', () => {
     expect(
       isBridgeRequest({
         protocolVersion: BRIDGE_PROTOCOL_VERSION,
@@ -32,14 +32,14 @@ describe('shared/schema/validators', () => {
     ).toBe(true);
   });
 
-  test('checks supported protocol and method', () => {
+  it('checks supported protocol and method', () => {
     expect(isSupportedProtocolVersion(BRIDGE_PROTOCOL_VERSION)).toBe(true);
     expect(isSupportedProtocolVersion('9.9')).toBe(false);
     expect(isSupportedMethod(BRIDGE_METHODS.fileRead)).toBe(true);
     expect(isSupportedMethod('unknown.method')).toBe(false);
   });
 
-  test('validates external.open and file.read payloads', () => {
+  it('validates external.open and file.read payloads', () => {
     expect(validateExternalOpenPayload({ url: 'https://example.com' })).toBe(
       true,
     );

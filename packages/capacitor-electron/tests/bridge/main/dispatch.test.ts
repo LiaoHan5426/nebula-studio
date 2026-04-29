@@ -1,4 +1,4 @@
-import { describe, expect, test, vi } from 'vite-plus/test';
+import { describe, expect, vi } from 'vite-plus/test';
 import { createBridgeHandlers } from '../../../src/bridge/main/handlers';
 import { createMainDispatcher } from '../../../src/bridge/main/dispatch';
 import { BRIDGE_ERROR_CODES } from '../../../src/shared/errors/codes';
@@ -38,7 +38,7 @@ function createHandlers() {
 }
 
 describe('bridge/main/dispatch', () => {
-  test('returns runtime info for valid runtime.getInfo request', async () => {
+  it('returns runtime info for valid runtime.getInfo request', async () => {
     const dispatch = createMainDispatcher(createHandlers());
 
     const response = await dispatch({
@@ -57,7 +57,7 @@ describe('bridge/main/dispatch', () => {
     }
   });
 
-  test('rejects unsupported method with stable error code', async () => {
+  it('rejects unsupported method with stable error code', async () => {
     const dispatch = createMainDispatcher(createHandlers());
     const response = await dispatch({
       protocolVersion: BRIDGE_PROTOCOL_VERSION,
@@ -72,7 +72,7 @@ describe('bridge/main/dispatch', () => {
     }
   });
 
-  test('rejects invalid request shape', async () => {
+  it('rejects invalid request shape', async () => {
     const dispatch = createMainDispatcher(createHandlers());
     const response = await dispatch(null);
 
@@ -82,7 +82,7 @@ describe('bridge/main/dispatch', () => {
     }
   });
 
-  test('returns timeout when handler exceeds timeout budget', async () => {
+  it('returns timeout when handler exceeds timeout budget', async () => {
     const slowHandlers = createBridgeHandlers({
       runtimeInfoService: {
         getRuntimeInfo: vi.fn(
@@ -119,7 +119,7 @@ describe('bridge/main/dispatch', () => {
     }
   });
 
-  test('uses meta.traceId when provided', async () => {
+  it('uses meta.traceId when provided', async () => {
     const dispatch = createMainDispatcher(createHandlers());
     const response = await dispatch({
       protocolVersion: BRIDGE_PROTOCOL_VERSION,
@@ -134,7 +134,7 @@ describe('bridge/main/dispatch', () => {
     expect(response.traceId).toBe('trace-custom-001');
   });
 
-  test('rejects non-positive timeout value', async () => {
+  it('rejects non-positive timeout value', async () => {
     const dispatch = createMainDispatcher(createHandlers());
     const response = await dispatch({
       protocolVersion: BRIDGE_PROTOCOL_VERSION,

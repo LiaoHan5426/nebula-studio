@@ -1,10 +1,10 @@
-import { describe, expect, test, vi } from 'vite-plus/test';
+import { describe, expect, vi } from 'vite-plus/test';
 import { resolve } from 'node:path';
 import { createFileService } from '../../../src/host/services/file.service';
 import { BRIDGE_ERROR_CODES } from '../../../src/shared/errors/codes';
 
 describe('host/services/file.service', () => {
-  test('reads file content with default encoding', async () => {
+  it('reads file content with default encoding', async () => {
     const readFile = vi.fn(async () => 'hello');
     const service = createFileService({ readFile });
 
@@ -14,7 +14,7 @@ describe('host/services/file.service', () => {
     expect(readFile).toHaveBeenCalledWith(resolve('tmp/test.txt'), 'utf-8');
   });
 
-  test('rejects path outside allowed roots', async () => {
+  it('rejects path outside allowed roots', async () => {
     const service = createFileService(
       { readFile: vi.fn(async () => 'nope') },
       { allowedRoots: [resolve('safe')] },
@@ -27,7 +27,7 @@ describe('host/services/file.service', () => {
     });
   });
 
-  test('maps read errors to NOT_FOUND', async () => {
+  it('maps read errors to NOT_FOUND', async () => {
     const service = createFileService({
       readFile: vi.fn(async () => {
         throw new Error('missing');

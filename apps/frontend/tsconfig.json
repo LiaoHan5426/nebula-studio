@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "extends": "@nebula-studio-internal/tsconfig/node.json",
+  "extends": "@nebula-studio-internal/tsconfig/web-app.json",
   "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }

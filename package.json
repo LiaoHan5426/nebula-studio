@@ -4,28 +4,36 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "ready": "vp check && vp run -r test && vp run -r build",
+    "ready": "vp fmt && vp lint && vp run -r test && vp run -r build",
+    "build": "vp exec esno ./scripts/tasks/build.ts",
     "dev": "vp run website#dev",
     "dev:electron": "vp run electron#dev",
+    "sync:app-config": "vp exec esno ./scripts/tasks/sync-app-config.ts",
+    "cap": "vp run mobile#cap",
     "check": "vp check --fix",
     "lint": "vp lint --fix",
-    "postinstall": "pnpm -r run stub --if-present",
+    "test": "vp run -r test",
+    "postinstall": "vp run -r stub --if-present",
     "prepare": "vp config",
     "update:deps": "npx taze -r -w"
   },
   "devDependencies": {
+    "@eslint-community/eslint-plugin-eslint-comments": "catalog:lint",
+    "@inquirer/prompts": "catalog:",
     "@nebula-studio-internal/oxfmt": "workspace:^",
     "@nebula-studio-internal/oxlint": "workspace:^",
     "@nebula-studio-internal/stylelint": "workspace:^",
+    "@nebula-studio-internal/tsconfig": "workspace:^",
     "@vitejs/plugin-vue": "catalog:vite",
     "@vitejs/plugin-vue-jsx": "catalog:vite",
-    "@eslint-community/eslint-plugin-eslint-comments": "catalog:lint",
     "eslint-plugin-better-tailwindcss": "catalog:lint",
     "eslint-plugin-command": "catalog:lint",
+    "esno": "catalog:",
     "happy-dom": "catalog:vite",
     "tailwindcss": "catalog:style",
+    "unconfig": "catalog:",
     "vite-plus": "catalog:vite",
-    "vitest": "catalog:vite"
+    "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.20"
   },
   "engines": {
     "node": ">=22.12.0"
