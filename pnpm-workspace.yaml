@@ -9,6 +9,7 @@ packages:
 allowBuilds:
   '@parcel/watcher': true
   electron: true
+  electron-winstaller: true
   esbuild: true
 catalog:
   '@inquirer/prompts': ^8.4.2
