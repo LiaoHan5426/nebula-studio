@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite-plus';
 
-import { oxfmtConfig } from '@nebula-studio-internal/oxfmt';
+import { defineConfig as fmtDefineConfig } from '@nebula-studio-internal/oxfmt';
 import { oxlintConfig } from '@nebula-studio-internal/oxlint';
 
 export default defineConfig({
@@ -8,7 +8,30 @@ export default defineConfig({
     '*': 'vp check --fix',
   },
   fmt: {
-    ...oxfmtConfig,
+    ...fmtDefineConfig({
+      ignorePatterns: [
+        'dist',
+        'dev-dist',
+        '.local',
+        '.claude',
+        '.agent',
+        '.agents',
+        '.codex',
+        '.output.js',
+        'node_modules',
+        '.nvmrc',
+        'coverage',
+        'CODEOWNERS',
+        '.nitro',
+        '.output',
+        '**/*.svg',
+        '**/*.sh',
+        'public',
+        '.npmrc',
+        '*-lock.yaml',
+        'skills-lock.json',
+      ],
+    }),
   },
   lint: {
     ...oxlintConfig,

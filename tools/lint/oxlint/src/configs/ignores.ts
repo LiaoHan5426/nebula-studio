@@ -6,6 +6,7 @@ const ignores: OxlintConfig = {
     '**/node_modules/**',
     'docs/**',
     'playground/public/**',
+    '**/*.css',
     '**/*.json',
     '**/*.md',
     '**/*.svg',
