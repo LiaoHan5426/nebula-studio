@@ -14,12 +14,15 @@
     "update:deps": "npx taze -r -w"
   },
   "devDependencies": {
+    "@nebula-studio-internal/oxfmt": "workspace:^",
+    "@nebula-studio-internal/oxlint": "workspace:^",
     "@vitejs/plugin-vue": "catalog:vite",
     "@vitejs/plugin-vue-jsx": "catalog:vite",
     "@eslint-community/eslint-plugin-eslint-comments": "catalog:lint",
     "eslint-plugin-better-tailwindcss": "catalog:lint",
     "eslint-plugin-command": "catalog:lint",
     "happy-dom": "catalog:vite",
+    "tailwindcss": "catalog:style",
     "vite-plus": "catalog:vite",
     "vitest": "catalog:vite"
   },

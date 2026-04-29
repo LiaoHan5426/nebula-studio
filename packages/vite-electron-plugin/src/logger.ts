@@ -4,7 +4,33 @@ import type { LoggerInstance } from '@nebula-studio/utils';
 import { createLogger } from '@nebula-studio/utils';
 
 const LEADING_TAG_RE = /^\s*\[[^\]]+\]\s/;
+const TAG_EXTRACT_RE = /\[nebula-studio:([^\]]+)\]/;
 const loggerRegistry = new Map<string, LoggerInstance>();
+
+/**
+ * 从消息中提取内嵌的 tag 和清理消息
+ */
+function extractTagAndMessage(message: string): {
+  tag: string | null;
+  message: string;
+} {
+  let cleanMessage = message.trim();
+  let extractedTag: string | null = null;
+
+  // 移除日志图标前缀（✔、ℹ、⚠、✖ 等）
+  cleanMessage = cleanMessage.replace(/^[\s\w]*[\s✔ℹ⚠✖]\s+/, '');
+
+  // 提取 [nebula-studio:tag-name] 格式的 tag
+  const tagMatch = cleanMessage.match(TAG_EXTRACT_RE);
+  if (tagMatch) {
+    extractedTag = tagMatch[1];
+  }
+
+  // 移除 [tag] 格式的内嵌 tag 前缀
+  cleanMessage = cleanMessage.replace(LEADING_TAG_RE, '');
+
+  return { tag: extractedTag, message: cleanMessage.trim() };
+}
 
 /**
  * 移除字符串开头的 ANSI 转义码
@@ -26,9 +52,24 @@ function getTagLogger(tag: string): LoggerInstance {
   if (loggerRegistry.has(tag)) {
     return loggerRegistry.get(tag) as LoggerInstance;
   }
-  const createdLogger = createLogger(`vite-electron:${tag}`);
+  // 直接使用 tag 创建 logger，createLogger 会自动添加 nebula-studio: 前缀
+  const createdLogger = createLogger(tag);
   loggerRegistry.set(tag, createdLogger);
   return createdLogger;
+}
+
+/**
+ * 判断消息是否为错误类型
+ */
+function isErrorMessage(message: string): boolean {
+  const errorPatterns = [
+    /error/i,
+    /fail/i,
+    /exception/i,
+    /fatal/i,
+    /critical/i,
+  ];
+  return errorPatterns.some((pattern) => pattern.test(message));
 }
 
 /**
@@ -39,16 +80,24 @@ export function logWithTag(
   message: string,
   type: 'stdout' | 'stderr' = 'stdout',
 ): void {
-  const logger = getTagLogger(tag);
-  if (type === 'stderr') {
-    logger.error(message);
+  // 提取消息中的 tag 和清理后的消息内容
+  const { tag: extractedTag, message: cleanMessage } =
+    extractTagAndMessage(message);
+
+  // 组合 tag：如果消息中有提取的 tag，则组合为 "tag:extractedTag"
+  const finalTag = extractedTag ? `${tag}:${extractedTag}` : tag;
+  const logger = getTagLogger(finalTag);
+
+  if (type === 'stderr' && isErrorMessage(message)) {
+    logger.error(cleanMessage);
     return;
   }
+  // 仅当原始 tag 是 "info" 时使用 info 级别
   if (tag === 'info') {
-    logger.info(message);
+    logger.info(cleanMessage);
     return;
   }
-  logger.success(message);
+  logger.success(cleanMessage);
 }
 
 /**

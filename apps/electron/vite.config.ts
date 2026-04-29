@@ -1,6 +1,6 @@
 import { resolve } from 'node:path';
 import { defineConfig } from 'vite-plus';
-import { synraElectronPlugin } from '@nebula-studio/vite-electron-plugin';
+import { nebulaStudioElectronPlugin } from '@nebula-studio/vite-electron-plugin';
 
 const workspaceRoot = resolve(import.meta.dirname, '../..');
 const capacitorElectronDistEntry = resolve(
@@ -27,7 +27,7 @@ export default defineConfig({
     minify: true,
   },
   plugins: [
-    synraElectronPlugin({
+    nebulaStudioElectronPlugin({
       workspaceRoot,
       electronCwd: import.meta.dirname,
       frontendDevUrl: 'http://localhost:5173',

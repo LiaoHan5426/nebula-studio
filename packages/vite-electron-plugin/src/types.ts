@@ -7,7 +7,7 @@ export type SpawnCommand = {
   env?: NodeJS.ProcessEnv;
 };
 
-export type SynraElectronPluginOptions = {
+export type NebulaStudioElectronPluginOptions = {
   workspaceRoot?: string;
   electronCwd?: string;
   /** @deprecated Use frontendDevUrls instead */
