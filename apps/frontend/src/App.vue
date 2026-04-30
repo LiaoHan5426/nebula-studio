@@ -30,8 +30,6 @@ const setCounter = (value: number) => {
     </button>
   </section>
 
-  <div class="ticks"></div>
-
   <section id="next-steps">
     <div id="docs">
       <svg class="icon" role="presentation" aria-hidden="true">
@@ -92,7 +90,4 @@ const setCounter = (value: number) => {
       </ul>
     </div>
   </section>
-
-  <div class="ticks"></div>
-  <section id="spacer"></section>
 </template>

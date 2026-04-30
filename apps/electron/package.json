@@ -28,7 +28,8 @@
   "dependencies": {
     "@capacitor/core": "catalog:capacitor",
     "@nebula-studio/capacitor-electron": "workspace:^",
-    "@nebula-studio/utils": "workspace:^"
+    "@nebula-studio/utils": "workspace:^",
+    "@fastify/deepmerge": "catalog:utils"
   },
   "devDependencies": {
     "@capacitor/cli": "catalog:capacitor",
@@ -36,6 +37,7 @@
     "@types/node": "catalog:types",
     "electron": "catalog:electron",
     "electron-builder": "catalog:electron",
+    "electron-updater": "catalog:electron",
     "esbuild": "catalog:build",
     "typescript": "catalog:types",
     "vite-plus": "catalog:vite"

@@ -1,0 +1,22 @@
+{
+  "name": "pdm",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vp dev",
+    "build": "vue-tsc -b && vp build",
+    "preview": "vp preview"
+  },
+  "dependencies": {
+    "vue": "catalog:vue"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:types",
+    "@vitejs/plugin-vue": "catalog:vite",
+    "typescript": "catalog:types",
+    "vite": "catalog:vite",
+    "vue-tsc": "catalog:vue",
+    "vite-plus": "catalog:vite"
+  }
+}

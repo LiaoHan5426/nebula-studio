@@ -8,7 +8,7 @@ export {
   createPreloadInvoker,
   type IpcInvoke,
   type InvokeOptions,
-} from './bridge/preload/invoke';
+} from './bridge/preload';
 export {
   exposePreloadBridge,
   type PreloadBridgeApi,

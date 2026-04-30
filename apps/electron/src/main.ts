@@ -1,4 +1,5 @@
 import { join, resolve } from 'node:path';
+import type { Event, WebContentsConsoleMessageEventParams } from 'electron';
 import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import { setupBridgeMainRuntime } from '@nebula-studio/capacitor-electron';
 import { allowInternalOrigins } from './modules/BlockNotAllowedOrigins';
@@ -28,7 +29,7 @@ function getPreloadPath(windowName: string = 'main'): string {
 
 function createMainWindow(): BrowserWindow {
   const startupBeginAt = Date.now();
-  const mainWindow = new BrowserWindow({
+  const mainWindow: BrowserWindow = new BrowserWindow({
     width: 1200,
     height: 800,
     webPreferences: {
@@ -56,7 +57,7 @@ function createMainWindow(): BrowserWindow {
   mainWindow.webContents.on('did-finish-load', () => {
     void mainWindow.webContents
       .executeJavaScript(
-        'Boolean(window.__crossCraftCapElectron && window.__crossCraftCapElectron.invoke)',
+        'Boolean(window.__nebulaStudioCapElectron && window.__nebulaStudioCapElectron.invoke)',
       )
       .then((available) => {
         bridgeHealthLogger.info('bridge available:', available);
@@ -82,9 +83,15 @@ function createMainWindow(): BrowserWindow {
     }
   });
 
-  mainWindow.webContents.on('console-message', (_event, level, message) => {
-    appLifecycleLogger.info(`renderer:${String(level)}`, message);
-  });
+  mainWindow.webContents.on(
+    'console-message',
+    (details: Event<WebContentsConsoleMessageEventParams>) => {
+      appLifecycleLogger.info(
+        `renderer:${String(details.level)}`,
+        details.message,
+      );
+    },
+  );
 
   return mainWindow;
 }
@@ -116,12 +123,12 @@ void app.whenReady().then(() => {
   });
 });
 
-app.on('window-all-closed', () => {
-  appLifecycleLogger.warn('window-all-closed');
+// app.on('window-all-closed', () => {
+//   appLifecycleLogger.warn('window-all-closed');
 
-  if (process.platform !== 'darwin') {
-    appLifecycleLogger.info('quitting app on non-darwin platform');
+//   if (process.platform !== 'darwin') {
+//     appLifecycleLogger.info('quitting app on non-darwin platform');
 
-    app.quit();
-  }
-});
+//     app.quit();
+//   }
+// });

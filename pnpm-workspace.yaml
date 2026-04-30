@@ -27,6 +27,7 @@ catalogs:
   electron:
     electron: ^41.3.0
     electron-builder: ^26.8.1
+    electron-updater: ^6.8.3
   lint:
     '@eslint-community/eslint-plugin-eslint-comments': ^4.7.1
     '@stylistic/stylelint-plugin': ^5.1.0
@@ -61,6 +62,7 @@ catalogs:
   utils:
     consola: ^3.4.2
     unconfig: ^7.5.0
+    '@fastify/deepmerge': ^3.2.1
   vite:
     '@vitejs/plugin-vue': ^6.0.6
     '@vitejs/plugin-vue-jsx': ^5.1.5
@@ -68,10 +70,12 @@ catalogs:
     #vite: npm:@voidzero-dev/vite-plus-core@latest
     vite: 8.0.10
     vite-plus: ^0.1.20
+
     vitest: npm:@voidzero-dev/vite-plus-test@latest
   vue:
     vue: ^3.5.33
     vue-router: ^4.6.4
+    vue-tsc: ^3.2.7
 overrides:
   vite: 'catalog:vite'
   vitest: 'catalog:vite'
