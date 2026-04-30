@@ -1,4 +1,4 @@
-import { describe, expect, vi } from 'vite-plus/test';
+import { describe, expect, vi, it } from 'vite-plus/test';
 import { createBridgeHandlers } from '../../../src/bridge/main/handlers';
 import { createMainDispatcher } from '../../../src/bridge/main/dispatch';
 import { BRIDGE_ERROR_CODES } from '../../../src/shared/errors/codes';

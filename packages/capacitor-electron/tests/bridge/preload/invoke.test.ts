@@ -1,4 +1,4 @@
-import { describe, expect } from 'vite-plus/test';
+import { describe, expect, it } from 'vite-plus/test';
 import { createPreloadInvoker } from '../../../src/bridge/preload/invoke';
 import { BRIDGE_ERROR_CODES } from '../../../src/shared/errors/codes';
 import {

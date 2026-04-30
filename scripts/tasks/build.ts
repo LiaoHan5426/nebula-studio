@@ -83,6 +83,11 @@ function isBuildTarget(value: string): value is BuildTarget {
   return (BUILD_TARGETS as readonly string[]).includes(value);
 }
 
+type ChildProcessWithClose = {
+  on(event: 'error', listener: (error: Error) => void): unknown;
+  on(event: 'close', listener: (code: number | null) => void): unknown;
+};
+
 async function runStep(step: BuildStep): Promise<void> {
   await new Promise<void>((resolveStep, rejectStep) => {
     const child =
@@ -102,12 +107,13 @@ async function runStep(step: BuildStep): Promise<void> {
               ...step.env,
             },
           });
+    const typedChild = child as unknown as ChildProcessWithClose;
 
-    child.on('error', (error) => {
+    typedChild.on('error', (error: Error) => {
       rejectStep(error);
     });
 
-    child.on('close', (code) => {
+    typedChild.on('close', (code: number | null) => {
       if (code === 0) {
         resolveStep();
         return;

@@ -1,4 +1,4 @@
-import { expect } from 'vite-plus/test';
+import { expect, it } from 'vite-plus/test';
 import { createLogger } from '../src/index.ts';
 
 it('createLogger returns all expected methods', () => {

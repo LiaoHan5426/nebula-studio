@@ -1,4 +1,4 @@
-import { describe, expect, vi } from 'vite-plus/test';
+import { describe, expect, vi, it } from 'vite-plus/test';
 import { createExternalLinkService } from '../../../src/host/services/external-link.service';
 import { BRIDGE_ERROR_CODES } from '../../../src/shared/errors/codes';
 

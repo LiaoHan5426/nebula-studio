@@ -1,6 +1,7 @@
 import { createInterface } from 'node:readline';
 import type { Interface as ReadlineInterface } from 'node:readline';
 import type { ChildProcessWithoutNullStreams } from 'node:child_process';
+import { createServer } from 'node:net';
 import { resolve } from 'node:path';
 import type {
   NebulaStudioElectronPluginOptions,
@@ -42,9 +43,17 @@ export interface PluginState {
 export class NebulaStudioElectronPluginController {
   private state: PluginState;
   private options: NebulaStudioElectronPluginOptions;
-  private frontendDevUrls: Record<string, string>;
-  private frontendDevCommands: Record<string, SpawnCommand>;
-  private electronRuntimeCommand: SpawnCommand;
+  private frontendDevUrls: Record<string, string> = {};
+  private frontendDevCommands: Record<string, SpawnCommand> = {};
+  private electronRuntimeCommand: SpawnCommand = {
+    command: 'vp',
+    args: ['exec', 'electron', './dist/src/main.cjs'],
+    cwd: process.cwd(),
+    env: {
+      VITE_DEV_SERVER_URLS: JSON.stringify({}),
+      VITE_DEV_SERVER_URL: 'http://localhost:5173',
+    },
+  };
   private waitForPaths: string[];
   private restartDebounceMs: number;
 
@@ -53,16 +62,6 @@ export class NebulaStudioElectronPluginController {
     this.restartDebounceMs = options.restartDebounceMs ?? 200;
     this.waitForPaths = options.waitForPaths ?? [];
     this.state = this.createPluginState();
-
-    // 规范化配置
-    const normalized = this.normalizeOptions(options);
-    this.frontendDevUrls = normalized.frontendDevUrls;
-    this.frontendDevCommands = normalized.frontendDevCommands;
-    this.electronRuntimeCommand = this.createElectronRuntimeCommand(
-      options.electronRuntimeCommand,
-      this.options.electronCwd ?? process.cwd(),
-      this.frontendDevUrls,
-    );
   }
 
   /**
@@ -86,17 +85,39 @@ export class NebulaStudioElectronPluginController {
     }
   }
 
+  private async isPortAvailable(port: number): Promise<boolean> {
+    return new Promise((resolve) => {
+      const server = createServer();
+      server.once('error', () => {
+        resolve(false);
+      });
+      server.once('listening', () => {
+        server.close(() => resolve(true));
+      });
+      server.listen(port, '127.0.0.1');
+      server.unref();
+    });
+  }
+
+  private async findAvailablePort(startPort: number): Promise<number> {
+    let port = startPort;
+    while (!(await this.isPortAvailable(port))) {
+      port += 1;
+    }
+    return port;
+  }
+
   /**
    * 规范化选项配置，优先使用 app.config.ts 中的配置
    */
-  private normalizeOptions(opts: NebulaStudioElectronPluginOptions) {
+  private async normalizeOptions(opts: NebulaStudioElectronPluginOptions) {
     const workspaceRoot = opts.workspaceRoot ?? process.cwd();
     let appConfig: AppConfigStructure | null = null;
 
     // 如果提供了 appConfigPath，则加载 app.config.ts
     if (opts.appConfigPath) {
       const configPath = resolve(workspaceRoot, opts.appConfigPath);
-      appConfig = this.loadAppConfig(configPath);
+      appConfig = await this.loadAppConfig(configPath);
     }
 
     // 确定 electron 工作目录
@@ -126,7 +147,7 @@ export class NebulaStudioElectronPluginController {
       frontendDevUrls = {};
       frontendDevCommands = {};
 
-      let port = 5173;
+      let port = await this.findAvailablePort(5173);
       for (const [windowName, frontendDir] of Object.entries(
         appConfig.windows,
       )) {
@@ -138,7 +159,7 @@ export class NebulaStudioElectronPluginController {
           args: ['run', `${frontendDir}#dev:electron`],
           cwd: workspaceRoot,
         };
-        port++;
+        port = await this.findAvailablePort(port + 1);
       }
     } else {
       // 降级到默认值
@@ -155,6 +176,20 @@ export class NebulaStudioElectronPluginController {
     }
 
     return { frontendDevUrls, frontendDevCommands };
+  }
+
+  /**
+   * 初始化配置信息
+   */
+  private async initializeOptions(): Promise<void> {
+    const normalized = await this.normalizeOptions(this.options);
+    this.frontendDevUrls = normalized.frontendDevUrls;
+    this.frontendDevCommands = normalized.frontendDevCommands;
+    this.electronRuntimeCommand = this.createElectronRuntimeCommand(
+      this.options.electronRuntimeCommand,
+      this.options.electronCwd ?? process.cwd(),
+      this.frontendDevUrls,
+    );
   }
 
   /**
@@ -458,11 +493,12 @@ export class NebulaStudioElectronPluginController {
     return {
       name: 'vite-plugin-nebula-studio-electron',
       apply: 'serve',
-      configureServer: (server) => {
+      configureServer: async (server) => {
         if (this.state.started) {
           return;
         }
 
+        await this.initializeOptions();
         this.state.started = true;
         this.state.requestQuit = () => {
           const exitProcess = () => {
