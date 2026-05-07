@@ -13,6 +13,7 @@ export default {
   windows: {
     // 主窗口的配置项，属性名为'main'，属性值为该窗口对应的前端应用的目录名称，默认为'frontend'
     main: 'frontend',
+    pdm: 'pdm',
   },
   build: {
     appName: 'NebulaStudio',
