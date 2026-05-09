@@ -3,7 +3,6 @@
   "include": ["app.config.ts", "src/renderer/**/*"],
   "compilerOptions": {
     "composite": false,
-    "baseUrl": ".",
     "types": ["vite/client", "node"]
   }
 }

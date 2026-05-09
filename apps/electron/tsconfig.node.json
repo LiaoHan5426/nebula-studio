@@ -1,5 +1,5 @@
 {
-  "extends": "@electron-toolkit/tsconfig/tsconfig.node.json",
+  "extends": "@nebula-studio-internal/tsconfig/node.json",
   "include": ["electron.vite.config.*", "app.config.ts", "src/main/**/*"],
   "compilerOptions": {
     "composite": true,

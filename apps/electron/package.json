@@ -22,7 +22,7 @@
   "dependencies": {
     "@electron-toolkit/preload": "catalog:electron",
     "@electron-toolkit/utils": "catalog:electron",
-    "electron-updater": "catalog:electron"
+    "electron-updater": "^6.8.3"
   },
   "devDependencies": {
     "electron": "catalog:electron",
