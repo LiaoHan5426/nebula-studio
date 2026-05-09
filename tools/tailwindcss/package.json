@@ -15,7 +15,9 @@
     "src"
   ],
   "sideEffects": [
-    "**/*.css"
+    "**/*.css",
+    "./src/index.ts",
+    "./src/electron.ts"
   ],
   "main": "./src/index.ts",
   "module": "./src/index.ts",
