@@ -1,0 +1,9 @@
+{
+  "extends": "@nebula-studio-internal/tsconfig/web.json",
+  "include": ["src/env.d.ts", "src/**/*", "src/**/*.vue"],
+  "compilerOptions": {
+    "paths": {
+      "@renderer/*": ["./src/*"]
+    }
+  }
+}

@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Electron app build artifacts (electron-vite → `out/`, electron-builder → `dist/` under package)
+apps/electron/out/
+apps/electron/dist/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

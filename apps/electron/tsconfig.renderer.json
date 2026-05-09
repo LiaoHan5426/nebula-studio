@@ -1,0 +1,9 @@
+{
+  "extends": "@nebula-studio-internal/tsconfig/web.json",
+  "include": ["app.config.ts", "src/renderer/**/*"],
+  "compilerOptions": {
+    "composite": false,
+    "baseUrl": ".",
+    "types": ["vite/client", "node"]
+  }
+}

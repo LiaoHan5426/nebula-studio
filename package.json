@@ -5,8 +5,13 @@
   "type": "module",
   "scripts": {
     "ready": "vp fmt && vp lint && vp run -r test && vp run -r build",
-    "build": "vp exec esno ./scripts/tasks/build.ts",
-    "dev": "vp run website#dev",
+    "build": "vp run -r build",
+    "build:unpack": "vp run electron#build:unpack",
+    "pack:win": "vp run electron#pack:win",
+    "pack:mac": "vp run electron#pack:mac",
+    "pack:linux": "vp run electron#pack:linux",
+    "dev": "vp run electron#dev",
+    "start": "vp run electron#start",
     "dev:electron": "vp run electron#dev",
     "sync:app-config": "vp exec esno ./scripts/tasks/sync-app-config.ts",
     "cap": "vp run mobile#cap",
@@ -19,7 +24,6 @@
   },
   "devDependencies": {
     "@eslint-community/eslint-plugin-eslint-comments": "catalog:lint",
-    "@inquirer/prompts": "catalog:",
     "@nebula-studio-internal/oxfmt": "workspace:^",
     "@nebula-studio-internal/oxlint": "workspace:^",
     "@nebula-studio-internal/stylelint": "workspace:^",

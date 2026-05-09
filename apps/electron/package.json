@@ -1,0 +1,38 @@
+{
+  "name": "@nebula-studio/electron",
+  "version": "1.0.0",
+  "description": "An Electron application with Vue and TypeScript",
+  "packageManager": "pnpm@10.33.2",
+  "main": "./out/main/index.js",
+  "author": "Liao Han <liaohan5426@gmail.com>",
+  "scripts": {
+    "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
+    "typecheck:web": "vue-tsc --noEmit -p tsconfig.renderer.json --composite false",
+    "typecheck:renderers": "pnpm --filter \"@nebula-studio-renderer/*\" run typecheck",
+    "typecheck": "npm run typecheck:node && npm run typecheck:web && npm run typecheck:renderers",
+    "start": "vp exec electron-vite preview",
+    "dev": "vp exec electron-vite dev",
+    "build": "npm run typecheck && vp exec  electron-vite build",
+    "postinstall": "electron-builder install-app-deps",
+    "build:unpack": "npm run build && vp exec electron-builder --dir",
+    "pack:win": "npm run build && vp exec electron-builder --win",
+    "pack:mac": "npm run build && vp exec electron-builder --mac",
+    "pack:linux": "npm run build && vp exec electron-builder --linux"
+  },
+  "dependencies": {
+    "@electron-toolkit/preload": "catalog:electron",
+    "@electron-toolkit/utils": "catalog:electron",
+    "electron-updater": "catalog:electron"
+  },
+  "devDependencies": {
+    "electron": "catalog:electron",
+    "@types/node": "catalog:types",
+    "@vitejs/plugin-vue": "catalog:vite",
+    "electron-builder": "catalog:electron",
+    "electron-vite": "catalog:electron",
+    "typescript": "catalog:types",
+    "vite": "^7.2.6",
+    "vue": "catalog:vue",
+    "vue-tsc": "catalog:vue"
+  }
+}
