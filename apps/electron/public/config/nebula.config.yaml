@@ -1,0 +1,8 @@
+log:
+  dir: ""
+windowState:
+  mainWindowBounds:
+    width: 1936
+    height: 1048
+ui:
+  theme: dark

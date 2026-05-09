@@ -1,9 +1,9 @@
 @import './base.css';
 
 body {
+  min-height: 100vh;
   margin: 0;
   overflow: hidden;
-  min-height: 100vh;
 }
 
 #app {

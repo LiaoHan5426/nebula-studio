@@ -59,6 +59,20 @@ function buildRendererLoaders(): Record<RendererPkg, () => Promise<unknown>> {
 
 const loadMainByRendererPkg = buildRendererLoaders();
 
+function installRendererHmrFallback(rendererPkg: RendererPkg): void {
+  if (!import.meta.hot) {
+    return;
+  }
+  import.meta.hot.on('vite:afterUpdate', (payload) => {
+    const hitCurrentRenderer = payload.updates.some((update) =>
+      update.path.replace(/\\/g, '/').includes(`/${rendererPkg}/`),
+    );
+    if (hitCurrentRenderer) {
+      window.location.reload();
+    }
+  });
+}
+
 function windowIdFromSearch(): WindowId {
   const q = new URLSearchParams(window.location.search).get('renderer');
   if (q !== null && q in appConfig.windows) {
@@ -70,6 +84,7 @@ function windowIdFromSearch(): WindowId {
 async function start(): Promise<void> {
   const windowId = windowIdFromSearch();
   const pkg = appConfig.windows[windowId].renderer;
+  installRendererHmrFallback(pkg);
   await loadMainByRendererPkg[pkg]();
 }
 

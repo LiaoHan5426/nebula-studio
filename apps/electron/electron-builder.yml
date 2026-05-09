@@ -13,6 +13,9 @@ files:
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
 asarUnpack:
   - resources/**
+extraFiles:
+  - from: public/config
+    to: config
 win:
   executableName: nebula-studio
   signAndEditExecutable: false

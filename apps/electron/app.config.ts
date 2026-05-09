@@ -1,6 +1,6 @@
 /**
  * - `main`：整体 Electron **底座**（壳层 BrowserWindow，仅加载 shell renderer，**不使用 webview**）。
- * - 其余窗口键（如 `pdm`）：在底座内以 **BrowserView** 展示对应子应用 renderer（类 wujie：壳层 + 内嵌内容区）。
+ * - 其余窗口键（如 `docs`）：在底座内以 **BrowserView** 展示对应子应用 renderer（类 wujie：壳层 + 内嵌内容区）。
  *
  * Preload：`apps/electron-preload/<slug>` → `@nebula-studio-preload/<slug>`
  * Renderer 源码：`apps/<renderer 目录>` → `@nebula-studio-renderer/<窗口键>`
@@ -18,9 +18,13 @@ export default {
       preload: 'main',
       renderer: 'frontend',
     },
-    pdm: {
-      preload: 'pdm',
-      renderer: 'pdm',
+    docs: {
+      preload: 'docs',
+      renderer: 'docs',
+    },
+    settings: {
+      preload: 'settings',
+      renderer: 'settings',
     },
   },
 } as const;

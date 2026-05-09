@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@electron-toolkit/preload": "catalog:electron"
+    "@electron-toolkit/preload": "catalog:electron",
+    "@nebula-studio-electron/electron-shared": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "catalog:types",

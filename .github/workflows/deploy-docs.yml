@@ -1,0 +1,59 @@
+name: Deploy docs (GitHub Pages)
+
+on:
+  push:
+    branches: [electron-vite]
+    paths:
+      - 'apps/docs/**'
+      - 'packages/**'
+      - 'tools/tailwindcss/**'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/deploy-docs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-docs
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # 项目页：https://owner.github.io/repo/ 需带仓库名前缀；用户站点 root 仓库请改为 VITE_BASE_PATH: /
+      - name: Build static site
+        working-directory: apps/docs
+        env:
+          VITE_BASE_PATH: /${{ github.event.repository.name }}/
+        run: pnpm run build:web
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/docs/dist-web
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4

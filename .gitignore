@@ -15,6 +15,7 @@ dist-ssr
 # Electron app build artifacts (electron-vite → `out/`, electron-builder → `dist/` under package)
 apps/electron/out/
 apps/electron/dist/
+apps/electron/public/logs/
 
 # Editor directories and files
 .vscode/*
@@ -26,7 +27,6 @@ apps/electron/dist/
 *.njsproj
 *.sln
 *.sw?
-.auto-generated
 
 # AI agent worktrees
 .claude/worktrees/

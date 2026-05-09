@@ -25,6 +25,10 @@
       "types": "./src/index.ts",
       "default": "./src/index.ts"
     },
+    "./electron": {
+      "types": "./src/electron.ts",
+      "default": "./src/electron.ts"
+    },
     "./theme": {
       "default": "./src/theme.css"
     }

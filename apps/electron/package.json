@@ -22,12 +22,14 @@
   "dependencies": {
     "@electron-toolkit/preload": "catalog:electron",
     "@electron-toolkit/utils": "catalog:electron",
-    "electron-updater": "^6.8.3"
+    "@nebula-studio-electron/electron-shared": "workspace:^",
+    "electron-updater": "^6.8.3",
+    "yaml": "^2.8.1"
   },
   "devDependencies": {
-    "electron": "catalog:electron",
     "@types/node": "catalog:types",
     "@vitejs/plugin-vue": "catalog:vite",
+    "electron": "catalog:electron",
     "electron-builder": "catalog:electron",
     "electron-vite": "catalog:electron",
     "typescript": "catalog:types",
