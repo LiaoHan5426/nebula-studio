@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { NebulaPane, NebulaTreeMenu } from '@nebula-studio/nebula-ui';
+import {
+  NebulaPane,
+  NebulaThemeToggle,
+  NebulaTreeMenu,
+} from '@nebula-studio/nebula-ui';
 import type { NebulaTreeNode } from '@nebula-studio/nebula-ui';
+import { useConfig } from '@nebula-studio-electron/electron-shared-vue';
 import DocsNotifyCenter from './features/notify/components/DocsNotifyCenter.vue';
 import { useDocsNotify } from './features/notify/composables/useDocsNotify';
 import type { DocsFeatureDefinition, FeatureMenuNode } from './features/types';
@@ -53,6 +58,7 @@ const activeFeature = computed(() => featuresById.get(activeFeatureId.value));
 const isNotifyFeatureActive = computed(
   () => activeFeature.value?.id === 'notify',
 );
+const { theme, toggleTheme } = useConfig();
 
 const {
   messageToasts,
@@ -74,6 +80,7 @@ const scope = () =>
   typeof window.api === 'object' && window.api !== null && 'scope' in window.api
     ? String((window.api as { scope?: string }).scope)
     : '?';
+const isWebScope = computed(() => scope() === 'web');
 
 function toNebulaTreeNode(node: FeatureMenuNode): NebulaTreeNode {
   return {
@@ -86,24 +93,45 @@ function toNebulaTreeNode(node: FeatureMenuNode): NebulaTreeNode {
 </script>
 
 <template>
-  <main class="wrap">
-    <h1>Docs</h1>
-    <p class="muted">Package <code>@nebula-studio-renderer/docs</code></p>
-    <p>
-      Preload scope: <code>{{ scope() }}</code>
-    </p>
-    <div class="layout">
-      <NebulaTreeMenu
-        :tree="featureTree"
-        :active-value="activeFeatureId"
-        @select="activeFeatureId = $event"
-      />
-      <section class="content">
+  <main class="docs-page">
+    <div class="docs-shell">
+      <aside class="docs-sidebar">
+        <div class="brand-block">
+          <p class="brand-title">Nebula UI Docs</p>
+          <p class="brand-subtitle">组件展示与交互验证</p>
+        </div>
+        <NebulaTreeMenu
+          :tree="featureTree"
+          :active-value="activeFeatureId"
+          @select="activeFeatureId = $event"
+        />
+      </aside>
+      <section class="docs-content">
+        <header class="feature-head">
+          <div class="feature-head__top">
+            <p class="feature-tag">Component</p>
+            <NebulaThemeToggle
+              v-if="isWebScope"
+              :theme="theme"
+              tooltip="切换明暗主题"
+              tooltip-placement="left"
+              @update:theme="toggleTheme"
+            />
+          </div>
+          <h1>{{ activeFeature?.title ?? 'No Feature' }}</h1>
+          <p class="feature-desc">
+            {{ activeFeature?.description ?? '请选择左侧功能项进行验证。' }}
+          </p>
+          <p class="feature-meta">
+            Package <code>@nebula-studio-renderer/docs</code> · Scope
+            <code>{{ scope() }}</code>
+          </p>
+        </header>
+
         <NebulaPane
-          :title="activeFeature?.title ?? 'No Feature'"
-          :description="
-            activeFeature?.description ?? '请选择左侧功能项进行验证。'
-          "
+          title="基础示例"
+          description="以下区域用于展示当前组件能力、交互行为与可视反馈。"
+          class="feature-pane"
         >
           <component
             :is="activeFeature?.component"
@@ -137,37 +165,112 @@ function toNebulaTreeNode(node: FeatureMenuNode): NebulaTreeNode {
 </template>
 
 <style scoped>
-.wrap {
+.docs-page {
   min-height: 100vh;
-  padding: 2rem;
-  font-family: system-ui, sans-serif;
+  padding: 1.5rem 1.75rem;
   color: hsl(var(--foreground));
   background: hsl(var(--background));
 }
 
-h1 {
-  margin: 0 0 0.5rem;
-  font-size: 1.5rem;
+.docs-shell {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 1.5rem;
+  max-width: 1240px;
+  margin: 0 auto;
 }
 
-.muted {
+.docs-sidebar {
+  position: sticky;
+  top: 1.5rem;
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.brand-block {
+  padding: 0.95rem 1rem;
+  border-radius: 12px;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
+}
+
+.brand-title {
+  margin: 0;
+  font-size: 1.03rem;
+  font-weight: 700;
+}
+
+.brand-subtitle {
+  margin: 0.35rem 0 0;
+  font-size: 0.86rem;
+  color: hsl(var(--muted-foreground));
+  line-height: 1.45;
+}
+
+.docs-content {
+  min-width: 0;
+}
+
+.feature-head {
   margin-bottom: 1rem;
+}
+
+.feature-head__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.feature-tag {
+  display: inline-flex;
+  margin: 0;
+  padding: 0.16rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--accent) / 45%);
+  color: hsl(var(--muted-foreground));
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.feature-head h1 {
+  margin: 0.55rem 0 0;
+  font-size: 1.72rem;
+  line-height: 1.2;
+}
+
+.feature-desc {
+  margin: 0.45rem 0 0;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.feature-meta {
+  margin: 0.5rem 0 0;
+  font-size: 0.88rem;
   color: hsl(var(--muted-foreground));
 }
 
+.feature-pane {
+  margin-top: 0.75rem;
+}
+
 code {
-  font-size: 0.9em;
+  font-size: 0.88em;
 }
 
-.layout {
-  display: flex;
-  gap: 1rem;
-  align-items: flex-start;
-  margin-top: 1rem;
-}
+@media (width <= 980px) {
+  .docs-shell {
+    grid-template-columns: 1fr;
+  }
 
-.content {
-  flex: 1;
-  min-width: 0;
+  .docs-sidebar {
+    position: static;
+  }
 }
 </style>

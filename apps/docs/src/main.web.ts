@@ -4,7 +4,17 @@ import { createApp, h } from 'vue';
 import App from './App.vue';
 import { installWebStubs } from './runtime/installWebStubs';
 
-installWebStubs();
+installWebStubs({
+  scope: 'web',
+  theme: {
+    storageKey: 'nebula-docs-theme',
+    default: 'dark',
+  },
+  locale: {
+    storageKey: 'nebula-docs-locale',
+    default: 'zh-CN',
+  },
+});
 
 createApp({
   render() {

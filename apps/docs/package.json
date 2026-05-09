@@ -10,10 +10,11 @@
     "preview:web": "vite preview"
   },
   "dependencies": {
-    "@nebula-studio/nebula-ui": "workspace:^",
     "@nebula-studio-electron/electron-shared": "workspace:^",
     "@nebula-studio-electron/electron-shared-vue": "workspace:^",
     "@nebula-studio-internal/tailwind": "workspace:^",
+    "@nebula-studio/nebula-ui": "workspace:^",
+    "marked": "catalog:",
     "vue": "catalog:vue"
   },
   "devDependencies": {

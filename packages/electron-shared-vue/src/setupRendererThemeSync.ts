@@ -1,4 +1,8 @@
+import { IPC_CHANNELS } from './rendererPreferences/ipcChannels';
+
 type ThemeMode = 'light' | 'dark';
+
+const THEME = IPC_CHANNELS.theme;
 
 interface ThemePayload {
   theme?: ThemeMode;
@@ -42,17 +46,14 @@ export function setupRendererThemeSync(): () => void {
     applyDomTheme(payload?.theme === 'light' ? 'light' : 'dark');
   };
 
-  void electron.ipcRenderer.invoke('settings:theme:get').then((theme) => {
+  void electron.ipcRenderer.invoke(THEME.get).then((theme) => {
     if (disposed) return;
     applyDomTheme(theme === 'light' ? 'light' : 'dark');
   });
 
-  electron.ipcRenderer.on('settings:theme:changed', onThemeChanged);
+  electron.ipcRenderer.on(THEME.changed, onThemeChanged);
   return () => {
     disposed = true;
-    electron.ipcRenderer.removeListener(
-      'settings:theme:changed',
-      onThemeChanged,
-    );
+    electron.ipcRenderer.removeListener(THEME.changed, onThemeChanged);
   };
 }

@@ -78,6 +78,9 @@ export function useElectronNotify(
       return;
     }
     detailModalToast.value = toast;
+    // Detail notification behaves like a one-shot entry:
+    // opening its modal should dismiss the toast itself.
+    removeToast(toast.id);
   };
 
   const submitDetailAction = async (action: string) => {
@@ -89,6 +92,9 @@ export function useElectronNotify(
         action,
       });
     }
+    // In case the toast was not removed earlier, ensure it is gone
+    // after user explicitly submits a detail action.
+    removeToast(toast.id);
     detailModalToast.value = null;
   };
 

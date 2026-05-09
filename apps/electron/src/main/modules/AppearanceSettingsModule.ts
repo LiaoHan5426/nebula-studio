@@ -8,6 +8,11 @@ function normalizeTheme(theme: unknown): ThemeMode {
   return theme === 'light' ? 'light' : 'dark';
 }
 
+function normalizeLocale(locale: unknown, fallback: string): string {
+  if (typeof locale === 'string' && locale.trim()) return locale.trim();
+  return fallback;
+}
+
 function applyNativeAppearance(
   context: MainModuleContext,
   theme: ThemeMode,
@@ -40,6 +45,26 @@ export class AppearanceSettingsModule implements MainModule {
           `[settings:theme] theme switched to "${nextTheme}"`,
         );
         return nextTheme;
+      },
+    );
+
+    ipcMain.handle('settings:locale:get', () =>
+      context.configManager.getLocale(),
+    );
+
+    ipcMain.handle(
+      'settings:locale:set',
+      (_event, payload: { locale?: unknown }) => {
+        const fallback = context.configManager.getLocale();
+        const nextLocale = normalizeLocale(payload?.locale, fallback);
+        context.configManager.setLocale(nextLocale);
+        context.windowManager.broadcast('settings:locale:changed', {
+          locale: nextLocale,
+        });
+        context.logger.info(
+          `[settings:locale] locale switched to "${nextLocale}"`,
+        );
+        return nextLocale;
       },
     );
 

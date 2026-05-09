@@ -12,6 +12,7 @@ type ThemeMode = 'light' | 'dark';
 
 interface UiConfig {
   theme?: ThemeMode;
+  locale?: string;
 }
 
 interface NebulaConfig {
@@ -64,6 +65,21 @@ export class ConfigManager {
     this.#cache.ui = {
       ...this.#cache.ui,
       theme,
+    };
+    this.#save();
+  }
+
+  getLocale(): string {
+    const raw = this.#cache.ui?.locale;
+    if (typeof raw === 'string' && raw.trim()) return raw.trim();
+    return 'zh-CN';
+  }
+
+  setLocale(locale: string): void {
+    const normalized = locale.trim() || 'zh-CN';
+    this.#cache.ui = {
+      ...this.#cache.ui,
+      locale: normalized,
     };
     this.#save();
   }

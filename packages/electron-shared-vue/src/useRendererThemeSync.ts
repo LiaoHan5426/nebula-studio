@@ -1,4 +1,5 @@
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { IPC_CHANNELS } from './rendererPreferences/ipcChannels';
 import { setupRendererThemeSync } from './setupRendererThemeSync';
 
 type ThemeMode = 'light' | 'dark';
@@ -7,6 +8,8 @@ type AppMode = 'dev' | 'build';
 interface ThemeChangePayload {
   theme?: ThemeMode;
 }
+
+const THEME = IPC_CHANNELS.theme;
 
 interface IpcRendererLike {
   invoke(channel: string, ...args: unknown[]): Promise<unknown>;
@@ -56,7 +59,7 @@ export function useRendererThemeSync(
 
   const setTheme = async (next: ThemeMode): Promise<ThemeMode> => {
     const normalized = next === 'light' ? 'light' : 'dark';
-    theme.value = (await electron.ipcRenderer.invoke('settings:theme:set', {
+    theme.value = (await electron.ipcRenderer.invoke(THEME.set, {
       theme: normalized,
     })) as ThemeMode;
     return theme.value;
@@ -76,18 +79,13 @@ export function useRendererThemeSync(
     if (options.manageDom) {
       disposeDomSync = setupRendererThemeSync();
     }
-    theme.value = (await electron.ipcRenderer.invoke(
-      'settings:theme:get',
-    )) as ThemeMode;
+    theme.value = (await electron.ipcRenderer.invoke(THEME.get)) as ThemeMode;
     await refreshAppMode();
-    electron.ipcRenderer.on('settings:theme:changed', onThemeChanged);
+    electron.ipcRenderer.on(THEME.changed, onThemeChanged);
   });
 
   onBeforeUnmount(() => {
-    electron.ipcRenderer.removeListener(
-      'settings:theme:changed',
-      onThemeChanged,
-    );
+    electron.ipcRenderer.removeListener(THEME.changed, onThemeChanged);
     disposeDomSync?.();
     disposeDomSync = undefined;
   });
