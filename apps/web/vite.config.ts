@@ -1,18 +1,14 @@
+import { nebulaWebShell } from '@nebula-studio/vite-plugin-web-shell';
 import { fileURLToPath } from 'node:url';
 import vue from '@vitejs/plugin-vue';
 import { defineConfig } from 'vite';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
 
-const buildNodeVersion = process.version.replace(/^v/, '');
-
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [vue(), nebulaWebShell()],
   base: process.env.VITE_BASE_PATH ?? '/',
   root,
-  define: {
-    __NEBULA_BUILD_NODE_VERSION__: JSON.stringify(buildNodeVersion),
-  },
   build: {
     outDir: 'dist-web',
     emptyOutDir: true,

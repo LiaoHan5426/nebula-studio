@@ -1,26 +1,21 @@
 {
-  "name": "@nebula-studio-renderer/docs",
+  "name": "@nebula-studio-renderer/login",
   "version": "0.0.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false",
-    "dev:web": "vite",
-    "build:web": "vite build",
-    "preview:web": "vite preview"
+    "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false"
   },
   "dependencies": {
     "@nebula-studio/app-shell": "workspace:^",
-    "@nebula-studio-electron/electron-shared": "workspace:^",
     "@nebula-studio-electron/electron-shared-vue": "workspace:^",
-    "@nebula-studio-internal/tailwind": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
-    "marked": "catalog:",
+    "@nebula-studio-internal/tailwind": "workspace:^",
     "vue": "catalog:vue"
   },
   "devDependencies": {
-    "@electron-toolkit/preload": "catalog:electron",
     "@nebula-studio-internal/tsconfig": "workspace:^",
+    "@electron-toolkit/preload": "catalog:electron",
     "@vitejs/plugin-vue": "catalog:vite",
     "typescript": "catalog:types",
     "vite": "catalog:vite",

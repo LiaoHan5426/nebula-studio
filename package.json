@@ -13,6 +13,8 @@
     "dev": "vp run electron#dev",
     "start": "vp run electron#start",
     "dev:electron": "vp run electron#dev",
+    "dev:web": "vp run web#dev",
+    "build:web": "vp run web#build",
     "sync:app-config": "vp exec esno ./scripts/tasks/sync-app-config.ts",
     "cap": "vp run mobile#cap",
     "check": "vp check --fix",

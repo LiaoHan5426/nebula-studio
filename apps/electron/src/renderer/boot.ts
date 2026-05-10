@@ -1,14 +1,18 @@
 import appConfig from '../../app.config';
+import { resolveRendererEntry } from '../main/windowRegistry';
 
 type WindowId = keyof typeof appConfig.windows;
-type RendererPkg = (typeof appConfig.windows)[WindowId]['renderer'];
+type ModalId = keyof typeof appConfig.modalRenderers;
+type AnyBootWindowId = WindowId | ModalId;
+type RendererPkg =
+  | (typeof appConfig.windows)[WindowId]['renderer']
+  | (typeof appConfig.modalRenderers)[ModalId]['renderer'];
 
 /**
- * 唯一事实来源：`app.config.ts` 中各 `windows.*.renderer`。
+ * 唯一事实来源：`app.config.ts` 中 `windows.*.renderer` 与 `modalRenderers.*.renderer`。
  *
  * 此处使用固定 glob 仅为满足 Vite/Rollup 在构建期收集模块；不做「按包名枚举」的硬编码。
- * 启动时：`app.config` 声明的每个 renderer 必须在磁盘上有对应 `main.ts`（缺一即抛错）。
- * glob 命中 `apps/<包名>/src/main.ts` 但未在配置里声明的包仅 `console.warn` 并跳过（例如只做 Web、尚未挂进 Electron）。
+ * 启动时：配置声明的每个 renderer 必须在磁盘上有对应 `main.ts`（缺一即抛错）。
  */
 const rendererMainModules = import.meta.glob('../../../*/src/main.ts');
 
@@ -18,9 +22,13 @@ function pkgFromRendererMainGlobKey(key: string): string | undefined {
 }
 
 function buildRendererLoaders(): Record<RendererPkg, () => Promise<unknown>> {
-  const required = new Set(
-    Object.values(appConfig.windows).map((w) => w.renderer),
-  );
+  const required = new Set<string>();
+  for (const w of Object.values(appConfig.windows)) {
+    required.add(w.renderer);
+  }
+  for (const w of Object.values(appConfig.modalRenderers)) {
+    required.add(w.renderer);
+  }
 
   const loaders = {} as Partial<Record<RendererPkg, () => Promise<unknown>>>;
   const satisfied = new Set<string>();
@@ -31,9 +39,9 @@ function buildRendererLoaders(): Record<RendererPkg, () => Promise<unknown>> {
       continue;
     }
 
-    if (!required.has(pkg as RendererPkg)) {
+    if (!required.has(pkg)) {
       console.warn(
-        `[boot] 存在 apps/${pkg}/src/main.ts，但 app.config.windows 未引用 renderer "${pkg}"；已跳过（若需作为 Electron 子应用请在配置中登记）。`,
+        `[boot] 存在 apps/${pkg}/src/main.ts，但 app.config 未引用 renderer "${pkg}"；已跳过。`,
       );
       continue;
     }
@@ -73,17 +81,21 @@ function installRendererHmrFallback(rendererPkg: RendererPkg): void {
   });
 }
 
-function windowIdFromSearch(): WindowId {
+function windowIdFromSearch(): AnyBootWindowId {
   const q = new URLSearchParams(window.location.search).get('renderer');
   if (q !== null && q in appConfig.windows) {
     return q as WindowId;
+  }
+  if (q !== null && q in appConfig.modalRenderers) {
+    return q as ModalId;
   }
   return 'main';
 }
 
 async function start(): Promise<void> {
   const windowId = windowIdFromSearch();
-  const pkg = appConfig.windows[windowId].renderer;
+  resolveRendererEntry(windowId);
+  const pkg = resolveRendererEntry(windowId).renderer as RendererPkg;
   installRendererHmrFallback(pkg);
   await loadMainByRendererPkg[pkg]();
 }

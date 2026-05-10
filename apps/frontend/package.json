@@ -7,6 +7,7 @@
     "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false"
   },
   "dependencies": {
+    "@nebula-studio/app-shell": "workspace:^",
     "@nebula-studio-electron/electron-shared-vue": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
     "@nebula-studio-internal/tailwind": "workspace:^",

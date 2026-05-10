@@ -1,32 +1,23 @@
 import '@nebula-studio-internal/tailwind/electron';
+import { installWebPresentation } from '@nebula-studio/app-shell';
 import { ConfigProvider } from '@nebula-studio-electron/electron-shared-vue';
 import { createApp, h } from 'vue';
-import App from './App.vue';
-import { installWebStubs } from './runtime/installWebStubs';
+import App from '../../../settings/src/App.vue';
 
-installWebStubs({
-  scope: 'web',
-  theme: {
-    storageKey: 'nebula-docs-theme',
-    default: 'dark',
-  },
-  locale: {
-    storageKey: 'nebula-docs-locale',
-    default: 'zh-CN',
-  },
+installWebPresentation({
+  scope: 'web-embed-settings',
   processVersions: {
     node: __NEBULA_BUILD_NODE_VERSION__,
   },
 });
 
 createApp({
-  render() {
-    return h(
+  render: () =>
+    h(
       ConfigProvider,
       { manageDom: true },
       {
         default: () => h(App),
       },
-    );
-  },
+    ),
 }).mount('#app');

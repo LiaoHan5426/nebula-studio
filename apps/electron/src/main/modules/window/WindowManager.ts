@@ -3,12 +3,20 @@ import { pathToFileURL } from 'node:url';
 import { BrowserView, BrowserWindow, ipcMain, shell } from 'electron';
 import type { WebContents } from 'electron';
 import { is } from '@electron-toolkit/utils';
+import {
+  getDefaultEnabledShellIntegratableIds,
+  listShellIntegratableAppIds,
+} from '@nebula-studio/app-shell/shell-integration';
 import icon from '../../../../resources/icon.png?asset';
 import appConfig from '../../../../app.config';
+import {
+  listEmbeddedWindowIds,
+  resolveRendererEntry,
+} from '../../windowRegistry';
+import type { EmbeddedWindowId } from '../../windowRegistry';
 import type { AbstractSecurityRule } from '../security/AbstractSecurityRule';
 
 type WindowId = keyof typeof appConfig.windows;
-type EmbeddedWindowId = Exclude<WindowId, 'main'>;
 
 function preloadJsPath(slug: string): string {
   return resolve(__dirname, '../preload', `${slug}.mjs`);
@@ -46,7 +54,11 @@ function devRendererBaseUrl(): string | undefined {
   );
 }
 
-function loadRendererContents(contents: WebContents, windowId: WindowId): void {
+function loadRendererContents(
+  contents: WebContents,
+  windowId: WindowId | keyof typeof appConfig.modalRenderers,
+): void {
+  resolveRendererEntry(windowId);
   if (is.dev) {
     const base = devRendererBaseUrl();
     if (base) {
@@ -71,16 +83,19 @@ export class WindowManager {
     () => void
   >();
   #embeddedViewsById = new Map<EmbeddedWindowId, BrowserView>();
+  #enabledEmbeddedViewIds = new Set<EmbeddedWindowId>();
   #activeEmbeddedViewId: EmbeddedWindowId | null = null;
+  /** 为 false 时收起所有 BrowserView，便于壳层 HTML 展示全屏覆盖层（如应用集成界面）。 */
+  #embeddedContentVisible = true;
   #mainWindow: BrowserWindow | null = null;
+  #loginWindow: BrowserWindow | null = null;
+  #authSession: { user: string } | null = null;
 
   constructor(securityRules: AbstractSecurityRule[] = []) {
     this.#securityRules = securityRules;
   }
 
   registerCoreIpc(): void {
-    ipcMain.on('ping', () => console.log('pong'));
-
     ipcMain.on('shell-viewport', (event, payload: { width: number }) => {
       if (typeof payload?.width !== 'number' || !Number.isFinite(payload.width))
         return;
@@ -95,6 +110,9 @@ export class WindowManager {
     ipcMain.handle('shell:get-state', () => ({
       activeViewId: this.#activeEmbeddedViewId,
       availableViewIds: this.getAvailableEmbeddedViewIds(),
+      dormantIntegratableIds: listShellIntegratableAppIds().filter(
+        (id) => !this.#enabledEmbeddedViewIds.has(id as EmbeddedWindowId),
+      ),
     }));
 
     ipcMain.handle(
@@ -105,6 +123,70 @@ export class WindowManager {
         return this.setActiveEmbeddedView(viewId as EmbeddedWindowId);
       },
     );
+
+    ipcMain.handle(
+      'shell:enable-embedded-view',
+      (_event, payload: { viewId?: string }) => {
+        const viewId = payload?.viewId;
+        if (typeof viewId !== 'string' || !viewId) return false;
+        const wid = viewId as EmbeddedWindowId;
+        if (!listShellIntegratableAppIds().includes(wid)) return false;
+        if (!this.#embeddedViewsById.has(wid)) return false;
+        if (!this.#enabledEmbeddedViewIds.has(wid)) {
+          this.#enabledEmbeddedViewIds.add(wid);
+        }
+        return this.setActiveEmbeddedView(wid);
+      },
+    );
+
+    ipcMain.handle(
+      'shell:set-embedded-content-visible',
+      (_event, payload: { visible?: boolean }) => {
+        this.#embeddedContentVisible = payload?.visible !== false;
+        if (this.#mainWindow) {
+          this.#relayoutEmbeddedViewsByShellWindow.get(this.#mainWindow)?.();
+        }
+        return true;
+      },
+    );
+
+    ipcMain.handle('shell:open-login', (event) => {
+      const win = BrowserWindow.fromWebContents(event.sender);
+      if (!win || win !== this.#mainWindow) return false;
+      this.openLoginModal();
+      return true;
+    });
+
+    ipcMain.handle(
+      'auth:login',
+      (event, payload: { user?: string; password?: string }) => {
+        const user = payload?.user?.trim();
+        if (!user) {
+          return { ok: false as const, error: '请输入用户名' };
+        }
+        if (payload?.password !== 'demo') {
+          return {
+            ok: false as const,
+            error: '演示环境请使用密码：demo',
+          };
+        }
+        this.#authSession = { user };
+        const modalWin = BrowserWindow.fromWebContents(event.sender);
+        const shellWin = modalWin?.getParentWindow();
+        shellWin?.webContents.send('auth:session-changed', this.#authSession);
+        return { ok: true as const, user };
+      },
+    );
+
+    ipcMain.handle('auth:get-session', () => this.#authSession);
+
+    ipcMain.handle('auth:logout', (event) => {
+      this.#authSession = null;
+      const shellWin =
+        BrowserWindow.fromWebContents(event.sender) ?? this.#mainWindow;
+      shellWin?.webContents.send('auth:session-changed', null);
+      return true;
+    });
   }
 
   createShellWindow(): BrowserWindow {
@@ -131,12 +213,11 @@ export class WindowManager {
     };
     this.#relayoutEmbeddedViewsByShellWindow.set(win, relayoutEmbedded);
 
-    for (const id of Object.keys(appConfig.windows) as WindowId[]) {
-      if (id === 'main') continue;
-      const wcfg = appConfig.windows[id];
+    for (const id of listEmbeddedWindowIds()) {
+      const wcfg = resolveRendererEntry(id);
       const view = new BrowserView({
         webPreferences: {
-          ...rendererWebPreferences(wcfg.preload),
+          ...rendererWebPreferences(wcfg.preload as string),
           session: win.webContents.session,
         },
       });
@@ -146,7 +227,14 @@ export class WindowManager {
       embeddedViews.set(id, view);
     }
     this.#embeddedViewsById = embeddedViews;
-    this.#activeEmbeddedViewId = embeddedViews.keys().next().value ?? null;
+    this.#enabledEmbeddedViewIds = this.#initialEnabledEmbeddedViewIds();
+    this.#activeEmbeddedViewId = null;
+    for (const id of listEmbeddedWindowIds()) {
+      if (this.#enabledEmbeddedViewIds.has(id)) {
+        this.#activeEmbeddedViewId = id;
+        break;
+      }
+    }
 
     if (is.dev) {
       win.webContents.once('did-finish-load', () => {
@@ -165,6 +253,7 @@ export class WindowManager {
         this.#mainWindow = null;
       }
       this.#embeddedViewsById = new Map();
+      this.#enabledEmbeddedViewIds = new Set();
       this.#activeEmbeddedViewId = null;
     });
 
@@ -191,7 +280,23 @@ export class WindowManager {
   }
 
   getAvailableEmbeddedViewIds(): EmbeddedWindowId[] {
-    return Array.from(this.#embeddedViewsById.keys());
+    return listEmbeddedWindowIds().filter((id) =>
+      this.#enabledEmbeddedViewIds.has(id),
+    );
+  }
+
+  #initialEnabledEmbeddedViewIds(): Set<EmbeddedWindowId> {
+    const integratable = new Set<string>(listShellIntegratableAppIds());
+    const defaultOn = new Set<string>(getDefaultEnabledShellIntegratableIds());
+    const next = new Set<EmbeddedWindowId>();
+    for (const id of listEmbeddedWindowIds()) {
+      if (!integratable.has(id)) {
+        next.add(id);
+      } else if (defaultOn.has(id)) {
+        next.add(id);
+      }
+    }
+    return next;
   }
 
   getActiveEmbeddedViewId(): EmbeddedWindowId | null {
@@ -199,6 +304,7 @@ export class WindowManager {
   }
 
   setActiveEmbeddedView(viewId: EmbeddedWindowId): boolean {
+    if (!this.#enabledEmbeddedViewIds.has(viewId)) return false;
     const view = this.#embeddedViewsById.get(viewId);
     if (!view) return false;
     this.#activeEmbeddedViewId = viewId;
@@ -216,6 +322,40 @@ export class WindowManager {
     }
   }
 
+  openLoginModal(): void {
+    if (this.#loginWindow && !this.#loginWindow.isDestroyed()) {
+      this.#loginWindow.focus();
+      return;
+    }
+    const parent = this.#mainWindow;
+    if (!parent) return;
+
+    const { preload } = resolveRendererEntry('login');
+    const win = new BrowserWindow({
+      parent,
+      modal: true,
+      width: 420,
+      height: 560,
+      show: false,
+      autoHideMenuBar: true,
+      resizable: false,
+      maximizable: false,
+      minimizable: false,
+      fullscreenable: false,
+      ...resolveTitleBarOptions(),
+      webPreferences: rendererWebPreferences(preload),
+    });
+    this.#applySecurityRules(win.webContents);
+    loadRendererContents(win.webContents, 'login');
+    win.once('ready-to-show', () => {
+      win.show();
+    });
+    win.on('closed', () => {
+      this.#loginWindow = null;
+    });
+    this.#loginWindow = win;
+  }
+
   #layoutEmbeddedBrowserViews(
     win: BrowserWindow,
     views: Map<EmbeddedWindowId, BrowserView>,
@@ -227,11 +367,12 @@ export class WindowManager {
     const h = Math.max(0, height - top);
     for (const [id, view] of views) {
       const isActive = this.#activeEmbeddedViewId === id;
+      const show = this.#embeddedContentVisible && isActive;
       view.setBounds({
         x: 0,
         y: top,
-        width: isActive ? w : 0,
-        height: isActive ? h : 0,
+        width: show ? w : 0,
+        height: show ? h : 0,
       });
     }
   }

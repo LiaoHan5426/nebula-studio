@@ -10,7 +10,32 @@ import type {
 
 const SOURCE: NotifySource = 'main';
 
+type AuthLoginResult =
+  | { ok: true; user: string }
+  | { ok: false; error: string };
+
 const api = {
+  shell: {
+    openLogin(): Promise<boolean> {
+      return electronAPI.ipcRenderer.invoke('shell:open-login');
+    },
+  },
+  auth: {
+    async login(payload: { user: string; password: string }) {
+      const r = (await electronAPI.ipcRenderer.invoke(
+        'auth:login',
+        payload,
+      )) as AuthLoginResult;
+      if (!r.ok) throw new Error(r.error);
+      return r;
+    },
+    getSession(): Promise<{ user: string } | null> {
+      return electronAPI.ipcRenderer.invoke('auth:get-session');
+    },
+    logout(): Promise<boolean> {
+      return electronAPI.ipcRenderer.invoke('auth:logout');
+    },
+  },
   notify: {
     app(payload: AppNotifyPayload) {
       const req: NotifyBridgePayload<AppNotifyPayload> = {

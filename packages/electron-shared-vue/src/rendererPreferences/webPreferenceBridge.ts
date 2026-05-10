@@ -24,6 +24,11 @@ export interface CreateWebPreferenceBridgeOptions<T> {
   read: () => T;
   write: (value: T) => void;
   normalizeFromInvokeArgs: (args: unknown[]) => T;
+  /**
+   * When set (typically the same key as `localStorage`), listen for `storage`
+   * events from other frames and re-broadcast `channels.changed` to this document.
+   */
+  crossDocumentStorageKey?: string;
 }
 
 /**
@@ -33,13 +38,29 @@ export interface CreateWebPreferenceBridgeOptions<T> {
 export function createWebPreferenceBridge<T>(
   options: CreateWebPreferenceBridgeOptions<T>,
 ): WebPreferenceBridge {
-  const { channels, field, read, write, normalizeFromInvokeArgs } = options;
+  const {
+    channels,
+    field,
+    read,
+    write,
+    normalizeFromInvokeArgs,
+    crossDocumentStorageKey,
+  } = options;
   const listeners = new Set<WebIpcListener>();
 
   const notify = (value: T) => {
     const payload: Record<string, unknown> = { [field]: value };
     for (const l of listeners) l(null, payload);
   };
+
+  if (typeof window !== 'undefined' && crossDocumentStorageKey !== null) {
+    const key = crossDocumentStorageKey;
+    const onStorage = (ev: StorageEvent) => {
+      if (ev.key !== key) return;
+      notify(read());
+    };
+    window.addEventListener('storage', onStorage);
+  }
 
   return {
     handleInvoke(channel, args) {
