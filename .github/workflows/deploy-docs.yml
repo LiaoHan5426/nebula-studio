@@ -2,7 +2,7 @@ name: Deploy docs (GitHub Pages)
 
 on:
   push:
-    branches: [main, master]
+    branches: [electron-vite, main, master]
     paths:
       - 'apps/docs/**'
       - 'packages/**'
