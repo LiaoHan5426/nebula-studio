@@ -37,6 +37,10 @@ export default defineConfig({
     ...oxlintConfig,
   },
   run: {
-    cache: true,
+    cache: {
+      // `vite dev` 等脚本不可缓存，否则 `vp run web#dev` 会回放旧输出并立刻退出
+      scripts: false,
+      tasks: true,
+    },
   },
 });

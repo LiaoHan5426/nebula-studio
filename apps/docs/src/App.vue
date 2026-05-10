@@ -1,15 +1,20 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, provide, ref } from 'vue';
 import {
   NebulaPane,
   NebulaThemeToggle,
   NebulaTreeMenu,
 } from '@nebula-studio/nebula-ui';
 import type { NebulaTreeNode } from '@nebula-studio/nebula-ui';
+import { WEB_SHELL_EMBED_QUERY } from '@nebula-studio/app-shell';
 import { useConfig } from '@nebula-studio-electron/electron-shared-vue';
 import DocsNotifyCenter from './features/notify/components/DocsNotifyCenter.vue';
 import { useDocsNotify } from './features/notify/composables/useDocsNotify';
 import type { DocsFeatureDefinition, FeatureMenuNode } from './features/types';
+import {
+  DOCS_NAVIGATE_TO_FEATURE,
+  type DocsNavigateToFeature,
+} from './docsNavigation';
 
 const featureModules = import.meta.glob('./features/**/feature.ts', {
   eager: true,
@@ -54,6 +59,12 @@ const featureTree: NebulaTreeNode[] = buildFeatureTree(features).map((node) =>
   toNebulaTreeNode(node),
 );
 const activeFeatureId = ref(features[0]?.id ?? '');
+
+const navigateToFeature: DocsNavigateToFeature = (featureId: string) => {
+  if (featuresById.has(featureId)) activeFeatureId.value = featureId;
+};
+provide(DOCS_NAVIGATE_TO_FEATURE, navigateToFeature);
+
 const activeFeature = computed(() => featuresById.get(activeFeatureId.value));
 const isNotifyFeatureActive = computed(
   () => activeFeature.value?.id === 'notify',
@@ -81,6 +92,15 @@ const scope = () =>
     ? String((window.api as { scope?: string }).scope)
     : '?';
 const isWebScope = computed(() => scope() === 'web');
+
+/** Web 壳 iframe 使用 `?embed=docs`（见 `apps/web/src/web-boot.ts`），顶栏已有主题切换，隐藏内容区重复开关 */
+const showInlineWebThemeToggle = computed(() => {
+  if (!isWebScope.value) return false;
+  const embed = new URLSearchParams(window.location.search).get(
+    WEB_SHELL_EMBED_QUERY,
+  );
+  return embed !== 'docs';
+});
 
 function toNebulaTreeNode(node: FeatureMenuNode): NebulaTreeNode {
   return {
@@ -111,7 +131,7 @@ function toNebulaTreeNode(node: FeatureMenuNode): NebulaTreeNode {
           <div class="feature-head__top">
             <p class="feature-tag">Component</p>
             <NebulaThemeToggle
-              v-if="isWebScope"
+              v-if="showInlineWebThemeToggle"
               :theme="theme"
               tooltip="切换明暗主题"
               tooltip-placement="left"
@@ -187,6 +207,21 @@ function toNebulaTreeNode(node: FeatureMenuNode): NebulaTreeNode {
   display: flex;
   flex-direction: column;
   gap: 0.9rem;
+}
+
+/* NebulaTreeMenu：分组标题与下方条目、分组与分组之间留白 */
+.docs-sidebar :deep(.nebula-tree__root) {
+  gap: 0.95rem;
+}
+
+.docs-sidebar :deep(.nebula-tree__node) {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.docs-sidebar :deep(.nebula-tree__children) {
+  gap: 0.42rem;
 }
 
 .brand-block {

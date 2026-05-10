@@ -1,13 +1,22 @@
 import { WEB_SHELL_EMBED_QUERY } from '@nebula-studio/app-shell';
 
-const surface = new URLSearchParams(location.search).get(WEB_SHELL_EMBED_QUERY);
+void (async (): Promise<void> => {
+  const surface = new URLSearchParams(location.search).get(
+    WEB_SHELL_EMBED_QUERY,
+  );
 
-if (surface === 'docs') {
-  await import('./embed/docs-entry.ts');
-} else if (surface === 'settings') {
-  await import('./embed/settings-entry.ts');
-} else if (surface === 'login') {
-  await import('./embed/login-entry.ts');
-} else {
-  await import('./shell-entry.ts');
-}
+  /** 单 `index.html` + `embed`：与 settings 相同，docs 在同一 dev server 内按需挂载 */
+  if (surface === 'docs') {
+    await import('./embed/docs-entry.js');
+    return;
+  }
+  if (surface === 'settings') {
+    await import('./embed/settings-entry.js');
+    return;
+  }
+  if (surface === 'login') {
+    await import('./embed/login-entry.js');
+    return;
+  }
+  await import('./shell-entry.js');
+})();

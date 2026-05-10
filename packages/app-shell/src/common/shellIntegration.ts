@@ -31,26 +31,26 @@ export const shellIntegratedAppRegistry: Record<
 };
 
 /** 集成界面展示顺序（与注册表键一致时可维护顺序） */
-const SHELL_INTEGRATABLE_ORDER = [
+const SHELL_INTEGRABLE_ORDER = [
   'docs',
   'settings',
 ] as const satisfies readonly EmbeddedShellWindowId[];
 
-export function listShellIntegratableAppIds(): EmbeddedShellWindowId[] {
-  return SHELL_INTEGRATABLE_ORDER.filter(
+export function listShellIntegrableAppIds(): EmbeddedShellWindowId[] {
+  return SHELL_INTEGRABLE_ORDER.filter(
     (id) => id in shellIntegratedAppRegistry,
   );
 }
 
-export function isShellIntegratableAppId(
+export function isShellIntegrableAppId(
   id: string,
 ): id is EmbeddedShellWindowId {
   return id in shellIntegratedAppRegistry;
 }
 
 /** 注册表中默认应启用的集成子应用 */
-export function getDefaultEnabledShellIntegratableIds(): EmbeddedShellWindowId[] {
-  return listShellIntegratableAppIds().filter((id) => {
+export function getDefaultEnabledShellIntegrableIds(): EmbeddedShellWindowId[] {
+  return listShellIntegrableAppIds().filter((id) => {
     const meta = shellIntegratedAppRegistry[id];
     return meta.defaultEnabled !== false;
   });

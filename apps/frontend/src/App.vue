@@ -2,21 +2,27 @@
 import {
   WEB_SHELL_EMBED_QUERY,
   getEmbeddedShellWindowIds,
+  getShellHostBridge,
   getShellIntegratedAppMeta,
-  isWebPresentationHost,
+  persistActiveViewPreference,
+  readActiveViewPreference,
   shellPresentationConfig,
 } from '@nebula-studio/app-shell';
 import type { EmbeddedShellWindowId } from '@nebula-studio/app-shell';
-import { NebulaButton, NebulaThemeToggle } from '@nebula-studio/nebula-ui';
+import {
+  NebulaButton,
+  NebulaDrag,
+  NebulaThemeToggle,
+} from '@nebula-studio/nebula-ui';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import Versions from './components/Versions.vue';
 
 type ThemeMode = 'light' | 'dark';
 type AppMode = 'dev' | 'build';
-const SHELL_INTEGRATION_OPEN_KEY = 'nebula-shell-integration-open';
-
 const shellTopPx = shellPresentationConfig.shell.topInsetPx;
-const isWebHost = isWebPresentationHost();
+/** Web / Electron 宿主差异见 `@nebula-studio/app-shell` 的 `getShellHostBridge()` */
+const shellHost = getShellHostBridge();
+const usesIframeEmbed = shellHost.usesIframeEmbed;
 
 const embeddedViewIds = getEmbeddedShellWindowIds();
 
@@ -25,8 +31,8 @@ const embedSrc = computed(() => {
   const normalizedBase = base.endsWith('/') ? base : `${base}/`;
   const out = {} as Record<EmbeddedShellWindowId, string>;
   for (const id of embeddedViewIds) {
-    out[id] =
-      `${normalizedBase}index.html?${WEB_SHELL_EMBED_QUERY}=${encodeURIComponent(id)}`;
+    const qs = `${WEB_SHELL_EMBED_QUERY}=${encodeURIComponent(id)}`;
+    out[id] = `${normalizedBase}index.html?${qs}`;
   }
   return out;
 });
@@ -34,13 +40,20 @@ const embedSrc = computed(() => {
 const appMode = ref<AppMode>('build');
 const theme = ref<ThemeMode>('dark');
 const availableViewIds = ref<string[]>([]);
-const dormantIntegratableIds = ref<string[]>([]);
+const dormantIntegrableIds = ref<string[]>([]);
 const activeViewId = ref<string | null>(null);
 const authSession = ref<{ user: string } | null>(null);
-const integrationOpen = ref(true);
+/** 默认不展开应用集成层；挂载后由 resolveInitialIntegrationOpen（仅看 active-view）决定 */
+const integrationOpen = ref(false);
 const integrationClosable = ref(false);
 const addPickerOpen = ref(false);
 const integrationPreferenceHydrated = ref(false);
+/** 为 true 后才把 activeViewId 写入 localStorage，避免 loadShellState 的临时值覆盖用户刷新前要恢复的子应用 */
+const activeViewPersistReady = ref(false);
+const sortableViewIds = ref<string[]>([]);
+const isSorting = ref(false);
+const isThemeSwitching = ref(false);
+let suppressTileClickUntilTs = 0;
 
 const modeLabel = computed(() => (appMode.value === 'dev' ? 'DEV' : 'BUILD'));
 
@@ -58,23 +71,13 @@ const authAvatarText = computed(() => {
   return raw.slice(0, 1).toUpperCase();
 });
 
-function readIntegrationOpenPreference(): boolean {
-  try {
-    const raw = window.localStorage.getItem(SHELL_INTEGRATION_OPEN_KEY);
-    if (raw === '0') return false;
-    if (raw === '1') return true;
-  } catch {
-    /* ignore */
-  }
-  return true;
-}
+const draggableItemKey = (item: unknown): string => String(item);
 
-function persistIntegrationOpenPreference(open: boolean): void {
-  try {
-    window.localStorage.setItem(SHELL_INTEGRATION_OPEN_KEY, open ? '1' : '0');
-  } catch {
-    /* ignore */
-  }
+function commitIntegrationOpenNow(
+  open: boolean,
+  options?: { clearActiveViewOnOpen?: boolean },
+): void {
+  shellHost.commitIntegrationOpen(open, options);
 }
 
 /** 与主进程 BrowserView 同宽：右侧停靠 DevTools 时 innerWidth 已不含 DevTools，避免与 getContentBounds 重复扣宽 */
@@ -93,8 +96,9 @@ async function loadShellState(): Promise<void> {
   availableViewIds.value = Array.isArray(state?.availableViewIds)
     ? state.availableViewIds
     : [];
-  dormantIntegratableIds.value = Array.isArray(state?.dormantIntegratableIds)
-    ? state.dormantIntegratableIds
+  sortableViewIds.value = [...availableViewIds.value];
+  dormantIntegrableIds.value = Array.isArray(state?.dormantIntegrableIds)
+    ? state.dormantIntegrableIds
     : [];
   activeViewId.value =
     typeof state?.activeViewId === 'string' ? state.activeViewId : null;
@@ -119,20 +123,64 @@ async function enableEmbeddedView(viewId: string): Promise<boolean> {
   );
 }
 
+async function disableEmbeddedView(viewId: string): Promise<boolean> {
+  return Boolean(
+    await window.electron.ipcRenderer.invoke('shell:disable-embedded-view', {
+      viewId,
+    }),
+  );
+}
+
+async function reorderEmbeddedViews(orderedViewIds: string[]): Promise<boolean> {
+  return Boolean(
+    await window.electron.ipcRenderer.invoke('shell:reorder-embedded-views', {
+      orderedViewIds,
+    }),
+  );
+}
+
 async function selectIntegratedApp(viewId: string): Promise<void> {
+  if (Date.now() < suppressTileClickUntilTs) return;
   await switchEmbeddedView(viewId);
   integrationOpen.value = false;
   integrationClosable.value = false;
   addPickerOpen.value = false;
 }
 
-async function enableAndOpenIntegratedApp(viewId: string): Promise<void> {
+async function enableIntegratedApp(viewId: string): Promise<void> {
   const ok = await enableEmbeddedView(viewId);
   if (ok) {
     await loadShellState();
-    integrationOpen.value = false;
-    integrationClosable.value = false;
+    sortableViewIds.value = [...availableViewIds.value];
     addPickerOpen.value = false;
+  }
+}
+
+async function hideIntegratedApp(viewId: string): Promise<void> {
+  const ok = await disableEmbeddedView(viewId);
+  if (!ok) return;
+  await loadShellState();
+  sortableViewIds.value = [...availableViewIds.value];
+  // 默认不自动展开待启用列表，只在点击“添加应用”时展开。
+  addPickerOpen.value = false;
+}
+
+function onSortStart(): void {
+  isSorting.value = true;
+}
+
+async function onSortEnd(): Promise<void> {
+  isSorting.value = false;
+  addPickerOpen.value = false;
+  // 避免拖拽松手后浏览器补发 click，误触进入子应用
+  suppressTileClickUntilTs = Date.now() + 180;
+  const orderedViewIds = [...sortableViewIds.value];
+  if (orderedViewIds.join('|') === availableViewIds.value.join('|')) return;
+  const ok = await reorderEmbeddedViews(orderedViewIds);
+  if (ok) {
+    availableViewIds.value = orderedViewIds;
+  } else {
+    await loadShellState();
   }
 }
 
@@ -140,24 +188,33 @@ function openIntegrationLauncher(): void {
   integrationClosable.value = true;
   addPickerOpen.value = false;
   integrationOpen.value = true;
+  // 从顶部按钮临时打开集成层，不应改变刷新恢复的子应用
+  commitIntegrationOpenNow(true, { clearActiveViewOnOpen: false });
 }
 
 function returnToIntegrationHome(): void {
   integrationClosable.value = false;
   addPickerOpen.value = false;
   integrationOpen.value = true;
+  // 移除 active-view，刷新后按「无记录 → 展开应用集成」
+  commitIntegrationOpenNow(true, { clearActiveViewOnOpen: true });
 }
 
 function closeIntegrationLauncher(): void {
   if (!integrationClosable.value) return;
   integrationOpen.value = false;
   addPickerOpen.value = false;
+  commitIntegrationOpenNow(false);
 }
 
 async function applyTheme(nextTheme: ThemeMode): Promise<void> {
+  isThemeSwitching.value = true;
   theme.value = await window.electron.ipcRenderer.invoke('settings:theme:set', {
     theme: nextTheme,
   });
+  setTimeout(() => {
+    isThemeSwitching.value = false;
+  }, 220);
 }
 
 async function refreshAuthSession(): Promise<void> {
@@ -174,7 +231,7 @@ async function openLogin(): Promise<void> {
 
 async function logout(): Promise<void> {
   await window.api.auth.logout();
-  if (!isWebHost) {
+  if (shellHost.shouldRefreshAuthSessionAfterLogout) {
     await refreshAuthSession();
   }
 }
@@ -184,7 +241,11 @@ const onThemeChanged = (
   payload: { theme?: ThemeMode },
 ): void => {
   if (payload?.theme === 'light' || payload?.theme === 'dark') {
+    isThemeSwitching.value = true;
     theme.value = payload.theme;
+    setTimeout(() => {
+      isThemeSwitching.value = false;
+    }, 220);
   }
 };
 
@@ -198,28 +259,62 @@ const onAuthSessionChanged = (
 watch(
   integrationOpen,
   (open) => {
-    if (integrationPreferenceHydrated.value) {
-      persistIntegrationOpenPreference(open);
+    if (open) {
+      addPickerOpen.value = false;
     }
-    if (isWebHost) return;
-    void window.electron.ipcRenderer.invoke(
-      'shell:set-embedded-content-visible',
-      { visible: !open },
-    );
+    if (integrationPreferenceHydrated.value) {
+      shellHost.persistIntegrationOpenFromWatch(open);
+    }
+    shellHost.onIntegrationOpenChanged(open);
   },
-  { immediate: true },
+);
+
+watch(
+  activeViewId,
+  (viewId) => {
+    if (!activeViewPersistReady.value) return;
+    if (!shellHost.shouldPersistActiveViewPreference) return;
+    persistActiveViewPreference(typeof viewId === 'string' ? viewId : null);
+  },
 );
 
 onMounted(async () => {
+  shellHost.onBeforeShellHydrate();
   await loadShellState();
-  integrationOpen.value =
-    activeViewId.value === null ? true : readIntegrationOpenPreference();
+  const preferredViewId = shellHost.shouldRestoreActiveViewFromPreference
+    ? readActiveViewPreference()
+    : null;
+
+  if (
+    preferredViewId &&
+    availableViewIds.value.includes(preferredViewId) &&
+    preferredViewId !== activeViewId.value
+  ) {
+    await switchEmbeddedView(preferredViewId);
+  }
+
+  addPickerOpen.value = false;
+
+  integrationOpen.value = shellHost.resolveInitialIntegrationOpen(
+    activeViewId.value,
+  );
+  // 已清空 active-view 但主进程/Web 模拟仍可能带回默认子应用 id，避免 iframe 与集成层语义不一致
+  if (integrationOpen.value && !readActiveViewPreference()) {
+    activeViewId.value = null;
+  }
   integrationPreferenceHydrated.value = true;
+  activeViewPersistReady.value = true;
+  shellHost.finalizeActiveViewOnMount({
+    integrationOpen: integrationOpen.value,
+    activeViewId: activeViewId.value,
+  });
+  /** 须在算出 integrationOpen 之后再同步一次（勿对 watch 使用 immediate：否则会先于 loadShellState 把嵌入区设为可见，破坏了主进程「集成层打开」状态）。 */
+  shellHost.onIntegrationOpenChanged(integrationOpen.value);
   await refreshAuthSession();
   reportShellViewport();
   window.addEventListener('resize', reportShellViewport);
   window.electron.ipcRenderer.on('settings:theme:changed', onThemeChanged);
-  if (!isWebHost) {
+  if (shellHost.shouldSubscribeAuthSessionChannel) {
     window.electron.ipcRenderer.on(
       'auth:session-changed',
       onAuthSessionChanged,
@@ -229,18 +324,13 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
-  if (!isWebHost) {
-    void window.electron.ipcRenderer.invoke(
-      'shell:set-embedded-content-visible',
-      { visible: true },
-    );
-  }
+  shellHost.onShellUnmount();
   window.removeEventListener('resize', reportShellViewport);
   window.electron.ipcRenderer.removeListener(
     'settings:theme:changed',
     onThemeChanged,
   );
-  if (!isWebHost) {
+  if (shellHost.shouldSubscribeAuthSessionChannel) {
     window.electron.ipcRenderer.removeListener(
       'auth:session-changed',
       onAuthSessionChanged,
@@ -252,6 +342,7 @@ onUnmounted(() => {
 <template>
   <div
     class="shell"
+    :class="{ 'theme-switching': isThemeSwitching }"
     :data-theme="theme"
     :style="{ '--shell-top': `${shellTopPx}px` }"
   >
@@ -269,13 +360,13 @@ onUnmounted(() => {
         <span class="shell-desc">集成子应用工作台</span>
       </div>
 
-      <div v-if="!integrationOpen" class="shell-center">
+      <div class="shell-center">
         <span class="mode-chip" :class="`mode-${appMode}`">
           <span class="mode-dot" />
           {{ modeLabel }}
         </span>
 
-        <div class="shell-app-launcher-trigger">
+        <div v-if="!integrationOpen" class="shell-app-launcher-trigger">
           <span class="current-app-label" aria-live="polite">
             当前：<strong>{{ activeAppLabel }}</strong>
           </span>
@@ -294,6 +385,11 @@ onUnmounted(() => {
       <Versions class="shell-versions" />
 
       <div class="shell-actions">
+        <NebulaThemeToggle
+          class="shell-btn"
+          :theme="theme"
+          @update:theme="applyTheme"
+        />
         <NebulaButton
           v-if="!authSession"
           class="shell-btn"
@@ -302,11 +398,6 @@ onUnmounted(() => {
         >
           登录
         </NebulaButton>
-        <NebulaThemeToggle
-          class="shell-btn"
-          :theme="theme"
-          @update:theme="applyTheme"
-        />
         <div v-if="authSession" class="auth-menu">
           <button type="button" class="auth-avatar" :title="authSession.user">
             {{ authAvatarText }}
@@ -332,7 +423,7 @@ onUnmounted(() => {
       </div>
     </header>
     <!-- Electron：顶栏以下由 BrowserView 绘制。Web：用 iframe 模拟内嵌子应用。 -->
-    <main v-if="isWebHost" class="shell-embed">
+    <main v-if="usesIframeEmbed" class="shell-embed">
       <iframe
         v-for="viewId in availableViewIds"
         v-show="viewId === activeViewId"
@@ -370,33 +461,59 @@ onUnmounted(() => {
           </NebulaButton>
         </div>
         <p class="integration-desc">
-          点击下方图标进入已启用的子应用；使用加号可将默认未启用的应用加入工作台。
+          点击图标可进入子应用；右上角可隐藏已添加应用；使用加号可重新启用。
         </p>
         <div class="integration-panel-body">
           <div class="integration-grid">
-            <button
-              v-for="viewId in availableViewIds"
-              :key="viewId"
-              type="button"
-              class="integration-tile"
-              :class="{ active: viewId === activeViewId }"
-              @click="selectIntegratedApp(viewId)"
+            <NebulaDrag
+              v-model="sortableViewIds"
+              class="integration-grid-apps"
+              :item-key="draggableItemKey"
+              handle=".integration-tile-icon"
+              ghost-class="integration-tile-ghost"
+              chosen-class="integration-tile-chosen"
+              drag-class="integration-tile-drag"
+              :animation="180"
+              @start="onSortStart"
+              @end="onSortEnd"
             >
-              <span
-                class="integration-tile-icon"
-                aria-hidden="true"
-                v-html="
-                  getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId)
-                    .iconSvg
-                "
-              />
-              <span class="integration-tile-label">{{
-                getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId).label
-              }}</span>
-            </button>
-
+              <template #item="{ element: viewId }">
+                <div
+                  role="button"
+                  tabindex="0"
+                  class="integration-tile"
+                  :class="{
+                    sorting: isSorting,
+                  }"
+                  @click="selectIntegratedApp(viewId)"
+                  @keydown.enter.prevent="selectIntegratedApp(viewId)"
+                  @keydown.space.prevent="selectIntegratedApp(viewId)"
+                >
+                  <button
+                    type="button"
+                    class="integration-tile-hide"
+                    title="隐藏应用"
+                    aria-label="隐藏应用"
+                    @click.stop="hideIntegratedApp(viewId)"
+                  >
+                    ×
+                  </button>
+                  <span
+                    class="integration-tile-icon"
+                    aria-hidden="true"
+                    v-html="
+                      getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId)
+                        .iconSvg
+                    "
+                  />
+                  <span class="integration-tile-label">{{
+                    getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId).label
+                  }}</span>
+                </div>
+              </template>
+            </NebulaDrag>
             <button
-              v-if="dormantIntegratableIds.length > 0"
+              v-if="dormantIntegrableIds.length > 0"
               type="button"
               class="integration-tile integration-tile-add"
               :class="{ 'is-open': addPickerOpen }"
@@ -407,32 +524,24 @@ onUnmounted(() => {
               <span class="integration-plus" aria-hidden="true">+</span>
               <span class="integration-tile-label">添加应用</span>
             </button>
-            <div
-              v-else
-              class="integration-tile integration-tile-add integration-tile-muted"
-              title="当前没有可添加的集成应用"
-            >
-              <span class="integration-plus" aria-hidden="true">+</span>
-              <span class="integration-tile-label">添加应用</span>
-            </div>
           </div>
 
           <div
-            v-show="addPickerOpen && dormantIntegratableIds.length > 0"
+            v-show="addPickerOpen && dormantIntegrableIds.length > 0"
             id="integration-add-list"
             class="integration-add-panel"
           >
             <p class="integration-add-heading">待启用的应用</p>
             <ul class="integration-add-list">
               <li
-                v-for="viewId in dormantIntegratableIds"
+                v-for="viewId in dormantIntegrableIds"
                 :key="viewId"
                 class="integration-add-li"
               >
                 <button
                   type="button"
                   class="integration-add-btn"
-                  @click="enableAndOpenIntegratedApp(viewId)"
+                  @click="enableIntegratedApp(viewId)"
                 >
                   <span
                     class="integration-tile-icon sm"
@@ -446,7 +555,7 @@ onUnmounted(() => {
                     getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId)
                       .label
                   }}</span>
-                  <span class="integration-add-hint">启用并打开</span>
+                  <span class="integration-add-hint">启用</span>
                 </button>
               </li>
             </ul>
@@ -709,7 +818,12 @@ onUnmounted(() => {
   margin-top: 18px;
 }
 
+.integration-grid-apps {
+  display: contents;
+}
+
 .integration-tile {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -719,13 +833,46 @@ onUnmounted(() => {
   padding: 16px 12px;
   color: var(--text-main);
   cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
   background: hsl(var(--muted) / 38%);
   border: 1px solid hsl(var(--border) / 72%);
   border-radius: 14px;
   transition:
+    transform 0.18s ease,
     background 0.15s ease,
     border-color 0.15s ease,
     box-shadow 0.15s ease;
+}
+
+.shell.theme-switching .integration-tile {
+  transition: none !important;
+}
+
+.integration-tile.sorting {
+  cursor: grab;
+}
+
+.integration-tile-hide {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--text-muted);
+  cursor: pointer;
+  background: hsl(var(--background) / 35%);
+  border: 1px solid hsl(var(--border) / 65%);
+  border-radius: 999px;
+}
+
+.integration-tile-hide:hover {
+  color: hsl(var(--danger));
+  background: hsl(var(--danger) / 10%);
+  border-color: hsl(var(--danger) / 35%);
 }
 
 .integration-tile:hover {
@@ -733,10 +880,30 @@ onUnmounted(() => {
   border-color: hsl(var(--primary) / 42%);
 }
 
-.integration-tile.active {
-  background: hsl(var(--primary) / 16%);
-  border-color: hsl(var(--primary) / 50%);
-  box-shadow: inset 0 0 0 2px hsl(var(--primary) / 22%);
+.integration-tile.dragging {
+  opacity: 0.88;
+}
+
+.integration-tile-ghost {
+  border-style: dashed;
+  border-color: hsl(var(--primary) / 62%);
+  background: hsl(var(--primary) / 8%);
+  box-shadow: inset 0 0 0 2px hsl(var(--primary) / 24%);
+}
+
+.integration-tile-ghost .integration-tile-hide,
+.integration-tile-ghost .integration-tile-icon,
+.integration-tile-ghost .integration-tile-label {
+  opacity: 0.05;
+}
+
+.integration-tile-chosen {
+  border-color: hsl(var(--primary) / 55%);
+  box-shadow: 0 10px 24px hsl(var(--primary) / 16%);
+}
+
+.integration-tile-drag {
+  opacity: 0.95;
 }
 
 .integration-tile-label {

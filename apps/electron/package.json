@@ -12,7 +12,7 @@
     "typecheck": "npm run typecheck:node && npm run typecheck:web && npm run typecheck:renderers",
     "start": "vp exec electron-vite preview",
     "dev": "vp exec electron-vite dev",
-    "build": "npm run typecheck && vp exec  electron-vite build",
+    "build": "npm run typecheck && vp exec electron-vite build && pnpm --filter @nebula-studio-renderer/docs run build && node ./scripts/copy-docs-site.mjs",
     "postinstall": "electron-builder install-app-deps",
     "build:unpack": "npm run build && vp exec electron-builder --dir",
     "pack:win": "npm run build && vp exec electron-builder --win",
@@ -28,6 +28,9 @@
     "yaml": "^2.8.1"
   },
   "devDependencies": {
+    "@nebula-studio-preload/docs": "workspace:^",
+    "@nebula-studio-preload/main": "workspace:^",
+    "@nebula-studio-preload/settings": "workspace:^",
     "@types/node": "catalog:types",
     "@vitejs/plugin-vue": "catalog:vite",
     "electron": "catalog:electron",

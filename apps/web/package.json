@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vp exec vite",
+    "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -13,6 +13,10 @@
     "@nebula-studio-electron/electron-shared-vue": "workspace:^",
     "@nebula-studio-internal/tailwind": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
+    "@nebula-studio-renderer/docs": "workspace:^",
+    "@nebula-studio-renderer/login": "workspace:^",
+    "@nebula-studio-renderer/main": "workspace:^",
+    "@nebula-studio-renderer/settings": "workspace:^",
     "marked": "catalog:",
     "vue": "catalog:vue"
   },
@@ -22,6 +26,7 @@
     "@vitejs/plugin-vue": "catalog:vite",
     "typescript": "catalog:types",
     "vite": "catalog:vite",
+    "vite-plus": "catalog:vite",
     "vue-tsc": "catalog:vue"
   }
 }

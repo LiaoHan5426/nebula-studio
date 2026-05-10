@@ -9,7 +9,8 @@ export interface NebulaWebShellPluginOptions {
 }
 
 /**
- * Nebula Web 壳：单 `index.html` + `?embed=` 多 surface 时，统一注入构建期常量等。
+ * Nebula Web 壳：单 `index.html`，`?embed=` 区分 iframe surface（见 `web-boot.ts` / `embed/*-entry.ts`）。
+ * 本插件统一注入构建期常量等。
  */
 export function nebulaWebShell(
   options: NebulaWebShellPluginOptions = {},

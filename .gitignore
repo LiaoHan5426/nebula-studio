@@ -17,11 +17,13 @@ apps/electron/out/
 apps/electron/dist/
 apps/electron/public/logs/
 apps/docs/dist-web/
+apps/docs/dist-vitepress/
 apps/web/dist-web/
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
+!.vscode/settings.json
 .idea
 .DS_Store
 *.suo

@@ -4,8 +4,8 @@ import { BrowserView, BrowserWindow, ipcMain, shell } from 'electron';
 import type { WebContents } from 'electron';
 import { is } from '@electron-toolkit/utils';
 import {
-  getDefaultEnabledShellIntegratableIds,
-  listShellIntegratableAppIds,
+  getDefaultEnabledShellIntegrableIds,
+  listShellIntegrableAppIds,
 } from '@nebula-studio/app-shell/shell-integration';
 import icon from '../../../../resources/icon.png?asset';
 import appConfig from '../../../../app.config';
@@ -83,7 +83,7 @@ export class WindowManager {
     () => void
   >();
   #embeddedViewsById = new Map<EmbeddedWindowId, BrowserView>();
-  #enabledEmbeddedViewIds = new Set<EmbeddedWindowId>();
+  #enabledEmbeddedViewOrder: EmbeddedWindowId[] = [];
   #activeEmbeddedViewId: EmbeddedWindowId | null = null;
   /** 为 false 时收起所有 BrowserView，便于壳层 HTML 展示全屏覆盖层（如应用集成界面）。 */
   #embeddedContentVisible = true;
@@ -110,10 +110,18 @@ export class WindowManager {
     ipcMain.handle('shell:get-state', () => ({
       activeViewId: this.#activeEmbeddedViewId,
       availableViewIds: this.getAvailableEmbeddedViewIds(),
-      dormantIntegratableIds: listShellIntegratableAppIds().filter(
-        (id) => !this.#enabledEmbeddedViewIds.has(id as EmbeddedWindowId),
+      dormantIntegrableIds: listShellIntegrableAppIds().filter(
+        (id) => !this.#enabledEmbeddedViewOrder.includes(id as EmbeddedWindowId),
       ),
     }));
+
+    ipcMain.handle('shell:clear-active-embedded-view', () => {
+      this.#activeEmbeddedViewId = null;
+      if (this.#mainWindow) {
+        this.#relayoutEmbeddedViewsByShellWindow.get(this.#mainWindow)?.();
+      }
+      return true;
+    });
 
     ipcMain.handle(
       'shell:set-active-view',
@@ -130,12 +138,69 @@ export class WindowManager {
         const viewId = payload?.viewId;
         if (typeof viewId !== 'string' || !viewId) return false;
         const wid = viewId as EmbeddedWindowId;
-        if (!listShellIntegratableAppIds().includes(wid)) return false;
+        if (!listShellIntegrableAppIds().includes(wid)) return false;
         if (!this.#embeddedViewsById.has(wid)) return false;
-        if (!this.#enabledEmbeddedViewIds.has(wid)) {
-          this.#enabledEmbeddedViewIds.add(wid);
+        if (!this.#enabledEmbeddedViewOrder.includes(wid)) {
+          this.#enabledEmbeddedViewOrder.push(wid);
         }
         return this.setActiveEmbeddedView(wid);
+      },
+    );
+
+    ipcMain.handle(
+      'shell:disable-embedded-view',
+      (_event, payload: { viewId?: string }) => {
+        const viewId = payload?.viewId;
+        if (typeof viewId !== 'string' || !viewId) return false;
+        const wid = viewId as EmbeddedWindowId;
+        if (!listShellIntegrableAppIds().includes(wid)) return false;
+        if (!this.#embeddedViewsById.has(wid)) return false;
+        if (!this.#enabledEmbeddedViewOrder.includes(wid)) return true;
+        this.#enabledEmbeddedViewOrder = this.#enabledEmbeddedViewOrder.filter(
+          (id) => id !== wid,
+        );
+        if (this.#activeEmbeddedViewId === wid) {
+          this.#activeEmbeddedViewId = this.getAvailableEmbeddedViewIds()[0] ?? null;
+          if (this.#mainWindow) {
+            if (this.#activeEmbeddedViewId) {
+              const nextView = this.#embeddedViewsById.get(this.#activeEmbeddedViewId);
+              if (nextView) this.#mainWindow.setTopBrowserView(nextView);
+            }
+            this.#relayoutEmbeddedViewsByShellWindow.get(this.#mainWindow)?.();
+          }
+        }
+        return true;
+      },
+    );
+
+    ipcMain.handle(
+      'shell:reorder-embedded-views',
+      (_event, payload: { orderedViewIds?: string[] }) => {
+        const ordered = payload?.orderedViewIds;
+        if (!Array.isArray(ordered)) return false;
+        const next = ordered.filter(
+          (id): id is EmbeddedWindowId =>
+            typeof id === 'string' &&
+            this.#embeddedViewsById.has(id as EmbeddedWindowId) &&
+            this.#enabledEmbeddedViewOrder.includes(id as EmbeddedWindowId),
+        );
+        if (next.length !== this.#enabledEmbeddedViewOrder.length) return false;
+        if (new Set(next).size !== this.#enabledEmbeddedViewOrder.length)
+          return false;
+        this.#enabledEmbeddedViewOrder = [...next];
+        this.#activeEmbeddedViewId =
+          this.#activeEmbeddedViewId &&
+          this.#enabledEmbeddedViewOrder.includes(this.#activeEmbeddedViewId)
+            ? this.#activeEmbeddedViewId
+            : this.#enabledEmbeddedViewOrder[0] ?? null;
+        if (this.#mainWindow) {
+          const top = this.#activeEmbeddedViewId
+            ? this.#embeddedViewsById.get(this.#activeEmbeddedViewId)
+            : null;
+          if (top) this.#mainWindow.setTopBrowserView(top);
+          this.#relayoutEmbeddedViewsByShellWindow.get(this.#mainWindow)?.();
+        }
+        return true;
       },
     );
 
@@ -227,14 +292,9 @@ export class WindowManager {
       embeddedViews.set(id, view);
     }
     this.#embeddedViewsById = embeddedViews;
-    this.#enabledEmbeddedViewIds = this.#initialEnabledEmbeddedViewIds();
+    this.#enabledEmbeddedViewOrder = this.#initialEnabledEmbeddedViewOrder();
+    // 与 Web 侧「无 nebula-shell-active-view 先展示应用集成」一致，不预选中首个 BrowserView
     this.#activeEmbeddedViewId = null;
-    for (const id of listEmbeddedWindowIds()) {
-      if (this.#enabledEmbeddedViewIds.has(id)) {
-        this.#activeEmbeddedViewId = id;
-        break;
-      }
-    }
 
     if (is.dev) {
       win.webContents.once('did-finish-load', () => {
@@ -253,7 +313,7 @@ export class WindowManager {
         this.#mainWindow = null;
       }
       this.#embeddedViewsById = new Map();
-      this.#enabledEmbeddedViewIds = new Set();
+      this.#enabledEmbeddedViewOrder = [];
       this.#activeEmbeddedViewId = null;
     });
 
@@ -280,20 +340,18 @@ export class WindowManager {
   }
 
   getAvailableEmbeddedViewIds(): EmbeddedWindowId[] {
-    return listEmbeddedWindowIds().filter((id) =>
-      this.#enabledEmbeddedViewIds.has(id),
-    );
+    return [...this.#enabledEmbeddedViewOrder];
   }
 
-  #initialEnabledEmbeddedViewIds(): Set<EmbeddedWindowId> {
-    const integratable = new Set<string>(listShellIntegratableAppIds());
-    const defaultOn = new Set<string>(getDefaultEnabledShellIntegratableIds());
-    const next = new Set<EmbeddedWindowId>();
+  #initialEnabledEmbeddedViewOrder(): EmbeddedWindowId[] {
+    const integratable = new Set<string>(listShellIntegrableAppIds());
+    const defaultOn = new Set<string>(getDefaultEnabledShellIntegrableIds());
+    const next: EmbeddedWindowId[] = [];
     for (const id of listEmbeddedWindowIds()) {
       if (!integratable.has(id)) {
-        next.add(id);
+        next.push(id);
       } else if (defaultOn.has(id)) {
-        next.add(id);
+        next.push(id);
       }
     }
     return next;
@@ -304,7 +362,7 @@ export class WindowManager {
   }
 
   setActiveEmbeddedView(viewId: EmbeddedWindowId): boolean {
-    if (!this.#enabledEmbeddedViewIds.has(viewId)) return false;
+    if (!this.#enabledEmbeddedViewOrder.includes(viewId)) return false;
     const view = this.#embeddedViewsById.get(viewId);
     if (!view) return false;
     this.#activeEmbeddedViewId = viewId;

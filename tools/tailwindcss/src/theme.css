@@ -4,10 +4,13 @@
 @plugin '@tailwindcss/typography';
 @plugin '@iconify/tailwind4';
 
-/* Monorepo source detection: scan all packages and apps for utility classes */
+/*
+ * Monorepo source detection: scan packages/apps for utility classes.
+ * Tailwind @source only accepts filesystem directories (not npm package specifiers);
+ * paths stay repo-relative from this file (`tools/tailwindcss/src/` → repo root).
+ */
 @source '../../../packages/';
 @source '../../../apps/';
-@source '../../../docs/';
 
 /* Dark mode uses .dark class selector, not prefers-color-scheme */
 @custom-variant dark (&:is(.dark *));

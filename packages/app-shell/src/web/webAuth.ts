@@ -1,5 +1,5 @@
-import { WEB_SHELL_EMBED_QUERY } from './shellPresentationConfig';
-import { isWebPresentationHost } from './presentationHost';
+import { isWebPresentationHost } from '../common/presentationHost';
+import { WEB_SHELL_EMBED_QUERY } from '../common/shellPresentationConfig';
 
 export const SHELL_AUTH_SESSION_KEY = 'nebula-studio-auth-session';
 

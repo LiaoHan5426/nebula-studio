@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "exports": {
+    "./app": "./src/App.vue"
+  },
   "scripts": {
     "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false"
   },

@@ -11,12 +11,12 @@
       "default": "./src/index.ts"
     },
     "./shell-config": {
-      "types": "./src/shellPresentationConfig.ts",
-      "default": "./src/shellPresentationConfig.ts"
+      "types": "./src/common/shellPresentationConfig.ts",
+      "default": "./src/common/shellPresentationConfig.ts"
     },
     "./shell-integration": {
-      "types": "./src/shellIntegration.ts",
-      "default": "./src/shellIntegration.ts"
+      "types": "./src/common/shellIntegration.ts",
+      "default": "./src/common/shellIntegration.ts"
     }
   },
   "dependencies": {
