@@ -67,7 +67,11 @@ export const NebulaTable = defineComponent({
           maxHeight: props.maxHeight,
           rowConfig: props.rowConfig,
           columnConfig: props.columnConfig,
-          class: cn('nebula-table', `nebula-table--drag-${props.dragMode}`, props.class),
+          class: cn(
+            'nebula-table',
+            `nebula-table--drag-${props.dragMode}`,
+            props.class,
+          ),
         },
         slots,
       );

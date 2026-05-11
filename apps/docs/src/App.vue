@@ -11,10 +11,8 @@ import { useConfig } from '@nebula-studio-electron/electron-shared-vue';
 import DocsNotifyCenter from './features/notify/components/DocsNotifyCenter.vue';
 import { useDocsNotify } from './features/notify/composables/useDocsNotify';
 import type { DocsFeatureDefinition, FeatureMenuNode } from './features/types';
-import {
-  DOCS_NAVIGATE_TO_FEATURE,
-  type DocsNavigateToFeature,
-} from './docsNavigation';
+import { DOCS_NAVIGATE_TO_FEATURE } from './docsNavigation';
+import type { DocsNavigateToFeature } from './docsNavigation';
 
 const featureModules = import.meta.glob('./features/**/feature.ts', {
   eager: true,

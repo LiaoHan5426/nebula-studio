@@ -13,7 +13,8 @@ const navigateToFeature = inject(DOCS_NAVIGATE_TO_FEATURE, null);
     <header class="table-api-intro">
       <h3 class="table-api-title">API 文档表格（DocsApiTable）</h3>
       <p class="table-api-desc">
-        组件 props 说明由 <code>tableApi.ts</code> 统一维护，表格用于文档站展示。
+        组件 props 说明由
+        <code>tableApi.ts</code> 统一维护，表格用于文档站展示。
       </p>
     </header>
     <DocsApiTable title="NebulaTable API" :rows="tableComponentApiRows" />

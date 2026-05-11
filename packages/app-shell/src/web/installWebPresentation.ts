@@ -12,10 +12,8 @@ import {
   writeWebAuthSession,
 } from './webAuth';
 import { createWebNotifyApi } from './webNotify';
-import {
-  createWebShellEmbeddedStateHandlers,
-  type PreferenceIpcListener,
-} from './webShellEmbeddedState';
+import { createWebShellEmbeddedStateHandlers } from './webShellEmbeddedState';
+import type { PreferenceIpcListener } from './webShellEmbeddedState';
 
 type ThemeMode = 'light' | 'dark';
 
@@ -199,17 +197,11 @@ export function installWebPresentation(
         invoke: (channel: string, ...args: unknown[]) => Promise<unknown>;
         on: (
           channel: string,
-          listener: (
-            event: unknown,
-            payload: Record<string, unknown>,
-          ) => void,
+          listener: (event: unknown, payload: Record<string, unknown>) => void,
         ) => void;
         removeListener: (
           channel: string,
-          listener: (
-            event: unknown,
-            payload: Record<string, unknown>,
-          ) => void,
+          listener: (event: unknown, payload: Record<string, unknown>) => void,
         ) => void;
       };
     }

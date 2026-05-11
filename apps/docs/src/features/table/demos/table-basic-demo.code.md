@@ -1,10 +1,7 @@
 ```vue
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import {
-  NebulaTable,
-  NebulaTableColumn,
-} from '@nebula-studio/nebula-ui';
+import { NebulaTable, NebulaTableColumn } from '@nebula-studio/nebula-ui';
 import { createTableDemoRows } from './tableDemoData';
 
 const allRows = ref(createTableDemoRows());

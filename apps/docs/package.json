@@ -12,12 +12,7 @@
     "dev": "vite dev",
     "build": "vite build --base=/docs/",
     "preview": "vite preview",
-    "dev:vitepress": "vitepress dev --host",
-    "build:vitepress": "vitepress build",
-    "preview:vitepress": "vitepress preview --host",
-    "dev:web": "vite",
-    "build:web": "vite build",
-    "preview:web": "vite preview"
+    "build:web": "vite build"
   },
   "dependencies": {
     "@nebula-studio-electron/electron-shared": "workspace:^",
@@ -35,7 +30,6 @@
     "typescript": "catalog:types",
     "vite": "catalog:vite",
     "vite-plus": "catalog:vite",
-    "vitepress": "catalog:",
     "vue-tsc": "catalog:vue"
   }
 }

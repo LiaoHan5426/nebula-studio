@@ -761,7 +761,11 @@ html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-tag {
 }
 
 html.dark .nebula-markdown pre code.hljs span[class^='language-'],
-html[data-theme='dark'] .nebula-markdown pre code.hljs span[class^='language-'] {
+html[data-theme='dark']
+  .nebula-markdown
+  pre
+  code.hljs
+  span[class^='language-'] {
   color: hsl(var(--foreground)) !important;
 }
 
@@ -819,16 +823,24 @@ html[data-theme='dark'] .nebula-markdown pre code.hljs span[class^='language-'] 
   --vxe-ui-table-column-to-row-background-color: hsl(var(--muted) / 48%);
   --vxe-ui-table-column-hover-background-color: hsl(var(--muted) / 62%);
   --vxe-ui-table-column-current-background-color: hsl(var(--primary) / 22%);
-  --vxe-ui-table-column-hover-current-background-color: hsl(var(--primary) / 28%);
+  --vxe-ui-table-column-hover-current-background-color: hsl(
+    var(--primary) / 28%
+  );
   --vxe-ui-table-row-hover-background-color: hsl(var(--muted) / 42%);
   --vxe-ui-table-row-striped-background-color: hsl(var(--muted) / 26%);
   --vxe-ui-table-row-hover-striped-background-color: hsl(var(--muted) / 42%);
   --vxe-ui-table-row-current-background-color: hsl(var(--primary) / 18%);
   --vxe-ui-table-row-hover-current-background-color: hsl(var(--primary) / 26%);
   --vxe-ui-table-row-radio-checked-background-color: hsl(var(--primary) / 24%);
-  --vxe-ui-table-row-hover-radio-checked-background-color: hsl(var(--primary) / 32%);
-  --vxe-ui-table-row-checkbox-checked-background-color: hsl(var(--primary) / 24%);
-  --vxe-ui-table-row-hover-checkbox-checked-background-color: hsl(var(--primary) / 32%);
+  --vxe-ui-table-row-hover-radio-checked-background-color: hsl(
+    var(--primary) / 32%
+  );
+  --vxe-ui-table-row-checkbox-checked-background-color: hsl(
+    var(--primary) / 24%
+  );
+  --vxe-ui-table-row-hover-checkbox-checked-background-color: hsl(
+    var(--primary) / 32%
+  );
   --vxe-ui-table-fixed-scrolling-box-shadow-color: rgb(0 0 0 / 28%);
   --vxe-ui-loading-background-color: hsl(var(--card) / 72%);
   --vxe-ui-table-resizable-line-color: hsl(var(--border));

@@ -250,10 +250,8 @@ export const NebulaAnchor = defineComponent({
       detachScrollListeners();
       scrollRootEl = resolveScrollRoot();
 
-      const needAnchor =
-        props.trackScroll && props.items.length > 0;
-      const needBackTop =
-        props.backTop && props.backTopMode === 'float';
+      const needAnchor = props.trackScroll && props.items.length > 0;
+      const needBackTop = props.backTop && props.backTopMode === 'float';
 
       if (!needAnchor && !needBackTop) return;
 
@@ -318,9 +316,7 @@ export const NebulaAnchor = defineComponent({
       const showAside = showNav || showInlineBackTop;
 
       const showFloatBackTop =
-        props.backTop &&
-        props.backTopMode === 'float' &&
-        backTopVisible.value;
+        props.backTop && props.backTopMode === 'float' && backTopVisible.value;
 
       const aside = showAside
         ? h(

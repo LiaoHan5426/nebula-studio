@@ -7,7 +7,8 @@ import {
 } from '@nebula-studio/nebula-ui';
 import DocsDemoSection from '../../../components/DocsDemoSection.vue';
 import tableOperationDemoCode from './table-operation-demo.code.md?raw';
-import { createTableDemoRows, type DemoRow } from './tableDemoData';
+import { createTableDemoRows } from './tableDemoData';
+import type { DemoRow } from './tableDemoData';
 
 const allRows = ref(createTableDemoRows());
 const previewRows = computed(() => allRows.value.slice(0, 5));
@@ -44,7 +45,10 @@ const code = tableOperationDemoCode;
                 >
                   Inspect
                 </NebulaButton>
-                <NebulaButton variant="ghost" @click="onDisable(row as DemoRow)">
+                <NebulaButton
+                  variant="ghost"
+                  @click="onDisable(row as DemoRow)"
+                >
                   Disable
                 </NebulaButton>
               </div>

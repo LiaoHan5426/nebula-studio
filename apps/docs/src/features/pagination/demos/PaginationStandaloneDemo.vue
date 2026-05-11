@@ -42,7 +42,9 @@ const code = paginationStandaloneDemoCode;
             variant="ghost"
             @click="preset = preset === 'compact' ? 'wide' : 'compact'"
           >
-            pageSizes：{{ preset === 'compact' ? '5 / 10 / 20' : '10 / 20 / 50 / 100' }}
+            pageSizes：{{
+              preset === 'compact' ? '5 / 10 / 20' : '10 / 20 / 50 / 100'
+            }}
           </NebulaButton>
           <label class="pagination-standalone__check">
             <input v-model="disabled" type="checkbox" />

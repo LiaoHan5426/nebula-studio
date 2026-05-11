@@ -131,7 +131,9 @@ async function disableEmbeddedView(viewId: string): Promise<boolean> {
   );
 }
 
-async function reorderEmbeddedViews(orderedViewIds: string[]): Promise<boolean> {
+async function reorderEmbeddedViews(
+  orderedViewIds: string[],
+): Promise<boolean> {
   return Boolean(
     await window.electron.ipcRenderer.invoke('shell:reorder-embedded-views', {
       orderedViewIds,
@@ -256,27 +258,21 @@ const onAuthSessionChanged = (
   authSession.value = payload;
 };
 
-watch(
-  integrationOpen,
-  (open) => {
-    if (open) {
-      addPickerOpen.value = false;
-    }
-    if (integrationPreferenceHydrated.value) {
-      shellHost.persistIntegrationOpenFromWatch(open);
-    }
-    shellHost.onIntegrationOpenChanged(open);
-  },
-);
+watch(integrationOpen, (open) => {
+  if (open) {
+    addPickerOpen.value = false;
+  }
+  if (integrationPreferenceHydrated.value) {
+    shellHost.persistIntegrationOpenFromWatch(open);
+  }
+  shellHost.onIntegrationOpenChanged(open);
+});
 
-watch(
-  activeViewId,
-  (viewId) => {
-    if (!activeViewPersistReady.value) return;
-    if (!shellHost.shouldPersistActiveViewPreference) return;
-    persistActiveViewPreference(typeof viewId === 'string' ? viewId : null);
-  },
-);
+watch(activeViewId, (viewId) => {
+  if (!activeViewPersistReady.value) return;
+  if (!shellHost.shouldPersistActiveViewPreference) return;
+  persistActiveViewPreference(typeof viewId === 'string' ? viewId : null);
+});
 
 onMounted(async () => {
   shellHost.onBeforeShellHydrate();
@@ -507,7 +503,8 @@ onUnmounted(() => {
                     "
                   />
                   <span class="integration-tile-label">{{
-                    getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId).label
+                    getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId)
+                      .label
                   }}</span>
                 </div>
               </template>

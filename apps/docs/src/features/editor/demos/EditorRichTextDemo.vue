@@ -4,7 +4,9 @@ import { NebulaEditor } from '@nebula-studio/nebula-ui';
 import DocsDemoSection from '../../../components/DocsDemoSection.vue';
 import editorRichTextDemoCode from './editor-richtext-demo.code.md?raw';
 
-const html = ref('<p>Hello <strong>Nebula</strong></p><p>wangEditor HTML → NebulaReader <code>format="html"</code></p>');
+const html = ref(
+  '<p>Hello <strong>Nebula</strong></p><p>wangEditor HTML → NebulaReader <code>format="html"</code></p>',
+);
 
 const code = editorRichTextDemoCode;
 </script>

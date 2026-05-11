@@ -16,7 +16,7 @@ const code = readerPlainDemoCode;
   <section id="reader-plain">
     <DocsDemoSection
       title="NebulaReader · plain + 语法高亮"
-      description="整篇代码预览时使用 format=&quot;plain&quot;；plain-highlight-language 与所选语法一致（通常与 NebulaEditor 的 code-language 同步）。"
+      description='整篇代码预览时使用 format="plain"；plain-highlight-language 与所选语法一致（通常与 NebulaEditor 的 code-language 同步）。'
       :code="code"
       code-plain
     >

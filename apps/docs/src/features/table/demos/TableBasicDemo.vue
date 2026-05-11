@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import {
-  NebulaTable,
-  NebulaTableColumn,
-} from '@nebula-studio/nebula-ui';
+import { NebulaTable, NebulaTableColumn } from '@nebula-studio/nebula-ui';
 import DocsDemoSection from '../../../components/DocsDemoSection.vue';
 import tableBasicDemoCode from './table-basic-demo.code.md?raw';
 import { createTableDemoRows } from './tableDemoData';

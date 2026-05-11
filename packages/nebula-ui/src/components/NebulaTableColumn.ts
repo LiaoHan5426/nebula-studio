@@ -38,7 +38,9 @@ export const NebulaTableColumn = defineComponent({
       default: false,
     },
     formatter: {
-      type: [String, Function] as PropType<string | ((params: unknown) => unknown)>,
+      type: [String, Function] as PropType<
+        string | ((params: unknown) => unknown)
+      >,
       default: undefined,
     },
   },

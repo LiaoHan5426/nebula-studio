@@ -42,9 +42,14 @@ export const NebulaPagination = defineComponent({
   emits: ['update:modelValue', 'update:pageSize', 'change'],
   setup(props, { emit, slots }) {
     const pageCount = computed(() =>
-      Math.max(1, Math.ceil(Math.max(props.total, 0) / Math.max(props.pageSize, 1))),
+      Math.max(
+        1,
+        Math.ceil(Math.max(props.total, 0) / Math.max(props.pageSize, 1)),
+      ),
     );
-    const currentPage = computed(() => clamp(props.modelValue, 1, pageCount.value));
+    const currentPage = computed(() =>
+      clamp(props.modelValue, 1, pageCount.value),
+    );
 
     function changePage(nextPage: number): void {
       const page = clamp(nextPage, 1, pageCount.value);
@@ -56,7 +61,11 @@ export const NebulaPagination = defineComponent({
       const value = Number((event.target as HTMLSelectElement).value);
       if (!Number.isFinite(value) || value <= 0) return;
       emit('update:pageSize', value);
-      const nextPage = clamp(currentPage.value, 1, Math.max(1, Math.ceil(props.total / value)));
+      const nextPage = clamp(
+        currentPage.value,
+        1,
+        Math.max(1, Math.ceil(props.total / value)),
+      );
       emit('update:modelValue', nextPage);
       emit('change', { page: nextPage, pageSize: value });
     }
@@ -73,49 +82,41 @@ export const NebulaPagination = defineComponent({
             `Total ${props.total} | Page ${currentPage.value}/${pageCount.value}`,
           ]),
         props.showSizeChanger &&
-          h(
-            'label',
-            { class: 'nebula-pagination__size-wrap' },
-            [
-              h('span', { class: 'nebula-pagination__size-label' }, 'Page size'),
-              h(
-                'select',
-                {
-                  class: 'nebula-pagination__size-select',
-                  disabled: props.disabled,
-                  value: props.pageSize,
-                  onChange: changeSize,
-                },
-                props.pageSizes.map((size) =>
-                  h('option', { key: size, value: size }, `${size}`),
-                ),
+          h('label', { class: 'nebula-pagination__size-wrap' }, [
+            h('span', { class: 'nebula-pagination__size-label' }, 'Page size'),
+            h(
+              'select',
+              {
+                class: 'nebula-pagination__size-select',
+                disabled: props.disabled,
+                value: props.pageSize,
+                onChange: changeSize,
+              },
+              props.pageSizes.map((size) =>
+                h('option', { key: size, value: size }, `${size}`),
               ),
-            ],
+            ),
+          ]),
+        h('div', { class: 'nebula-pagination__actions' }, [
+          h(
+            NebulaButton,
+            {
+              variant: 'secondary',
+              disabled: props.disabled || currentPage.value <= 1,
+              onClick: () => changePage(currentPage.value - 1),
+            },
+            () => 'Prev',
           ),
-        h(
-          'div',
-          { class: 'nebula-pagination__actions' },
-          [
-            h(
-              NebulaButton,
-              {
-                variant: 'secondary',
-                disabled: props.disabled || currentPage.value <= 1,
-                onClick: () => changePage(currentPage.value - 1),
-              },
-              () => 'Prev',
-            ),
-            h(
-              NebulaButton,
-              {
-                variant: 'secondary',
-                disabled: props.disabled || currentPage.value >= pageCount.value,
-                onClick: () => changePage(currentPage.value + 1),
-              },
-              () => 'Next',
-            ),
-          ],
-        ),
+          h(
+            NebulaButton,
+            {
+              variant: 'secondary',
+              disabled: props.disabled || currentPage.value >= pageCount.value,
+              onClick: () => changePage(currentPage.value + 1),
+            },
+            () => 'Next',
+          ),
+        ]),
       ]);
   },
 });

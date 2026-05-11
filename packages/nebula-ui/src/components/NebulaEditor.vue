@@ -66,7 +66,10 @@ const emit = defineEmits<{
 }>();
 
 /** 内嵌预览是否展开（仅 `embed-preview` 时使用） */
-const previewOpen = defineModel('previewOpen', { type: Boolean, default: true });
+const previewOpen = defineModel('previewOpen', {
+  type: Boolean,
+  default: true,
+});
 
 const langSelectId = useId();
 
@@ -106,13 +109,12 @@ function togglePreview(): void {
 
 <template>
   <div class="nebula-editor">
-    <div
-      v-if="chromeVisible"
-      class="nebula-editor__chrome"
-    >
+    <div v-if="chromeVisible" class="nebula-editor__chrome">
       <div class="nebula-editor__chrome-start">
         <template v-if="variant === 'code' && showCodeLanguageSwitch">
-          <label class="nebula-editor__chrome-label" :for="langSelectId">语法</label>
+          <label class="nebula-editor__chrome-label" :for="langSelectId"
+            >语法</label
+          >
           <select
             :id="langSelectId"
             class="nebula-editor__chrome-select"
@@ -130,10 +132,7 @@ function togglePreview(): void {
           </select>
         </template>
       </div>
-      <div
-        v-if="embedPreview"
-        class="nebula-editor__chrome-end"
-      >
+      <div v-if="embedPreview" class="nebula-editor__chrome-end">
         <button
           type="button"
           class="nebula-editor__preview-toggle"
@@ -147,10 +146,7 @@ function togglePreview(): void {
 
     <!-- code -->
     <template v-if="variant === 'code'">
-      <div
-        v-if="showSplitPreview"
-        class="nebula-editor__split"
-      >
+      <div v-if="showSplitPreview" class="nebula-editor__split">
         <div class="nebula-editor__split-editor">
           <NebulaCodeEditor
             :model-value="modelValue"
@@ -184,10 +180,7 @@ function togglePreview(): void {
 
     <!-- richtext -->
     <template v-else>
-      <div
-        v-if="showSplitPreview"
-        class="nebula-editor__split"
-      >
+      <div v-if="showSplitPreview" class="nebula-editor__split">
         <div class="nebula-editor__split-editor">
           <NebulaRichEditor
             :model-value="modelValue"
@@ -200,7 +193,9 @@ function togglePreview(): void {
           />
         </div>
         <div class="nebula-editor__split-reader">
-          <div class="nebula-editor__reader-scroll nebula-editor__reader-scroll--html">
+          <div
+            class="nebula-editor__reader-scroll nebula-editor__reader-scroll--html"
+          >
             <NebulaReader
               :source="readerBinding.source"
               :format="readerBinding.format"

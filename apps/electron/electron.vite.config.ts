@@ -7,10 +7,13 @@ const require = createRequire(import.meta.url);
 
 /** Resolve preload bundle entry via workspace package name (no `../electron-preload/…` segments). */
 function preloadSrc(pkgName: string): string {
-  return join(dirname(require.resolve(`${pkgName}/package.json`)), 'src/index.ts');
+  return join(
+    dirname(require.resolve(`${pkgName}/package.json`)),
+    'src/index.ts',
+  );
 }
 
-/** 与 `apps/docs/vite.config.ts` 一致，供 `apps/docs/src/main.ts` 传入 `installWebPresentation` */
+/** 与 `apps/docs/vite.config.ts` 一致：为 renderer 注入 `__NEBULA_BUILD_NODE_VERSION__`。 */
 const buildNodeVersion = process.version.replace(/^v/, '');
 
 export default defineConfig({

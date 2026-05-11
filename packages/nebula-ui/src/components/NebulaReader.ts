@@ -31,7 +31,9 @@ function createMarked(): Marked {
         const key = `${language}:${rawCode.length}:${rawCode.slice(0, 20)}`;
         const hl = highlightFenceCodeAsHtml(rawCode, token.lang?.trim() ?? '');
         const inner = hl ?? escapeHtml(rawCode);
-        const codeClass = hl ? `hljs language-${language}` : `language-${language}`;
+        const codeClass = hl
+          ? `hljs language-${language}`
+          : `language-${language}`;
         return `<div class="code-block"><div class="code-block__toolbar"><span class="code-block__lang">${safeLangLabel}</span><button type="button" class="code-block__copy" data-copy="${encoded}" data-key="${escapeHtml(key)}">Copy</button></div><pre><code class="${codeClass}">${inner}</code></pre></div>`;
       },
     },

@@ -10,13 +10,7 @@ import { Compartment, EditorState } from '@codemirror/state';
 import { oneDark } from '@codemirror/theme-one-dark';
 import { EditorView, keymap } from '@codemirror/view';
 import { basicSetup } from 'codemirror';
-import {
-  computed,
-  onBeforeUnmount,
-  onMounted,
-  shallowRef,
-  watch,
-} from 'vue';
+import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue';
 
 import type { NebulaEditorCodeLanguage } from './NebulaEditorTypes';
 
@@ -208,10 +202,7 @@ watch(
 </script>
 
 <template>
-  <div
-    class="nebula-code-editor"
-    :style="{ height: normalizedHeight }"
-  >
+  <div class="nebula-code-editor" :style="{ height: normalizedHeight }">
     <div
       ref="host"
       class="nebula-code-editor__host"

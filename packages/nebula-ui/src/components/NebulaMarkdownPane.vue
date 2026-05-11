@@ -35,14 +35,8 @@ function px(v: number | string | undefined, fallback: string): string {
 </script>
 
 <template>
-  <div
-    class="nebula-md-pane"
-    :data-mode="mode"
-  >
-    <section
-      v-if="mode !== 'preview'"
-      class="nebula-md-pane__editor"
-    >
+  <div class="nebula-md-pane" :data-mode="mode">
+    <section v-if="mode !== 'preview'" class="nebula-md-pane__editor">
       <NebulaEditor
         variant="code"
         code-language="markdown"
@@ -59,10 +53,7 @@ function px(v: number | string | undefined, fallback: string): string {
       :style="{ minHeight: px(previewMinHeight, '240px') }"
     >
       <div class="nebula-md-pane__preview-scroll">
-        <NebulaReader
-          :source="modelValue"
-          format="markdown"
-        />
+        <NebulaReader :source="modelValue" format="markdown" />
       </div>
     </section>
   </div>

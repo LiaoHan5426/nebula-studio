@@ -36,7 +36,9 @@ export function bindingFromNebulaEditor(
 ): NebulaEditorReaderBinding {
   const format = resolveReaderFormat(opts);
   const source =
-    format === 'html' ? prepareRichTextHtmlForReader(modelValue) : (modelValue ?? '');
+    format === 'html'
+      ? prepareRichTextHtmlForReader(modelValue)
+      : (modelValue ?? '');
   return { source, format };
 }
 
