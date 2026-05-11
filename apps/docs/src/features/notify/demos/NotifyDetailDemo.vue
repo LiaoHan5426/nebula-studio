@@ -14,6 +14,7 @@ const code = notifyDetailDemoCode;
 
 <template>
   <DocsDemoSection
+    section-id="notify-detail"
     title="增强详情"
     description="用于验证 detail modal、权限类响应与信息详情提交。"
     :code="code"
@@ -47,7 +48,7 @@ const code = notifyDetailDemoCode;
   </DocsDemoSection>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .actions {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));

@@ -8,12 +8,6 @@ import { paginationDocAnchorItems } from './demos/paginationDocAnchors';
 
 <template>
   <div class="pagination-layout">
-    <div class="pagination-feature">
-      <PaginationStandaloneDemo />
-      <PaginationTableLinkageDemo />
-      <PaginationApiSection />
-    </div>
-
     <NebulaAnchor
       :items="[...paginationDocAnchorItems]"
       title="On This Page"
@@ -21,10 +15,15 @@ import { paginationDocAnchorItems } from './demos/paginationDocAnchors';
       back-top
       back-top-mode="float"
     />
+    <div class="pagination-feature">
+      <PaginationStandaloneDemo />
+      <PaginationTableLinkageDemo />
+      <PaginationApiSection />
+    </div>
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .pagination-layout {
   position: relative;
 }

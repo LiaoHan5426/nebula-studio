@@ -1,0 +1,35 @@
+{
+  "name": "@nebula-studio-internal/vite",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./config": {
+      "types": "./src/config/index.ts",
+      "default": "./src/config/index.ts"
+    },
+    "./plugin": {
+      "types": "./src/plugin/index.ts",
+      "default": "./src/plugin/index.ts"
+    },
+    "./env": {
+      "types": "./src/env/index.ts",
+      "default": "./src/env/index.ts"
+    }
+  },
+  "dependencies": {
+    "@vitejs/plugin-vue": "catalog:vite",
+    "sass": "catalog:style",
+    "vite": "catalog:vite",
+    "vite-plus": "catalog:vite",
+    "vue": "catalog:vue"
+  },
+  "devDependencies": {
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "typescript": "catalog:types"
+  }
+}

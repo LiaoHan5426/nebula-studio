@@ -14,6 +14,7 @@ const code = notifyBasicDemoCode;
 
 <template>
   <DocsDemoSection
+    section-id="notify-basic"
     title="基础调用"
     description="用于验证 message 与 notification 的标准触发流程。"
     :code="code"
@@ -47,7 +48,7 @@ const code = notifyBasicDemoCode;
   </DocsDemoSection>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .actions {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));

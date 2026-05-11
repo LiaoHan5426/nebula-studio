@@ -217,7 +217,7 @@ function togglePreview(): void {
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .nebula-editor {
   width: 100%;
 }

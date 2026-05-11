@@ -42,6 +42,7 @@
     "xe-utils": "catalog:"
   },
   "devDependencies": {
-    "@nebula-studio-internal/tsconfig": "workspace:^"
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "sass": "catalog:style"
   }
 }

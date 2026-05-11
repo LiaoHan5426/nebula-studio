@@ -70,6 +70,18 @@ export function highlightFenceCodeAsHtml(
     const s = fenceLang.trim().toLowerCase();
     if (s === 'vue' || s === 'html' || s === 'htm') id = 'xml';
   }
+  /**
+   * marked / 首帧偶发 `token.lang` 为空或语言未识别时，避免整块落入 `code:not(.hljs)` 的单一前景色。
+   * Vue SFC 示例仍按 xml 高亮（与 `vue` fence 一致）。
+   */
+  if (
+    !id &&
+    (!fenceLang.trim() ||
+      ['text', 'txt', 'plain'].includes(fenceLang.trim().toLowerCase())) &&
+    /<\s*(script|template|style)\b/i.test(source)
+  ) {
+    id = 'xml';
+  }
   if (!id) {
     if (import.meta.env.DEV) {
       console.warn(

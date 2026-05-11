@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, provide, ref } from 'vue';
+import { computed, nextTick, provide, ref, watch } from 'vue';
 import {
   NebulaPane,
   NebulaThemeToggle,
@@ -57,6 +57,16 @@ const featureTree: NebulaTreeNode[] = buildFeatureTree(features).map((node) =>
   toNebulaTreeNode(node),
 );
 const activeFeatureId = ref(features[0]?.id ?? '');
+
+/**
+ * 切换左侧功能时回到页顶：不记忆各 feature 的滚动位置（文档站预期从章节标题开始读）。
+ * 若将来需要「记住每页滚动」，可改为按 `activeFeatureId` 存取 scrollTop 映射。
+ */
+watch(activeFeatureId, () => {
+  nextTick(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  });
+});
 
 const navigateToFeature: DocsNavigateToFeature = (featureId: string) => {
   if (featuresById.has(featureId)) activeFeatureId.value = featureId;
@@ -182,20 +192,23 @@ function toNebulaTreeNode(node: FeatureMenuNode): NebulaTreeNode {
   </main>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .docs-page {
   min-height: 100vh;
   padding: 1.5rem 1.75rem;
   color: hsl(var(--foreground));
   background: hsl(var(--background));
+  box-sizing: border-box;
+  overflow-x: auto;
 }
 
 .docs-shell {
   display: grid;
-  grid-template-columns: 260px minmax(0, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
+  gap: clamp(0.75rem, 2vw, 1.5rem);
   max-width: 1240px;
   margin: 0 auto;
+  min-width: 0;
 }
 
 .docs-sidebar {
@@ -208,6 +221,13 @@ function toNebulaTreeNode(node: FeatureMenuNode): NebulaTreeNode {
 }
 
 /* NebulaTreeMenu：分组标题与下方条目、分组与分组之间留白 */
+/* 避免 NebulaTreeMenu 全局 min-width 在窄列里撑出横向滚动 */
+.docs-sidebar :deep(.nebula-tree) {
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+}
+
 .docs-sidebar :deep(.nebula-tree__root) {
   gap: 0.95rem;
 }
@@ -298,12 +318,26 @@ code {
 }
 
 @media (width <= 980px) {
+  .docs-page {
+    padding: 1rem 1rem;
+  }
+
   .docs-shell {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .docs-sidebar {
     position: static;
+  }
+}
+
+@media (width <= 520px) {
+  .docs-page {
+    padding: 0.75rem 0.65rem;
+  }
+
+  .brand-block {
+    padding: 0.75rem 0.8rem;
   }
 }
 </style>

@@ -31,7 +31,7 @@ const code = readerPlainDemoCode;
   </section>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .reader-demo-surface {
   border: 1px solid hsl(var(--border));
   border-radius: 10px;

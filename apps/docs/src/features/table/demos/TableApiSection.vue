@@ -36,7 +36,7 @@ const navigateToFeature = inject(DOCS_NAVIGATE_TO_FEATURE, null);
   </section>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .table-api-section {
   display: grid;
   gap: 0.75rem;

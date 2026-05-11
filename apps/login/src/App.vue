@@ -76,7 +76,7 @@ async function onSubmit(): Promise<void> {
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .login-page {
   box-sizing: border-box;
   display: flex;

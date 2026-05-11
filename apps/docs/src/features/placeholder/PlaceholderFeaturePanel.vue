@@ -1,21 +1,41 @@
 <script setup lang="ts">
-import { NebulaPane } from '@nebula-studio/nebula-ui';
+import { NebulaAnchor, NebulaPane } from '@nebula-studio/nebula-ui';
 import DocsApiTable from '../../components/DocsApiTable.vue';
+import { placeholderDocAnchorItems } from './demos/placeholderDocAnchors';
 import PlaceholderIntroDemo from './demos/PlaceholderIntroDemo.vue';
 import { placeholderApiRows } from './demos/placeholderApi';
 </script>
 
 <template>
-  <section class="placeholder-stack">
-    <PlaceholderIntroDemo />
-    <NebulaPane class="placeholder-card" title="开发建议">
-      <p>可按 Element Plus 风格补充 API、示例代码块与注意事项。</p>
-    </NebulaPane>
-    <DocsApiTable title="接入约定" :rows="placeholderApiRows" />
-  </section>
+  <div class="placeholder-layout">
+    <NebulaAnchor
+      :items="[...placeholderDocAnchorItems]"
+      title="On This Page"
+      responsive
+      back-top
+      back-top-mode="float"
+    />
+    <section class="placeholder-stack">
+      <PlaceholderIntroDemo />
+      <section id="placeholder-dev" class="placeholder-dev">
+        <NebulaPane class="placeholder-card" title="开发建议">
+          <p>可按 Element Plus 风格补充 API、示例代码块与注意事项。</p>
+        </NebulaPane>
+      </section>
+      <DocsApiTable
+        section-id="placeholder-api"
+        title="接入约定"
+        :rows="placeholderApiRows"
+      />
+    </section>
+  </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+.placeholder-layout {
+  position: relative;
+}
+
 .placeholder-stack {
   display: flex;
   flex-direction: column;

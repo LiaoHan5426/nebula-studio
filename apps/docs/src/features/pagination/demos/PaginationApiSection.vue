@@ -16,7 +16,7 @@ import { paginationComponentApiRows } from './paginationApi';
   </section>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .pagination-api-section {
   display: grid;
   gap: 0.75rem;

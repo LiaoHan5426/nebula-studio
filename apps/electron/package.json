@@ -32,7 +32,7 @@
     "@nebula-studio-preload/main": "workspace:^",
     "@nebula-studio-preload/settings": "workspace:^",
     "@types/node": "catalog:types",
-    "@vitejs/plugin-vue": "catalog:vite",
+    "@nebula-studio-internal/vite": "workspace:^",
     "electron": "catalog:electron",
     "electron-builder": "catalog:electron",
     "electron-vite": "catalog:electron",

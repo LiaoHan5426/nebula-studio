@@ -1,4 +1,4 @@
-import type { Plugin } from 'vite';
+import type { Plugin, PluginOption } from 'vite';
 
 export interface NebulaWebShellPluginOptions {
   /**
@@ -28,4 +28,9 @@ export function nebulaWebShell(
       };
     },
   };
+}
+
+/** 供内置插件表注册：无参包装 */
+export function nebulaWebShellPlugin(): PluginOption {
+  return nebulaWebShell();
 }

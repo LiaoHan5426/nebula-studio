@@ -46,7 +46,7 @@ const code = tablePaginationDemoCode;
   </section>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .table-pagination {
   margin-top: 0.75rem;
 }

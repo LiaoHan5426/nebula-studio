@@ -72,7 +72,7 @@ const code = paginationStandaloneDemoCode;
   </section>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .pagination-standalone {
   display: flex;
   flex-direction: column;

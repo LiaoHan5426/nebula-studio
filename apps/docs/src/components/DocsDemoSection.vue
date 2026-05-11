@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { ref, watch } from 'vue';
 import { NebulaReader } from '@nebula-studio/nebula-ui';
 import type { NebulaEditorCodeLanguage } from '@nebula-studio/nebula-ui';
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     title: string;
     description?: string;
@@ -16,16 +17,34 @@ withDefaults(
     codePlain?: boolean;
     /** `code-plain` 时的语法高亮语言（默认 vue，含 template + script） */
     codeHighlightLanguage?: NebulaEditorCodeLanguage;
+    /** 根节点 `id`，供 `NebulaAnchor` 等页内锚点跳转 */
+    sectionId?: string;
   }>(),
   {
     codePlain: false,
     codeHighlightLanguage: 'vue',
   },
 );
+
+/** 与 `<details :open>` 同步；示例代码仅在展开后挂载，避免 web 嵌入首帧无高亮（隐藏 subtree 内 innerHTML/hljs） */
+const detailsOpen = ref(props.codeOpen === true);
+
+watch(
+  () => props.codeOpen,
+  (v) => {
+    detailsOpen.value = v === true;
+  },
+);
+
+function onDetailsToggle(ev: Event): void {
+  const el = ev.target as HTMLDetailsElement | null;
+  if (!el) return;
+  detailsOpen.value = el.open;
+}
 </script>
 
 <template>
-  <section class="demo-section">
+  <section class="demo-section" :id="sectionId || undefined">
     <header class="demo-section__head">
       <h3>{{ title }}</h3>
       <p v-if="description">{{ description }}</p>
@@ -33,10 +52,16 @@ withDefaults(
     <div class="demo-section__body">
       <slot />
     </div>
-    <details v-if="code" class="demo-section__code" :open="codeOpen">
+    <details
+      v-if="code"
+      class="demo-section__code"
+      :open="detailsOpen"
+      @toggle="onDetailsToggle"
+    >
       <summary>示例代码</summary>
       <div class="demo-section__code-panel">
         <NebulaReader
+          v-if="detailsOpen"
           :source="code ?? ''"
           :format="codePlain ? 'plain' : 'markdown'"
           :plain-highlight-language="
@@ -48,7 +73,7 @@ withDefaults(
   </section>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .demo-section {
   border: 1px solid hsl(var(--border));
   border-radius: 12px;

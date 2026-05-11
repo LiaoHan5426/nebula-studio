@@ -95,7 +95,7 @@ const emit = defineEmits<{
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .toast-stack {
   position: fixed;
   z-index: 1000;

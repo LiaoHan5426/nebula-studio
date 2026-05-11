@@ -10,14 +10,6 @@ import { tableDocAnchorItems } from './demos/tableDocAnchors';
 
 <template>
   <div class="table-layout">
-    <div class="table-feature">
-      <TableBasicDemo />
-      <TableGroupedDemo />
-      <TablePaginationDemo />
-      <TableOperationDemo />
-      <TableApiSection />
-    </div>
-
     <NebulaAnchor
       :items="[...tableDocAnchorItems]"
       title="On This Page"
@@ -25,10 +17,17 @@ import { tableDocAnchorItems } from './demos/tableDocAnchors';
       back-top
       back-top-mode="float"
     />
+    <div class="table-feature">
+      <TableBasicDemo />
+      <TableGroupedDemo />
+      <TablePaginationDemo />
+      <TableOperationDemo />
+      <TableApiSection />
+    </div>
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .table-layout {
   position: relative;
 }

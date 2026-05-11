@@ -39,7 +39,7 @@ const code = editorMarkdownPaneDemoCode;
   </section>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .editor-markdown-pane-demo {
   width: 100%;
   min-width: 0;

@@ -563,7 +563,7 @@ onUnmounted(() => {
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .shell {
   position: relative;
   --shell-bg: radial-gradient(

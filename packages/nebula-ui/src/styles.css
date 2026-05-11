@@ -974,12 +974,59 @@ html[data-theme='dark']
   transform: translateY(-1px);
 }
 
-.nebula-anchor--responsive {
-  display: none;
+/**
+ * `responsive`：窄视口为页内横向目录（sticky），避免固定侧栏占宽或完全隐藏；
+ * 宽视口（≥1280px）恢复右侧固定导航。
+ */
+.nebula-anchor.nebula-anchor--responsive {
+  position: sticky;
+  top: 0.65rem;
+  right: auto;
+  left: auto;
+  z-index: 25;
+  box-sizing: border-box;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 0.35rem 0.55rem;
+  align-items: center;
+  width: 100%;
+  max-width: none;
+  padding: 0.55rem 0.72rem;
+  margin: 0 0 0.85rem;
 }
 
-@media (width > 1600px) {
-  .nebula-anchor--responsive {
+.nebula-anchor.nebula-anchor--responsive .nebula-anchor__title {
+  flex: 1 0 100%;
+  margin: 0 0 0.15rem;
+}
+
+.nebula-anchor.nebula-anchor--responsive .nebula-anchor__back-top {
+  margin-top: 0;
+  margin-left: auto;
+}
+
+@media (min-width: 1280px) {
+  .nebula-anchor.nebula-anchor--responsive {
+    position: fixed;
+    top: 170px;
+    right: 20px;
+    left: auto;
+    z-index: 40;
     display: grid;
+    gap: 0.35rem;
+    align-items: stretch;
+    width: 160px;
+    padding: 0.8rem;
+    margin: 0;
+  }
+
+  .nebula-anchor.nebula-anchor--responsive .nebula-anchor__title {
+    flex: unset;
+    margin: 0 0 0.2rem;
+  }
+
+  .nebula-anchor.nebula-anchor--responsive .nebula-anchor__back-top {
+    margin-top: 0.35rem;
+    margin-left: 0;
   }
 }

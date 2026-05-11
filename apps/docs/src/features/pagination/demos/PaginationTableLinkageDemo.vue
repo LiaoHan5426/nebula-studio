@@ -46,7 +46,7 @@ const code = paginationTableLinkageDemoCode;
   </section>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .pagination-table-linkage__pager {
   margin-top: 0.75rem;
 }

@@ -59,7 +59,7 @@ function px(v: number | string | undefined, fallback: string): string {
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .nebula-md-pane {
   display: grid;
   gap: 0.75rem;

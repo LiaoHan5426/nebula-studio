@@ -47,7 +47,7 @@ const platformTitle = computed(() => {
   </ul>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .versions {
   display: flex;
   gap: 6px;

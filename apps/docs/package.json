@@ -26,7 +26,7 @@
   "devDependencies": {
     "@electron-toolkit/preload": "catalog:electron",
     "@nebula-studio-internal/tsconfig": "workspace:^",
-    "@vitejs/plugin-vue": "catalog:vite",
+    "@nebula-studio-internal/vite": "workspace:^",
     "typescript": "catalog:types",
     "vite": "catalog:vite",
     "vite-plus": "catalog:vite",

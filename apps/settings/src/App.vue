@@ -64,7 +64,7 @@ onUnmounted(() => {
   </main>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .settings {
   min-height: 100vh;
   padding: 24px;

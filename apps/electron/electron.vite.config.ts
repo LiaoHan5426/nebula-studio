@@ -1,7 +1,7 @@
+import { nebulaElectronRendererPartial } from '@nebula-studio-internal/vite';
 import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
 import { defineConfig } from 'electron-vite';
-import vue from '@vitejs/plugin-vue';
 
 const require = createRequire(import.meta.url);
 
@@ -12,9 +12,6 @@ function preloadSrc(pkgName: string): string {
     'src/index.ts',
   );
 }
-
-/** 与 `apps/docs/vite.config.ts` 一致：为 renderer 注入 `__NEBULA_BUILD_NODE_VERSION__`。 */
-const buildNodeVersion = process.version.replace(/^v/, '');
 
 export default defineConfig({
   main: {
@@ -37,15 +34,6 @@ export default defineConfig({
     },
   },
   renderer: {
-    define: {
-      __NEBULA_BUILD_NODE_VERSION__: JSON.stringify(buildNodeVersion),
-    },
-    plugins: [vue()],
-    resolve: {
-      dedupe: ['highlight.js', 'vue'],
-    },
-    optimizeDeps: {
-      include: ['highlight.js/lib/common', 'marked'],
-    },
+    ...nebulaElectronRendererPartial(),
   },
 });

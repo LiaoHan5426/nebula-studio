@@ -1,0 +1,10 @@
+{
+  "extends": "@nebula-studio-internal/tsconfig/library.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "rootDir": ".",
+    "composite": false,
+    "allowImportingTsExtensions": true
+  },
+  "include": ["src/**/*.ts"]
+}

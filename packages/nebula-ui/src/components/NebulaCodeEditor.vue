@@ -211,7 +211,7 @@ watch(
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .nebula-code-editor {
   box-sizing: border-box;
   width: 100%;

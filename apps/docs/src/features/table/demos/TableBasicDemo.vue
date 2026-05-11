@@ -30,7 +30,7 @@ const code = tableBasicDemoCode;
   </section>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .table-demo-wrap {
   width: 100%;
   max-width: 100%;

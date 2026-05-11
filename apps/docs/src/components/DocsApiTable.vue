@@ -8,11 +8,13 @@ export interface DocsApiRow {
 defineProps<{
   title?: string;
   rows: DocsApiRow[];
+  /** 根节点 `id`，供页内锚点 */
+  sectionId?: string;
 }>();
 </script>
 
 <template>
-  <section class="api-table-wrap">
+  <section class="api-table-wrap" :id="sectionId || undefined">
     <h3>{{ title ?? 'API' }}</h3>
     <div class="api-table">
       <div class="api-table__head">Name</div>
@@ -28,7 +30,7 @@ defineProps<{
   </section>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .api-table-wrap {
   border: 1px solid hsl(var(--border));
   border-radius: 12px;

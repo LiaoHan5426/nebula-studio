@@ -4,6 +4,7 @@ import DocsDemoSection from '../../../components/DocsDemoSection.vue';
 
 <template>
   <DocsDemoSection
+    section-id="placeholder-intro"
     title="组件演示占位"
     description="此区域用于放置下一个组件演示页面，建议保持“示例 + 说明 + 结果”结构。"
   >
@@ -14,7 +15,7 @@ import DocsDemoSection from '../../../components/DocsDemoSection.vue';
   </DocsDemoSection>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .placeholder-tip {
   margin: 0;
 }
