@@ -5,7 +5,7 @@
 import hljs from 'highlight.js/lib/common';
 import xml from 'highlight.js/lib/languages/xml';
 
-import type { NebulaEditorCodeLanguage } from '../components/NebulaEditorTypes';
+import type { NebulaEditorCodeLanguage } from '../components/editor-types/NebulaEditorTypes';
 
 /** Vue SFC：与 xml 相同；供围栏 ` ```vue ` 与编辑器 `codeLanguage: vue` */
 hljs.registerLanguage('vue', xml);

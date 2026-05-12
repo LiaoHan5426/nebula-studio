@@ -1,6 +1,6 @@
 import { defineComponent, h } from 'vue';
-import { withTooltipAttrs } from '../utils/tooltip';
-import type { TooltipPlacement } from '../utils/tooltip';
+import { withTooltipAttrs } from '../../utils/tooltip';
+import type { TooltipPlacement } from '../../utils/tooltip';
 
 type Variant = 'default' | 'success' | 'warning' | 'danger' | 'info';
 

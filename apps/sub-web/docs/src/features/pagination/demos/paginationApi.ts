@@ -1,4 +1,4 @@
-/** NebulaPagination（见 `packages/nebula-ui/src/components/NebulaPagination.ts`） */
+/** NebulaPagination（见 `packages/nebula-ui/src/components/pagination/NebulaPagination.ts`） */
 export const paginationComponentApiRows = [
   {
     name: 'v-model (modelValue)',

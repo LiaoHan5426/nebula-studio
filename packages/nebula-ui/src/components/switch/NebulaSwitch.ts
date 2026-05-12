@@ -1,7 +1,7 @@
 import { defineComponent, h } from 'vue';
-import { useBooleanModel } from '../composables/useBooleanModel';
-import { withTooltipAttrs } from '../utils/tooltip';
-import type { TooltipPlacement } from '../utils/tooltip';
+import { useBooleanModel } from '../../composables/useBooleanModel';
+import { withTooltipAttrs } from '../../utils/tooltip';
+import type { TooltipPlacement } from '../../utils/tooltip';
 
 export const NebulaSwitch = defineComponent({
   name: 'NebulaSwitch',

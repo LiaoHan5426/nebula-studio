@@ -12,7 +12,7 @@ import { EditorView, keymap } from '@codemirror/view';
 import { basicSetup } from 'codemirror';
 import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue';
 
-import type { NebulaEditorCodeLanguage } from './NebulaEditorTypes';
+import type { NebulaEditorCodeLanguage } from '../editor-types/NebulaEditorTypes';
 
 const props = withDefaults(
   defineProps<{

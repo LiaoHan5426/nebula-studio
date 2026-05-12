@@ -1,7 +1,7 @@
 import type {
   NebulaEditorCodeLanguage,
   NebulaEditorVariant,
-} from '../components/NebulaEditorTypes';
+} from '../components/editor-types/NebulaEditorTypes';
 
 /** `NebulaReader` 如何解释 `source` 字符串（与 `NebulaEditor` 产出对齐） */
 export type NebulaReaderFormat = 'markdown' | 'html' | 'plain';

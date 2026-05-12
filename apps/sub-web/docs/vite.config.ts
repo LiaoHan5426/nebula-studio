@@ -1,5 +1,6 @@
-import { defineNebulaConfig } from '@nebula-studio-internal/vite';
 import { fileURLToPath } from 'node:url';
+
+import { defineNebulaConfig } from '@nebula-studio-internal/vite';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
 

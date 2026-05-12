@@ -2,11 +2,7 @@
 
 import type { ElectronAPI } from '@electron-toolkit/preload';
 
-declare module '@nebula-studio-internal/tailwind/electron';
-
 declare global {
-  const __NEBULA_BUILD_NODE_VERSION__: string;
-
   interface Window {
     electron: ElectronAPI;
     api: {

@@ -1,7 +1,7 @@
 import { defineComponent, h } from 'vue';
 import type { PropType } from 'vue';
 import { VxeTable } from 'vxe-table';
-import { cn } from '../utils/cn';
+import { cn } from '../../utils/cn';
 
 type NebulaTableDragMode = 'none' | 'row' | 'column' | 'both';
 

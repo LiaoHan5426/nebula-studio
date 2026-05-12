@@ -1,12 +1,12 @@
 import { Marked } from 'marked';
 import { computed, defineComponent, h } from 'vue';
-import type { NebulaEditorCodeLanguage } from './NebulaEditorTypes';
+import type { NebulaEditorCodeLanguage } from '../editor-types/NebulaEditorTypes';
 import {
   highlightFenceCodeAsHtml,
   highlightSourceAsHtml,
-} from '../utils/highlightNebula';
-import type { NebulaReaderFormat } from '../utils/nebulaEditorReader';
-import { cn } from '../utils/cn';
+} from '../../utils/highlightNebula';
+import type { NebulaReaderFormat } from '../../utils/nebulaEditorReader';
+import { cn } from '../../utils/cn';
 
 /** v-html 中代码块必须转义，否则 `<template>` 等会被当成真实标签解析 */
 function escapeHtml(text: string): string {

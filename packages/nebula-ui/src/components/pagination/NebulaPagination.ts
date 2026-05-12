@@ -1,7 +1,7 @@
 import { computed, defineComponent, h } from 'vue';
 import type { PropType } from 'vue';
-import { NebulaButton } from './NebulaButton';
-import { cn } from '../utils/cn';
+import { NebulaButton } from '../button/NebulaButton';
+import { cn } from '../../utils/cn';
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);

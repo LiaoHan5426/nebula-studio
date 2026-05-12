@@ -2,8 +2,6 @@
 
 import type { ElectronAPI } from '@electron-toolkit/preload';
 
-declare module '@nebula-studio-internal/tailwind/electron';
-
 type AuthApi = {
   login(payload: {
     user: string;
@@ -18,8 +16,6 @@ type ShellApi = {
 };
 
 declare global {
-  const __NEBULA_BUILD_NODE_VERSION__: string;
-
   interface Window {
     electron: ElectronAPI;
     api: {

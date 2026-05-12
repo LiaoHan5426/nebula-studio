@@ -8,7 +8,7 @@ import {
 import type { NebulaTreeNode } from '@nebula-studio/nebula-ui';
 import { WEB_SHELL_EMBED_QUERY } from '@nebula-studio/app-shell';
 import { useConfig } from '@nebula-studio-electron/electron-shared-vue';
-import DocsNotifyCenter from './features/notify/components/DocsNotifyCenter.vue';
+import DocsNotifyCenter from './components/DocsNotifyCenter.vue';
 import { useDocsNotify } from './features/notify/composables/useDocsNotify';
 import type { DocsFeatureDefinition, FeatureMenuNode } from './features/types';
 import { DOCS_NAVIGATE_TO_FEATURE } from './docsNavigation';

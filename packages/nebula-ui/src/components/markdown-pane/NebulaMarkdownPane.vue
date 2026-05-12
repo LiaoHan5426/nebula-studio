@@ -2,9 +2,9 @@
 /**
  * Markdown **同一数据源**：左侧（或独占）`NebulaEditor` 编辑源码，右侧（或独占）`NebulaReader` 预览。
  */
-import NebulaEditor from './NebulaEditor.vue';
-import { NebulaReader } from './NebulaReader';
-import type { NebulaMarkdownPaneMode } from './NebulaEditorTypes';
+import NebulaEditor from '../editor/NebulaEditor.vue';
+import { NebulaReader } from '../reader/NebulaReader';
+import type { NebulaMarkdownPaneMode } from '../editor-types/NebulaEditorTypes';
 
 const props = withDefaults(
   defineProps<{

@@ -9,7 +9,9 @@ import { paginationComponentApiRows } from './paginationApi';
       <h3 class="pagination-api-title">NebulaPagination API</h3>
       <p class="pagination-api-desc">
         说明由 <code>paginationApi.ts</code> 维护；实现见
-        <code>packages/nebula-ui/src/components/NebulaPagination.ts</code>。
+        <code
+          >packages/nebula-ui/src/components/pagination/NebulaPagination.ts</code
+        >。
       </p>
     </header>
     <DocsApiTable title="NebulaPagination" :rows="paginationComponentApiRows" />
