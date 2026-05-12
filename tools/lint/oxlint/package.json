@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@eslint-community/eslint-plugin-eslint-comments": "catalog:lint",
+    "@nebula-studio-internal/node": "workspace:^",
     "eslint-plugin-better-tailwindcss": "catalog:lint",
     "eslint-plugin-command": "catalog:lint",
     "oxlint": "catalog:lint"

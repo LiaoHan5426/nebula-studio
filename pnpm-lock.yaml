@@ -39,9 +39,6 @@ catalogs:
     '@wangeditor/editor':
       specifier: ^5.1.23
       version: 5.1.23
-    '@wangeditor/editor-for-vue':
-      specifier: ^5.1.12
-      version: 5.1.12
     codemirror:
       specifier: ^6.0.2
       version: 6.0.2
@@ -154,6 +151,10 @@ catalogs:
     typescript:
       specifier: ^6.0.3
       version: 6.0.3
+  utils:
+    '@manypkg/get-packages':
+      specifier: ^2.2.2
+      version: 2.2.2
   vite:
     '@vitejs/plugin-vue':
       specifier: ^6.0.6
@@ -164,6 +165,9 @@ catalogs:
     happy-dom:
       specifier: ^20.9.0
       version: 20.9.0
+    vite:
+      specifier: 8.0.10
+      version: 8.0.10
     vite-plus:
       specifier: ^0.1.20
       version: 0.1.20
@@ -176,8 +180,7 @@ catalogs:
       version: 3.2.7
 
 overrides:
-  vite: 8.0.10
-  vitest: npm:@voidzero-dev/vite-plus-test@latest
+  '@wangeditor/editor-for-vue': ^5.1.12
 
 importers:
 
@@ -198,6 +201,9 @@ importers:
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
         version: link:tools/tsconfig
+      '@nebula-studio/types':
+        specifier: workspace:^
+        version: link:packages/types
       '@vitejs/plugin-vue':
         specifier: catalog:vite
         version: 6.0.6(vite@8.0.10(@types/node@25.6.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.21.0)(yaml@2.8.4))(vue@3.5.33(typescript@6.0.3))
@@ -226,54 +232,8 @@ importers:
         specifier: catalog:vite
         version: 0.1.20(@types/node@25.6.2)(esbuild@0.28.0)(happy-dom@20.9.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.21.0)(typescript@6.0.3)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.21.0)(yaml@2.8.4))(yaml@2.8.4)
       vitest:
-        specifier: npm:@voidzero-dev/vite-plus-test@latest
+        specifier: npm:@voidzero-dev/vite-plus-test@^0.1.20
         version: '@voidzero-dev/vite-plus-test@0.1.20(@types/node@25.6.2)(esbuild@0.28.0)(happy-dom@20.9.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.21.0)(typescript@6.0.3)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.21.0)(yaml@2.8.4))(yaml@2.8.4)'
-
-  apps/docs:
-    dependencies:
-      '@nebula-studio-electron/electron-shared':
-        specifier: workspace:^
-        version: link:../../packages/electron-shared
-      '@nebula-studio-electron/electron-shared-vue':
-        specifier: workspace:^
-        version: link:../../packages/electron-shared-vue
-      '@nebula-studio-internal/tailwind':
-        specifier: workspace:^
-        version: link:../../tools/tailwindcss
-      '@nebula-studio/app-shell':
-        specifier: workspace:^
-        version: link:../../packages/app-shell
-      '@nebula-studio/nebula-ui':
-        specifier: workspace:^
-        version: link:../../packages/nebula-ui
-      marked:
-        specifier: 'catalog:'
-        version: 18.0.3
-      vue:
-        specifier: catalog:vue
-        version: 3.5.33(typescript@6.0.3)
-    devDependencies:
-      '@electron-toolkit/preload':
-        specifier: catalog:electron
-        version: 3.0.2(electron@41.5.1)
-      '@nebula-studio-internal/tsconfig':
-        specifier: workspace:^
-        version: link:../../tools/tsconfig
-      '@nebula-studio-internal/vite':
-        specifier: workspace:^
-        version: link:../../internal/vite
-      typescript:
-        specifier: catalog:types
-        version: 6.0.3
-      vite:
-        specifier: 8.0.10
-        version: 8.0.10(@types/node@25.6.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.21.0)(yaml@2.8.4)
-      vite-plus:
-        specifier: catalog:vite
-        version: 0.1.20(@types/node@25.6.2)(esbuild@0.28.0)(happy-dom@20.9.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.21.0)(typescript@6.0.3)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.21.0)(yaml@2.8.4))(yaml@2.8.4)
-      vue-tsc:
-        specifier: catalog:vue
-        version: 3.2.7(typescript@6.0.3)
 
   apps/electron:
     dependencies:
@@ -296,6 +256,15 @@ importers:
         specifier: ^2.8.1
         version: 2.8.4
     devDependencies:
+      '@nebula-studio-internal/node':
+        specifier: workspace:^
+        version: link:../../internal/node
+      '@nebula-studio-internal/tailwind':
+        specifier: workspace:^
+        version: link:../../tools/tailwindcss
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../tools/tsconfig
       '@nebula-studio-internal/vite':
         specifier: workspace:^
         version: link:../../internal/vite
@@ -308,6 +277,9 @@ importers:
       '@nebula-studio-preload/settings':
         specifier: workspace:^
         version: link:../electron-preload/settings
+      '@nebula-studio/types':
+        specifier: workspace:^
+        version: link:../../packages/types
       '@types/node':
         specifier: catalog:types
         version: 24.12.2
@@ -324,7 +296,7 @@ importers:
         specifier: catalog:types
         version: 6.0.3
       vite:
-        specifier: 8.0.10
+        specifier: catalog:vite
         version: 8.0.10(@types/node@24.12.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.21.0)(yaml@2.8.4)
       vue:
         specifier: catalog:vue
@@ -378,20 +350,26 @@ importers:
         specifier: catalog:electron
         version: 41.5.1
 
-  apps/frontend:
+  apps/sub-web/docs:
     dependencies:
+      '@nebula-studio-electron/electron-shared':
+        specifier: workspace:^
+        version: link:../../../packages/electron-shared
       '@nebula-studio-electron/electron-shared-vue':
         specifier: workspace:^
-        version: link:../../packages/electron-shared-vue
+        version: link:../../../packages/electron-shared-vue
       '@nebula-studio-internal/tailwind':
         specifier: workspace:^
-        version: link:../../tools/tailwindcss
+        version: link:../../../tools/tailwindcss
       '@nebula-studio/app-shell':
         specifier: workspace:^
-        version: link:../../packages/app-shell
+        version: link:../../../packages/app-shell
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
-        version: link:../../packages/nebula-ui
+        version: link:../../../packages/nebula-ui
+      marked:
+        specifier: 'catalog:'
+        version: 18.0.3
       vue:
         specifier: catalog:vue
         version: 3.5.33(typescript@6.0.3)
@@ -401,28 +379,40 @@ importers:
         version: 3.0.2(electron@41.5.1)
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
-        version: link:../../tools/tsconfig
+        version: link:../../../tools/tsconfig
+      '@nebula-studio-internal/vite':
+        specifier: workspace:^
+        version: link:../../../internal/vite
+      '@nebula-studio/types':
+        specifier: workspace:^
+        version: link:../../../packages/types
       typescript:
         specifier: catalog:types
         version: 6.0.3
+      vite:
+        specifier: catalog:vite
+        version: 8.0.10(@types/node@25.6.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.21.0)(yaml@2.8.4)
+      vite-plus:
+        specifier: catalog:vite
+        version: 0.1.20(@types/node@25.6.2)(esbuild@0.28.0)(happy-dom@20.9.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.21.0)(typescript@6.0.3)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.21.0)(yaml@2.8.4))(yaml@2.8.4)
       vue-tsc:
         specifier: catalog:vue
         version: 3.2.7(typescript@6.0.3)
 
-  apps/login:
+  apps/sub-web/frontend:
     dependencies:
       '@nebula-studio-electron/electron-shared-vue':
         specifier: workspace:^
-        version: link:../../packages/electron-shared-vue
+        version: link:../../../packages/electron-shared-vue
       '@nebula-studio-internal/tailwind':
         specifier: workspace:^
-        version: link:../../tools/tailwindcss
+        version: link:../../../tools/tailwindcss
       '@nebula-studio/app-shell':
         specifier: workspace:^
-        version: link:../../packages/app-shell
+        version: link:../../../packages/app-shell
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
-        version: link:../../packages/nebula-ui
+        version: link:../../../packages/nebula-ui
       vue:
         specifier: catalog:vue
         version: 3.5.33(typescript@6.0.3)
@@ -432,25 +422,40 @@ importers:
         version: 3.0.2(electron@41.5.1)
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
-        version: link:../../tools/tsconfig
+        version: link:../../../tools/tsconfig
+      '@nebula-studio-internal/vite':
+        specifier: workspace:^
+        version: link:../../../internal/vite
+      '@nebula-studio/types':
+        specifier: workspace:^
+        version: link:../../../packages/types
       typescript:
         specifier: catalog:types
         version: 6.0.3
+      vite:
+        specifier: catalog:vite
+        version: 8.0.10(@types/node@25.6.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.21.0)(yaml@2.8.4)
+      vite-plus:
+        specifier: catalog:vite
+        version: 0.1.20(@types/node@25.6.2)(esbuild@0.28.0)(happy-dom@20.9.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.21.0)(typescript@6.0.3)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.21.0)(yaml@2.8.4))(yaml@2.8.4)
       vue-tsc:
         specifier: catalog:vue
         version: 3.2.7(typescript@6.0.3)
 
-  apps/settings:
+  apps/sub-web/login:
     dependencies:
       '@nebula-studio-electron/electron-shared-vue':
         specifier: workspace:^
-        version: link:../../packages/electron-shared-vue
+        version: link:../../../packages/electron-shared-vue
       '@nebula-studio-internal/tailwind':
         specifier: workspace:^
-        version: link:../../tools/tailwindcss
+        version: link:../../../tools/tailwindcss
+      '@nebula-studio/app-shell':
+        specifier: workspace:^
+        version: link:../../../packages/app-shell
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
-        version: link:../../packages/nebula-ui
+        version: link:../../../packages/nebula-ui
       vue:
         specifier: catalog:vue
         version: 3.5.33(typescript@6.0.3)
@@ -460,10 +465,65 @@ importers:
         version: 3.0.2(electron@41.5.1)
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
-        version: link:../../tools/tsconfig
+        version: link:../../../tools/tsconfig
+      '@nebula-studio-internal/vite':
+        specifier: workspace:^
+        version: link:../../../internal/vite
+      '@nebula-studio/types':
+        specifier: workspace:^
+        version: link:../../../packages/types
       typescript:
         specifier: catalog:types
         version: 6.0.3
+      vite:
+        specifier: catalog:vite
+        version: 8.0.10(@types/node@25.6.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.21.0)(yaml@2.8.4)
+      vite-plus:
+        specifier: catalog:vite
+        version: 0.1.20(@types/node@25.6.2)(esbuild@0.28.0)(happy-dom@20.9.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.21.0)(typescript@6.0.3)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.21.0)(yaml@2.8.4))(yaml@2.8.4)
+      vue-tsc:
+        specifier: catalog:vue
+        version: 3.2.7(typescript@6.0.3)
+
+  apps/sub-web/settings:
+    dependencies:
+      '@nebula-studio-electron/electron-shared-vue':
+        specifier: workspace:^
+        version: link:../../../packages/electron-shared-vue
+      '@nebula-studio-internal/tailwind':
+        specifier: workspace:^
+        version: link:../../../tools/tailwindcss
+      '@nebula-studio/app-shell':
+        specifier: workspace:^
+        version: link:../../../packages/app-shell
+      '@nebula-studio/nebula-ui':
+        specifier: workspace:^
+        version: link:../../../packages/nebula-ui
+      vue:
+        specifier: catalog:vue
+        version: 3.5.33(typescript@6.0.3)
+    devDependencies:
+      '@electron-toolkit/preload':
+        specifier: catalog:electron
+        version: 3.0.2(electron@41.5.1)
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../../tools/tsconfig
+      '@nebula-studio-internal/vite':
+        specifier: workspace:^
+        version: link:../../../internal/vite
+      '@nebula-studio/types':
+        specifier: workspace:^
+        version: link:../../../packages/types
+      typescript:
+        specifier: catalog:types
+        version: 6.0.3
+      vite:
+        specifier: catalog:vite
+        version: 8.0.10(@types/node@25.6.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.21.0)(yaml@2.8.4)
+      vite-plus:
+        specifier: catalog:vite
+        version: 0.1.20(@types/node@25.6.2)(esbuild@0.28.0)(happy-dom@20.9.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.21.0)(typescript@6.0.3)(vite@8.0.10(@types/node@25.6.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.21.0)(yaml@2.8.4))(yaml@2.8.4)
       vue-tsc:
         specifier: catalog:vue
         version: 3.2.7(typescript@6.0.3)
@@ -478,16 +538,16 @@ importers:
         version: link:../../tools/tailwindcss
       '@nebula-studio-renderer/docs':
         specifier: workspace:^
-        version: link:../docs
+        version: link:../sub-web/docs
       '@nebula-studio-renderer/login':
         specifier: workspace:^
-        version: link:../login
+        version: link:../sub-web/login
       '@nebula-studio-renderer/main':
         specifier: workspace:^
-        version: link:../frontend
+        version: link:../sub-web/frontend
       '@nebula-studio-renderer/settings':
         specifier: workspace:^
-        version: link:../settings
+        version: link:../sub-web/settings
       '@nebula-studio/app-shell':
         specifier: workspace:^
         version: link:../../packages/app-shell
@@ -507,11 +567,14 @@ importers:
       '@nebula-studio-internal/vite':
         specifier: workspace:^
         version: link:../../internal/vite
+      '@nebula-studio/types':
+        specifier: workspace:^
+        version: link:../../packages/types
       typescript:
         specifier: catalog:types
         version: 6.0.3
       vite:
-        specifier: 8.0.10
+        specifier: catalog:vite
         version: 8.0.10(@types/node@25.6.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.21.0)(yaml@2.8.4)
       vite-plus:
         specifier: catalog:vite
@@ -519,6 +582,22 @@ importers:
       vue-tsc:
         specifier: catalog:vue
         version: 3.2.7(typescript@6.0.3)
+
+  internal/node:
+    dependencies:
+      '@manypkg/get-packages':
+        specifier: catalog:utils
+        version: 2.2.2
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../tools/tsconfig
+      '@types/node':
+        specifier: catalog:types
+        version: 24.12.2
+      typescript:
+        specifier: catalog:types
+        version: 6.0.3
 
   internal/vite:
     dependencies:
@@ -529,7 +608,7 @@ importers:
         specifier: catalog:style
         version: 1.99.0
       vite:
-        specifier: 8.0.10
+        specifier: catalog:vite
         version: 8.0.10(@types/node@25.6.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.21.0)(yaml@2.8.4)
       vite-plus:
         specifier: catalog:vite
@@ -541,6 +620,12 @@ importers:
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
         version: link:../../tools/tsconfig
+      '@nebula-studio/types':
+        specifier: workspace:^
+        version: link:../../packages/types
+      electron-vite:
+        specifier: catalog:electron
+        version: 5.0.0(vite@8.0.10(@types/node@25.6.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.21.0)(yaml@2.8.4))
       typescript:
         specifier: catalog:types
         version: 6.0.3
@@ -553,6 +638,13 @@ importers:
       '@nebula-studio-electron/electron-shared-vue':
         specifier: workspace:^
         version: link:../electron-shared-vue
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../tools/tsconfig
+      '@nebula-studio/types':
+        specifier: workspace:^
+        version: link:../types
 
   packages/electron-shared: {}
 
@@ -601,7 +693,7 @@ importers:
         specifier: 'catalog:'
         version: 5.1.23
       '@wangeditor/editor-for-vue':
-        specifier: 'catalog:'
+        specifier: ^5.1.12
         version: 5.1.12(@wangeditor/editor@5.1.23)(vue@3.5.33(typescript@6.0.3))
       codemirror:
         specifier: 'catalog:'
@@ -628,9 +720,16 @@ importers:
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
         version: link:../../tools/tsconfig
+      '@nebula-studio/types':
+        specifier: workspace:^
+        version: link:../types
       sass:
         specifier: catalog:style
         version: 1.99.0
+
+  packages/styles: {}
+
+  packages/types: {}
 
   tools/lint/oxfmt:
     dependencies:
@@ -653,6 +752,9 @@ importers:
       '@eslint-community/eslint-plugin-eslint-comments':
         specifier: catalog:lint
         version: 4.7.1(eslint@10.2.1(jiti@2.7.0))
+      '@nebula-studio-internal/node':
+        specifier: workspace:^
+        version: link:../../../internal/node
       eslint-plugin-better-tailwindcss:
         specifier: catalog:lint
         version: 4.5.0(eslint@10.2.1(jiti@2.7.0))(oxlint@1.62.0(oxlint-tsgolint@0.22.0))(tailwindcss@4.3.0)(typescript@6.0.3)
@@ -718,6 +820,9 @@ importers:
       '@iconify/tailwind4':
         specifier: catalog:style
         version: 1.2.3(tailwindcss@4.2.4)
+      '@nebula-studio/styles':
+        specifier: workspace:^
+        version: link:../../packages/styles
       '@tailwindcss/typography':
         specifier: catalog:style
         version: 0.5.19(tailwindcss@4.2.4)
@@ -728,8 +833,14 @@ importers:
         specifier: catalog:style
         version: 1.4.0
     devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../tsconfig
+      '@nebula-studio/types':
+        specifier: workspace:^
+        version: link:../../packages/types
       vite:
-        specifier: 8.0.10
+        specifier: catalog:vite
         version: 8.0.10(@types/node@25.6.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.21.0)(yaml@2.8.4)
       vite-plus:
         specifier: catalog:vite
@@ -738,7 +849,7 @@ importers:
   tools/tsconfig:
     dependencies:
       vite:
-        specifier: 8.0.10
+        specifier: catalog:vite
         version: 8.0.10(@types/node@25.6.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.21.0)(yaml@2.8.4)
 
 packages:
@@ -1652,6 +1763,18 @@ packages:
   '@malept/flatpak-bundler@0.4.0':
     resolution: {integrity: sha512-9QOtNffcOF/c1seMCDnjckb3R9WHcG34tky+FHpNKKCW0wc/scYLwMtO+ptyGUfMW0/b/n4qRiALlaFHc9Oj7Q==}
     engines: {node: '>= 10.0.0'}
+
+  '@manypkg/find-root@2.2.3':
+    resolution: {integrity: sha512-jtEZKczWTueJYHjGpxU3KJQ08Gsrf4r6Q2GjmPp/RGk5leeYAA1eyDADSAF+KVCsQ6EwZd/FMcOFCoMhtqdCtQ==}
+    engines: {node: '>=14.18.0'}
+
+  '@manypkg/get-packages@2.2.2':
+    resolution: {integrity: sha512-3+Zd8kLZmsyJFmWTBtY0MAuCErI7yKB2cjMBlujvSVKZ2R/BMXi0kjCXu2dtRlSq/ML86t1FkumT0yreQ3n8OQ==}
+    engines: {node: '>=14.18.0'}
+
+  '@manypkg/tools@1.1.2':
+    resolution: {integrity: sha512-3lBouSuF7CqlseLB+FKES0K4FQ02JrbEoRtJhxnsyB1s5v4AP03gsoohN8jp7DcOImhaR9scYdztq3/sLfk/qQ==}
+    engines: {node: '>=14.18.0'}
 
   '@marijn/find-cluster-break@1.0.2':
     resolution: {integrity: sha512-l0h88YhZFyKdXIFNfSWpyjStDjGHwZ/U7iobcK1cQQD8sejsONdQtTVU+1wVN1PBw40PiiHB1vA5S7VTfQiP9g==}
@@ -2621,14 +2744,14 @@ packages:
     resolution: {integrity: sha512-jIAsvHOEtWpslLOI2MeElGFxH7M8pM83BU/Tor4RLyiwH0FM4nUW3xdvbw20EeU9wc5IspQwMq225K3CMnJEpA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
-      vite: 8.0.10
+      vite: ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
       vue: ^3.0.0
 
   '@vitejs/plugin-vue@6.0.6':
     resolution: {integrity: sha512-u9HHgfrq3AjXlysn0eINFnWQOJQLO9WN6VprZ8FXl7A2bYisv3Hui9Ij+7QZ41F/WYWarHjwBbXtD7dKg3uxbg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
-      vite: 8.0.10
+      vite: ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
       vue: ^3.2.25
 
   '@voidzero-dev/vite-plus-core@0.1.20':
@@ -2743,7 +2866,7 @@ packages:
       '@vitest/ui': 4.1.5
       happy-dom: '*'
       jsdom: '*'
-      vite: 8.0.10
+      vite: ^6.0.0 || ^7.0.0 || ^8.0.0
     peerDependenciesMeta:
       '@edge-runtime/vm':
         optional: true
@@ -3393,7 +3516,7 @@ packages:
     hasBin: true
     peerDependencies:
       '@swc/core': ^1.0.0
-      vite: 8.0.10
+      vite: ^5.0.0 || ^6.0.0 || ^7.0.0
     peerDependenciesMeta:
       '@swc/core':
         optional: true
@@ -3971,6 +4094,9 @@ packages:
   jiti@2.7.0:
     resolution: {integrity: sha512-AC/7JofJvZGrrneWNaEnJeOLUx+JlGt7tNa0wZiRPT4MY1wmfKjt2+6O2p2uz2+skll8OZZmJMNqeke7kKbNgQ==}
     hasBin: true
+
+  jju@1.4.0:
+    resolution: {integrity: sha512-8wb9Yw966OSxApiCt0K3yNJL8pnNeIv+OEq2YMidz4FKP6nonSRoOXc80iXY4JaN2FC11B9qsNmDsm+ZOfMROA==}
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -6182,6 +6308,21 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@manypkg/find-root@2.2.3':
+    dependencies:
+      '@manypkg/tools': 1.1.2
+
+  '@manypkg/get-packages@2.2.2':
+    dependencies:
+      '@manypkg/find-root': 2.2.3
+      '@manypkg/tools': 1.1.2
+
+  '@manypkg/tools@1.1.2':
+    dependencies:
+      fast-glob: 3.3.3
+      jju: 1.4.0
+      js-yaml: 4.1.1
+
   '@marijn/find-cluster-break@1.0.2': {}
 
   '@napi-rs/wasm-runtime@1.1.4(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)':
@@ -7817,6 +7958,18 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  electron-vite@5.0.0(vite@8.0.10(@types/node@25.6.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.21.0)(yaml@2.8.4)):
+    dependencies:
+      '@babel/core': 7.29.0
+      '@babel/plugin-transform-arrow-functions': 7.27.1(@babel/core@7.29.0)
+      cac: 6.7.14
+      esbuild: 0.25.12
+      magic-string: 0.30.21
+      picocolors: 1.1.1
+      vite: 8.0.10(@types/node@25.6.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.99.0)(tsx@4.21.0)(yaml@2.8.4)
+    transitivePeerDependencies:
+      - supports-color
+
   electron-winstaller@5.4.0:
     dependencies:
       '@electron/asar': 3.4.1
@@ -8528,6 +8681,8 @@ snapshots:
   jiti@2.6.1: {}
 
   jiti@2.7.0: {}
+
+  jju@1.4.0: {}
 
   js-tokens@4.0.0: {}
 

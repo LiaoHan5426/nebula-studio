@@ -1,27 +1,27 @@
 import type { UserConfig } from 'vite';
 import { mergeConfig } from 'vite';
 import { defineConfig } from 'vite-plus';
+import { nebulaRendererChunkBuildPartial } from './chunks/index.ts';
+import type { NebulaRendererChunksOptions } from './chunks/types.ts';
 import { nebulaBuildNodeVersionDefine } from '../env/nebulaBuildDefines.ts';
 import { nebulaRendererOptimizeDeps } from './nebulaRendererOptimizeDeps.ts';
 import { resolveNebulaRendererPluginList } from './nebulaRendererPlugins.ts';
-import type {
-  NebulaRendererPluginSelection,
-  NebulaRendererPreset,
-} from './nebulaRendererPlugins.ts';
+import type { NebulaRendererPluginSelection } from './nebulaRendererPlugins.ts';
 import { nebulaRendererResolve } from './nebulaRendererResolve.ts';
 
 export interface CreateNebulaRendererViteConfigOptions {
-  preset: NebulaRendererPreset;
   root: string;
   base?: string;
   define?: UserConfig['define'];
   server?: UserConfig['server'];
   build?: UserConfig['build'];
   /**
-   * 内置插件启用策略：`builtins` 覆盖 `preset` 默认；`extra` 追加第三方插件。
+   * 内置插件：`builtins` 覆盖默认（默认仅 `vue`）；`extra` 追加第三方插件。
    * 新增内置能力时先在 `nebulaRendererPlugins.ts` 的 `NebulaRendererPluginId` / `BUILTIN_REGISTRY` 登记。
    */
   plugins?: NebulaRendererPluginSelection;
+  /** Renderer 构建 chunk 策略，与 `nebulaElectronRendererPartial` 一致；默认开启。 */
+  chunks?: NebulaRendererChunksOptions;
   /**
    * 最后与默认配置合并（后者覆盖前者冲突项以 `merge` 为准）。
    *
@@ -45,7 +45,6 @@ export function createNebulaRendererViteConfig(
   opts: CreateNebulaRendererViteConfigOptions,
 ): ReturnType<typeof defineConfig> {
   const {
-    preset,
     root,
     base = process.env.VITE_BASE_PATH ?? '/',
     define: defineExtra,
@@ -53,10 +52,11 @@ export function createNebulaRendererViteConfig(
     build,
     plugins: pluginSelection,
     merge: userMerge,
+    chunks: chunksOptions,
   } = opts;
 
-  const baseConfig: UserConfig = {
-    plugins: resolveNebulaRendererPluginList(preset, pluginSelection),
+  let baseConfig: UserConfig = {
+    plugins: resolveNebulaRendererPluginList(pluginSelection),
     base,
     root,
     resolve: nebulaRendererResolve,
@@ -67,14 +67,19 @@ export function createNebulaRendererViteConfig(
     },
   };
 
+  const chunkPartial = nebulaRendererChunkBuildPartial(chunksOptions);
+  if (chunkPartial) {
+    baseConfig = mergeConfig(baseConfig, chunkPartial);
+  }
+
   if (server !== undefined) {
     baseConfig.server = server;
   }
   if (build !== undefined) {
-    baseConfig.build = build;
+    baseConfig = mergeConfig(baseConfig, { build });
   }
 
   return defineConfig(mergeConfig(baseConfig, userMerge ?? {}));
 }
 
-export type { NebulaRendererPluginSelection, NebulaRendererPreset };
+export type { NebulaRendererPluginSelection };

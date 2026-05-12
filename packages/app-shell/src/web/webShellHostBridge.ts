@@ -28,7 +28,7 @@ export function createWebShellHostBridge(): ShellHostBridge {
       if (!open) {
         return;
       }
-      // 仅「回到集成首页」时移除 active-view；临时展开应用集成不改 localStorage
+      // 仅「回到集成首页」时移除 active-view；临时展开应用集成不改 sessionStorage
       if (options?.clearActiveViewOnOpen) {
         persistActiveViewPreference(null);
       }

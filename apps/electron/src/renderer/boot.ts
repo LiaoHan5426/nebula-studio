@@ -1,3 +1,6 @@
+import '@nebula-studio-internal/tailwind/electron';
+import './styles/electron-overrides.css';
+
 import appConfig from '../../app.config';
 import { resolveRendererEntry } from '../main/windowRegistry';
 
@@ -12,9 +15,10 @@ type RendererPkg =
  * 唯一事实来源：`app.config.ts` 中 `windows.*.renderer` 与 `modalRenderers.*.renderer`。
  *
  * 此处使用固定 glob 仅为满足 Vite/Rollup 在构建期收集模块；不做「按包名枚举」的硬编码。
+ * 须与 `app.config.ts` 的 `renderers` 段一致（当前：`apps/sub-web/<包>/src/main.ts`）。
  * 启动时：配置声明的每个 renderer 必须在磁盘上有对应 `main.ts`（缺一即抛错）。
  */
-const rendererMainModules = import.meta.glob('../../../*/src/main.ts');
+const rendererMainModules = import.meta.glob('../../../sub-web/*/src/main.ts');
 
 function pkgFromRendererMainGlobKey(key: string): string | undefined {
   const normalized = key.replace(/\\/g, '/');
@@ -41,7 +45,7 @@ function buildRendererLoaders(): Record<RendererPkg, () => Promise<unknown>> {
 
     if (!required.has(pkg)) {
       console.warn(
-        `[boot] 存在 apps/${pkg}/src/main.ts，但 app.config 未引用 renderer "${pkg}"；已跳过。`,
+        `[boot] 存在 apps/sub-web/${pkg}/src/main.ts，但 app.config 未引用 renderer "${pkg}"；已跳过。`,
       );
       continue;
     }
@@ -57,7 +61,7 @@ function buildRendererLoaders(): Record<RendererPkg, () => Promise<unknown>> {
   for (const pkg of required) {
     if (!satisfied.has(pkg)) {
       throw new Error(
-        `boot: app.config 需要 renderer "${pkg}"，但未找到 apps/${pkg}/src/main.ts`,
+        `boot: app.config 需要 renderer "${pkg}"，但未找到 apps/sub-web/${pkg}/src/main.ts`,
       );
     }
   }

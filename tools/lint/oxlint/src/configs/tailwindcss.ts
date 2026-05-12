@@ -1,6 +1,8 @@
-import type { OxlintConfig } from 'oxlint';
-
+import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+import { getPackageSync } from '@nebula-studio-internal/node';
+import type { OxlintConfig } from 'oxlint';
 
 import eslintPluginBetterTailwindcss from 'eslint-plugin-better-tailwindcss';
 import { getDefaultSelectors } from 'eslint-plugin-better-tailwindcss/defaults';
@@ -15,9 +17,19 @@ const selectors = [
   },
 ];
 
-const entryPoint = fileURLToPath(
-  new URL('../../../../tailwind/src/theme.css', import.meta.url),
+const configDir = path.dirname(fileURLToPath(import.meta.url));
+
+const tailwindInternal = getPackageSync(
+  '@nebula-studio-internal/tailwind',
+  configDir,
 );
+if (tailwindInternal === undefined) {
+  throw new Error(
+    '[oxlint/tailwindcss] Workspace package @nebula-studio-internal/tailwind not found',
+  );
+}
+
+const entryPoint = path.join(tailwindInternal.dir, 'src/theme.css');
 
 const settings = {
   entryPoint,

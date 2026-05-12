@@ -43,6 +43,7 @@
   },
   "devDependencies": {
     "@nebula-studio-internal/tsconfig": "workspace:^",
+    "@nebula-studio/types": "workspace:^",
     "sass": "catalog:style"
   }
 }

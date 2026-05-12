@@ -5,10 +5,10 @@ on:
     branches: [main, master]
     paths:
       - 'apps/web/**'
-      - 'apps/frontend/**'
-      - 'apps/docs/**'
-      - 'apps/settings/**'
-      - 'apps/login/**'
+      - 'apps/sub-web/frontend/**'
+      - 'apps/sub-web/docs/**'
+      - 'apps/sub-web/settings/**'
+      - 'apps/sub-web/login/**'
       - 'packages/**'
       - 'tools/tailwindcss/**'
       - 'pnpm-lock.yaml'
@@ -44,14 +44,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v4
+      - uses: voidzero-dev/setup-vp@v1
         with:
-          node-version: 22
-          cache: pnpm
-
-      - run: pnpm install --frozen-lockfile
+          node-version: '22'
+          cache: true
+          run-install: |
+            - args: ['--frozen-lockfile']
 
       - name: Resolve base path
         id: vars
@@ -65,15 +63,14 @@ jobs:
 
       # 项目页：https://owner.github.io/repo/ 需带仓库名前缀；用户站点 root 仓库请改为 VITE_BASE_PATH: /
       - name: Build web shell
-        working-directory: apps/web
         env:
           VITE_BASE_PATH: ${{ steps.vars.outputs.base_path }}
-        run: pnpm run build
+        run: vp run web#build
 
       - uses: actions/upload-pages-artifact@v3
         with:
           name: web-shell-pages
-          path: apps/web/dist-web
+          path: apps/web/dist
 
   deploy:
     runs-on: ubuntu-latest

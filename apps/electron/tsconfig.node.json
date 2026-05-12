@@ -3,6 +3,7 @@
   "include": ["electron.vite.config.*", "app.config.ts", "src/main/**/*"],
   "compilerOptions": {
     "composite": true,
+    "allowImportingTsExtensions": true,
     "tsBuildInfoFile": "./node_modules/.cache/tsc/tsconfig.node.tsbuildinfo",
     "types": ["electron-vite/node", "vite/client"]
   }

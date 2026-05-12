@@ -2,22 +2,21 @@
   "name": "@nebula-studio/electron",
   "version": "1.0.0",
   "description": "An Electron application with Vue and TypeScript",
-  "packageManager": "pnpm@10.33.2",
   "main": "./out/main/index.js",
   "author": "Liao Han <liaohan5426@gmail.com>",
   "scripts": {
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
     "typecheck:web": "vue-tsc --noEmit -p tsconfig.renderer.json --composite false",
-    "typecheck:renderers": "pnpm --filter \"@nebula-studio-renderer/*\" run typecheck",
-    "typecheck": "npm run typecheck:node && npm run typecheck:web && npm run typecheck:renderers",
+    "typecheck:renderers": "vp run --filter \"@nebula-studio-renderer/*\" typecheck",
+    "typecheck": "vp run typecheck:node && vp run typecheck:web && vp run typecheck:renderers",
     "start": "vp exec electron-vite preview",
     "dev": "vp exec electron-vite dev",
-    "build": "npm run typecheck && vp exec electron-vite build && pnpm --filter @nebula-studio-renderer/docs run build && node ./scripts/copy-docs-site.mjs",
+    "build": "vp run typecheck && vp exec electron-vite build && vp run --filter @nebula-studio-renderer/docs build && node ./scripts/copy-docs-site.mjs",
     "postinstall": "electron-builder install-app-deps",
-    "build:unpack": "npm run build && vp exec electron-builder --dir",
-    "pack:win": "npm run build && vp exec electron-builder --win",
-    "pack:mac": "npm run build && vp exec electron-builder --mac",
-    "pack:linux": "npm run build && vp exec electron-builder --linux"
+    "build:unpack": "vp run build && vp exec electron-builder --dir",
+    "pack:win": "vp run build && vp exec electron-builder --win",
+    "pack:mac": "vp run build && vp exec electron-builder --mac",
+    "pack:linux": "vp run build && vp exec electron-builder --linux"
   },
   "dependencies": {
     "@electron-toolkit/preload": "catalog:electron",
@@ -28,16 +27,20 @@
     "yaml": "^2.8.1"
   },
   "devDependencies": {
+    "@nebula-studio-internal/node": "workspace:^",
+    "@nebula-studio-internal/tailwind": "workspace:^",
     "@nebula-studio-preload/docs": "workspace:^",
     "@nebula-studio-preload/main": "workspace:^",
     "@nebula-studio-preload/settings": "workspace:^",
     "@types/node": "catalog:types",
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "@nebula-studio/types": "workspace:^",
     "@nebula-studio-internal/vite": "workspace:^",
     "electron": "catalog:electron",
     "electron-builder": "catalog:electron",
     "electron-vite": "catalog:electron",
     "typescript": "catalog:types",
-    "vite": "^7.2.6",
+    "vite": "catalog:vite",
     "vue": "catalog:vue",
     "vue-tsc": "catalog:vue"
   }

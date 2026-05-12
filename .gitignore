@@ -16,8 +16,6 @@ dist-ssr
 apps/electron/out/
 apps/electron/dist/
 apps/electron/public/logs/
-apps/docs/dist-web/
-apps/web/dist-web/
 
 # Editor directories and files
 .vscode/*

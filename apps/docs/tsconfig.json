@@ -1,9 +1,0 @@
-{
-  "extends": "@nebula-studio-internal/tsconfig/web.json",
-  "include": [
-    "src/env.d.ts",
-    "src/**/*",
-    "src/**/*.vue",
-    "../../packages/nebula-ui/env.d.ts"
-  ]
-}

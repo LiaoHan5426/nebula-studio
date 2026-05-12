@@ -84,3 +84,7 @@ Keep project-specific fmt/lint ignores and shared configs in one root `vite.conf
 After pulling changes: `vp install`.
 
 Before finishing work: run whatever the repo documents (`vp check`, `vp test`, or package scripts).
+
+### This repo: no `npm` / `pnpm` in scripts or CI
+
+In `package.json` `scripts` and `.github/workflows/*`, do not call `npm run`, `npx`, `pnpm`, or `pnpm run`. Use **`vp`** (`vp run`, `vp install`, `vp dlx`, …). CI should bootstrap with **`voidzero-dev/setup-vp`** and then `vp install` / `vp run …`. Keeping `packageManager` / `pnpm-lock.yaml` for Corepack and lockfile is fine; day-to-day commands stay on **`vp`**.

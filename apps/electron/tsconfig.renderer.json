@@ -7,6 +7,6 @@
   ],
   "compilerOptions": {
     "composite": false,
-    "types": ["vite/client", "node"]
+    "types": ["vite/client", "node", "@nebula-studio/types"]
   }
 }

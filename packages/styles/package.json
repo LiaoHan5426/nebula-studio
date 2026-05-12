@@ -1,0 +1,21 @@
+{
+  "name": "@nebula-studio/styles",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./types/styles.d.ts",
+      "default": "./src/index.css"
+    },
+    "./index.css": "./src/index.css",
+    "./tokens/root.css": "./src/tokens/root.css",
+    "./tokens/semantic-light.css": "./src/tokens/semantic-light.css",
+    "./tokens/semantic-dark.css": "./src/tokens/semantic-dark.css",
+    "./foundations/scrollbar.css": "./src/foundations/scrollbar.css",
+    "./foundations/theme-motion.css": "./src/foundations/theme-motion.css"
+  }
+}
