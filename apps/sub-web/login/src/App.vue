@@ -143,10 +143,10 @@ async function onSubmit(): Promise<void> {
   padding: 10px 12px;
   font-size: 14px;
   color: hsl(var(--foreground));
+  outline: none;
   background: hsl(var(--background));
   border: 1px solid hsl(var(--border));
   border-radius: 10px;
-  outline: none;
 }
 
 .login-input:focus {

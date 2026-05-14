@@ -1,6 +1,8 @@
 @import 'vxe-table/lib/style.css';
+
 /** wangEditor 富文本（NebulaEditor variant=richtext）— 未引入则编辑区几乎不可见 */
 @import '@wangeditor/core/dist/css/style.css';
+
 /** NebulaReader Markdown / plain 代码块语法高亮（highlight.js） */
 @import 'highlight.js/styles/github.css';
 
@@ -8,9 +10,6 @@
  * wangEditor：映射到 Nebula 语义色，并提高下拉/面板层级（避免被右侧预览盖住）
  */
 .nebula-rich-editor {
-  position: relative;
-  z-index: 1;
-  isolation: isolate;
   --w-e-textarea-bg-color: hsl(var(--card));
   --w-e-textarea-color: hsl(var(--foreground));
   --w-e-textarea-slight-color: hsl(var(--muted-foreground));
@@ -24,6 +23,10 @@
   --w-e-modal-button-bg-color: hsl(var(--secondary));
   --w-e-modal-button-border-color: hsl(var(--border));
   --w-e-textarea-handler-bg-color: hsl(var(--border));
+
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
 }
 
 .nebula-rich-editor .w-e-select-list,
@@ -323,6 +326,7 @@
     opacity: 0;
     transform: translateY(6px) scale(0.96);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -334,6 +338,7 @@
     opacity: 0;
     transform: translateY(-6px) scale(0.96);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -345,6 +350,7 @@
     opacity: 0;
     transform: translateX(6px) scale(0.96);
   }
+
   100% {
     opacity: 1;
     transform: translateX(0) scale(1);
@@ -356,6 +362,7 @@
     opacity: 0;
     transform: translateX(-6px) scale(0.96);
   }
+
   100% {
     opacity: 1;
     transform: translateX(0) scale(1);
@@ -367,6 +374,7 @@
     opacity: 1;
     transform: translateY(0) scale(1);
   }
+
   100% {
     opacity: 0;
     transform: translateY(-4px) scale(0.98);
@@ -378,6 +386,7 @@
     opacity: 1;
     transform: translateY(0) scale(1);
   }
+
   100% {
     opacity: 0;
     transform: translateY(4px) scale(0.98);
@@ -389,6 +398,7 @@
     opacity: 1;
     transform: translateX(0) scale(1);
   }
+
   100% {
     opacity: 0;
     transform: translateX(-4px) scale(0.98);
@@ -400,6 +410,7 @@
     opacity: 1;
     transform: translateX(0) scale(1);
   }
+
   100% {
     opacity: 0;
     transform: translateX(4px) scale(0.98);
@@ -465,13 +476,13 @@
 
 .nebula-markdown p {
   margin: 0.4rem 0;
-  color: hsl(var(--muted-foreground));
   font-size: 0.86rem;
+  color: hsl(var(--muted-foreground));
 }
 
 .nebula-markdown pre {
-  margin: 0;
   padding: 0.85rem;
+  margin: 0;
   overflow-x: auto;
   background: hsl(var(--background) / 55%);
 }
@@ -482,24 +493,24 @@
  * 盖住 highlight.js / github.css 赋予 `.hljs-keyword` 等 token 的颜色（深浅色皆如此）。
  */
 .nebula-markdown code:not(.hljs) {
+  font-family:
+    'Cascadia Code', 'JetBrains Mono', Consolas, 'Courier New', monospace;
   font-size: 0.82rem;
   line-height: 1.58;
   color: hsl(var(--foreground));
-  font-family:
-    'Cascadia Code', 'JetBrains Mono', Consolas, 'Courier New', monospace;
 }
 
 .nebula-markdown pre code.hljs {
-  font-size: 0.82rem;
-  line-height: 1.58;
   font-family:
     'Cascadia Code', 'JetBrains Mono', Consolas, 'Courier New', monospace;
+  font-size: 0.82rem;
+  line-height: 1.58;
 }
 
 .nebula-markdown .code-block {
+  overflow: hidden;
   border: 1px solid hsl(var(--border));
   border-radius: 8px;
-  overflow: hidden;
 }
 
 .nebula-markdown .code-block pre {
@@ -580,8 +591,8 @@
 }
 
 .nebula-markdown .code-block pre code.hljs .hljs-section {
-  color: #005cc5 !important;
   font-weight: bold;
+  color: #005cc5 !important;
 }
 
 .nebula-markdown .code-block pre code.hljs span[class^='language-'] {
@@ -590,29 +601,29 @@
 
 .nebula-markdown .code-block__toolbar {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   padding: 0.4rem 0.55rem;
-  border-bottom: 1px solid hsl(var(--border));
   background: hsl(var(--accent) / 20%);
+  border-bottom: 1px solid hsl(var(--border));
 }
 
 .nebula-markdown .code-block__lang {
-  color: hsl(var(--muted-foreground));
   font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
   text-transform: uppercase;
   letter-spacing: 0.02em;
 }
 
 .nebula-markdown .code-block__copy {
-  border: 1px solid hsl(var(--border));
-  border-radius: 6px;
-  background: hsl(var(--card));
-  color: hsl(var(--foreground));
+  padding: 0.3rem 0.42rem;
   font-size: 0.74rem;
   line-height: 1;
-  padding: 0.3rem 0.42rem;
+  color: hsl(var(--foreground));
   cursor: pointer;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 6px;
 }
 
 .nebula-markdown h1,
@@ -627,10 +638,10 @@
 
 .nebula-markdown ul,
 .nebula-markdown ol {
-  margin: 0.35rem 0;
   padding-left: 1.25rem;
-  color: hsl(var(--muted-foreground));
+  margin: 0.35rem 0;
   font-size: 0.86rem;
+  color: hsl(var(--muted-foreground));
 }
 
 .nebula-markdown a {
@@ -638,30 +649,30 @@
 }
 
 .nebula-markdown blockquote {
-  margin: 0.45rem 0;
   padding-left: 0.75rem;
-  border-left: 3px solid hsl(var(--border));
-  color: hsl(var(--muted-foreground));
+  margin: 0.45rem 0;
   font-size: 0.86rem;
+  color: hsl(var(--muted-foreground));
+  border-left: 3px solid hsl(var(--border));
 }
 
 /** highlight.js：深色（html.dark / data-theme）强制背景与 token（!important 压过页面 color） */
 html.dark .nebula-markdown pre code.hljs,
 html[data-theme='dark'] .nebula-markdown pre code.hljs {
-  background: hsl(var(--background) / 72%) !important;
   color: hsl(var(--foreground)) !important;
+  background: hsl(var(--background) / 72%) !important;
 }
 
 html.dark .nebula-markdown .code-block pre code.hljs,
 html[data-theme='dark'] .nebula-markdown .code-block pre code.hljs {
-  background: hsl(var(--background) / 72%) !important;
   color: hsl(var(--foreground)) !important;
+  background: hsl(var(--background) / 72%) !important;
 }
 
 html.dark .nebula-reader__plain code.hljs,
 html[data-theme='dark'] .nebula-reader__plain code.hljs {
-  background: hsl(var(--background) / 72%) !important;
   color: hsl(var(--foreground)) !important;
+  background: hsl(var(--background) / 72%) !important;
 }
 
 html.dark .nebula-markdown pre code.hljs .hljs-doctag,
@@ -772,8 +783,8 @@ html[data-theme='dark']
 /** NebulaReader，`format="html"`（如 wangEditor） */
 .nebula-reader--html {
   padding: 0.82rem 0.9rem;
-  color: hsl(var(--foreground));
   font-size: 0.86rem;
+  color: hsl(var(--foreground));
 }
 
 .nebula-reader--html p {
@@ -787,23 +798,23 @@ html[data-theme='dark']
 
 /** NebulaReader，`format="plain"`（代码等非 Markdown 文本） */
 .nebula-reader__plain {
-  margin: 0;
   padding: 0.85rem;
+  margin: 0;
   overflow-x: auto;
   background: hsl(var(--background) / 55%);
-  border-radius: 8px;
   border: 1px solid hsl(var(--border));
+  border-radius: 8px;
 }
 
 .nebula-reader__plain code {
   display: block;
-  white-space: pre-wrap;
-  word-break: break-word;
-  font-size: 0.82rem;
-  line-height: 1.58;
   font-family:
     'Cascadia Code', 'JetBrains Mono', Consolas, 'Courier New', monospace;
+  font-size: 0.82rem;
+  line-height: 1.58;
   color: hsl(var(--foreground));
+  word-break: break-word;
+  white-space: pre-wrap;
 }
 
 /**
@@ -811,7 +822,6 @@ html[data-theme='dark']
  * 不再使用 --vxe-ui-body-background-color。此处统一映射到 Nebula 语义色，随 html.dark / data-theme 切换。
  */
 .nebula-table {
-  color: hsl(var(--foreground));
   --vxe-ui-font-color: hsl(var(--foreground));
   --vxe-ui-font-primary-color: hsl(var(--primary));
   --vxe-ui-layout-background-color: hsl(var(--card));
@@ -845,6 +855,8 @@ html[data-theme='dark']
   --vxe-ui-loading-background-color: hsl(var(--card) / 72%);
   --vxe-ui-table-resizable-line-color: hsl(var(--border));
   --vxe-ui-table-cell-placeholder-color: hsl(var(--muted-foreground));
+
+  color: hsl(var(--foreground));
 }
 
 .nebula-table--drag-row .vxe-body--row,
@@ -902,9 +914,9 @@ html[data-theme='dark']
   gap: 0.35rem;
   width: 160px;
   padding: 0.8rem;
+  background: hsl(var(--card));
   border: 1px solid hsl(var(--border));
   border-radius: 10px;
-  background: hsl(var(--card));
 }
 
 .nebula-anchor__title {
@@ -915,11 +927,11 @@ html[data-theme='dark']
 }
 
 .nebula-anchor__link {
+  padding: 0.2rem 0.32rem;
+  font-size: 0.84rem;
   color: hsl(var(--foreground));
   text-decoration: none;
-  font-size: 0.84rem;
   border-radius: 6px;
-  padding: 0.2rem 0.32rem;
   transition:
     color 0.15s ease,
     background-color 0.15s ease;
@@ -935,8 +947,8 @@ html[data-theme='dark']
 }
 
 .nebula-anchor__back-top {
-  margin-top: 0.35rem;
   padding: 0.35rem 0.45rem;
+  margin-top: 0.35rem;
   font-size: 0.82rem;
   font-weight: 600;
   color: hsl(var(--foreground));

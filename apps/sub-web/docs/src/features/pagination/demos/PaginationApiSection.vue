@@ -36,9 +36,9 @@ import { paginationComponentApiRows } from './paginationApi';
 
 .pagination-api-desc {
   margin: 0.4rem 0 0;
-  color: hsl(var(--muted-foreground));
   font-size: 0.88rem;
   line-height: 1.45;
+  color: hsl(var(--muted-foreground));
 }
 
 .pagination-api-desc code {

@@ -194,38 +194,39 @@ function toNebulaTreeNode(node: FeatureMenuNode): NebulaTreeNode {
 
 <style lang="scss" scoped>
 .docs-page {
+  box-sizing: border-box;
   min-height: 100vh;
   padding: 1.5rem 1.75rem;
+  overflow-x: auto;
   color: hsl(var(--foreground));
   background: hsl(var(--background));
-  box-sizing: border-box;
-  overflow-x: auto;
 }
 
 .docs-shell {
   display: grid;
   grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
   gap: clamp(0.75rem, 2vw, 1.5rem);
+  min-width: 0;
   max-width: 1240px;
   margin: 0 auto;
-  min-width: 0;
 }
 
 .docs-sidebar {
   position: sticky;
   top: 1.5rem;
-  align-self: start;
   display: flex;
   flex-direction: column;
   gap: 0.9rem;
+  align-self: start;
 }
 
 /* NebulaTreeMenu：分组标题与下方条目、分组与分组之间留白 */
+
 /* 避免 NebulaTreeMenu 全局 min-width 在窄列里撑出横向滚动 */
 .docs-sidebar :deep(.nebula-tree) {
+  width: 100%;
   min-width: 0;
   max-width: 100%;
-  width: 100%;
 }
 
 .docs-sidebar :deep(.nebula-tree__root) {
@@ -244,9 +245,9 @@ function toNebulaTreeNode(node: FeatureMenuNode): NebulaTreeNode {
 
 .brand-block {
   padding: 0.95rem 1rem;
-  border-radius: 12px;
-  border: 1px solid hsl(var(--border));
   background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 12px;
 }
 
 .brand-title {
@@ -258,8 +259,8 @@ function toNebulaTreeNode(node: FeatureMenuNode): NebulaTreeNode {
 .brand-subtitle {
   margin: 0.35rem 0 0;
   font-size: 0.86rem;
-  color: hsl(var(--muted-foreground));
   line-height: 1.45;
+  color: hsl(var(--muted-foreground));
 }
 
 .docs-content {
@@ -272,22 +273,22 @@ function toNebulaTreeNode(node: FeatureMenuNode): NebulaTreeNode {
 
 .feature-head__top {
   display: flex;
+  gap: 0.8rem;
   align-items: center;
   justify-content: space-between;
-  gap: 0.8rem;
 }
 
 .feature-tag {
   display: inline-flex;
-  margin: 0;
   padding: 0.16rem 0.45rem;
-  border-radius: 999px;
-  border: 1px solid hsl(var(--border));
-  background: hsl(var(--accent) / 45%);
-  color: hsl(var(--muted-foreground));
+  margin: 0;
   font-size: 0.72rem;
   font-weight: 600;
+  color: hsl(var(--muted-foreground));
   letter-spacing: 0.01em;
+  background: hsl(var(--accent) / 45%);
+  border: 1px solid hsl(var(--border));
+  border-radius: 999px;
 }
 
 .feature-head h1 {
@@ -298,9 +299,9 @@ function toNebulaTreeNode(node: FeatureMenuNode): NebulaTreeNode {
 
 .feature-desc {
   margin: 0.45rem 0 0;
-  color: hsl(var(--muted-foreground));
   font-size: 0.95rem;
   line-height: 1.45;
+  color: hsl(var(--muted-foreground));
 }
 
 .feature-meta {
@@ -319,7 +320,7 @@ code {
 
 @media (width <= 980px) {
   .docs-page {
-    padding: 1rem 1rem;
+    padding: 1rem;
   }
 
   .docs-shell {

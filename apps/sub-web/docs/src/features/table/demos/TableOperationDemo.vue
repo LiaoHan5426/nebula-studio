@@ -65,8 +65,7 @@ const code = tableOperationDemoCode;
 .table-demo-wrap {
   width: 100%;
   max-width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
+  overflow: auto hidden;
 }
 
 .table-demo-wrap :deep(.nebula-table),
@@ -83,7 +82,7 @@ const code = tableOperationDemoCode;
 
 .table-action-log {
   margin: 0.7rem 0 0;
-  color: hsl(var(--muted-foreground));
   font-size: 0.84rem;
+  color: hsl(var(--muted-foreground));
 }
 </style>

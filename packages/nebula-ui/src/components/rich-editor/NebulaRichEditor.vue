@@ -97,19 +97,19 @@ watch(
 <style lang="scss" scoped>
 .nebula-rich-editor {
   box-sizing: border-box;
-  width: 100%;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  overflow: hidden;
+  color: hsl(var(--foreground));
+  background: hsl(var(--card));
   border: 1px solid hsl(var(--border));
   border-radius: 10px;
-  overflow: hidden;
-  background: hsl(var(--card));
-  color: hsl(var(--foreground));
 }
 
 .nebula-rich-editor__toolbar {
-  border-bottom: 1px solid hsl(var(--border));
   flex: 0 0 auto;
+  border-bottom: 1px solid hsl(var(--border));
 }
 
 .nebula-rich-editor__editor-wrap {

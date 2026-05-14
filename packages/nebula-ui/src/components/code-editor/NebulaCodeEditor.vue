@@ -215,10 +215,10 @@ watch(
 .nebula-code-editor {
   box-sizing: border-box;
   width: 100%;
-  border: 1px solid hsl(var(--border));
-  border-radius: 10px;
   overflow: hidden;
   background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 10px;
 }
 
 .nebula-code-editor__host {
@@ -230,8 +230,7 @@ watch(
 }
 
 .nebula-code-editor__host :deep(.cm-scroller) {
-  overflow-x: auto;
-  overflow-y: auto;
+  overflow: auto;
   font-family:
     'JetBrains Mono', 'Cascadia Code', Consolas, ui-monospace, monospace;
   font-size: 0.84rem;

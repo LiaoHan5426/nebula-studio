@@ -565,7 +565,6 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .shell {
-  position: relative;
   --shell-bg: radial-gradient(
     circle at top left,
     hsl(var(--background-deep)) 0%,
@@ -592,6 +591,7 @@ onUnmounted(() => {
   );
   --chip-bg: hsl(var(--muted) / 55%);
 
+  position: relative;
   min-height: 100vh;
   margin: 0;
   background: var(--shell-bg);
@@ -762,8 +762,8 @@ onUnmounted(() => {
   inset: 0;
   cursor: pointer;
   background: rgb(8 10 18 / 52%);
-  backdrop-filter: blur(2px);
   border: 0;
+  backdrop-filter: blur(2px);
 }
 
 .integration-panel {
@@ -831,7 +831,7 @@ onUnmounted(() => {
   color: var(--text-main);
   cursor: pointer;
   user-select: none;
-  -webkit-user-select: none;
+  user-select: none;
   background: hsl(var(--muted) / 38%);
   border: 1px solid hsl(var(--border) / 72%);
   border-radius: 14px;
@@ -882,9 +882,9 @@ onUnmounted(() => {
 }
 
 .integration-tile-ghost {
-  border-style: dashed;
-  border-color: hsl(var(--primary) / 62%);
   background: hsl(var(--primary) / 8%);
+  border-color: hsl(var(--primary) / 62%);
+  border-style: dashed;
   box-shadow: inset 0 0 0 2px hsl(var(--primary) / 24%);
 }
 
@@ -935,8 +935,8 @@ onUnmounted(() => {
 }
 
 .integration-tile-add.is-open {
-  border-style: solid;
   border-color: hsl(var(--primary) / 45%);
+  border-style: solid;
 }
 
 .integration-tile-muted {
@@ -953,8 +953,8 @@ onUnmounted(() => {
 }
 
 .integration-add-panel {
-  margin-top: 16px;
   padding-top: 16px;
+  margin-top: 16px;
   border-top: 1px solid hsl(var(--border) / 65%);
 }
 
@@ -963,8 +963,8 @@ onUnmounted(() => {
   font-size: 12px;
   font-weight: 700;
   color: var(--text-muted);
-  letter-spacing: 0.4px;
   text-transform: uppercase;
+  letter-spacing: 0.4px;
 }
 
 .integration-add-list {
@@ -1017,9 +1017,9 @@ onUnmounted(() => {
   padding: 0;
   margin: -1px;
   overflow: hidden;
-  clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+  clip: rect(0, 0, 0, 0);
 }
 
 .shell-versions {
@@ -1042,14 +1042,15 @@ onUnmounted(() => {
 }
 
 .auth-menu {
-  position: relative;
-  flex-shrink: 0;
-  -webkit-app-region: no-drag;
   --auth-pop-bg: hsl(var(--card) / 98%);
   --auth-pop-border: hsl(var(--border) / 82%);
   --auth-pop-divider: hsl(var(--border) / 62%);
   --auth-pop-title: hsl(var(--muted-foreground));
   --auth-pop-text: hsl(var(--foreground));
+
+  position: relative;
+  flex-shrink: 0;
+  -webkit-app-region: no-drag;
 }
 
 .auth-menu::after {
@@ -1093,14 +1094,14 @@ onUnmounted(() => {
   right: 0;
   z-index: 12;
   min-width: 206px;
-  margin-top: 6px;
   padding: 12px;
+  margin-top: 6px;
   pointer-events: none;
-  opacity: 0;
   background: var(--auth-pop-bg);
   border: 1px solid var(--auth-pop-border);
   border-radius: 12px;
   box-shadow: 0 10px 24px rgb(2 4 12 / 26%);
+  opacity: 0;
   transform: translateY(-6px);
   transition:
     opacity 0.15s ease,
@@ -1141,8 +1142,8 @@ onUnmounted(() => {
 }
 
 .auth-dropdown-logout {
-  width: 100%;
   justify-content: center;
+  width: 100%;
 }
 
 @media (width <= 1200px) {

@@ -60,10 +60,10 @@ const code = notifyBasicDemoCode;
   justify-content: flex-start;
   width: 100%;
   max-width: 100%;
-  white-space: nowrap;
   min-height: 38px;
-  border-color: hsl(var(--border));
+  white-space: nowrap;
   background: hsl(var(--secondary) / 92%);
+  border-color: hsl(var(--border));
 }
 
 .action-btn {

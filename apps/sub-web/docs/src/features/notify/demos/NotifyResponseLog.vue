@@ -40,14 +40,14 @@ const code = notifyResponseLogCode;
 .response-log p {
   margin: 0.24rem 0;
   font-size: 0.88rem;
-  color: hsl(var(--muted-foreground));
   line-height: 1.45;
+  color: hsl(var(--muted-foreground));
 }
 
 .response-log__empty {
   margin: 0;
   font-size: 0.86rem;
-  color: hsl(var(--muted-foreground));
   line-height: 1.5;
+  color: hsl(var(--muted-foreground));
 }
 </style>
