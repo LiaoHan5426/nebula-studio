@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "ready": "vp fmt && npm run lint && vp run -r test && vp run -r build",
+    "ready": "vp fmt && vp lint --threads 2 && vp run test && vp run build",
     "build": "vp run -r build",
     "build:unpack": "vp run electron#build:unpack",
     "pack:win": "vp run electron#pack:win",
@@ -17,14 +17,14 @@
     "build:web": "vp run web#build",
     "sync:app-config": "vp exec esno ./scripts/tasks/sync-app-config.ts",
     "cap": "vp run mobile#cap",
-    "check": "vp check --fix",
-    "lint:ox": "vp lint --fix",
+    "check": "vp check --fix -- --threads 2",
+    "lint:ox": "vp lint --fix --threads 2",
     "lint:style": "vp exec stylelint \"**/*.{css,scss,vue}\" --fix --allow-empty-input --ignore-pattern \"**/out/**\" --ignore-pattern \"**/dist/**\" --ignore-pattern \"**/dev-dist/**\"",
-    "lint": "vp lint --fix && vp exec stylelint \"**/*.{css,scss,vue}\" --fix --allow-empty-input --ignore-pattern \"**/out/**\" --ignore-pattern \"**/dist/**\" --ignore-pattern \"**/dev-dist/**\"",
+    "lint": "vp lint --fix --threads 2 && vp exec stylelint \"**/*.{css,scss,vue}\" --fix --allow-empty-input --ignore-pattern \"**/out/**\" --ignore-pattern \"**/dist/**\" --ignore-pattern \"**/dev-dist/**\"",
     "test": "vp run -r test",
     "postinstall": "vp run -r stub --if-present",
     "prepare": "vp config",
-    "update:deps": "npx taze -r -w"
+    "update:deps": "vp dlx taze -r -w"
   },
   "devDependencies": {
     "@eslint-community/eslint-plugin-eslint-comments": "catalog:lint",
@@ -32,6 +32,7 @@
     "@nebula-studio-internal/oxlint": "workspace:^",
     "@nebula-studio-internal/stylelint": "workspace:^",
     "@nebula-studio-internal/tsconfig": "workspace:^",
+    "@nebula-studio/types": "workspace:^",
     "@vitejs/plugin-vue": "catalog:vite",
     "@vitejs/plugin-vue-jsx": "catalog:vite",
     "eslint-plugin-better-tailwindcss": "catalog:lint",
@@ -41,10 +42,15 @@
     "tailwindcss": "catalog:style",
     "unconfig": "catalog:",
     "vite-plus": "catalog:vite",
-    "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.20"
+    "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.21"
   },
   "engines": {
     "node": ">=22.12.0"
   },
-  "packageManager": "pnpm@10.33.2"
+  "packageManager": "pnpm@10.33.2",
+  "pnpm": {
+    "overrides": {
+      "@wangeditor/editor-for-vue": "^5.1.12"
+    }
+  }
 }

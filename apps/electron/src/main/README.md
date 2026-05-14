@@ -1,3 +1,6 @@
+> **导航**：[Electron 应用 README](../README.md) · [Monorepo 索引](../../../../docs/monorepo.md)  
+> 本文档描述 **主进程** 模块化与运维细节；渲染进程见 `src/renderer/` 与上层 README。
+
 ### Main 模块化（已按步骤落地）
 
 1. 启动链路（链式启动器）

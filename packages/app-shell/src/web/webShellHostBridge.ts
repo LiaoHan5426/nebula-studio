@@ -4,7 +4,8 @@ import {
 } from '../common/activeViewPreference';
 import type { ShellHostBridge } from '../common/shellHostBridge';
 
-const LEGACY_SHELL_INTEGRATION_OPEN_WEB_KEY = 'nebula-shell-integration-open-web';
+const LEGACY_SHELL_INTEGRATION_OPEN_WEB_KEY =
+  'nebula-shell-integration-open-web';
 /** 旧版独立键，迁移后删除以免干扰「仅 active-view」语义 */
 const LEGACY_SHELL_INTEGRATION_HOME_KEY = 'nebula-shell-integration-home';
 
@@ -20,11 +21,14 @@ export function createWebShellHostBridge(): ShellHostBridge {
     shouldSubscribeAuthSessionChannel: false,
     shouldRefreshAuthSessionAfterLogout: false,
 
-    commitIntegrationOpen(open: boolean, options?: { clearActiveViewOnOpen?: boolean }) {
+    commitIntegrationOpen(
+      open: boolean,
+      options?: { clearActiveViewOnOpen?: boolean },
+    ) {
       if (!open) {
         return;
       }
-      // 仅「回到集成首页」时移除 active-view；临时展开应用集成不改 localStorage
+      // 仅「回到集成首页」时移除 active-view；临时展开应用集成不改 sessionStorage
       if (options?.clearActiveViewOnOpen) {
         persistActiveViewPreference(null);
       }

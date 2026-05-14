@@ -1,9 +1,7 @@
 ---
 name: code-fix-workflow
 description: >-
-  Prioritizes how to apply code fixes: immediate patches for simple issues, short
-  plans when useful, and ordered execution when multiple fixes exist. Use when
-  implementing bugfixes, review feedback, or multi-issue requests.
+  Prioritizes how to apply code fixes: immediate patches for simple issues, short plans when useful, and ordered execution when multiple fixes exist. Use when implementing bugfixes, review feedback, or multi-issue requests.
 ---
 
 # Code fix workflow

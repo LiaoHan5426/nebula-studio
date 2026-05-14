@@ -1,12 +1,7 @@
 ---
 name: mid-task-supplement
 description: >-
-  Handles new user messages that arrive while a multi-step problem is still in
-  progress. Treats them as supplements or course corrections (fetch extra info,
-  adjust scope), pauses the current line of work until reconciled, merges them
-  with the ongoing task, and asks targeted clarification before proceeding.
-  Use when the user sends additional instructions mid-fix, mid-investigation,
-  or mid-implementation.
+  Handles new user messages that arrive while a multi-step problem is still in progress. Treats them as supplements or course corrections (fetch extra info, adjust scope), pauses the current line of work until reconciled, merges them with the ongoing task, and asks targeted clarification before proceeding. Use when the user sends additional instructions mid-fix, mid-investigation, or mid-implementation.
 ---
 
 # Mid-task supplementary instructions

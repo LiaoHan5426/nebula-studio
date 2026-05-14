@@ -761,7 +761,11 @@ html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-tag {
 }
 
 html.dark .nebula-markdown pre code.hljs span[class^='language-'],
-html[data-theme='dark'] .nebula-markdown pre code.hljs span[class^='language-'] {
+html[data-theme='dark']
+  .nebula-markdown
+  pre
+  code.hljs
+  span[class^='language-'] {
   color: hsl(var(--foreground)) !important;
 }
 
@@ -819,16 +823,24 @@ html[data-theme='dark'] .nebula-markdown pre code.hljs span[class^='language-'] 
   --vxe-ui-table-column-to-row-background-color: hsl(var(--muted) / 48%);
   --vxe-ui-table-column-hover-background-color: hsl(var(--muted) / 62%);
   --vxe-ui-table-column-current-background-color: hsl(var(--primary) / 22%);
-  --vxe-ui-table-column-hover-current-background-color: hsl(var(--primary) / 28%);
+  --vxe-ui-table-column-hover-current-background-color: hsl(
+    var(--primary) / 28%
+  );
   --vxe-ui-table-row-hover-background-color: hsl(var(--muted) / 42%);
   --vxe-ui-table-row-striped-background-color: hsl(var(--muted) / 26%);
   --vxe-ui-table-row-hover-striped-background-color: hsl(var(--muted) / 42%);
   --vxe-ui-table-row-current-background-color: hsl(var(--primary) / 18%);
   --vxe-ui-table-row-hover-current-background-color: hsl(var(--primary) / 26%);
   --vxe-ui-table-row-radio-checked-background-color: hsl(var(--primary) / 24%);
-  --vxe-ui-table-row-hover-radio-checked-background-color: hsl(var(--primary) / 32%);
-  --vxe-ui-table-row-checkbox-checked-background-color: hsl(var(--primary) / 24%);
-  --vxe-ui-table-row-hover-checkbox-checked-background-color: hsl(var(--primary) / 32%);
+  --vxe-ui-table-row-hover-radio-checked-background-color: hsl(
+    var(--primary) / 32%
+  );
+  --vxe-ui-table-row-checkbox-checked-background-color: hsl(
+    var(--primary) / 24%
+  );
+  --vxe-ui-table-row-hover-checkbox-checked-background-color: hsl(
+    var(--primary) / 32%
+  );
   --vxe-ui-table-fixed-scrolling-box-shadow-color: rgb(0 0 0 / 28%);
   --vxe-ui-loading-background-color: hsl(var(--card) / 72%);
   --vxe-ui-table-resizable-line-color: hsl(var(--border));
@@ -962,12 +974,59 @@ html[data-theme='dark'] .nebula-markdown pre code.hljs span[class^='language-'] 
   transform: translateY(-1px);
 }
 
-.nebula-anchor--responsive {
-  display: none;
+/**
+ * `responsive`：窄视口为页内横向目录（sticky），避免固定侧栏占宽或完全隐藏；
+ * 宽视口（≥1280px）恢复右侧固定导航。
+ */
+.nebula-anchor.nebula-anchor--responsive {
+  position: sticky;
+  top: 0.65rem;
+  right: auto;
+  left: auto;
+  z-index: 25;
+  box-sizing: border-box;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 0.35rem 0.55rem;
+  align-items: center;
+  width: 100%;
+  max-width: none;
+  padding: 0.55rem 0.72rem;
+  margin: 0 0 0.85rem;
 }
 
-@media (width > 1600px) {
-  .nebula-anchor--responsive {
+.nebula-anchor.nebula-anchor--responsive .nebula-anchor__title {
+  flex: 1 0 100%;
+  margin: 0 0 0.15rem;
+}
+
+.nebula-anchor.nebula-anchor--responsive .nebula-anchor__back-top {
+  margin-top: 0;
+  margin-left: auto;
+}
+
+@media (min-width: 1280px) {
+  .nebula-anchor.nebula-anchor--responsive {
+    position: fixed;
+    top: 170px;
+    right: 20px;
+    left: auto;
+    z-index: 40;
     display: grid;
+    gap: 0.35rem;
+    align-items: stretch;
+    width: 160px;
+    padding: 0.8rem;
+    margin: 0;
+  }
+
+  .nebula-anchor.nebula-anchor--responsive .nebula-anchor__title {
+    flex: unset;
+    margin: 0 0 0.2rem;
+  }
+
+  .nebula-anchor.nebula-anchor--responsive .nebula-anchor__back-top {
+    margin-top: 0.35rem;
+    margin-left: 0;
   }
 }

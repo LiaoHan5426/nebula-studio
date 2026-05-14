@@ -1,3 +1,4 @@
+import '@nebula-studio/nebula-ui/utils/highlightNebula';
 import '@nebula-studio-internal/tailwind/electron';
 import { ConfigProvider } from '@nebula-studio-electron/electron-shared-vue';
 import { createApp, h } from 'vue';

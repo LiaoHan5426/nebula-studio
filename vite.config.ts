@@ -5,7 +5,7 @@ import { oxlintConfig } from '@nebula-studio-internal/oxlint';
 
 export default defineConfig({
   staged: {
-    '*': 'vp check --fix',
+    '*': 'vp check --fix -- --threads 2',
   },
   fmt: {
     ...fmtDefineConfig({

@@ -1,0 +1,9 @@
+/**
+ * 全局设计链：语义色、基础排版与动效（与 Electron / Web / 子应用 embed 共用）。
+ * Tailwind v4 主题层见 `@nebula-studio-internal/tailwind` 的 `electron` 入口（先 theme 再本包）。
+ */
+@import './tokens/root.css';
+@import './tokens/semantic-light.css';
+@import './tokens/semantic-dark.css';
+@import './foundations/scrollbar.css';
+@import './foundations/theme-motion.css';

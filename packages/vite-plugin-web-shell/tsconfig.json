@@ -1,4 +1,0 @@
-{
-  "extends": "@nebula-studio-internal/tsconfig/node.json",
-  "include": ["src/**/*.ts"]
-}

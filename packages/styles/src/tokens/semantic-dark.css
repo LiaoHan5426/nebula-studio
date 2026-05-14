@@ -1,0 +1,39 @@
+html.dark,
+html[data-theme='dark'] {
+  --background: 232 45% 10%;
+  --background-deep: 232 52% 8%;
+  --foreground: 220 30% 92%;
+  --card: 231 34% 16%;
+  --card-foreground: 220 30% 92%;
+  --popover: 230 30% 14%;
+  --popover-foreground: 220 30% 95%;
+  --muted: 231 22% 20%;
+  --muted-foreground: 227 13% 66%;
+  --accent: 232 28% 24%;
+  --accent-foreground: 220 30% 96%;
+  --accent-hover: 232 30% 28%;
+  --accent-lighter: 232 22% 30%;
+  --border: 231 18% 30%;
+  --input: 231 18% 30%;
+  --input-background: 231 26% 14%;
+  --ring: 228 90% 68%;
+  --secondary: 231 24% 22%;
+  --secondary-desc: 227 14% 74%;
+  --secondary-foreground: 220 30% 95%;
+  --primary: 227 90% 66%;
+  --primary-foreground: 0 0% 100%;
+  --destructive: 0 74% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --success: 146 58% 44%;
+  --success-foreground: 0 0% 100%;
+  --warning: 40 90% 56%;
+  --warning-foreground: 30 78% 12%;
+  --sidebar: 232 40% 14%;
+  --sidebar-deep: 232 48% 12%;
+  --header: 232 34% 14%;
+  --heavy: 232 22% 8%;
+  --heavy-foreground: 220 30% 95%;
+  --main: 232 52% 10%;
+  --overlay: 232 35% 8%;
+  --overlay-content: 220 30% 96%;
+}

@@ -68,6 +68,12 @@ const javascript: OxlintConfig = {
     ],
     'no-template-curly-in-string': 'error',
     'no-throw-literal': 'error',
+    'no-underscore-dangle': [
+      'warn',
+      {
+        allow: ['__NEBULA_BUILD_NODE_VERSION__'],
+      },
+    ],
     'no-unused-expressions': [
       'error',
       {

@@ -1,0 +1,4 @@
+/**
+ * 仅 Electron 渲染进程：窗口/原生控件等与 Web 宿主差异的样式覆盖。
+ * 全局设计令牌与语义色见 `@nebula-studio/styles`（由 `@nebula-studio-internal/tailwind/electron` 引入）。
+ */

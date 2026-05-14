@@ -15,6 +15,10 @@
       "types": "./src/index.ts",
       "default": "./src/index.ts"
     },
+    "./components": {
+      "types": "./src/components/index.ts",
+      "default": "./src/components/index.ts"
+    },
     "./utils/highlightNebula": {
       "types": "./src/utils/highlightNebula.ts",
       "default": "./src/utils/highlightNebula.ts"
@@ -42,6 +46,8 @@
     "xe-utils": "catalog:"
   },
   "devDependencies": {
-    "@nebula-studio-internal/tsconfig": "workspace:^"
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "@nebula-studio/types": "workspace:^",
+    "sass": "catalog:style"
   }
 }

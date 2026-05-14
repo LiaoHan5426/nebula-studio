@@ -1,9 +1,7 @@
 ---
 name: confirm-feedback-typo
 description: >-
-  Clarifies ambiguous or typo-prone user feedback before acting. Use when the
-  user's message may contain misspellings, wrong technical terms, or vague
-  pointers that could change the meaning of a fix or feature request.
+  Clarifies ambiguous or typo-prone user feedback before acting. Use when the user's message may contain misspellings, wrong technical terms, or vague pointers that could change the meaning of a fix or feature request.
 ---
 
 # Confirm potentially ambiguous feedback

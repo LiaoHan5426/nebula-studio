@@ -1,11 +1,7 @@
 ---
 name: vite-plus-workflow
 description: >-
-  Uses Vite+ (`vite-plus` package) and the global `vp` CLI for installs, scripts,
-  checks, and `vite.config.ts` toolchain blocks. Use when adding or removing
-  dependencies, running workspace commands, configuring fmt/lint/test/run/staged,
-  or when the user mentions vp, Vite+, vite-plus, vite-pus (typo for Vite+), or
-  viteplus.dev.
+  Uses Vite+ (`vite-plus` package) and the global `vp` CLI for installs, scripts, checks, and `vite.config.ts` toolchain blocks. Use when adding or removing dependencies, running workspace commands, configuring fmt/lint/test/run/staged, or when the user mentions vp, Vite+, vite-plus, vite-pus (typo for Vite+), or viteplus.dev.
 ---
 
 # Vite+ / `vp` workflow
@@ -24,7 +20,7 @@ When unsure of flags, run `vp help` and `vp <command> --help`.
 `vp` picks pnpm/npm/yarn/bun from the workspace (see `packageManager`, lockfiles, workspace files). Default fallback is pnpm if nothing matches.
 
 | Task | Command |
-|------|---------|
+| --- | --- |
 | Install lockfile graph | `vp install` |
 | Frozen CI-style | `vp install --frozen-lockfile` |
 | Lockfile only | `vp install --lockfile-only` |
@@ -50,17 +46,17 @@ Example: `vp add -g openskills` (or global installs the user already uses).
 
 ## Common `vp` commands (toolchain)
 
-| Command | Role |
-|---------|------|
-| `vp dev` | Dev server (Vite+) |
-| `vp build` | Production build |
-| `vp test` | Tests (Vitest integration) |
-| `vp check` | Format + lint + typecheck (project-defined) |
-| `vp fmt` / `vp lint` | Format / lint when split out |
-| `vp run <script>` | Run `package.json` scripts (often workspace-aware) |
+| Command              | Role                                                |
+| -------------------- | --------------------------------------------------- |
+| `vp dev`             | Dev server (Vite+)                                  |
+| `vp build`           | Production build                                    |
+| `vp test`            | Tests (Vitest integration)                          |
+| `vp check`           | Format + lint + typecheck (project-defined)         |
+| `vp fmt` / `vp lint` | Format / lint when split out                        |
+| `vp run <script>`    | Run `package.json` scripts (often workspace-aware)  |
 | `vp run -r <script>` | Recursive / workspace scripts (common in monorepos) |
-| `vp exec <bin> ...` | Run a binary with resolved env |
-| `vp pack` | Pack/publish-related when configured |
+| `vp exec <bin> ...`  | Run a binary with resolved env                      |
+| `vp pack`            | Pack/publish-related when configured                |
 
 Project scripts may wrap these (e.g. `vp check --fix`, `vp run web#build`). Prefer existing root `package.json` scripts when they encode repo conventions.
 
@@ -88,3 +84,7 @@ Keep project-specific fmt/lint ignores and shared configs in one root `vite.conf
 After pulling changes: `vp install`.
 
 Before finishing work: run whatever the repo documents (`vp check`, `vp test`, or package scripts).
+
+### This repo: no `npm` / `pnpm` in scripts or CI
+
+In `package.json` `scripts` and `.github/workflows/*`, do not call `npm run`, `npx`, `pnpm`, or `pnpm run`. Use **`vp`** (`vp run`, `vp install`, `vp dlx`, …). CI should bootstrap with **`voidzero-dev/setup-vp`** and then `vp install` / `vp run …`. Keeping `packageManager` / `pnpm-lock.yaml` for Corepack and lockfile is fine; day-to-day commands stay on **`vp`**.

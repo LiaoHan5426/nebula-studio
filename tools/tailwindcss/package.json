@@ -36,12 +36,15 @@
     }
   },
   "dependencies": {
+    "@nebula-studio/styles": "workspace:^",
     "@iconify/tailwind4": "catalog:style",
     "@tailwindcss/typography": "catalog:style",
     "tailwindcss": "catalog:style",
     "tw-animate-css": "catalog:style"
   },
   "devDependencies": {
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "@nebula-studio/types": "workspace:^",
     "vite": "catalog:vite",
     "vite-plus": "catalog:vite"
   }

@@ -1,7 +1,11 @@
 {
-  "npm.packageManager": "pnpm",
-  "npm.scriptRunner": "pnpm",
-  "npm.validate.enable": false,
+  // 本仓库脚本与 CI 统一走 `vp`（见根 package.json）；勿在脚本中直接写 `npm run` / `pnpm`。
+  "npm.scriptRunner": "vp",
+  // Tailwind v4 的 `@apply` / `@theme` / `@variant` 等 at-rule 由 stylelint + Tailwind 校验，
+  // 关闭编辑器内置 CSS 校验对未知 at-rule 的告警，避免 `css(unknownAtRules)` 误报。
+  "css.lint.unknownAtRules": "ignore",
+  "scss.lint.unknownAtRules": "ignore",
+  "less.lint.unknownAtRules": "ignore",
   // 文件嵌套
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.expand": false,

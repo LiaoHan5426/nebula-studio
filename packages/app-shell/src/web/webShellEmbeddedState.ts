@@ -18,7 +18,7 @@ type PreferenceIpcListener = (
 const WEB_ENABLED_STORAGE_KEY = 'nebula-studio-shell-enabled-integrations';
 
 /**
- * Web 宿主：在内存 + localStorage 中模拟 `shell:get-state` / 子应用启停，
+ * Web 宿主：在内存 + localStorage（启用列表）+ sessionStorage（当前子应用视图）中模拟 `shell:get-state` / 子应用启停，
  * 与 Electron 主进程行为对齐；**仅**在 `registerShellHostIpc: true` 时注册 IPC 通道。
  */
 export function createWebShellEmbeddedStateHandlers(options: {
@@ -105,7 +105,7 @@ export function createWebShellEmbeddedStateHandlers(options: {
       return;
     }
     try {
-      const raw = localStorage.getItem(SHELL_ACTIVE_VIEW_STORAGE_KEY);
+      const raw = sessionStorage.getItem(SHELL_ACTIVE_VIEW_STORAGE_KEY);
       const id = typeof raw === 'string' ? raw.trim() : '';
       if (
         id &&

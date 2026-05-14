@@ -111,7 +111,8 @@ export class WindowManager {
       activeViewId: this.#activeEmbeddedViewId,
       availableViewIds: this.getAvailableEmbeddedViewIds(),
       dormantIntegrableIds: listShellIntegrableAppIds().filter(
-        (id) => !this.#enabledEmbeddedViewOrder.includes(id as EmbeddedWindowId),
+        (id) =>
+          !this.#enabledEmbeddedViewOrder.includes(id as EmbeddedWindowId),
       ),
     }));
 
@@ -160,10 +161,13 @@ export class WindowManager {
           (id) => id !== wid,
         );
         if (this.#activeEmbeddedViewId === wid) {
-          this.#activeEmbeddedViewId = this.getAvailableEmbeddedViewIds()[0] ?? null;
+          this.#activeEmbeddedViewId =
+            this.getAvailableEmbeddedViewIds()[0] ?? null;
           if (this.#mainWindow) {
             if (this.#activeEmbeddedViewId) {
-              const nextView = this.#embeddedViewsById.get(this.#activeEmbeddedViewId);
+              const nextView = this.#embeddedViewsById.get(
+                this.#activeEmbeddedViewId,
+              );
               if (nextView) this.#mainWindow.setTopBrowserView(nextView);
             }
             this.#relayoutEmbeddedViewsByShellWindow.get(this.#mainWindow)?.();
@@ -192,7 +196,7 @@ export class WindowManager {
           this.#activeEmbeddedViewId &&
           this.#enabledEmbeddedViewOrder.includes(this.#activeEmbeddedViewId)
             ? this.#activeEmbeddedViewId
-            : this.#enabledEmbeddedViewOrder[0] ?? null;
+            : (this.#enabledEmbeddedViewOrder[0] ?? null);
         if (this.#mainWindow) {
           const top = this.#activeEmbeddedViewId
             ? this.#embeddedViewsById.get(this.#activeEmbeddedViewId)

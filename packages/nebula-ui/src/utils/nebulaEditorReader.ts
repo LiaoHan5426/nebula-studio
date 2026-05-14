@@ -1,7 +1,7 @@
 import type {
   NebulaEditorCodeLanguage,
   NebulaEditorVariant,
-} from '../components/NebulaEditorTypes';
+} from '../components/editor-types/NebulaEditorTypes';
 
 /** `NebulaReader` 如何解释 `source` 字符串（与 `NebulaEditor` 产出对齐） */
 export type NebulaReaderFormat = 'markdown' | 'html' | 'plain';
@@ -36,7 +36,9 @@ export function bindingFromNebulaEditor(
 ): NebulaEditorReaderBinding {
   const format = resolveReaderFormat(opts);
   const source =
-    format === 'html' ? prepareRichTextHtmlForReader(modelValue) : (modelValue ?? '');
+    format === 'html'
+      ? prepareRichTextHtmlForReader(modelValue)
+      : (modelValue ?? '');
   return { source, format };
 }
 

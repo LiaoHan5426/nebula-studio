@@ -35,8 +35,7 @@ export function createElectronShellHostBridge(): ShellHostBridge {
 
     resolveInitialIntegrationOpen(activeViewId: string | null): boolean {
       /* 不以 localStorage 为准：冷启动主进程无选中子应用 ⇒ 进入应用集成 */
-      const id =
-        typeof activeViewId === 'string' ? activeViewId.trim() : '';
+      const id = typeof activeViewId === 'string' ? activeViewId.trim() : '';
       return !id;
     },
 

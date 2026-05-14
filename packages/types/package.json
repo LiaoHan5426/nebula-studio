@@ -1,0 +1,12 @@
+{
+  "name": "@nebula-studio/types",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Ambient typings for workspace side-effect imports and deps without types in exports (via tsconfig `compilerOptions.types`).",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts"
+    }
+  }
+}

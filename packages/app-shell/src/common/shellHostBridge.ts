@@ -15,8 +15,8 @@ export interface ShellHostBridge {
 
   /**
    * 打开/关闭应用集成层。
-   * `clearActiveViewOnOpen: true`：移除 `nebula-shell-active-view`（回到集成首页），刷新后无 active-view 则展开集成层；
-   * `false`：仅展开 UI，不改 localStorage，刷新仍按已存的 active-view 恢复子应用。
+   * `clearActiveViewOnOpen: true`：移除 `nebula-shell-active-view`（回到集成首页），同一会话内刷新后无 active-view 则展开集成层；
+   * `false`：仅展开 UI，不改 sessionStorage，刷新仍按已存的 active-view 恢复子应用。
    */
   commitIntegrationOpen(
     open: boolean,
@@ -33,13 +33,13 @@ export interface ShellHostBridge {
   }): void;
 
   /**
-   * Web：可将当前子应用写入 `nebula-shell-active-view`，刷新后恢复。
+   * Web：可将当前子应用写入 `nebula-shell-active-view`（sessionStorage），同一会话内刷新后恢复。
    * Electron：否，关闭应用后不记忆上次子应用。
    */
   readonly shouldPersistActiveViewPreference: boolean;
 
   /**
-   * Web：挂载时若 localStorage 与宿主状态不一致，可按偏好切换子应用。
+   * Web：挂载时若 sessionStorage 与宿主状态不一致，可按偏好切换子应用。
    * Electron：否，仅以本次会话主进程 / 内存状态为准。
    */
   readonly shouldRestoreActiveViewFromPreference: boolean;

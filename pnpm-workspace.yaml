@@ -1,5 +1,6 @@
 packages:
   - apps/*
+  - apps/sub-web/*
   - apps/electron-preload/*
   - internal/*
   - packages/*
@@ -23,6 +24,11 @@ catalog:
   '@codemirror/theme-one-dark': ^6.1.3
   '@codemirror/view': ^6.42.1
   '@inquirer/prompts': ^8.4.2
+  '@manypkg/get-packages': ^2.2.2
+  # wangEditor：
+  #   - @wangeditor/editor：核心编辑器（与 Vue/React 无关），提供数据模型、API、Slate 等。
+  #   - @wangeditor/editor-for-vue：仅 Vue 组件封装层，须与 editor 5.x 配套。
+  #     npm 上该包 dist-tag「latest」长期指向 1.x，对应 Vue 2，本仓库禁止解析到 1.x；Vue 3 仅允许 5.x（catalog 与 overrides 双保险）。
   '@wangeditor/editor': ^5.1.23
   '@wangeditor/editor-for-vue': ^5.1.12
   codemirror: ^6.0.2
@@ -31,7 +37,6 @@ catalog:
   marked: ^18.0.3
   oxc-minify: ^0.129.0
   unconfig: ^7.5.0
-  vitepress: 2.0.0-alpha.17
   vuedraggable: ^2.24.3
   vxe-table: ^4.18.13
   xe-utils: ^4.0.7
@@ -85,6 +90,7 @@ catalogs:
     typescript: ^6.0.3
   utils:
     '@fastify/deepmerge': ^3.2.1
+    '@manypkg/get-packages': ^2.2.2
     consola: ^3.4.2
     unconfig: ^7.5.0
   vite:
@@ -93,7 +99,7 @@ catalogs:
     happy-dom: ^20.9.0
     #vite: npm:@voidzero-dev/vite-plus-core@latest
     vite: 8.0.10
-    vite-plus: ^0.1.20
+    vite-plus: ^0.1.21
 
     vitest: npm:@voidzero-dev/vite-plus-test@latest
   vue:

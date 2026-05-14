@@ -22,5 +22,9 @@
   "dependencies": {
     "@nebula-studio-electron/electron-shared": "workspace:^",
     "@nebula-studio-electron/electron-shared-vue": "workspace:^"
+  },
+  "devDependencies": {
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "@nebula-studio/types": "workspace:^"
   }
 }
