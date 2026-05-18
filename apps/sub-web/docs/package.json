@@ -21,13 +21,15 @@
     "@nebula-studio/app-shell": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
     "marked": "catalog:",
+    "monaco-editor": "catalog:",
+    "monaco-editor-vue3": "catalog:",
     "vue": "catalog:vue"
   },
   "devDependencies": {
     "@electron-toolkit/preload": "catalog:electron",
     "@nebula-studio-internal/tsconfig": "workspace:^",
-    "@nebula-studio/types": "workspace:^",
     "@nebula-studio-internal/vite": "workspace:^",
+    "@nebula-studio/types": "workspace:^",
     "typescript": "catalog:types",
     "vite": "catalog:vite",
     "vite-plus": "catalog:vite",
