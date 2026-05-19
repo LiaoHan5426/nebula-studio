@@ -1,7 +1,12 @@
+// oxlint-disable-next-line import/default
 import cssWorkerUrl from 'monaco-editor/esm/vs/language/css/css.worker.js?worker&url';
+// oxlint-disable-next-line import/default
 import htmlWorkerUrl from 'monaco-editor/esm/vs/language/html/html.worker.js?worker&url';
+// oxlint-disable-next-line import/default
 import jsonWorkerUrl from 'monaco-editor/esm/vs/language/json/json.worker.js?worker&url';
+// oxlint-disable-next-line import/default
 import tsWorkerUrl from 'monaco-editor/esm/vs/language/typescript/ts.worker.js?worker&url';
+// oxlint-disable-next-line import/default
 import editorWorkerUrl from 'monaco-editor/esm/vs/editor/editor.worker.js?worker&url';
 
 type MonacoEnvironment = {
