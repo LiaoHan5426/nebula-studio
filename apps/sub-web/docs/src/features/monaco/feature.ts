@@ -2,10 +2,10 @@ import EditorFeaturePanel from './MonacoFeaturePanel.vue';
 import type { DocsFeatureDefinition } from '../types';
 
 const feature: DocsFeatureDefinition = {
-  id: 'editor',
-  title: 'Editor',
+  id: 'monaco-editor',
+  title: 'Monaco Editor',
   description:
-    'NebulaEditor 工具栏（语法 / 内嵌预览）、Markdown 分栏、fence 混排、富文本',
+    'Monaco Editor',
   menuPath: ['Content'],
   order: 25,
   component: EditorFeaturePanel,

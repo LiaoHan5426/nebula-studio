@@ -22,7 +22,6 @@
     "@nebula-studio/nebula-ui": "workspace:^",
     "marked": "catalog:",
     "monaco-editor": "catalog:",
-    "monaco-editor-vue3": "catalog:",
     "vue": "catalog:vue"
   },
   "devDependencies": {
