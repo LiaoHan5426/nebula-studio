@@ -1,0 +1,14 @@
+{
+  "name": "@nebula-studio-preload/docs",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@electron-toolkit/preload": "catalog:electron",
+    "@nebula-studio-electron/electron-shared": "workspace:^"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:types",
+    "electron": "catalog:electron"
+  }
+}

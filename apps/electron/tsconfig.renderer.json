@@ -1,0 +1,12 @@
+{
+  "extends": "@nebula-studio-internal/tsconfig/web.json",
+  "include": [
+    "app.config.ts",
+    "src/renderer/**/*",
+    "src/main/windowRegistry.ts"
+  ],
+  "compilerOptions": {
+    "composite": false,
+    "types": ["vite/client", "node", "@nebula-studio/types"]
+  }
+}

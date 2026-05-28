@@ -1,0 +1,11 @@
+@import './base.css';
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  overflow: hidden;
+}
+
+#app {
+  min-height: 100vh;
+}

@@ -1,0 +1,8 @@
+---
+description: 常亮：Vite+ / vp 以仓库 Skill 为准
+alwaysApply: true
+---
+
+# Vite+ / `vp`
+
+以 `.cursor/skills/vite-plus-workflow/SKILL.md` 为准；需要细节时读取该文件。仓库内 **`package.json` 脚本与 GitHub Actions 一律用 `vp`**，勿直接写 `npm` / `pnpm`（锁文件与 `packageManager` 字段除外）。

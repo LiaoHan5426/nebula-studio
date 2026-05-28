@@ -1,0 +1,19 @@
+html.theme-ready {
+  transition:
+    color 0.18s ease,
+    background-color 0.18s ease;
+}
+
+html.theme-switching #app {
+  animation: nebula-theme-fade 0.18s ease;
+}
+
+@keyframes nebula-theme-fade {
+  0% {
+    opacity: 0.94;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}

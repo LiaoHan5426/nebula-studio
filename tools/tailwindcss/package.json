@@ -1,0 +1,51 @@
+{
+  "name": "@nebula-studio-internal/tailwind",
+  "version": "0.0.0",
+  "private": true,
+  "homepage": "https://github.com/vbenjs/vue-vben-admin",
+  "bugs": "https://github.com/vbenjs/vue-vben-admin/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vbenjs/vue-vben-admin.git",
+    "directory": "tools/tailwind"
+  },
+  "license": "MIT",
+  "type": "module",
+  "files": [
+    "src"
+  ],
+  "sideEffects": [
+    "**/*.css",
+    "./src/index.ts",
+    "./src/electron.ts"
+  ],
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./electron": {
+      "types": "./src/electron.ts",
+      "default": "./src/electron.ts"
+    },
+    "./theme": {
+      "default": "./src/theme.css"
+    }
+  },
+  "dependencies": {
+    "@nebula-studio/styles": "workspace:^",
+    "@iconify/tailwind4": "catalog:style",
+    "@tailwindcss/typography": "catalog:style",
+    "tailwindcss": "catalog:style",
+    "tw-animate-css": "catalog:style"
+  },
+  "devDependencies": {
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "@nebula-studio/types": "workspace:^",
+    "vite": "catalog:vite",
+    "vite-plus": "catalog:vite"
+  }
+}

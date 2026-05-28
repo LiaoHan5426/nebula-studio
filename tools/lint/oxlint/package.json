@@ -1,0 +1,29 @@
+{
+  "name": "@nebula-studio-internal/oxlint",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "stub": "vp pack",
+    "build": "vp pack",
+    "dev": "vp pack --watch",
+    "check": "vp check",
+    "prepublishOnly": "vp run build"
+  },
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@eslint-community/eslint-plugin-eslint-comments": "catalog:lint",
+    "@nebula-studio-internal/node": "workspace:^",
+    "eslint-plugin-better-tailwindcss": "catalog:lint",
+    "eslint-plugin-command": "catalog:lint",
+    "oxlint": "catalog:lint"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:types",
+    "typescript": "catalog:types",
+    "vite-plus": "catalog:vite"
+  }
+}
