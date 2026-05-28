@@ -41,7 +41,7 @@
     "tailwindcss": "catalog:style",
     "unconfig": "catalog:",
     "vite-plus": "catalog:vite",
-    "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.21"
+    "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.22"
   },
   "engines": {
     "node": ">=22.12.0"
