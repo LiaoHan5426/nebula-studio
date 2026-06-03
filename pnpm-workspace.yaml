@@ -14,11 +14,11 @@ publicHoistPattern:
 
 shamefullyHoist: true
 enablePrePostScripts: true
-
-# strictPeerDependencies: false
-# autoInstallPeers: true
-# dedupePeerDependents: true
-# verifyDepsBeforeRun: false
+strictPeerDependencies: false
+autoInstallPeers: true
+dedupePeerDependents: true
+verifyDepsBeforeRun: false
+ignoreWorkspaceRootCheck: true
 
 allowBuilds:
   '@parcel/watcher': true
@@ -26,19 +26,12 @@ allowBuilds:
   electron-winstaller: true
   es5-ext: false
   esbuild: true
-# allowBuilds:
-#   '@parcel/watcher': set this to true or false
-#   electron: set this to true or false
-#   electron-winstaller: set this to true or false
-#   es5-ext: set this to true or false
-#   esbuild: set this to true or false
 
 minimumReleaseAgeExclude:
   - electron@42.3.1
 overrides:
   vite: 'catalog:vite'
   vitest: 'catalog:vite'
-  yauzl: '^3.3.1'
 peerDependencyRules:
   allowAny:
     - vite

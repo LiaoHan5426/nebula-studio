@@ -16,6 +16,7 @@
     "chatcmpl",
     "clsx",
     "dedup",
+    "dedupe",
     "defu",
     "demi",
     "dotenv",
@@ -26,6 +27,7 @@
     "esno",
     "etag",
     "execa",
+    "fastify",
     "iconify",
     "iconoir",
     "intlify",
@@ -77,6 +79,7 @@
     "vitejs",
     "vitest",
     "vnode",
+    "vuedraggable",
     "vueuse",
     "wujie",
     "yxxx"

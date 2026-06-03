@@ -36,6 +36,7 @@
     "@nebula-studio/types": "workspace:^",
     "@vitejs/plugin-vue": "catalog:vite",
     "@vitejs/plugin-vue-jsx": "catalog:vite",
+    "cross-env": "catalog:",
     "eslint-plugin-better-tailwindcss": "catalog:lint",
     "eslint-plugin-command": "catalog:lint",
     "esno": "catalog:",
@@ -48,8 +49,5 @@
   "engines": {
     "node": ">=22.12.0"
   },
-  "packageManager": "pnpm@11.5.1",
-  "dependencies": {
-    "cross-env": "catalog:"
-  }
+  "packageManager": "pnpm@11.5.1"
 }
