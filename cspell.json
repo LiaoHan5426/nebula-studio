@@ -78,6 +78,7 @@
     "vitest",
     "vnode",
     "vueuse",
+    "wujie",
     "yxxx"
   ],
   "ignorePaths": [
