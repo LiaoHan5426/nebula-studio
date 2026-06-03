@@ -1,7 +1,7 @@
 @import 'vxe-table/lib/style.css';
 
 /** wangEditor 富文本（NebulaEditor variant=richtext）— 未引入则编辑区几乎不可见 */
-@import '@wangeditor/core/dist/css/style.css';
+@import '@wangeditor-next/editor/dist/css/style.css';
 
 /** NebulaReader Markdown / plain 代码块语法高亮（highlight.js） */
 @import 'highlight.js/styles/github.css';

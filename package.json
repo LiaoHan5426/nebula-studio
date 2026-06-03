@@ -23,7 +23,8 @@
     "test": "vp run -r test",
     "postinstall": "vp run -r stub --if-present",
     "prepare": "vp config",
-    "update:deps": "vp dlx taze -r -w"
+    "update:deps": "vp dlx taze -r -w",
+    "clean": "node ./scripts/clean.mjs"
   },
   "devDependencies": {
     "@eslint-community/eslint-plugin-eslint-comments": "catalog:lint",
@@ -41,15 +42,13 @@
     "tailwindcss": "catalog:style",
     "unconfig": "catalog:",
     "vite-plus": "catalog:vite",
-    "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.22"
+    "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.24"
   },
   "engines": {
     "node": ">=22.12.0"
   },
-  "packageManager": "pnpm@10.33.2",
-  "pnpm": {
-    "overrides": {
-      "@wangeditor/editor-for-vue": "^5.1.12"
-    }
+  "packageManager": "pnpm@11.5.1",
+  "dependencies": {
+    "cross-env": "catalog:"
   }
 }

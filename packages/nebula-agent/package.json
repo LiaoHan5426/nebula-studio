@@ -10,7 +10,7 @@
     "mustache": "^4.2.0"
   },
   "devDependencies": {
-    "node-sql-parser": "catalog:",
-    "@types/mustache": "^4.2.5"
+    "@types/mustache": "^4.2.6",
+    "node-sql-parser": "catalog:"
   }
 }

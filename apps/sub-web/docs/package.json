@@ -18,6 +18,7 @@
     "@nebula-studio-electron/electron-shared": "workspace:^",
     "@nebula-studio-electron/electron-shared-vue": "workspace:^",
     "@nebula-studio-internal/tailwind": "workspace:^",
+    "@nebula-studio/nebula-agent": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
     "marked": "catalog:",

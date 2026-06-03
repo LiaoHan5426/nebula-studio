@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { IDomEditor } from '@wangeditor/editor';
-import { Editor, Toolbar } from '@wangeditor/editor-for-vue';
+import type { IDomEditor } from '@wangeditor-next/editor';
+import { Editor, Toolbar } from '@wangeditor-next/editor-for-vue';
 import { computed, shallowRef, watch } from 'vue';
 
 const props = withDefaults(
