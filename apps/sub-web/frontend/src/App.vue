@@ -86,8 +86,11 @@ function commitIntegrationOpenNow(
 
 /** 与主进程 BrowserView 同宽：右侧停靠 DevTools 时 innerWidth 已不含 DevTools，避免与 getContentBounds 重复扣宽 */
 function reportShellViewport(): void {
+  const shellMain = document.querySelector<HTMLElement>('.shell-main');
+  const rect = shellMain?.getBoundingClientRect();
   window.electron.ipcRenderer.send('shell-viewport', {
-    width: window.innerWidth,
+    x: rect?.left ?? 0,
+    width: rect?.width ?? window.innerWidth,
   });
 }
 

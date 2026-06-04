@@ -74,9 +74,9 @@ function loadRendererContents(
 
 export class WindowManager {
   readonly #securityRules: AbstractSecurityRule[];
-  readonly #shellViewportWidthByShellContents = new WeakMap<
+  readonly #shellViewportBoundsByShellContents = new WeakMap<
     WebContents,
-    number
+    { x: number; width: number }
   >();
   readonly #relayoutEmbeddedViewsByShellWindow = new WeakMap<
     BrowserWindow,
@@ -96,16 +96,27 @@ export class WindowManager {
   }
 
   registerCoreIpc(): void {
-    ipcMain.on('shell-viewport', (event, payload: { width: number }) => {
-      if (typeof payload?.width !== 'number' || !Number.isFinite(payload.width))
-        return;
-      this.#shellViewportWidthByShellContents.set(
-        event.sender,
-        Math.floor(payload.width),
-      );
-      const shellWin = BrowserWindow.fromWebContents(event.sender);
-      if (shellWin) this.#relayoutEmbeddedViewsByShellWindow.get(shellWin)?.();
-    });
+    ipcMain.on(
+      'shell-viewport',
+      (event, payload: { x?: number; width?: number }) => {
+        if (
+          typeof payload?.width !== 'number' ||
+          !Number.isFinite(payload.width)
+        )
+          return;
+        const x =
+          typeof payload.x === 'number' && Number.isFinite(payload.x)
+            ? payload.x
+            : 0;
+        this.#shellViewportBoundsByShellContents.set(event.sender, {
+          x: Math.max(0, Math.floor(x)),
+          width: Math.floor(payload.width),
+        });
+        const shellWin = BrowserWindow.fromWebContents(event.sender);
+        if (shellWin)
+          this.#relayoutEmbeddedViewsByShellWindow.get(shellWin)?.();
+      },
+    );
 
     ipcMain.handle('shell:get-state', () => ({
       activeViewId: this.#activeEmbeddedViewId,
@@ -424,14 +435,17 @@ export class WindowManager {
   ): void {
     const top = appConfig.shell.topInsetPx;
     const { width, height } = win.getContentBounds();
-    const shellW = this.#shellViewportWidthByShellContents.get(win.webContents);
-    const w = Math.max(0, shellW ?? width);
+    const bounds = this.#shellViewportBoundsByShellContents.get(
+      win.webContents,
+    );
+    const w = Math.max(0, bounds?.width ?? width);
+    const x = Math.max(0, bounds?.x ?? 0);
     const h = Math.max(0, height - top);
     for (const [id, view] of views) {
       const isActive = this.#activeEmbeddedViewId === id;
       const show = this.#embeddedContentVisible && isActive;
       view.setBounds({
-        x: 0,
+        x: show ? x : 0,
         y: top,
         width: show ? w : 0,
         height: show ? h : 0,
