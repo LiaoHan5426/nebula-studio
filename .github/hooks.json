@@ -1,0 +1,10 @@
+{
+  "hooks": {
+    "preToolUse": [
+      {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"H:\\developerTools\\tools\\rtk\\rtk-hook-cursor.ps1\"",
+        "matcher": "Shell"
+      }
+    ]
+  }
+}
