@@ -2,7 +2,11 @@
   // 本仓库脚本与 CI 统一走 `vp`（见根 package.json）；勿在脚本中直接写 `npm run` / `pnpm`。
   "npm.scriptRunner": "vp",
   // tailwindCSS 配置
+  "tailwindCSS.experimental.configFile": "tools/tailwindcss/src/theme.css",
   "tailwindCSS.lint.suggestCanonicalClasses": "ignore",
+  "tailwindCSS.experimental.classRegex": [
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+  ],
 
   // workbench
   "workbench.list.smoothScrolling": true,
@@ -23,6 +27,7 @@
   "oxc.fmt.configPath": "./vite.config.ts",
   "eslint.useFlatConfig": true,
   "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
     "source.fixAll.oxc": "explicit",
     "source.fixAll.stylelint": "explicit",
     "source.organizeImports": "never"
@@ -55,11 +60,7 @@
   "[vue]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
   },
-  "stylelint.enable": true,
-  "stylelint.packageManager": "pnpm",
-  "stylelint.validate": ["css", "less", "postcss", "scss", "vue"],
-  "stylelint.customSyntax": "postcss-html",
-  "stylelint.snippet": ["css", "less", "postcss", "scss", "vue"],
+
   // terminal
   "terminal.integrated.cursorBlinking": true,
   "terminal.integrated.persistentSessionReviveProcess": "never",
@@ -85,6 +86,9 @@
   },
   "typescript.tsserver.exclude": ["**/node_modules", "**/dist", "**/.turbo"],
 
+  // search
+  "search.searchEditor.singleClickBehaviour": "peekDefinition",
+  "search.followSymlinks": false,
   // 使用搜索功能时，将这些文件和文件夹排除在外
   "search.exclude": {
     "**/node_modules": true,
@@ -121,6 +125,39 @@
   "css.lint.unknownAtRules": "ignore",
   "scss.lint.unknownAtRules": "ignore",
   "less.lint.unknownAtRules": "ignore",
+
+  "stylelint.enable": true,
+  "stylelint.packageManager": "pnpm",
+  "stylelint.validate": ["css", "less", "postcss", "scss", "vue"],
+  "stylelint.customSyntax": "postcss-html",
+  "stylelint.snippet": ["css", "less", "postcss", "scss", "vue"],
+
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
+  "js/ts.inlayHints.enumMemberValues.enabled": true,
+  "js/ts.preferences.preferTypeOnlyAutoImports": true,
+  "js/ts.preferences.includePackageJsonAutoImports": "on",
+
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+    "javascriptreact",
+    "typescriptreact",
+    "vue",
+    "html",
+    "markdown",
+    "json",
+    "jsonc",
+    "json5",
+    "yaml"
+  ],
+
+  "github.copilot.enable": {
+    "*": true,
+    "markdown": true,
+    "plaintext": false,
+    "yaml": false
+  },
+
   // 文件嵌套
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.expand": false,

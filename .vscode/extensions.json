@@ -2,6 +2,8 @@
   "recommendations": [
     // Vite plus
     "VoidZero.vite-plus-extension-pack",
+    // 将 eslint 集成到 VS Code 中。
+    "dbaeumer.vscode-eslint",
     // 将 oxlint 集成到 VS Code 中。
     "oxc.oxc-vscode",
     // Visual Studio Code 的官方 Stylelint 扩展

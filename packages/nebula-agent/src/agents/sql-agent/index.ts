@@ -1,20 +1,23 @@
 import { getAgentConfig } from '../../config';
 import { LLMClient } from '../../llm';
-import {
-  ApiClient,
-  type ApiClientConfig,
-  type QueryResult,
-  type ExecuteSQLResponse,
+import { ApiClient } from '../../api-client';
+import type {
+  ApiClientConfig,
+  QueryResult,
+  ExecuteSQLResponse,
 } from '../../api-client';
-import { SQLCrypto, type CryptoConfig } from '../../crypto';
-import { ChartSelector, type ChartRecommendation } from '../../chart-selector';
-import { EChartsGenerator, type EChartsOption } from '../../echarts-generator';
+import { SQLCrypto } from '../../crypto';
+import type { CryptoConfig } from '../../crypto';
+import { ChartSelector } from '../../chart-selector';
+import type { ChartRecommendation } from '../../chart-selector';
+import { EChartsGenerator } from '../../echarts-generator';
+import type { EChartsOption } from '../../echarts-generator';
 import { buildPrompt } from '../../prompt-builder';
-import {
-  SQLValidator,
-  type ValidationResult,
-  type ParserExtension,
-  type SQLValidatorOptions,
+import { SQLValidator } from '../../sql-validator';
+import type {
+  ValidationResult,
+  ParserExtension,
+  SQLValidatorOptions,
 } from '../../sql-validator';
 
 export type SQLAgentResult = {
@@ -50,9 +53,11 @@ export class SQLAgent {
     }
 
     this.llmClient = new LLMClient(agentConfig);
-    this.apiClient = new ApiClient(options?.apiConfig || {
-      baseURL: '/api'
-    });
+    this.apiClient = new ApiClient(
+      options?.apiConfig || {
+        baseURL: '/api',
+      },
+    );
     this.crypto = new SQLCrypto(options?.cryptoConfig);
     this.chartSelector = new ChartSelector();
     this.echartsGenerator = new EChartsGenerator();
@@ -60,7 +65,7 @@ export class SQLAgent {
     this.encryptSQL = options?.encryptSQL ?? true;
 
     if (options?.parserExtensions) {
-      options.parserExtensions.forEach(ext => {
+      options.parserExtensions.forEach((ext) => {
         this.validator.registerExtension(ext);
       });
     }
@@ -68,26 +73,34 @@ export class SQLAgent {
 
   async execute(userQuery: string): Promise<SQLAgentResult> {
     const schema = await this.apiClient.getSchema();
-    
+
     const systemPrompt = await buildPrompt('sql', {
       sql: {
         dbType: 'mysql',
-        schema: schema.success ? this.apiClient.formatSchemaForPrompt(schema.data || []) : ''
-      }
+        schema: schema.success
+          ? this.apiClient.formatSchemaForPrompt(schema.data || [])
+          : '',
+      },
     });
 
-    const generatedSQL = await this.llmClient.generateSQL(userQuery, systemPrompt);
-    
+    const generatedSQL = await this.llmClient.generateSQL(
+      userQuery,
+      systemPrompt,
+    );
+
     const validationResult = this.validator.validate(generatedSQL);
     if (!validationResult.isValid) {
       throw new Error(`SQL validation failed: ${validationResult.error}`);
     }
-    
+
     const queryResult = await this.executeSQL(generatedSQL);
-    
+
     const chartRecommendation = this.chartSelector.recommendChart(queryResult);
-    
-    const echartsOption = this.echartsGenerator.generateOption(queryResult, chartRecommendation);
+
+    const echartsOption = this.echartsGenerator.generateOption(
+      queryResult,
+      chartRecommendation,
+    );
 
     return {
       userQuery,
@@ -95,7 +108,7 @@ export class SQLAgent {
       validationResult,
       queryResult,
       chartRecommendation,
-      echartsOption
+      echartsOption,
     };
   }
 
@@ -104,28 +117,30 @@ export class SQLAgent {
     const systemPrompt = await buildPrompt('sql', {
       sql: {
         dbType: 'mysql',
-        schema: schema.success ? this.apiClient.formatSchemaForPrompt(schema.data || []) : ''
-      }
+        schema: schema.success
+          ? this.apiClient.formatSchemaForPrompt(schema.data || [])
+          : '',
+      },
     });
     return this.llmClient.generateSQL(userQuery, systemPrompt);
   }
 
   async executeSQL(sql: string): Promise<QueryResult> {
     let sqlToExecute = sql;
-    
+
     if (this.encryptSQL) {
       sqlToExecute = await this.crypto.encrypt(sql);
     }
-    
+
     const response: ExecuteSQLResponse = await this.apiClient.executeSQL(
       sqlToExecute,
-      this.encryptSQL
+      this.encryptSQL,
     );
-    
+
     if (!response.success || !response.data) {
       throw new Error(response.error || 'Query execution failed');
     }
-    
+
     return response.data;
   }
 
