@@ -7,7 +7,8 @@ export const sqlAgentApiRows = [
   {
     name: 'SQLAgent.execute(userQuery)',
     type: 'Promise<SQLAgentResult>',
-    description: '执行完整的查询流程：理解意图 → 生成 SQL → 验证 → 执行 → 推荐图表',
+    description:
+      '执行完整的查询流程：理解意图 → 生成 SQL → 验证 → 执行 → 推荐图表',
   },
   {
     name: 'SQLAgent.generateSQL(userQuery)',
@@ -28,31 +29,6 @@ export const sqlAgentApiRows = [
     name: 'SQLAgent.registerParserExtension(extension)',
     type: 'void',
     description: '注册自定义解析器扩展，用于支持未支持的数据库语法',
-  },
-  {
-    name: 'SQLCrypto',
-    type: 'Class',
-    description: 'SQL 加密工具类，使用 AES-GCM 算法',
-  },
-  {
-    name: 'SQLCrypto.encrypt(sql)',
-    type: 'Promise<string>',
-    description: '加密 SQL 语句',
-  },
-  {
-    name: 'SQLCrypto.decrypt(encrypted)',
-    type: 'Promise<string>',
-    description: '解密 SQL 语句',
-  },
-  {
-    name: 'SQLCrypto.getKeyHex()',
-    type: 'string',
-    description: '获取当前密钥（十六进制）',
-  },
-  {
-    name: 'SQLCrypto.setKeyHex(key)',
-    type: 'void',
-    description: '设置加密密钥（32字节十六进制）',
   },
   {
     name: 'SQLValidator',
@@ -116,5 +92,56 @@ export const sqlAgentTypeRows = [
     name: 'ChartRecommendation',
     type: 'interface',
     description: '图表推荐结果',
+  },
+];
+
+export const sqlCryptoApiRows = [
+  {
+    name: 'SQLCrypto',
+    type: 'Class',
+    description: 'SQL 加密工具类，使用 AES-GCM 算法提供认证加密',
+  },
+  {
+    name: 'new SQLCrypto(options)',
+    type: 'SQLCrypto',
+    description: '创建加密实例，可传入自定义密钥',
+  },
+  {
+    name: 'SQLCrypto.encrypt(sql)',
+    type: 'Promise<string>',
+    description: '加密 SQL 语句，返回 Base64 编码的密文',
+  },
+  {
+    name: 'SQLCrypto.decrypt(encrypted)',
+    type: 'Promise<string>',
+    description: '解密 SQL 语句，返回原始 SQL',
+  },
+  {
+    name: 'SQLCrypto.getKeyHex()',
+    type: 'string',
+    description: '获取当前密钥（32字节十六进制）',
+  },
+  {
+    name: 'SQLCrypto.setKeyHex(key)',
+    type: 'void',
+    description: '设置加密密钥（32字节十六进制）',
+  },
+  {
+    name: 'SQLCrypto.generateKey()',
+    type: 'string',
+    description: '生成新的随机密钥（32字节十六进制）',
+  },
+];
+
+export const sqlCryptoTypeRows = [
+  {
+    name: 'SQLCryptoOptions',
+    type: 'interface',
+    description: 'SQLCrypto 构造选项',
+  },
+  {
+    name: 'EncryptionResult',
+    type: 'interface',
+    description: '加密结果（包含密文和密钥信息）',
   },
 ];
