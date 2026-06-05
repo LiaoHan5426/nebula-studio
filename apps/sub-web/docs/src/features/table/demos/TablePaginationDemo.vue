@@ -54,8 +54,7 @@ const code = tablePaginationDemoCode;
 .table-demo-wrap {
   width: 100%;
   max-width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
+  overflow: auto hidden;
 }
 
 .table-demo-wrap :deep(.nebula-table),

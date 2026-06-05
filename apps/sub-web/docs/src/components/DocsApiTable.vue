@@ -32,10 +32,10 @@ defineProps<{
 
 <style lang="scss" scoped>
 .api-table-wrap {
+  padding: 1rem;
+  background: hsl(var(--card));
   border: 1px solid hsl(var(--border));
   border-radius: 12px;
-  background: hsl(var(--card));
-  padding: 1rem;
 }
 
 .api-table-wrap h3 {
@@ -48,25 +48,25 @@ defineProps<{
   display: grid;
   grid-template-columns: minmax(220px, 320px) minmax(0, 1fr);
   margin-top: 0.85rem;
+  overflow: hidden;
   border-top: 1px solid hsl(var(--border));
   border-left: 1px solid hsl(var(--border));
   border-radius: 10px;
-  overflow: hidden;
 }
 
 .api-table__head,
 .api-table__name,
 .api-table__desc {
+  padding: 0.7rem 0.8rem;
   border-right: 1px solid hsl(var(--border));
   border-bottom: 1px solid hsl(var(--border));
-  padding: 0.7rem 0.8rem;
 }
 
 .api-table__head {
-  background: hsl(var(--accent) / 25%);
   font-size: 0.82rem;
   font-weight: 700;
   line-height: 1.2;
+  background: hsl(var(--accent) / 25%);
 }
 
 .api-table__name {
@@ -88,9 +88,9 @@ defineProps<{
 }
 
 .api-table__desc {
-  color: hsl(var(--muted-foreground));
   font-size: 0.88rem;
   line-height: 1.5;
+  color: hsl(var(--muted-foreground));
   word-break: break-word;
 }
 

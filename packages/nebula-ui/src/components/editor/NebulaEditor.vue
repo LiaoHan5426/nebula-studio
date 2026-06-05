@@ -224,25 +224,25 @@ function togglePreview(): void {
 
 .nebula-editor__chrome {
   display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  margin-bottom: 0.45rem;
   min-height: 2rem;
+  margin-bottom: 0.45rem;
 }
 
 .nebula-editor__chrome-start {
   display: flex;
-  align-items: center;
   gap: 0.5rem;
+  align-items: center;
   min-width: 0;
 }
 
 .nebula-editor__chrome-end {
   display: flex;
-  align-items: center;
   gap: 0.5rem;
+  align-items: center;
   margin-left: auto;
 }
 
@@ -258,10 +258,10 @@ function togglePreview(): void {
   padding: 0.28rem 0.45rem;
   font-size: 0.82rem;
   color: hsl(var(--foreground));
+  cursor: pointer;
   background: hsl(var(--card));
   border: 1px solid hsl(var(--border));
   border-radius: 8px;
-  cursor: pointer;
 }
 
 .nebula-editor__chrome-select:disabled {
@@ -274,10 +274,10 @@ function togglePreview(): void {
   font-size: 0.78rem;
   font-weight: 600;
   color: hsl(var(--foreground));
+  cursor: pointer;
   background: hsl(var(--secondary));
   border: 1px solid hsl(var(--border));
   border-radius: 8px;
-  cursor: pointer;
 }
 
 .nebula-editor__preview-toggle:hover {
@@ -303,18 +303,18 @@ function togglePreview(): void {
   flex-direction: column;
   min-width: 0;
   min-height: 0;
+  overflow: hidden;
+  background: hsl(var(--card));
   border: 1px solid hsl(var(--border));
   border-radius: 10px;
-  background: hsl(var(--card));
-  overflow: hidden;
 }
 
 .nebula-editor__reader-scroll {
   flex: 1 1 auto;
   min-height: 0;
   max-height: 100%;
-  overflow: auto;
   padding: 0.65rem 0.85rem;
+  overflow: auto;
 }
 
 .nebula-editor__reader-scroll--html {

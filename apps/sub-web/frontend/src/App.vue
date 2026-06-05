@@ -15,7 +15,6 @@ import {
   NebulaThemeToggle,
 } from '@nebula-studio/nebula-ui';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
-import Versions from './components/Versions.vue';
 
 type ThemeMode = 'light' | 'dark';
 type AppMode = 'dev' | 'build';
@@ -48,6 +47,9 @@ const integrationOpen = ref(false);
 const integrationClosable = ref(false);
 const addPickerOpen = ref(false);
 const integrationPreferenceHydrated = ref(false);
+const selectedSidebarItem = ref<'workspace' | 'integration' | 'settings'>(
+  'workspace',
+);
 /** 为 true 后才把 activeViewId 写入 localStorage，避免 loadShellState 的临时值覆盖用户刷新前要恢复的子应用 */
 const activeViewPersistReady = ref(false);
 const sortableViewIds = ref<string[]>([]);
@@ -55,15 +57,9 @@ const isSorting = ref(false);
 const isThemeSwitching = ref(false);
 let suppressTileClickUntilTs = 0;
 
-const modeLabel = computed(() => (appMode.value === 'dev' ? 'DEV' : 'BUILD'));
-
-const activeAppLabel = computed(() => {
-  const id = activeViewId.value;
-  if (id === 'docs' || id === 'settings') {
-    return getShellIntegratedAppMeta(id).label;
-  }
-  return id ?? '—';
-});
+const settingsAvailable = computed(() =>
+  availableViewIds.value.includes('settings'),
+);
 
 const authAvatarText = computed(() => {
   const raw = authSession.value?.user?.trim();
@@ -72,6 +68,14 @@ const authAvatarText = computed(() => {
 });
 
 const draggableItemKey = (item: unknown): string => String(item);
+
+function openWorkspace(): void {
+  selectedSidebarItem.value = 'workspace';
+  integrationClosable.value = true;
+  addPickerOpen.value = false;
+  integrationOpen.value = false;
+  commitIntegrationOpenNow(false);
+}
 
 function commitIntegrationOpenNow(
   open: boolean,
@@ -82,8 +86,11 @@ function commitIntegrationOpenNow(
 
 /** 与主进程 BrowserView 同宽：右侧停靠 DevTools 时 innerWidth 已不含 DevTools，避免与 getContentBounds 重复扣宽 */
 function reportShellViewport(): void {
+  const shellMain = document.querySelector<HTMLElement>('.shell-main');
+  const rect = shellMain?.getBoundingClientRect();
   window.electron.ipcRenderer.send('shell-viewport', {
-    width: window.innerWidth,
+    x: rect?.left ?? 0,
+    width: rect?.width ?? window.innerWidth,
   });
 }
 
@@ -144,6 +151,9 @@ async function reorderEmbeddedViews(
 async function selectIntegratedApp(viewId: string): Promise<void> {
   if (Date.now() < suppressTileClickUntilTs) return;
   await switchEmbeddedView(viewId);
+  if (viewId === 'settings') {
+    selectedSidebarItem.value = 'settings';
+  }
   integrationOpen.value = false;
   integrationClosable.value = false;
   addPickerOpen.value = false;
@@ -187,6 +197,7 @@ async function onSortEnd(): Promise<void> {
 }
 
 function openIntegrationLauncher(): void {
+  selectedSidebarItem.value = 'integration';
   integrationClosable.value = true;
   addPickerOpen.value = false;
   integrationOpen.value = true;
@@ -343,7 +354,7 @@ onUnmounted(() => {
     :style="{ '--shell-top': `${shellTopPx}px` }"
   >
     <header class="shell-bar">
-      <div class="shell-left">
+      <div class="shell-brand-group">
         <button
           type="button"
           class="shell-brand shell-brand-btn"
@@ -353,34 +364,9 @@ onUnmounted(() => {
           Nebula Studio
         </button>
         <span class="shell-badge">Host Shell</span>
-        <span class="shell-desc">集成子应用工作台</span>
       </div>
 
-      <div class="shell-center">
-        <span class="mode-chip" :class="`mode-${appMode}`">
-          <span class="mode-dot" />
-          {{ modeLabel }}
-        </span>
-
-        <div v-if="!integrationOpen" class="shell-app-launcher-trigger">
-          <span class="current-app-label" aria-live="polite">
-            当前：<strong>{{ activeAppLabel }}</strong>
-          </span>
-          <NebulaButton
-            class="integration-open-btn"
-            variant="secondary"
-            aria-haspopup="dialog"
-            :aria-expanded="integrationOpen"
-            @click="openIntegrationLauncher"
-          >
-            应用集成
-          </NebulaButton>
-        </div>
-      </div>
-
-      <Versions class="shell-versions" />
-
-      <div class="shell-actions">
+      <div class="shell-bar-actions">
         <NebulaThemeToggle
           class="shell-btn"
           :theme="theme"
@@ -418,154 +404,195 @@ onUnmounted(() => {
         </div>
       </div>
     </header>
-    <!-- Electron：顶栏以下由 BrowserView 绘制。Web：用 iframe 模拟内嵌子应用。 -->
-    <main v-if="usesIframeEmbed" class="shell-embed">
-      <iframe
-        v-for="viewId in availableViewIds"
-        v-show="viewId === activeViewId"
-        :key="viewId"
-        class="shell-embed-frame"
-        :src="embedSrc[viewId as EmbeddedShellWindowId]"
-        :title="`Nebula Studio — ${viewId}`"
-      />
-    </main>
 
-    <div
-      v-if="integrationOpen"
-      class="integration-overlay"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="integration-dialog-title"
-    >
-      <button
-        type="button"
-        class="integration-backdrop"
-        aria-label="关闭应用集成"
-        @click="integrationClosable ? closeIntegrationLauncher() : undefined"
-      />
-      <div class="integration-panel">
-        <div class="integration-panel-head">
-          <h2 id="integration-dialog-title" class="integration-title">
+    <div class="shell-body">
+      <aside class="shell-sidebar">
+        <div class="sidebar-group">
+          <button
+            type="button"
+            class="sidebar-item"
+            :class="{ active: selectedSidebarItem === 'workspace' }"
+            @click="openWorkspace"
+          >
+            工作台
+          </button>
+          <button
+            type="button"
+            class="sidebar-item"
+            :class="{ active: selectedSidebarItem === 'integration' }"
+            @click="openIntegrationLauncher"
+          >
             应用集成
-          </h2>
-          <NebulaButton
-            v-if="integrationClosable"
-            variant="ghost"
-            @click="closeIntegrationLauncher"
-          >
-            关闭
-          </NebulaButton>
+          </button>
         </div>
-        <p class="integration-desc">
-          点击图标可进入子应用；右上角可隐藏已添加应用；使用加号可重新启用。
-        </p>
-        <div class="integration-panel-body">
-          <div class="integration-grid">
-            <NebulaDrag
-              v-model="sortableViewIds"
-              class="integration-grid-apps"
-              :item-key="draggableItemKey"
-              handle=".integration-tile-icon"
-              ghost-class="integration-tile-ghost"
-              chosen-class="integration-tile-chosen"
-              drag-class="integration-tile-drag"
-              :animation="180"
-              @start="onSortStart"
-              @end="onSortEnd"
-            >
-              <template #item="{ element: viewId }">
-                <div
-                  role="button"
-                  tabindex="0"
-                  class="integration-tile"
-                  :class="{
-                    sorting: isSorting,
-                  }"
-                  @click="selectIntegratedApp(viewId)"
-                  @keydown.enter.prevent="selectIntegratedApp(viewId)"
-                  @keydown.space.prevent="selectIntegratedApp(viewId)"
-                >
-                  <button
-                    type="button"
-                    class="integration-tile-hide"
-                    title="隐藏应用"
-                    aria-label="隐藏应用"
-                    @click.stop="hideIntegratedApp(viewId)"
-                  >
-                    ×
-                  </button>
-                  <span
-                    class="integration-tile-icon"
-                    aria-hidden="true"
-                    v-html="
-                      getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId)
-                        .iconSvg
-                    "
-                  />
-                  <span class="integration-tile-label">{{
-                    getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId)
-                      .label
-                  }}</span>
-                </div>
-              </template>
-            </NebulaDrag>
-            <button
-              v-if="dormantIntegrableIds.length > 0"
-              type="button"
-              class="integration-tile integration-tile-add"
-              :class="{ 'is-open': addPickerOpen }"
-              :aria-expanded="addPickerOpen"
-              aria-controls="integration-add-list"
-              @click="addPickerOpen = !addPickerOpen"
-            >
-              <span class="integration-plus" aria-hidden="true">+</span>
-              <span class="integration-tile-label">添加应用</span>
-            </button>
-          </div>
 
-          <div
-            v-show="addPickerOpen && dormantIntegrableIds.length > 0"
-            id="integration-add-list"
-            class="integration-add-panel"
+        <div class="sidebar-footer">
+          <button
+            type="button"
+            class="sidebar-item sidebar-item-settings"
+            :disabled="!settingsAvailable"
+            @click="selectIntegratedApp('settings')"
           >
-            <p class="integration-add-heading">待启用的应用</p>
-            <ul class="integration-add-list">
-              <li
-                v-for="viewId in dormantIntegrableIds"
-                :key="viewId"
-                class="integration-add-li"
+            设置
+          </button>
+        </div>
+      </aside>
+
+      <main class="shell-main">
+        <div v-if="usesIframeEmbed" class="shell-embed">
+          <iframe
+            v-for="viewId in availableViewIds"
+            v-show="viewId === activeViewId"
+            :key="viewId"
+            class="shell-embed-frame"
+            :src="embedSrc[viewId as EmbeddedShellWindowId]"
+            :title="`Nebula Studio — ${viewId}`"
+          />
+        </div>
+
+        <div
+          v-if="integrationOpen"
+          class="integration-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="integration-dialog-title"
+        >
+          <button
+            type="button"
+            class="integration-backdrop"
+            aria-label="关闭应用集成"
+            @click="
+              integrationClosable ? closeIntegrationLauncher() : undefined
+            "
+          />
+          <div class="integration-panel">
+            <div class="integration-panel-head">
+              <h2 id="integration-dialog-title" class="integration-title">
+                应用集成
+              </h2>
+              <NebulaButton
+                v-if="integrationClosable"
+                variant="ghost"
+                @click="closeIntegrationLauncher"
               >
-                <button
-                  type="button"
-                  class="integration-add-btn"
-                  @click="enableIntegratedApp(viewId)"
+                关闭
+              </NebulaButton>
+            </div>
+            <p class="integration-desc">
+              点击图标可进入子应用；右上角可隐藏已添加应用；使用加号可重新启用。
+            </p>
+            <div class="integration-panel-body">
+              <div class="integration-grid">
+                <NebulaDrag
+                  v-model="sortableViewIds"
+                  class="integration-grid-apps"
+                  :item-key="draggableItemKey"
+                  handle=".integration-tile-icon"
+                  ghost-class="integration-tile-ghost"
+                  chosen-class="integration-tile-chosen"
+                  drag-class="integration-tile-drag"
+                  :animation="180"
+                  @start="onSortStart"
+                  @end="onSortEnd"
                 >
-                  <span
-                    class="integration-tile-icon sm"
-                    aria-hidden="true"
-                    v-html="
-                      getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId)
-                        .iconSvg
-                    "
-                  />
-                  <span>{{
-                    getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId)
-                      .label
-                  }}</span>
-                  <span class="integration-add-hint">启用</span>
+                  <template #item="{ element: viewId }">
+                    <div
+                      role="button"
+                      tabindex="0"
+                      class="integration-tile"
+                      :class="{
+                        sorting: isSorting,
+                      }"
+                      @click="selectIntegratedApp(viewId)"
+                      @keydown.enter.prevent="selectIntegratedApp(viewId)"
+                      @keydown.space.prevent="selectIntegratedApp(viewId)"
+                    >
+                      <button
+                        type="button"
+                        class="integration-tile-hide"
+                        title="隐藏应用"
+                        aria-label="隐藏应用"
+                        @click.stop="hideIntegratedApp(viewId)"
+                      >
+                        ×
+                      </button>
+                      <span
+                        class="integration-tile-icon"
+                        aria-hidden="true"
+                        v-html="
+                          getShellIntegratedAppMeta(
+                            viewId as EmbeddedShellWindowId,
+                          ).iconSvg
+                        "
+                      />
+                      <span class="integration-tile-label">{{
+                        getShellIntegratedAppMeta(
+                          viewId as EmbeddedShellWindowId,
+                        ).label
+                      }}</span>
+                    </div>
+                  </template>
+                </NebulaDrag>
+                <button
+                  v-if="dormantIntegrableIds.length > 0"
+                  type="button"
+                  class="integration-tile integration-tile-add"
+                  :class="{ 'is-open': addPickerOpen }"
+                  :aria-expanded="addPickerOpen"
+                  aria-controls="integration-add-list"
+                  @click="addPickerOpen = !addPickerOpen"
+                >
+                  <span class="integration-plus" aria-hidden="true">+</span>
+                  <span class="integration-tile-label">添加应用</span>
                 </button>
-              </li>
-            </ul>
+              </div>
+
+              <div
+                v-show="addPickerOpen && dormantIntegrableIds.length > 0"
+                id="integration-add-list"
+                class="integration-add-panel"
+              >
+                <p class="integration-add-heading">待启用的应用</p>
+                <ul class="integration-add-list">
+                  <li
+                    v-for="viewId in dormantIntegrableIds"
+                    :key="viewId"
+                    class="integration-add-li"
+                  >
+                    <button
+                      type="button"
+                      class="integration-add-btn"
+                      @click="enableIntegratedApp(viewId)"
+                    >
+                      <span
+                        class="integration-tile-icon sm"
+                        aria-hidden="true"
+                        v-html="
+                          getShellIntegratedAppMeta(
+                            viewId as EmbeddedShellWindowId,
+                          ).iconSvg
+                        "
+                      />
+                      <span>{{
+                        getShellIntegratedAppMeta(
+                          viewId as EmbeddedShellWindowId,
+                        ).label
+                      }}</span>
+                      <span class="integration-add-hint">启用</span>
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .shell {
-  position: relative;
   --shell-bg: radial-gradient(
     circle at top left,
     hsl(var(--background-deep)) 0%,
@@ -592,6 +619,7 @@ onUnmounted(() => {
   );
   --chip-bg: hsl(var(--muted) / 55%);
 
+  position: relative;
   min-height: 100vh;
   margin: 0;
   background: var(--shell-bg);
@@ -616,10 +644,10 @@ onUnmounted(() => {
   z-index: 3;
   box-sizing: border-box;
   display: flex;
-  gap: 10px;
   align-items: center;
+  justify-content: space-between;
   height: var(--shell-top);
-  padding: 0 12px;
+  padding: 0 16px;
   font:
     13px/1.4 system-ui,
     sans-serif;
@@ -629,12 +657,22 @@ onUnmounted(() => {
   -webkit-app-region: drag;
 }
 
-.shell-left {
+.shell-brand-group {
   display: flex;
-  flex: 1;
   gap: 10px;
   align-items: center;
   min-width: 0;
+}
+
+.shell-bar-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  -webkit-app-region: no-drag;
+}
+
+.shell-left {
+  display: none;
 }
 
 .shell-brand {
@@ -745,39 +783,15 @@ onUnmounted(() => {
   flex-shrink: 0;
 }
 
-.integration-overlay {
-  position: fixed;
-  inset: 0;
-  top: var(--shell-top);
-  z-index: 2;
-  display: flex;
-  align-items: stretch;
-  justify-content: center;
-  padding: 0;
-  pointer-events: auto;
-}
+/* integration-overlay and panel styling moved into the new layout section */
 
 .integration-backdrop {
   position: absolute;
   inset: 0;
   cursor: pointer;
   background: rgb(8 10 18 / 52%);
-  backdrop-filter: blur(2px);
   border: 0;
-}
-
-.integration-panel {
-  position: relative;
-  z-index: 1;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  min-height: 100%;
-  max-height: 100%;
-  padding: 22px 24px 24px;
-  overflow: hidden;
-  background: hsl(var(--background) / 96%);
+  backdrop-filter: blur(2px);
 }
 
 .integration-panel-body {
@@ -831,7 +845,6 @@ onUnmounted(() => {
   color: var(--text-main);
   cursor: pointer;
   user-select: none;
-  -webkit-user-select: none;
   background: hsl(var(--muted) / 38%);
   border: 1px solid hsl(var(--border) / 72%);
   border-radius: 14px;
@@ -882,9 +895,9 @@ onUnmounted(() => {
 }
 
 .integration-tile-ghost {
-  border-style: dashed;
-  border-color: hsl(var(--primary) / 62%);
   background: hsl(var(--primary) / 8%);
+  border-color: hsl(var(--primary) / 62%);
+  border-style: dashed;
   box-shadow: inset 0 0 0 2px hsl(var(--primary) / 24%);
 }
 
@@ -935,8 +948,8 @@ onUnmounted(() => {
 }
 
 .integration-tile-add.is-open {
-  border-style: solid;
   border-color: hsl(var(--primary) / 45%);
+  border-style: solid;
 }
 
 .integration-tile-muted {
@@ -953,8 +966,8 @@ onUnmounted(() => {
 }
 
 .integration-add-panel {
-  margin-top: 16px;
   padding-top: 16px;
+  margin-top: 16px;
   border-top: 1px solid hsl(var(--border) / 65%);
 }
 
@@ -963,8 +976,8 @@ onUnmounted(() => {
   font-size: 12px;
   font-weight: 700;
   color: var(--text-muted);
-  letter-spacing: 0.4px;
   text-transform: uppercase;
+  letter-spacing: 0.4px;
 }
 
 .integration-add-list {
@@ -1017,23 +1030,127 @@ onUnmounted(() => {
   padding: 0;
   margin: -1px;
   overflow: hidden;
-  clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+  clip-path: inset(0 0 0 0);
 }
 
 .shell-versions {
-  flex-shrink: 0;
-  overflow: visible;
-  -webkit-app-region: no-drag;
+  display: none;
 }
 
 .shell-actions {
+  display: none;
+}
+
+.shell-body {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  min-height: calc(100vh - var(--shell-top));
+}
+
+.shell-sidebar {
   display: flex;
-  flex-shrink: 0;
-  gap: 8px;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 0;
+  padding: 22px 16px;
+  background: hsl(var(--background-deep) / 96%);
+  border-right: 1px solid hsl(var(--border) / 82%);
+}
+
+.sidebar-group,
+.sidebar-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sidebar-item {
+  position: relative;
+  display: inline-flex;
   align-items: center;
-  -webkit-app-region: no-drag;
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main);
+  text-align: left;
+  cursor: pointer;
+  background: hsl(var(--muted) / 32%);
+  border: 1px solid transparent;
+  border-radius: 14px;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.sidebar-item:hover:not(:disabled) {
+  background: hsl(var(--primary) / 12%);
+}
+
+.sidebar-item.active {
+  background: hsl(var(--primary) / 16%);
+  border-color: hsl(var(--primary) / 42%);
+}
+
+.sidebar-item:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.sidebar-item-settings {
+  margin-top: auto;
+}
+
+.shell-main {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.shell-embed {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+}
+
+.shell-embed-frame {
+  box-sizing: border-box;
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  margin: 0;
+  pointer-events: auto;
+  background: hsl(var(--background));
+  border: 0;
+}
+
+.integration-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+.integration-panel {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100%;
+  max-height: 100%;
+  padding: 22px 24px 24px;
+  overflow: hidden;
+  background: hsl(var(--background) / 96%);
 }
 
 .shell-btn {
@@ -1042,14 +1159,15 @@ onUnmounted(() => {
 }
 
 .auth-menu {
-  position: relative;
-  flex-shrink: 0;
-  -webkit-app-region: no-drag;
   --auth-pop-bg: hsl(var(--card) / 98%);
   --auth-pop-border: hsl(var(--border) / 82%);
   --auth-pop-divider: hsl(var(--border) / 62%);
   --auth-pop-title: hsl(var(--muted-foreground));
   --auth-pop-text: hsl(var(--foreground));
+
+  position: relative;
+  flex-shrink: 0;
+  -webkit-app-region: no-drag;
 }
 
 .auth-menu::after {
@@ -1093,14 +1211,14 @@ onUnmounted(() => {
   right: 0;
   z-index: 12;
   min-width: 206px;
-  margin-top: 6px;
   padding: 12px;
+  margin-top: 6px;
   pointer-events: none;
-  opacity: 0;
   background: var(--auth-pop-bg);
   border: 1px solid var(--auth-pop-border);
   border-radius: 12px;
   box-shadow: 0 10px 24px rgb(2 4 12 / 26%);
+  opacity: 0;
   transform: translateY(-6px);
   transition:
     opacity 0.15s ease,
@@ -1141,8 +1259,8 @@ onUnmounted(() => {
 }
 
 .auth-dropdown-logout {
-  width: 100%;
   justify-content: center;
+  width: 100%;
 }
 
 @media (width <= 1200px) {
@@ -1152,48 +1270,33 @@ onUnmounted(() => {
 }
 
 @media (width <= 960px) {
-  .shell-badge {
-    display: none;
+  .shell-body {
+    grid-template-columns: 1fr;
   }
 
-  .shell-versions {
-    display: none;
+  .shell-sidebar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 10px;
   }
 
-  .mode-chip {
-    display: none;
+  .sidebar-group,
+  .sidebar-footer {
+    flex-direction: row;
+    gap: 8px;
   }
 
-  .current-app-label {
-    display: none;
+  .sidebar-item {
+    flex: 1;
+  }
+
+  .shell-bar {
+    padding: 0 12px;
   }
 
   .auth-dropdown {
     right: -4px;
   }
-}
-
-.shell-embed {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  padding-top: var(--shell-top);
-  margin: 0;
-  pointer-events: none;
-}
-
-.shell-embed-frame {
-  box-sizing: border-box;
-  flex: 1;
-  width: 100%;
-  min-height: 0;
-  margin: 0;
-  pointer-events: auto;
-  background: hsl(var(--background));
-  border: 0;
 }
 </style>

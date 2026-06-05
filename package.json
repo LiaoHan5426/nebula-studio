@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/package.json",
   "name": "nebula-studio",
   "version": "0.0.0",
   "private": true,
@@ -15,16 +16,16 @@
     "dev:electron": "vp run electron#dev",
     "dev:web": "vp run web#dev",
     "build:web": "vp run web#build",
-    "sync:app-config": "vp exec esno ./scripts/tasks/sync-app-config.ts",
     "cap": "vp run mobile#cap",
-    "check": "vp check --fix -- --threads 2",
-    "lint:ox": "vp lint --fix --threads 2",
+    "check": "vp check --fix --threads=2",
+    "lint:ox": "vp lint --fix --threads=2",
     "lint:style": "vp exec stylelint \"**/*.{css,scss,vue}\" --fix --allow-empty-input --ignore-pattern \"**/out/**\" --ignore-pattern \"**/dist/**\" --ignore-pattern \"**/dev-dist/**\"",
-    "lint": "vp lint --fix --threads 2 && vp exec stylelint \"**/*.{css,scss,vue}\" --fix --allow-empty-input --ignore-pattern \"**/out/**\" --ignore-pattern \"**/dist/**\" --ignore-pattern \"**/dev-dist/**\"",
+    "lint": "vp run lint:ox && vp run lint:style",
     "test": "vp run -r test",
     "postinstall": "vp run -r stub --if-present",
     "prepare": "vp config",
-    "update:deps": "vp dlx taze -r -w"
+    "update:deps": "vp dlx taze -r -w",
+    "clean": "node ./scripts/clean.mjs"
   },
   "devDependencies": {
     "@eslint-community/eslint-plugin-eslint-comments": "catalog:lint",
@@ -35,6 +36,7 @@
     "@nebula-studio/types": "workspace:^",
     "@vitejs/plugin-vue": "catalog:vite",
     "@vitejs/plugin-vue-jsx": "catalog:vite",
+    "cross-env": "catalog:",
     "eslint-plugin-better-tailwindcss": "catalog:lint",
     "eslint-plugin-command": "catalog:lint",
     "esno": "catalog:",
@@ -42,15 +44,10 @@
     "tailwindcss": "catalog:style",
     "unconfig": "catalog:",
     "vite-plus": "catalog:vite",
-    "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.21"
+    "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.24"
   },
   "engines": {
     "node": ">=22.12.0"
   },
-  "packageManager": "pnpm@10.33.2",
-  "pnpm": {
-    "overrides": {
-      "@wangeditor/editor-for-vue": "^5.1.12"
-    }
-  }
+  "packageManager": "pnpm@11.5.1"
 }

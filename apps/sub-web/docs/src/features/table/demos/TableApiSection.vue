@@ -54,9 +54,9 @@ const navigateToFeature = inject(DOCS_NAVIGATE_TO_FEATURE, null);
 
 .table-api-desc {
   margin: 0.4rem 0 0;
-  color: hsl(var(--muted-foreground));
   font-size: 0.88rem;
   line-height: 1.45;
+  color: hsl(var(--muted-foreground));
 }
 
 .table-api-desc code {
@@ -64,22 +64,22 @@ const navigateToFeature = inject(DOCS_NAVIGATE_TO_FEATURE, null);
 }
 
 .table-api-pagination-nav {
-  margin-top: 0.35rem;
-  padding: 0.75rem 0.85rem;
-  border-radius: 10px;
-  border: 1px solid hsl(var(--border));
-  background: hsl(var(--muted) / 18%);
   display: flex;
   flex-wrap: wrap;
+  gap: 0.65rem;
   align-items: center;
   justify-content: space-between;
-  gap: 0.65rem;
+  padding: 0.75rem 0.85rem;
+  margin-top: 0.35rem;
+  background: hsl(var(--muted) / 18%);
+  border: 1px solid hsl(var(--border));
+  border-radius: 10px;
 }
 
 .table-api-pagination-nav__text {
-  margin: 0;
   flex: 1;
   min-width: 12rem;
+  margin: 0;
   font-size: 0.88rem;
   line-height: 1.45;
   color: hsl(var(--muted-foreground));

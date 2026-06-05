@@ -33,11 +33,11 @@ const code = readerPlainDemoCode;
 
 <style lang="scss" scoped>
 .reader-demo-surface {
+  max-height: min(72vh, 320px);
+  padding: 0.65rem 0.85rem;
+  overflow: auto;
+  background: hsl(var(--card));
   border: 1px solid hsl(var(--border));
   border-radius: 10px;
-  background: hsl(var(--card));
-  padding: 0.65rem 0.85rem;
-  max-height: min(72vh, 320px);
-  overflow: auto;
 }
 </style>

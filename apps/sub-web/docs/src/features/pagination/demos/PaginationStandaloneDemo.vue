@@ -90,23 +90,23 @@ const code = paginationStandaloneDemoCode;
 
 .pagination-standalone__field {
   display: inline-flex;
-  align-items: center;
   gap: 0.35rem;
+  align-items: center;
 }
 
 .pagination-standalone__input {
   width: 5rem;
   padding: 0.25rem 0.4rem;
-  border-radius: 6px;
-  border: 1px solid hsl(var(--border));
-  background: hsl(var(--background));
   color: inherit;
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
+  border-radius: 6px;
 }
 
 .pagination-standalone__check {
   display: inline-flex;
-  align-items: center;
   gap: 0.35rem;
+  align-items: center;
 }
 
 .pagination-standalone__pager {

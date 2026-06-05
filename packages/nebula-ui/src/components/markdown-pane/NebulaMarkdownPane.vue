@@ -63,8 +63,8 @@ function px(v: number | string | undefined, fallback: string): string {
 .nebula-md-pane {
   display: grid;
   gap: 0.75rem;
-  width: 100%;
   align-items: stretch;
+  width: 100%;
 }
 
 .nebula-md-pane[data-mode='split'] {
@@ -83,15 +83,15 @@ function px(v: number | string | undefined, fallback: string): string {
 
 .nebula-md-pane__preview {
   min-width: 0;
+  overflow: hidden;
+  background: hsl(var(--card));
   border: 1px solid hsl(var(--border));
   border-radius: 10px;
-  background: hsl(var(--card));
-  overflow: hidden;
 }
 
 .nebula-md-pane__preview-scroll {
   max-height: min(72vh, 720px);
-  overflow: auto;
   padding: 0.65rem 0.85rem;
+  overflow: auto;
 }
 </style>

@@ -75,16 +75,16 @@ function onDetailsToggle(ev: Event): void {
 
 <style lang="scss" scoped>
 .demo-section {
+  overflow: hidden;
+  background: hsl(var(--card));
   border: 1px solid hsl(var(--border));
   border-radius: 12px;
-  background: hsl(var(--card));
-  overflow: hidden;
 }
 
 .demo-section__head {
   padding: 0.95rem 1rem;
-  border-bottom: 1px solid hsl(var(--border));
   background: hsl(var(--accent) / 24%);
+  border-bottom: 1px solid hsl(var(--border));
 }
 
 .demo-section__head h3 {
@@ -95,9 +95,9 @@ function onDetailsToggle(ev: Event): void {
 
 .demo-section__head p {
   margin: 0.4rem 0 0;
-  color: hsl(var(--muted-foreground));
   font-size: 0.88rem;
   line-height: 1.45;
+  color: hsl(var(--muted-foreground));
 }
 
 .demo-section__body {
@@ -105,50 +105,50 @@ function onDetailsToggle(ev: Event): void {
 }
 
 .demo-section__code {
-  border-top: 1px solid hsl(var(--border));
   background: hsl(var(--background) / 42%);
+  border-top: 1px solid hsl(var(--border));
 }
 
 .demo-section__code summary {
-  cursor: pointer;
-  user-select: none;
   padding: 0.62rem 0.85rem;
-  color: hsl(var(--muted-foreground));
   font-size: 0.82rem;
   font-weight: 600;
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  user-select: none;
 }
 
 .demo-section__code-panel {
   box-sizing: border-box;
   width: 100%;
-  border-top: 1px solid hsl(var(--border));
   padding: 0;
+  border-top: 1px solid hsl(var(--border));
 }
 
 .demo-section__code-panel :deep(.nebula-reader--plain),
 .demo-section__code-panel :deep(.nebula-markdown) {
-  margin: 0;
-  padding: 0;
   width: 100%;
   max-width: none;
+  padding: 0;
+  margin: 0;
 }
 
 .demo-section__code-panel :deep(.nebula-markdown .code-block) {
-  border-radius: 0;
-  border-left: none;
   border-right: none;
+  border-left: none;
+  border-radius: 0;
 }
 
 .demo-section__code-panel :deep(.nebula-reader__plain) {
-  border-radius: 0;
-  border-left: none;
   border-right: none;
+  border-left: none;
+  border-radius: 0;
 }
 
 /* 围栏外的补充说明（如引用）略留边距，避免贴边难读 */
 .demo-section__code-panel :deep(.nebula-markdown blockquote),
 .demo-section__code-panel :deep(.nebula-markdown > p) {
-  margin-left: 0.85rem;
   margin-right: 0.85rem;
+  margin-left: 0.85rem;
 }
 </style>

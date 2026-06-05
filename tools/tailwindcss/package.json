@@ -36,8 +36,8 @@
     }
   },
   "dependencies": {
-    "@nebula-studio/styles": "workspace:^",
     "@iconify/tailwind4": "catalog:style",
+    "@nebula-studio/styles": "workspace:^",
     "@tailwindcss/typography": "catalog:style",
     "tailwindcss": "catalog:style",
     "tw-animate-css": "catalog:style"

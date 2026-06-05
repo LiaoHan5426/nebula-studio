@@ -13,17 +13,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@nebula-studio/app-shell": "workspace:^",
     "@nebula-studio-electron/electron-shared-vue": "workspace:^",
-    "@nebula-studio/nebula-ui": "workspace:^",
     "@nebula-studio-internal/tailwind": "workspace:^",
+    "@nebula-studio/app-shell": "workspace:^",
+    "@nebula-studio/nebula-ui": "workspace:^",
     "vue": "catalog:vue"
   },
   "devDependencies": {
+    "@electron-toolkit/preload": "catalog:electron",
     "@nebula-studio-internal/tsconfig": "workspace:^",
     "@nebula-studio-internal/vite": "workspace:^",
     "@nebula-studio/types": "workspace:^",
-    "@electron-toolkit/preload": "catalog:electron",
     "typescript": "catalog:types",
     "vite": "catalog:vite",
     "vite-plus": "catalog:vite",

@@ -8,12 +8,22 @@ description: >-
 
 ## Concepts
 
-- **`vite-pus`**: treat as **Vite+** — same toolchain and **`vp`** commands as `vite-plus` / Vite+ (common typo / shorthand in chat).
+- **`vite-pus`**: only treat the exact token `vite-pus` as the known common typo for `vite-plus`. Do not automatically map other misspellings — ask the user to confirm before auto-correcting other variants.
 - **`vp`**: global CLI (runtime + package manager + frontend toolchain). Distinct from plain Vite; dev/build go through Vite+ (`vp dev`, `vp build`).
 - **`vite-plus`**: project dependency; `defineConfig` is imported from `vite-plus` in `vite.config.ts`.
 - **Docs**: https://viteplus.dev/guide/ — also `node_modules/vite-plus/docs` after install.
 
+If `vp` is not installed, install it with `npm install -g vp` or follow the repo's bootstrap recommended installer. In CI, install Node, add `vp` to PATH, or use `voidzero-dev/setup-vp` before `vp install`.
+
 When unsure of flags, run `vp help` and `vp <command> --help`.
+
+- If `vp` reports `command not found`, check that `vp` is installed and on PATH. Install with `npm install -g vp` or follow repo CI setup. For network or package-not-found errors, run `vp install --verbose` and inspect `vp why <pkg>`.
+
+Use this decision tree for common changes:
+
+1. If you changed formatting or linting, run `vp check` (or `vp check --fix`).
+2. If you added or changed tests, run `vp test`.
+3. If unsure, run `vp check` then `vp test`.
 
 ## Dependency management (prefer `vp` over raw pm)
 
@@ -24,7 +34,7 @@ When unsure of flags, run `vp help` and `vp <command> --help`.
 | Install lockfile graph | `vp install` |
 | Frozen CI-style | `vp install --frozen-lockfile` |
 | Lockfile only | `vp install --lockfile-only` |
-| Monorepo scope | `vp install --filter <pkg>` or `-w` workspace root |
+| Monorepo scope | `vp install --filter <pkg>` or `vp install -w` (use `-w` to run `vp install` at the workspace root) |
 | Add runtime dep | `vp add <pkg>` |
 | Add dev dep | `vp add -D <pkg>` |
 | Optional / peer | `vp add -O <pkg>`, `vp add --save-peer <pkg>` |
@@ -58,7 +68,7 @@ Example: `vp add -g openskills` (or global installs the user already uses).
 | `vp exec <bin> ...`  | Run a binary with resolved env                      |
 | `vp pack`            | Pack/publish-related when configured                |
 
-Project scripts may wrap these (e.g. `vp check --fix`, `vp run web#build`). Prefer existing root `package.json` scripts when they encode repo conventions.
+Project scripts may wrap these (e.g. `vp check --fix`, `vp run web#build`). Prefer existing root `package.json` scripts when they encode repo conventions. If existing root scripts invoke `npm`, `pnpm`, or `npx`, update them to equivalent `vp` invocations (for example, replace `npm run build` with `vp run build`) instead of keeping raw package-manager calls.
 
 ## `vite.config.ts` (Vite+)
 
@@ -68,7 +78,7 @@ Import:
 import { defineConfig } from 'vite-plus';
 ```
 
-Vite+ merges normal Vite options with toolchain sections. Typical extra keys (availability depends on version — confirm in local types/docs):
+Vite+ merges normal Vite options with toolchain sections. Typical extra keys (availability depends on version — confirm by checking `node_modules/vite-plus/types.d.ts` or `node_modules/vite-plus/docs`, or run `vp info vite-plus` in the repo root):
 
 - **`server`**, **`build`**, **`preview`**: standard Vite.
 - **`test`**: Vitest-style config.
@@ -77,7 +87,7 @@ Vite+ merges normal Vite options with toolchain sections. Typical extra keys (av
 - **`staged`**: map globs to commands (e.g. lint-staged style `'*': 'vp check --fix'`).
 - **`pack`**: packaging when used.
 
-Keep project-specific fmt/lint ignores and shared configs in one root `vite.config.ts` when that matches the repo layout.
+If the repository is single-package or a monorepo where all packages should inherit a single shared config (i.e. packages do not require distinct fmt/lint rules), place shared fmt/lint ignores and configs in the root `vite.config.ts`. Otherwise keep package-level fmt/lint configs.
 
 ## Repo hygiene (monorepos using Vite+)
 
@@ -87,4 +97,4 @@ Before finishing work: run whatever the repo documents (`vp check`, `vp test`, o
 
 ### This repo: no `npm` / `pnpm` in scripts or CI
 
-In `package.json` `scripts` and `.github/workflows/*`, do not call `npm run`, `npx`, `pnpm`, or `pnpm run`. Use **`vp`** (`vp run`, `vp install`, `vp dlx`, …). CI should bootstrap with **`voidzero-dev/setup-vp`** and then `vp install` / `vp run …`. Keeping `packageManager` / `pnpm-lock.yaml` for Corepack and lockfile is fine; day-to-day commands stay on **`vp`**.
+In `package.json` `scripts` and `.github/workflows/*`, do not call `npm run`, `npx`, `pnpm`, or `pnpm run`. Use **`vp`** (`vp run`, `vp install`, `vp dlx`, …). If existing scripts currently call `npm`/`pnpm`/`npx`, update them by replacing those invocations with equivalent `vp` invocations (for example, replace `npm run build` with `vp run build`). If a script relies on package-manager-specific behavior, document those required changes before migration. CI should bootstrap with **`voidzero-dev/setup-vp`** and then `vp install` / `vp run …`. Keeping `packageManager` / `pnpm-lock.yaml` for Corepack and lockfile is fine; day-to-day commands stay on **`vp`**.

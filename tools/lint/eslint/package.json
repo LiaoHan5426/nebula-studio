@@ -1,0 +1,40 @@
+{
+  "name": "@nebula-studio-internal/eslint",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "stub": "vp pack",
+    "build": "vp pack",
+    "dev": "vp pack --watch",
+    "check": "vp check",
+    "prepublishOnly": "vp run build"
+  },
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./package.json": "./package.json"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:types",
+    "typescript": "catalog:types",
+    "vite-plus": "catalog:vite"
+  },
+  "dependencies": {
+    "@eslint/js": "catalog:lint",
+    "@nebula-studio-internal/oxlint": "workspace:^",
+    "@typescript-eslint/eslint-plugin": "catalog:",
+    "@typescript-eslint/parser": "catalog:",
+    "eslint": "catalog:lint",
+    "eslint-plugin-jsonc": "catalog:lint",
+    "eslint-plugin-n": "catalog:lint",
+    "eslint-plugin-perfectionist": "catalog:lint",
+    "eslint-plugin-pnpm": "catalog:lint",
+    "eslint-plugin-unicorn": "catalog:lint",
+    "eslint-plugin-unused-imports": "catalog:lint",
+    "eslint-plugin-vue": "catalog:lint",
+    "eslint-plugin-yml": "catalog:lint",
+    "globals": "catalog:",
+    "vue-eslint-parser": "catalog:lint",
+    "yaml-eslint-parser": "catalog:lint"
+  }
+}
