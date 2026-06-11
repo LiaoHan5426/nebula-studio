@@ -47,14 +47,23 @@ const integrationOpen = ref(false);
 const integrationClosable = ref(false);
 const addPickerOpen = ref(false);
 const integrationPreferenceHydrated = ref(false);
-const selectedSidebarItem = ref<'workspace' | 'integration' | 'settings'>(
-  'workspace',
-);
+type SidebarItemKey = 'workspace' | 'integration' | 'settings';
+
+const sidebarItems: { key: SidebarItemKey; label: string }[] = [
+  { key: 'workspace', label: '工作台' },
+  { key: 'integration', label: '应用集成' },
+];
+
+const firstSidebarItem = sidebarItems[0]?.key || 'workspace';
+
+const selectedSidebarItem = ref<SidebarItemKey>(firstSidebarItem);
 /** 为 true 后才把 activeViewId 写入 localStorage，避免 loadShellState 的临时值覆盖用户刷新前要恢复的子应用 */
 const activeViewPersistReady = ref(false);
 const sortableViewIds = ref<string[]>([]);
 const isSorting = ref(false);
 const isThemeSwitching = ref(false);
+const isSidebarCollapsed = ref(false);
+const showResizer = ref(false);
 let suppressTileClickUntilTs = 0;
 
 const settingsAvailable = computed(() =>
@@ -69,11 +78,20 @@ const authAvatarText = computed(() => {
 
 const draggableItemKey = (item: unknown): string => String(item);
 
+function handleMouseMove(event: MouseEvent) {
+  const sidebarWidth = isSidebarCollapsed.value ? 48 : 220;
+  const resizerWidth = 20;
+  showResizer.value =
+    event.clientX >= sidebarWidth - resizerWidth &&
+    event.clientX <= sidebarWidth + resizerWidth;
+}
+
 function openWorkspace(): void {
   selectedSidebarItem.value = 'workspace';
   integrationClosable.value = true;
   addPickerOpen.value = false;
   integrationOpen.value = false;
+  activeViewId.value = null;
   commitIntegrationOpenNow(false);
 }
 
@@ -198,10 +216,10 @@ async function onSortEnd(): Promise<void> {
 
 function openIntegrationLauncher(): void {
   selectedSidebarItem.value = 'integration';
-  integrationClosable.value = true;
+  integrationClosable.value = false;
   addPickerOpen.value = false;
   integrationOpen.value = true;
-  // 从顶部按钮临时打开集成层，不应改变刷新恢复的子应用
+  // 从侧边栏打开集成层，不应改变刷新恢复的子应用
   commitIntegrationOpenNow(true, { clearActiveViewOnOpen: false });
 }
 
@@ -308,6 +326,8 @@ onMounted(async () => {
   // 已清空 active-view 但主进程/Web 模拟仍可能带回默认子应用 id，避免 iframe 与集成层语义不一致
   if (integrationOpen.value && !readActiveViewPreference()) {
     activeViewId.value = null;
+    // 默认选中工作台
+    selectedSidebarItem.value = 'workspace';
   }
   integrationPreferenceHydrated.value = true;
   activeViewPersistReady.value = true;
@@ -317,6 +337,12 @@ onMounted(async () => {
   });
   /** 须在算出 integrationOpen 之后再同步一次（勿对 watch 使用 immediate：否则会先于 loadShellState 把嵌入区设为可见，破坏了主进程「集成层打开」状态）。 */
   shellHost.onIntegrationOpenChanged(integrationOpen.value);
+  // 默认选中第一个菜单，关闭应用集成面板
+  if (!activeViewId.value && !readActiveViewPreference()) {
+    selectedSidebarItem.value = firstSidebarItem;
+    integrationOpen.value = false;
+    commitIntegrationOpenNow(false);
+  }
   await refreshAuthSession();
   reportShellViewport();
   window.addEventListener('resize', reportShellViewport);
@@ -366,7 +392,65 @@ onUnmounted(() => {
         <span class="shell-badge">Host Shell</span>
       </div>
 
+      <!-- 菜单路径显示 -->
+      <div class="shell-path">
+        <nav class="breadcrumb">
+          <span class="breadcrumb-item">首页</span>
+          <svg
+            class="breadcrumb-separator"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+          <span class="breadcrumb-item">工作台</span>
+        </nav>
+      </div>
+
       <div class="shell-bar-actions">
+        <div class="shell-controls">
+          <button type="button" class="shell-control-btn" title="搜索">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </button>
+          <button type="button" class="shell-control-btn" title="刷新">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <polyline points="1 20 1 14 7 14"></polyline>
+              <path
+                d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
+              ></path>
+            </svg>
+          </button>
+          <button type="button" class="shell-control-btn" title="全屏">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <polyline points="9 21 3 21 3 15"></polyline>
+              <polyline points="21 15 21 21 15 21"></polyline>
+              <polyline points="3 9 3 3 9 3"></polyline>
+            </svg>
+          </button>
+        </div>
+
         <NebulaThemeToggle
           class="shell-btn"
           :theme="theme"
@@ -405,7 +489,12 @@ onUnmounted(() => {
       </div>
     </header>
 
-    <div class="shell-body">
+    <div
+      class="shell-body"
+      :class="{ 'sidebar-collapsed': isSidebarCollapsed }"
+      @mousemove="handleMouseMove"
+      @mouseleave="showResizer = false"
+    >
       <aside class="shell-sidebar">
         <div class="sidebar-group">
           <button
@@ -414,7 +503,20 @@ onUnmounted(() => {
             :class="{ active: selectedSidebarItem === 'workspace' }"
             @click="openWorkspace"
           >
-            工作台
+            <span class="sidebar-item-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+            </span>
+            <span class="sidebar-item-label">工作台</span>
           </button>
           <button
             type="button"
@@ -422,7 +524,18 @@ onUnmounted(() => {
             :class="{ active: selectedSidebarItem === 'integration' }"
             @click="openIntegrationLauncher"
           >
-            应用集成
+            <span class="sidebar-item-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12,6 12,12 16,14"></polyline>
+              </svg>
+            </span>
+            <span class="sidebar-item-label">应用集成</span>
           </button>
         </div>
 
@@ -433,10 +546,32 @@ onUnmounted(() => {
             :disabled="!settingsAvailable"
             @click="selectIntegratedApp('settings')"
           >
-            设置
+            <span class="sidebar-item-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="3"></circle>
+                <path
+                  d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"
+                ></path>
+              </svg>
+            </span>
+            <span class="sidebar-item-label">设置</span>
           </button>
         </div>
       </aside>
+
+      <div
+        class="sidebar-resizer"
+        @click="isSidebarCollapsed = !isSidebarCollapsed"
+        :class="{ visible: showResizer }"
+        :title="isSidebarCollapsed ? '展开侧边栏' : '收起侧边栏'"
+      >
+        <span class="resizer-icon">{{ isSidebarCollapsed ? '→' : '←' }}</span>
+      </div>
 
       <main class="shell-main">
         <div v-if="usesIframeEmbed" class="shell-embed">
@@ -448,6 +583,28 @@ onUnmounted(() => {
             :src="embedSrc[viewId as EmbeddedShellWindowId]"
             :title="`Nebula Studio — ${viewId}`"
           />
+        </div>
+
+        <div v-if="!activeViewId && !integrationOpen" class="workspace-empty">
+          <div class="workspace-empty-icon">
+            <svg
+              width="64"
+              height="64"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <rect x="3" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="14" width="7" height="7" rx="1" />
+              <rect x="3" y="14" width="7" height="7" rx="1" />
+            </svg>
+          </div>
+          <h3 class="workspace-empty-title">暂无内容</h3>
+          <p class="workspace-empty-desc">
+            请从左侧导航或应用集成中选择一个应用
+          </p>
         </div>
 
         <div
@@ -671,6 +828,76 @@ onUnmounted(() => {
   -webkit-app-region: no-drag;
 }
 
+/* 菜单路径显示 */
+.shell-path {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  padding: 0 16px;
+}
+
+.breadcrumb {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.breadcrumb-item {
+  padding: 6px 10px;
+  font-size: 13px;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 6px;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.breadcrumb-item:hover {
+  color: var(--text-main);
+  background-color: hsl(var(--muted) / 30%);
+}
+
+.breadcrumb-separator {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  color: var(--text-muted);
+}
+
+/* 控制按钮 */
+.shell-controls {
+  display: flex;
+  gap: 2px;
+}
+
+.shell-control-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  color: var(--text-muted);
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.shell-control-btn:hover {
+  color: var(--text-main);
+  background-color: hsl(var(--muted) / 30%);
+}
+
+.shell-control-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
 .shell-left {
   display: none;
 }
@@ -824,8 +1051,9 @@ onUnmounted(() => {
 
 .integration-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 220px));
+  gap: 16px;
+  justify-content: flex-start;
   margin-top: 18px;
 }
 
@@ -1047,6 +1275,11 @@ onUnmounted(() => {
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr);
   min-height: calc(100vh - var(--shell-top));
+  transition: grid-template-columns 0.3s ease;
+}
+
+.shell-body.sidebar-collapsed {
+  grid-template-columns: 48px minmax(0, 1fr);
 }
 
 .shell-sidebar {
@@ -1054,16 +1287,39 @@ onUnmounted(() => {
   flex-direction: column;
   justify-content: space-between;
   min-height: 0;
-  padding: 22px 16px;
+  padding: 12px;
   background: hsl(var(--background-deep) / 96%);
   border-right: 1px solid hsl(var(--border) / 82%);
+  transition:
+    width 0.3s ease,
+    padding 0.3s ease;
+}
+
+.shell-body.sidebar-collapsed .shell-sidebar {
+  padding: 12px 4px;
+}
+
+.shell-body.sidebar-collapsed .sidebar-item {
+  justify-content: center;
+  padding: 10px 4px;
+}
+
+.shell-body.sidebar-collapsed .sidebar-item-label {
+  width: 0;
+  margin: 0;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.shell-body.sidebar-collapsed .sidebar-item-icon {
+  margin-right: 0;
 }
 
 .sidebar-group,
 .sidebar-footer {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
 }
 
 .sidebar-item {
@@ -1071,7 +1327,7 @@ onUnmounted(() => {
   display: inline-flex;
   align-items: center;
   width: 100%;
-  padding: 14px 16px;
+  padding: 10px 12px;
   font-size: 14px;
   font-weight: 700;
   color: var(--text-main);
@@ -1079,10 +1335,36 @@ onUnmounted(() => {
   cursor: pointer;
   background: hsl(var(--muted) / 32%);
   border: 1px solid transparent;
-  border-radius: 14px;
+  border-radius: 10px;
   transition:
     background 0.15s ease,
-    border-color 0.15s ease;
+    border-color 0.15s ease,
+    padding 0.3s ease;
+}
+
+.sidebar-item-icon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+}
+
+.sidebar-item-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.sidebar-item-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition:
+    opacity 0.2s ease,
+    width 0.3s ease;
 }
 
 .sidebar-item:hover:not(:disabled) {
@@ -1103,12 +1385,134 @@ onUnmounted(() => {
   margin-top: auto;
 }
 
+.sidebar-resizer {
+  position: absolute;
+  top: 0;
+  left: 220px;
+  z-index: 10;
+  width: 4px;
+  height: 100%;
+  cursor: col-resize;
+  background-color: transparent;
+  opacity: 0;
+  transition:
+    opacity 0.2s ease,
+    background-color 0.2s ease,
+    left 0.3s ease;
+}
+
+.sidebar-resizer::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 40px;
+  content: '';
+  background: hsl(var(--background-deep) / 96%);
+  border: 1px solid hsl(var(--border) / 82%);
+  border-radius: 0 6px 6px 0;
+  opacity: 0;
+  transform: translateY(-50%);
+  transition:
+    opacity 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.sidebar-resizer::after {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  margin-left: 6px;
+  content: '';
+  border-bottom: 2px solid hsl(var(--foreground));
+  border-left: 2px solid hsl(var(--foreground));
+  opacity: 0;
+  transform: translateY(-50%) rotate(45deg);
+  transition:
+    opacity 0.2s ease,
+    transform 0.3s ease,
+    border-color 0.2s ease;
+}
+
+.sidebar-resizer.visible {
+  opacity: 1;
+}
+
+.sidebar-resizer.visible::before {
+  opacity: 1;
+}
+
+.sidebar-resizer.visible::after {
+  opacity: 1;
+}
+
+.sidebar-resizer:hover::before {
+  background: hsl(var(--primary) / 16%);
+  border-color: hsl(var(--primary) / 55%);
+}
+
+.sidebar-resizer:hover::after {
+  border-color: hsl(var(--primary));
+}
+
+.sidebar-collapsed .sidebar-resizer {
+  left: 48px;
+}
+
+.sidebar-collapsed .sidebar-resizer::before {
+  left: 0;
+  border-radius: 0 6px 6px 0;
+}
+
+.sidebar-collapsed .sidebar-resizer::after {
+  left: 0;
+  margin-left: 6px;
+  transform: translateY(-50%) rotate(-135deg);
+}
+
 .shell-main {
   position: relative;
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  height: 100%;
   overflow: hidden;
+}
+
+.workspace-empty {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - var(--shell-top) - 60px);
+  padding: 2rem;
+  text-align: center;
+}
+
+.workspace-empty-icon {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 1rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.workspace-empty-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+.workspace-empty-desc {
+  margin: 0;
+  font-size: 0.95rem;
+  color: hsl(var(--muted-foreground));
 }
 
 .shell-embed {
@@ -1270,6 +1674,10 @@ onUnmounted(() => {
 }
 
 @media (width <= 960px) {
+  :root {
+    --shell-sidebar-height: 44px;
+  }
+
   .shell-body {
     grid-template-columns: 1fr;
   }
@@ -1278,21 +1686,47 @@ onUnmounted(() => {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 10px;
+    height: 44px;
+    padding: 6px 12px;
+    border-bottom: 1px solid hsl(var(--border));
   }
 
   .sidebar-group,
   .sidebar-footer {
     flex-direction: row;
-    gap: 8px;
+    gap: 4px;
   }
 
   .sidebar-item {
-    flex: 1;
+    flex: none;
+    width: auto;
+    min-width: auto;
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 6px;
+  }
+
+  .sidebar-item.active {
+    color: hsl(var(--accent-foreground));
+    background: hsl(var(--accent));
+  }
+
+  .sidebar-item svg {
+    width: 14px;
+    height: 14px;
+    margin-right: 4px;
+  }
+
+  .sidebar-item-label {
+    display: inline;
   }
 
   .shell-bar {
     padding: 0 12px;
+  }
+
+  .shell-main {
+    height: calc(100vh - var(--shell-top) - 44px);
   }
 
   .auth-dropdown {
