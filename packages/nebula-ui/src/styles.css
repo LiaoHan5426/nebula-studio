@@ -987,8 +987,8 @@ html[data-theme='dark']
 }
 
 /**
- * `responsive`：窄视口为页内横向目录（sticky），避免固定侧栏占宽或完全隐藏；
- * 宽视口（≥1280px）恢复右侧固定导航。
+ * `responsive`：页内流式目录（sticky），避免 `position: fixed` 在窄内容区遮挡正文。
+ * 宽屏右侧栏式导航请配合父级 `.nebula-anchor-rail` 预留列宽。
  */
 .nebula-anchor.nebula-anchor--responsive {
   position: sticky;
@@ -1017,27 +1017,67 @@ html[data-theme='dark']
   margin-left: auto;
 }
 
-@media (min-width: 1280px) {
-  .nebula-anchor.nebula-anchor--responsive {
-    position: fixed;
-    top: 170px;
-    right: 20px;
-    left: auto;
-    z-index: 40;
+/**
+ * 文档页双栏：主内容 + 右侧锚点轨，锚点 sticky 且不遮挡正文。
+ */
+.nebula-anchor-rail {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.85rem;
+  align-items: start;
+}
+
+.nebula-anchor-rail > .nebula-anchor,
+.nebula-anchor-rail > .nebula-anchor-root {
+  grid-column: 1;
+  min-width: 0;
+}
+
+.nebula-anchor-rail > *:not(.nebula-anchor):not(.nebula-anchor-root) {
+  min-width: 0;
+}
+
+@media (min-width: 860px) {
+  .nebula-anchor-rail {
+    grid-template-columns: minmax(0, 1fr) 168px;
+    gap: 1rem 1.25rem;
+  }
+
+  .nebula-anchor-rail > .nebula-anchor,
+  .nebula-anchor-rail > .nebula-anchor-root {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: start;
+    justify-self: end;
+    width: 168px;
+  }
+
+  .nebula-anchor-rail > *:not(.nebula-anchor):not(.nebula-anchor-root) {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .nebula-anchor-rail .nebula-anchor.nebula-anchor--responsive {
     display: grid;
+    flex-flow: unset;
     gap: 0.35rem;
     align-items: stretch;
-    width: 160px;
+    width: 100%;
+    max-width: 168px;
     padding: 0.8rem;
     margin: 0;
   }
 
-  .nebula-anchor.nebula-anchor--responsive .nebula-anchor__title {
+  .nebula-anchor-rail
+    .nebula-anchor.nebula-anchor--responsive
+    .nebula-anchor__title {
     flex: unset;
     margin: 0 0 0.2rem;
   }
 
-  .nebula-anchor.nebula-anchor--responsive .nebula-anchor__back-top {
+  .nebula-anchor-rail
+    .nebula-anchor.nebula-anchor--responsive
+    .nebula-anchor__back-top {
     margin-top: 0.35rem;
     margin-left: 0;
   }

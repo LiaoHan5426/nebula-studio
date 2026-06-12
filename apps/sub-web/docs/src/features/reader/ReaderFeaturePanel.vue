@@ -6,7 +6,7 @@ import ReaderPlainDemo from './demos/ReaderPlainDemo.vue';
 </script>
 
 <template>
-  <div class="reader-layout">
+  <div class="reader-layout nebula-anchor-rail">
     <NebulaAnchor
       :items="[...readerDocAnchorItems]"
       title="On This Page"

@@ -74,7 +74,7 @@ const modules = [
 
 <template>
   <div class="backend-page">
-    <div class="backend-shell">
+    <div class="backend-shell nebula-anchor-rail">
       <aside class="backend-sidebar">
         <div class="brand-block">
           <p class="brand-title">Nebula Backend</p>
@@ -97,15 +97,6 @@ const modules = [
             <li><a href="#system-module">System 模块</a></li>
           </ul>
         </nav>
-        <div class="anchor-wrapper">
-          <NebulaAnchor
-            :items="anchorItems"
-            title="On This Page"
-            responsive
-            back-top
-            back-top-mode="float"
-          />
-        </div>
       </aside>
 
       <section class="backend-content">
@@ -145,6 +136,14 @@ const modules = [
           </div>
         </section>
       </section>
+
+      <NebulaAnchor
+        :items="anchorItems"
+        title="On This Page"
+        responsive
+        back-top
+        back-top-mode="float"
+      />
     </div>
   </div>
 </template>
@@ -159,12 +158,46 @@ const modules = [
 }
 
 .backend-shell {
+  --backend-sidebar-width: 220px;
+
   display: grid;
-  grid-template-columns: minmax(0, 220px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, var(--backend-sidebar-width)) minmax(0, 1fr);
   gap: clamp(0.75rem, 2vw, 1.5rem);
   min-width: 0;
   max-width: 1200px;
   margin: 0 auto;
+}
+
+.backend-shell.nebula-anchor-rail > .backend-sidebar,
+.backend-shell.nebula-anchor-rail > .backend-content {
+  grid-row: 1;
+}
+
+.backend-shell.nebula-anchor-rail > .backend-sidebar {
+  grid-column: 1;
+}
+
+.backend-shell.nebula-anchor-rail > .backend-content {
+  grid-column: 2;
+}
+
+@media (min-width: 860px) {
+  .backend-shell.nebula-anchor-rail {
+    grid-template-columns:
+      minmax(0, var(--backend-sidebar-width))
+      minmax(0, 1fr)
+      168px;
+  }
+
+  .backend-shell.nebula-anchor-rail > .backend-content {
+    grid-column: 2;
+  }
+
+  .backend-shell.nebula-anchor-rail > .nebula-anchor-root,
+  .backend-shell.nebula-anchor-rail > .nebula-anchor {
+    grid-row: 1;
+    grid-column: 3;
+  }
 }
 
 .backend-sidebar {
@@ -198,13 +231,6 @@ const modules = [
 
 .brand-back-btn {
   margin-top: 0.75rem;
-}
-
-.anchor-wrapper {
-  padding: 0.75rem;
-  background: hsl(var(--card));
-  border: 1px solid hsl(var(--border));
-  border-radius: 12px;
 }
 
 .backend-nav {
@@ -336,8 +362,17 @@ code {
     padding: 1rem;
   }
 
-  .backend-shell {
+  .backend-shell,
+  .backend-shell.nebula-anchor-rail {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .backend-shell.nebula-anchor-rail > .backend-sidebar,
+  .backend-shell.nebula-anchor-rail > .backend-content,
+  .backend-shell.nebula-anchor-rail > .nebula-anchor-root,
+  .backend-shell.nebula-anchor-rail > .nebula-anchor {
+    grid-row: auto;
+    grid-column: 1;
   }
 
   .backend-sidebar {

@@ -4,8 +4,7 @@ import type { DocsFeatureDefinition } from '../types';
 const feature: DocsFeatureDefinition = {
   id: 'monaco-editor',
   title: 'Monaco Editor',
-  description:
-    'Monaco Editor',
+  description: 'Monaco Editor',
   menuPath: ['Content'],
   order: 25,
   component: EditorFeaturePanel,

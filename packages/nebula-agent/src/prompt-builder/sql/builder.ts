@@ -54,7 +54,7 @@ function isElectronEnvironment(): boolean {
   const windowWithHost = window as unknown as {
     __NEBULA_PRESENTATION_HOST__?: string;
   };
-  const host = windowWithHost.__NEBULA_PRESENTATION_HOST__;
+  const host = windowWithHost['__NEBULA_PRESENTATION_HOST__'];
   return host !== 'web';
 }
 

@@ -1,2 +1,2 @@
-/** 与宿主共享（sessionStorage）：同一会话内刷新后恢复当前子应用；不存在时表示应展开应用集成层 */
+/** 与宿主共享（sessionStorage）：同一会话内刷新后恢复壳层界面（工作台 / 应用集成 / 子应用） */
 export const SHELL_ACTIVE_VIEW_STORAGE_KEY = 'nebula-shell-active-view';

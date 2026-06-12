@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, provide, ref, watch } from 'vue';
+import { installShellEmbedResetListener } from '@nebula-studio/app-shell';
+import { computed, onMounted, onUnmounted, provide, ref, watch } from 'vue';
 import { DOCS_NAVIGATE_TO_FEATURE } from './docsNavigation';
 import type { DocsNavigateToFeature } from './docsNavigation';
 
@@ -29,6 +30,18 @@ const navigateToPage: DocsNavigateToFeature = (pageId: string) => {
 provide(DOCS_NAVIGATE_TO_FEATURE, navigateToPage);
 
 const activePage = computed(() => pagesById.get(activePageId.value));
+
+let disposeEmbedReset: (() => void) | undefined;
+
+onMounted(() => {
+  disposeEmbedReset = installShellEmbedResetListener(() => {
+    activePageId.value = 'home';
+  });
+});
+
+onUnmounted(() => {
+  disposeEmbedReset?.();
+});
 </script>
 
 <template>

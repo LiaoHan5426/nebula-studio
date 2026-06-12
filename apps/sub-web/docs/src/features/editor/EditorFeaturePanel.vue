@@ -8,7 +8,7 @@ import EditorRichTextDemo from './demos/EditorRichTextDemo.vue';
 </script>
 
 <template>
-  <div class="editor-layout">
+  <div class="editor-layout nebula-anchor-rail">
     <NebulaAnchor
       :items="[...editorDocAnchorItems]"
       title="On This Page"

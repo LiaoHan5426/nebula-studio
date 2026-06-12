@@ -1,7 +1,8 @@
 import type { editor, languages } from 'monaco-editor';
 import type { Ref } from 'vue';
 
-export interface EditorOptions extends editor.IStandaloneEditorConstructionOptions {
+export interface EditorOptions
+  extends editor.IStandaloneEditorConstructionOptions {
   [key: string]: unknown;
 }
 
@@ -119,13 +120,20 @@ export interface MonacoEditorConfig {
 // 插件接口
 export interface EditorPlugin {
   name: string;
-  install: (editor: editor.IStandaloneCodeEditor | editor.IStandaloneDiffEditor) => void;
-  uninstall?: (editor: editor.IStandaloneCodeEditor | editor.IStandaloneDiffEditor) => void;
+  install: (
+    editor: editor.IStandaloneCodeEditor | editor.IStandaloneDiffEditor,
+  ) => void;
+  uninstall?: (
+    editor: editor.IStandaloneCodeEditor | editor.IStandaloneDiffEditor,
+  ) => void;
 }
 
 // 编辑器实例管理器接口
 export interface EditorManager {
-  getEditor: () => editor.IStandaloneCodeEditor | editor.IStandaloneDiffEditor | null;
+  getEditor: () =>
+    | editor.IStandaloneCodeEditor
+    | editor.IStandaloneDiffEditor
+    | null;
   getValue: () => string;
   setValue: (value: string) => void;
   focus: () => void;
@@ -203,8 +211,12 @@ export interface EditorError {
 export interface EditorLifecycleHooks {
   beforeCreate?: () => void | Promise<void>;
   onCreating?: () => void;
-  onCreated?: (editor: editor.IStandaloneCodeEditor | editor.IStandaloneDiffEditor) => void;
-  onReady?: (editor: editor.IStandaloneCodeEditor | editor.IStandaloneDiffEditor) => void;
+  onCreated?: (
+    editor: editor.IStandaloneCodeEditor | editor.IStandaloneDiffEditor,
+  ) => void;
+  onReady?: (
+    editor: editor.IStandaloneCodeEditor | editor.IStandaloneDiffEditor,
+  ) => void;
   beforeDestroy?: () => void | Promise<void>;
   onDestroyed?: () => void;
   onError?: (error: EditorError) => void;
@@ -222,7 +234,9 @@ export interface EnhancedBaseEditorProps extends BaseEditorProps {
 }
 
 // 扩展的 CodeEditor 属性
-export interface EnhancedCodeEditorProps extends CodeEditorProps, EnhancedBaseEditorProps {}
+export interface EnhancedCodeEditorProps
+  extends CodeEditorProps, EnhancedBaseEditorProps {}
 
 // 扩展的 DiffEditor 属性
-export interface EnhancedDiffEditorProps extends DiffEditorProps, EnhancedBaseEditorProps {}
+export interface EnhancedDiffEditorProps
+  extends DiffEditorProps, EnhancedBaseEditorProps {}

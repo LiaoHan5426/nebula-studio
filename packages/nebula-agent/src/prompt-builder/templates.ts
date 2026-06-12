@@ -24,7 +24,7 @@ const templates: TemplateRegistry = {
 
 数据库结构：
 
-{{schema}}`
+{{schema}}`,
   },
   'sql-chart': {
     name: 'SQL Chart Prompt',
@@ -47,8 +47,8 @@ const templates: TemplateRegistry = {
   "reason": "推荐理由",
   "xAxis": "维度字段名",
   "yAxis": ["指标字段名"]
-}`
-  }
+}`,
+  },
 };
 
 export function getTemplate(name: string): TemplateConfig | undefined {

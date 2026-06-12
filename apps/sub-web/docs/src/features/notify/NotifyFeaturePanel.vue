@@ -19,7 +19,7 @@ defineProps<{
 </script>
 
 <template>
-  <div class="notify-layout">
+  <div class="notify-layout nebula-anchor-rail">
     <NebulaAnchor
       :items="[...notifyDocAnchorItems]"
       title="On This Page"

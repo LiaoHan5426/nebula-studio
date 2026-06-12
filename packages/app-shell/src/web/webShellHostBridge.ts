@@ -1,6 +1,6 @@
 import {
-  persistActiveViewPreference,
-  readActiveViewPreference,
+  persistShellSurfacePreference,
+  readShellSurfacePreference,
 } from '../common/activeViewPreference';
 import type { ShellHostBridge } from '../common/shellHostBridge';
 
@@ -28,27 +28,32 @@ export function createWebShellHostBridge(): ShellHostBridge {
       if (!open) {
         return;
       }
-      // 仅「回到集成首页」时移除 active-view；临时展开应用集成不改 sessionStorage
+      // 仅「回到集成首页」时写入集成层偏好；临时展开应用集成不改 sessionStorage
       if (options?.clearActiveViewOnOpen) {
-        persistActiveViewPreference(null);
+        persistShellSurfacePreference({ kind: 'integration' });
       }
     },
 
     resolveInitialIntegrationOpen(_activeViewId: string | null): boolean {
-      // 仅以 nebula-shell-active-view 为准；忽略 shell 内存里可能存在的默认 docs
-      return !readActiveViewPreference();
+      const surface = readShellSurfacePreference();
+      if (surface === null) return false;
+      return surface.kind === 'integration';
     },
 
     finalizeActiveViewOnMount(ctx) {
       if (ctx.integrationOpen) {
-        persistActiveViewPreference(null);
+        persistShellSurfacePreference({ kind: 'integration' });
         return;
       }
       const id =
         typeof ctx.activeViewId === 'string' && ctx.activeViewId.trim()
           ? ctx.activeViewId
           : null;
-      persistActiveViewPreference(id);
+      if (id) {
+        persistShellSurfacePreference({ kind: 'view', viewId: id });
+        return;
+      }
+      persistShellSurfacePreference({ kind: 'workspace' });
     },
 
     onIntegrationOpenChanged() {

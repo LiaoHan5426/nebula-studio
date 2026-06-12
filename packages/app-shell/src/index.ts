@@ -38,7 +38,26 @@ export { SHELL_ACTIVE_VIEW_STORAGE_KEY } from './common/shellHostStorageKeys';
 export {
   readActiveViewPreference,
   persistActiveViewPreference,
+  readShellSurfacePreference,
+  persistShellSurfacePreference,
+  SHELL_SURFACE_WORKSPACE,
+  SHELL_SURFACE_INTEGRATION,
 } from './common/activeViewPreference';
+export type { ShellSurfacePreference } from './common/activeViewPreference';
+export {
+  SHELL_EMBED_RESET_MESSAGE,
+  SHELL_EMBED_RESET_ACK_MESSAGE,
+  createShellEmbedResetPayload,
+  createShellEmbedResetAckPayload,
+  installShellEmbedResetListener,
+  isShellEmbedResetPayload,
+  isShellEmbedResetAckPayload,
+  postShellEmbedReset,
+} from './common/shellEmbedMessaging';
+export type {
+  ShellEmbedResetPayload,
+  ShellEmbedResetAckPayload,
+} from './common/shellEmbedMessaging';
 export {
   getShellHostBridge,
   type ShellHostBridge,

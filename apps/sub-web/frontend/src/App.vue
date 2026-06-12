@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import {
+  SHELL_SURFACE_WORKSPACE,
   WEB_SHELL_EMBED_QUERY,
   getEmbeddedShellWindowIds,
   getShellHostBridge,
   getShellIntegratedAppMeta,
-  persistActiveViewPreference,
-  readActiveViewPreference,
+  isShellEmbedResetAckPayload,
+  isShellIntegrableAppId,
+  persistShellSurfacePreference,
+  postShellEmbedReset,
+  readShellSurfacePreference,
   shellPresentationConfig,
 } from '@nebula-studio/app-shell';
 import type { EmbeddedShellWindowId } from '@nebula-studio/app-shell';
@@ -54,6 +58,12 @@ const sidebarItems: { key: SidebarItemKey; label: string }[] = [
   { key: 'integration', label: '应用集成' },
 ];
 
+const sidebarSectionLabels: Record<SidebarItemKey, string> = {
+  workspace: '工作台',
+  integration: '应用集成',
+  settings: '设置',
+};
+
 const firstSidebarItem = sidebarItems[0]?.key || 'workspace';
 
 const selectedSidebarItem = ref<SidebarItemKey>(firstSidebarItem);
@@ -64,6 +74,12 @@ const isSorting = ref(false);
 const isThemeSwitching = ref(false);
 const isSidebarCollapsed = ref(false);
 const showResizer = ref(false);
+/** 已创建过的 iframe，懒加载 + v-show 保活，避免每次进入子应用整页重载 */
+const loadedEmbedIds = ref<Set<string>>(new Set());
+const embedHomeWaitByViewId = new Map<
+  string,
+  { resolve: () => void; timer: number }
+>();
 let suppressTileClickUntilTs = 0;
 
 const settingsAvailable = computed(() =>
@@ -76,7 +92,183 @@ const authAvatarText = computed(() => {
   return raw.slice(0, 1).toUpperCase();
 });
 
+function resolveShellViewLabel(viewId: string): string {
+  if (viewId === 'settings') return sidebarSectionLabels.settings;
+  if (isShellIntegrableAppId(viewId)) {
+    return getShellIntegratedAppMeta(viewId).label;
+  }
+  return viewId;
+}
+
+const shellBreadcrumbTrail = computed((): string[] => {
+  if (integrationOpen.value) {
+    return [sidebarSectionLabels.integration];
+  }
+
+  const viewId = activeViewId.value;
+  if (viewId) {
+    if (viewId === 'settings') {
+      return [sidebarSectionLabels.settings];
+    }
+    if (isShellIntegrableAppId(viewId)) {
+      return [
+        sidebarSectionLabels.integration,
+        getShellIntegratedAppMeta(viewId).label,
+      ];
+    }
+    return [viewId];
+  }
+
+  const section = selectedSidebarItem.value;
+  return [sidebarSectionLabels[section] ?? sidebarSectionLabels.workspace];
+});
+
+/** 已访问子应用，用于标签栏（与顶部面包屑路径分离） */
+const visitedViewIds = ref<string[]>([]);
+
+const shellTags = computed(() => {
+  const tags: Array<{ key: string; label: string }> = [
+    { key: SHELL_SURFACE_WORKSPACE, label: sidebarSectionLabels.workspace },
+  ];
+  for (const viewId of visitedViewIds.value) {
+    tags.push({ key: viewId, label: resolveShellViewLabel(viewId) });
+  }
+  return tags;
+});
+
+const activeShellTagKey = computed(
+  () => activeViewId.value ?? SHELL_SURFACE_WORKSPACE,
+);
+
+const showShellTagsBar = computed(() => !integrationOpen.value);
+
+function rememberVisitedView(viewId: string | null): void {
+  if (!viewId || visitedViewIds.value.includes(viewId)) return;
+  visitedViewIds.value = [...visitedViewIds.value, viewId];
+}
+
+function activateShellTag(key: string): void {
+  if (key === SHELL_SURFACE_WORKSPACE) {
+    openWorkspace();
+    return;
+  }
+  void selectIntegratedApp(key);
+}
+
+function refreshActiveShellSurface(): void {
+  const viewId = activeViewId.value;
+  if (!viewId) return;
+  if (usesIframeEmbed) {
+    const iframe = getEmbedIframe(viewId);
+    iframe?.contentWindow?.location.reload();
+    return;
+  }
+  requestEmbeddedViewHome(viewId);
+}
+
+function toggleShellContentFullscreen(): void {
+  const host = document.querySelector<HTMLElement>('.shell-embed-host');
+  if (!host) return;
+  if (!document.fullscreenElement) {
+    void host.requestFullscreen();
+  } else {
+    void document.exitFullscreen();
+  }
+}
+
+function persistCurrentShellSurface(): void {
+  if (!activeViewPersistReady.value) return;
+  if (!shellHost.shouldPersistActiveViewPreference) return;
+
+  if (integrationOpen.value && activeViewId.value) {
+    persistShellSurfacePreference({
+      kind: 'view',
+      viewId: activeViewId.value,
+    });
+    return;
+  }
+  if (integrationOpen.value) {
+    persistShellSurfacePreference({ kind: 'integration' });
+    return;
+  }
+  if (activeViewId.value) {
+    persistShellSurfacePreference({ kind: 'view', viewId: activeViewId.value });
+    return;
+  }
+  persistShellSurfacePreference({ kind: 'workspace' });
+}
+
+function syncSidebarSelectionFromActiveView(viewId: string | null): void {
+  if (!viewId) return;
+  if (viewId === 'settings') {
+    selectedSidebarItem.value = 'settings';
+    return;
+  }
+  if (isShellIntegrableAppId(viewId)) {
+    selectedSidebarItem.value = 'integration';
+    return;
+  }
+  selectedSidebarItem.value = 'workspace';
+}
+
 const draggableItemKey = (item: unknown): string => String(item);
+
+function markEmbedLoaded(viewId: string | null | undefined): void {
+  if (!viewId || loadedEmbedIds.value.has(viewId)) return;
+  loadedEmbedIds.value = new Set([...loadedEmbedIds.value, viewId]);
+}
+
+function getEmbedIframe(viewId: string): HTMLIFrameElement | null {
+  return document.querySelector<HTMLIFrameElement>(
+    `.shell-embed iframe[title="Nebula Studio — ${viewId}"]`,
+  );
+}
+
+function requestEmbeddedViewHome(viewId: string): void {
+  postShellEmbedReset(getEmbedIframe(viewId)?.contentWindow ?? null);
+}
+
+function waitForEmbeddedViewHome(
+  viewId: string,
+  timeoutMs = 500,
+): Promise<void> {
+  return new Promise((resolve) => {
+    const existing = embedHomeWaitByViewId.get(viewId);
+    if (existing) {
+      window.clearTimeout(existing.timer);
+      embedHomeWaitByViewId.delete(viewId);
+    }
+    const timer = window.setTimeout(() => {
+      embedHomeWaitByViewId.delete(viewId);
+      resolve();
+    }, timeoutMs);
+    embedHomeWaitByViewId.set(viewId, {
+      resolve: () => {
+        window.clearTimeout(timer);
+        embedHomeWaitByViewId.delete(viewId);
+        resolve();
+      },
+      timer,
+    });
+    requestEmbeddedViewHome(viewId);
+  });
+}
+
+function handleShellEmbedMessage(event: MessageEvent): void {
+  if (!isShellEmbedResetAckPayload(event.data)) return;
+  if (event.origin !== window.location.origin) return;
+  for (const [viewId, wait] of embedHomeWaitByViewId) {
+    if (getEmbedIframe(viewId)?.contentWindow === event.source) {
+      wait.resolve();
+      return;
+    }
+  }
+}
+
+function resetIntegrableEmbedOnLeave(viewId: string | null): void {
+  if (!viewId || !isShellIntegrableAppId(viewId)) return;
+  requestEmbeddedViewHome(viewId);
+}
 
 function handleMouseMove(event: MouseEvent) {
   const sidebarWidth = isSidebarCollapsed.value ? 48 : 220;
@@ -87,10 +279,12 @@ function handleMouseMove(event: MouseEvent) {
 }
 
 function openWorkspace(): void {
+  const prevViewId = activeViewId.value;
   selectedSidebarItem.value = 'workspace';
   integrationClosable.value = true;
   addPickerOpen.value = false;
   integrationOpen.value = false;
+  resetIntegrableEmbedOnLeave(prevViewId);
   activeViewId.value = null;
   commitIntegrationOpenNow(false);
 }
@@ -102,13 +296,15 @@ function commitIntegrationOpenNow(
   shellHost.commitIntegrationOpen(open, options);
 }
 
-/** 与主进程 BrowserView 同宽：右侧停靠 DevTools 时 innerWidth 已不含 DevTools，避免与 getContentBounds 重复扣宽 */
+/** 与主进程 BrowserView 同区域：取嵌入内容宿主，排除顶栏与标签栏占位 */
 function reportShellViewport(): void {
-  const shellMain = document.querySelector<HTMLElement>('.shell-main');
-  const rect = shellMain?.getBoundingClientRect();
+  const host = document.querySelector<HTMLElement>('.shell-embed-host');
+  const rect = host?.getBoundingClientRect();
   window.electron.ipcRenderer.send('shell-viewport', {
     x: rect?.left ?? 0,
+    y: rect?.top ?? shellTopPx,
     width: rect?.width ?? window.innerWidth,
+    height: rect?.height ?? Math.max(0, window.innerHeight - shellTopPx),
   });
 }
 
@@ -137,6 +333,7 @@ async function switchEmbeddedView(viewId: string): Promise<void> {
   });
   if (ok) {
     activeViewId.value = viewId;
+    syncSidebarSelectionFromActiveView(viewId);
   }
 }
 
@@ -168,10 +365,12 @@ async function reorderEmbeddedViews(
 
 async function selectIntegratedApp(viewId: string): Promise<void> {
   if (Date.now() < suppressTileClickUntilTs) return;
-  await switchEmbeddedView(viewId);
-  if (viewId === 'settings') {
-    selectedSidebarItem.value = 'settings';
+  const iframeReady = loadedEmbedIds.value.has(viewId);
+  markEmbedLoaded(viewId);
+  if (iframeReady && isShellIntegrableAppId(viewId)) {
+    await waitForEmbeddedViewHome(viewId);
   }
+  await switchEmbeddedView(viewId);
   integrationOpen.value = false;
   integrationClosable.value = false;
   addPickerOpen.value = false;
@@ -236,6 +435,9 @@ function closeIntegrationLauncher(): void {
   integrationOpen.value = false;
   addPickerOpen.value = false;
   commitIntegrationOpenNow(false);
+  if (!activeViewId.value) {
+    selectedSidebarItem.value = 'workspace';
+  }
 }
 
 async function applyTheme(nextTheme: ThemeMode): Promise<void> {
@@ -295,27 +497,32 @@ watch(integrationOpen, (open) => {
     shellHost.persistIntegrationOpenFromWatch(open);
   }
   shellHost.onIntegrationOpenChanged(open);
+  persistCurrentShellSurface();
 });
 
 watch(activeViewId, (viewId) => {
-  if (!activeViewPersistReady.value) return;
-  if (!shellHost.shouldPersistActiveViewPreference) return;
-  persistActiveViewPreference(typeof viewId === 'string' ? viewId : null);
+  markEmbedLoaded(viewId);
+  rememberVisitedView(viewId);
+  persistCurrentShellSurface();
+});
+
+watch([showShellTagsBar, isSidebarCollapsed], () => {
+  requestAnimationFrame(() => reportShellViewport());
 });
 
 onMounted(async () => {
   shellHost.onBeforeShellHydrate();
   await loadShellState();
-  const preferredViewId = shellHost.shouldRestoreActiveViewFromPreference
-    ? readActiveViewPreference()
+  const preferredSurface = shellHost.shouldRestoreActiveViewFromPreference
+    ? readShellSurfacePreference()
     : null;
 
   if (
-    preferredViewId &&
-    availableViewIds.value.includes(preferredViewId) &&
-    preferredViewId !== activeViewId.value
+    preferredSurface?.kind === 'view' &&
+    availableViewIds.value.includes(preferredSurface.viewId) &&
+    preferredSurface.viewId !== activeViewId.value
   ) {
-    await switchEmbeddedView(preferredViewId);
+    await switchEmbeddedView(preferredSurface.viewId);
   }
 
   addPickerOpen.value = false;
@@ -323,12 +530,6 @@ onMounted(async () => {
   integrationOpen.value = shellHost.resolveInitialIntegrationOpen(
     activeViewId.value,
   );
-  // 已清空 active-view 但主进程/Web 模拟仍可能带回默认子应用 id，避免 iframe 与集成层语义不一致
-  if (integrationOpen.value && !readActiveViewPreference()) {
-    activeViewId.value = null;
-    // 默认选中工作台
-    selectedSidebarItem.value = 'workspace';
-  }
   integrationPreferenceHydrated.value = true;
   activeViewPersistReady.value = true;
   shellHost.finalizeActiveViewOnMount({
@@ -337,15 +538,19 @@ onMounted(async () => {
   });
   /** 须在算出 integrationOpen 之后再同步一次（勿对 watch 使用 immediate：否则会先于 loadShellState 把嵌入区设为可见，破坏了主进程「集成层打开」状态）。 */
   shellHost.onIntegrationOpenChanged(integrationOpen.value);
-  // 默认选中第一个菜单，关闭应用集成面板
-  if (!activeViewId.value && !readActiveViewPreference()) {
-    selectedSidebarItem.value = firstSidebarItem;
-    integrationOpen.value = false;
-    commitIntegrationOpenNow(false);
+  if (integrationOpen.value) {
+    selectedSidebarItem.value = 'integration';
+  } else if (!activeViewId.value) {
+    selectedSidebarItem.value = 'workspace';
+  } else {
+    syncSidebarSelectionFromActiveView(activeViewId.value);
+    markEmbedLoaded(activeViewId.value);
+    rememberVisitedView(activeViewId.value);
   }
   await refreshAuthSession();
   reportShellViewport();
   window.addEventListener('resize', reportShellViewport);
+  window.addEventListener('message', handleShellEmbedMessage);
   window.electron.ipcRenderer.on('settings:theme:changed', onThemeChanged);
   if (shellHost.shouldSubscribeAuthSessionChannel) {
     window.electron.ipcRenderer.on(
@@ -359,6 +564,11 @@ onMounted(async () => {
 onUnmounted(() => {
   shellHost.onShellUnmount();
   window.removeEventListener('resize', reportShellViewport);
+  window.removeEventListener('message', handleShellEmbedMessage);
+  for (const wait of embedHomeWaitByViewId.values()) {
+    window.clearTimeout(wait.timer);
+  }
+  embedHomeWaitByViewId.clear();
   window.electron.ipcRenderer.removeListener(
     'settings:theme:changed',
     onThemeChanged,
@@ -380,32 +590,42 @@ onUnmounted(() => {
     :style="{ '--shell-top': `${shellTopPx}px` }"
   >
     <header class="shell-bar">
-      <div class="shell-brand-group">
-        <button
-          type="button"
-          class="shell-brand shell-brand-btn"
-          title="返回应用集成"
-          @click="returnToIntegrationHome"
-        >
-          Nebula Studio
-        </button>
-        <span class="shell-badge">Host Shell</span>
-      </div>
+      <div class="shell-bar-left">
+        <div class="shell-brand-menu">
+          <div class="shell-brand-group">
+            <button
+              type="button"
+              class="shell-brand shell-brand-btn"
+              title="返回应用集成"
+              @click="returnToIntegrationHome"
+            >
+              Nebula Studio
+            </button>
+            <span class="shell-badge">Host Shell</span>
+          </div>
+        </div>
 
-      <!-- 菜单路径显示 -->
-      <div class="shell-path">
-        <nav class="breadcrumb">
-          <span class="breadcrumb-item">首页</span>
-          <svg
-            class="breadcrumb-separator"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
+        <nav class="breadcrumb" aria-label="当前位置">
+          <template
+            v-for="(segment, index) in shellBreadcrumbTrail"
+            :key="`${segment}-${index}`"
           >
-            <polyline points="9 18 15 12 9 6"></polyline>
-          </svg>
-          <span class="breadcrumb-item">工作台</span>
+            <span
+              class="breadcrumb-item"
+              :class="{
+                'is-current': index === shellBreadcrumbTrail.length - 1,
+              }"
+            >
+              {{ segment }}
+            </span>
+            <span
+              v-if="index < shellBreadcrumbTrail.length - 1"
+              class="breadcrumb-separator"
+              aria-hidden="true"
+            >
+              /
+            </span>
+          </template>
         </nav>
       </div>
 
@@ -420,33 +640,6 @@ onUnmounted(() => {
             >
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-          </button>
-          <button type="button" class="shell-control-btn" title="刷新">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <polyline points="23 4 23 10 17 10"></polyline>
-              <polyline points="1 20 1 14 7 14"></polyline>
-              <path
-                d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
-              ></path>
-            </svg>
-          </button>
-          <button type="button" class="shell-control-btn" title="全屏">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <polyline points="15 3 21 3 21 9"></polyline>
-              <polyline points="9 21 3 21 3 15"></polyline>
-              <polyline points="21 15 21 21 15 21"></polyline>
-              <polyline points="3 9 3 3 9 3"></polyline>
             </svg>
           </button>
         </div>
@@ -574,37 +767,112 @@ onUnmounted(() => {
       </div>
 
       <main class="shell-main">
-        <div v-if="usesIframeEmbed" class="shell-embed">
-          <iframe
-            v-for="viewId in availableViewIds"
-            v-show="viewId === activeViewId"
-            :key="viewId"
-            class="shell-embed-frame"
-            :src="embedSrc[viewId as EmbeddedShellWindowId]"
-            :title="`Nebula Studio — ${viewId}`"
-          />
+        <div v-if="showShellTagsBar" class="shell-tags-view">
+          <div class="shell-tags-scroll" role="tablist" aria-label="已打开页面">
+            <button
+              v-for="tag in shellTags"
+              :key="tag.key"
+              type="button"
+              role="tab"
+              class="shell-tag"
+              :class="{ 'is-active': tag.key === activeShellTagKey }"
+              :aria-selected="tag.key === activeShellTagKey"
+              @click="activateShellTag(tag.key)"
+            >
+              <svg
+                v-if="tag.key === SHELL_SURFACE_WORKSPACE"
+                class="shell-tag-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <path
+                  d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z"
+                />
+              </svg>
+              <span class="shell-tag-label">{{ tag.label }}</span>
+            </button>
+          </div>
+          <div class="shell-tags-actions">
+            <button
+              type="button"
+              class="shell-tags-action-btn"
+              title="刷新当前页"
+              :disabled="!activeViewId"
+              @click="refreshActiveShellSurface"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <polyline points="1 20 1 14 7 14"></polyline>
+                <path
+                  d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
+                ></path>
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="shell-tags-action-btn"
+              title="内容区全屏"
+              @click="toggleShellContentFullscreen"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <polyline points="9 21 3 21 3 15"></polyline>
+                <polyline points="21 15 21 21 15 21"></polyline>
+                <polyline points="3 9 3 3 9 3"></polyline>
+              </svg>
+            </button>
+          </div>
         </div>
 
-        <div v-if="!activeViewId && !integrationOpen" class="workspace-empty">
-          <div class="workspace-empty-icon">
-            <svg
-              width="64"
-              height="64"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-            >
-              <rect x="3" y="3" width="7" height="7" rx="1" />
-              <rect x="14" y="3" width="7" height="7" rx="1" />
-              <rect x="14" y="14" width="7" height="7" rx="1" />
-              <rect x="3" y="14" width="7" height="7" rx="1" />
-            </svg>
+        <div class="shell-embed-host">
+          <div v-if="usesIframeEmbed" class="shell-embed">
+            <template v-for="viewId in availableViewIds" :key="viewId">
+              <iframe
+                v-if="loadedEmbedIds.has(viewId)"
+                v-show="viewId === activeViewId"
+                class="shell-embed-frame"
+                :src="embedSrc[viewId as EmbeddedShellWindowId]"
+                :title="`Nebula Studio — ${viewId}`"
+              />
+            </template>
           </div>
-          <h3 class="workspace-empty-title">暂无内容</h3>
-          <p class="workspace-empty-desc">
-            请从左侧导航或应用集成中选择一个应用
-          </p>
+
+          <div v-if="!activeViewId && !integrationOpen" class="workspace-empty">
+            <div class="workspace-empty-icon">
+              <svg
+                width="64"
+                height="64"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <rect x="3" y="3" width="7" height="7" rx="1" />
+                <rect x="14" y="3" width="7" height="7" rx="1" />
+                <rect x="14" y="14" width="7" height="7" rx="1" />
+                <rect x="3" y="14" width="7" height="7" rx="1" />
+              </svg>
+            </div>
+            <h3 class="workspace-empty-title">暂无内容</h3>
+            <p class="workspace-empty-desc">
+              请从左侧导航或应用集成中选择一个应用
+            </p>
+          </div>
         </div>
 
         <div
@@ -814,11 +1082,35 @@ onUnmounted(() => {
   -webkit-app-region: drag;
 }
 
+.shell-brand-menu {
+  position: relative;
+  flex-shrink: 0;
+  -webkit-app-region: no-drag;
+}
+
+.shell-brand-menu::after {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 14px;
+  content: '';
+}
+
 .shell-brand-group {
   display: flex;
   gap: 10px;
   align-items: center;
   min-width: 0;
+}
+
+.shell-bar-left {
+  display: flex;
+  flex: 1;
+  gap: 16px;
+  align-items: center;
+  min-width: 0;
+  -webkit-app-region: no-drag;
 }
 
 .shell-bar-actions {
@@ -828,41 +1120,31 @@ onUnmounted(() => {
   -webkit-app-region: no-drag;
 }
 
-/* 菜单路径显示 */
-.shell-path {
-  display: flex;
-  flex: 1;
-  justify-content: center;
-  padding: 0 16px;
-}
-
 .breadcrumb {
   display: flex;
-  gap: 4px;
+  gap: 6px;
   align-items: center;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .breadcrumb-item {
-  padding: 6px 10px;
-  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
   color: var(--text-muted);
-  cursor: pointer;
-  border-radius: 6px;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
+  white-space: nowrap;
 }
 
-.breadcrumb-item:hover {
+.breadcrumb-item.is-current {
+  font-weight: 500;
   color: var(--text-main);
-  background-color: hsl(var(--muted) / 30%);
 }
 
 .breadcrumb-separator {
   flex-shrink: 0;
-  width: 14px;
-  height: 14px;
-  color: var(--text-muted);
+  font-size: 13px;
+  color: hsl(var(--muted-foreground) / 70%);
 }
 
 /* 控制按钮 */
@@ -1272,47 +1554,50 @@ onUnmounted(() => {
 }
 
 .shell-body {
-  display: grid;
-  grid-template-columns: 220px minmax(0, 1fr);
+  --shell-sidebar-expanded-width: 220px;
+  --shell-sidebar-collapsed-width: 48px;
+  --shell-sidebar-width: var(--shell-sidebar-expanded-width);
+  --shell-sidebar-duration: 0.28s;
+  --shell-sidebar-ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+  position: relative;
+  display: flex;
   min-height: calc(100vh - var(--shell-top));
-  transition: grid-template-columns 0.3s ease;
+  overflow: hidden;
 }
 
 .shell-body.sidebar-collapsed {
-  grid-template-columns: 48px minmax(0, 1fr);
+  --shell-sidebar-width: var(--shell-sidebar-collapsed-width);
 }
 
 .shell-sidebar {
   display: flex;
+  flex-shrink: 0;
   flex-direction: column;
   justify-content: space-between;
+  width: var(--shell-sidebar-width);
   min-height: 0;
   padding: 12px;
+  overflow: hidden;
   background: hsl(var(--background-deep) / 96%);
   border-right: 1px solid hsl(var(--border) / 82%);
   transition:
-    width 0.3s ease,
-    padding 0.3s ease;
+    width var(--shell-sidebar-duration) var(--shell-sidebar-ease),
+    padding var(--shell-sidebar-duration) var(--shell-sidebar-ease);
+  will-change: width;
 }
 
 .shell-body.sidebar-collapsed .shell-sidebar {
-  padding: 12px 4px;
+  padding: 12px 0;
 }
 
 .shell-body.sidebar-collapsed .sidebar-item {
-  justify-content: center;
-  padding: 10px 4px;
+  padding: 0 14px;
 }
 
 .shell-body.sidebar-collapsed .sidebar-item-label {
-  width: 0;
-  margin: 0;
-  overflow: hidden;
   opacity: 0;
-}
-
-.shell-body.sidebar-collapsed .sidebar-item-icon {
-  margin-right: 0;
+  transition-delay: 0s;
 }
 
 .sidebar-group,
@@ -1324,10 +1609,11 @@ onUnmounted(() => {
 
 .sidebar-item {
   position: relative;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   width: 100%;
-  padding: 10px 12px;
+  height: 40px;
+  padding: 0 12px;
   font-size: 14px;
   font-weight: 700;
   color: var(--text-main);
@@ -1339,7 +1625,7 @@ onUnmounted(() => {
   transition:
     background 0.15s ease,
     border-color 0.15s ease,
-    padding 0.3s ease;
+    padding var(--shell-sidebar-duration) var(--shell-sidebar-ease);
 }
 
 .sidebar-item-icon {
@@ -1358,13 +1644,18 @@ onUnmounted(() => {
 }
 
 .sidebar-item-label {
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  transition:
-    opacity 0.2s ease,
-    width 0.3s ease;
+  opacity: 1;
+  transition: opacity calc(var(--shell-sidebar-duration) * 0.6)
+    var(--shell-sidebar-ease);
+}
+
+.shell-body:not(.sidebar-collapsed) .sidebar-item-label {
+  transition-delay: 0.1s;
 }
 
 .sidebar-item:hover:not(:disabled) {
@@ -1392,7 +1683,7 @@ onUnmounted(() => {
   z-index: 10;
   width: 4px;
   height: 100%;
-  cursor: col-resize;
+  cursor: pointer;
   background-color: transparent;
   opacity: 0;
   transition:
@@ -1477,10 +1768,139 @@ onUnmounted(() => {
 }
 
 .shell-main {
+  --shell-tags-height: 40px;
+
   position: relative;
   display: flex;
+  flex: 1;
   flex-direction: column;
-  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.shell-tags-view {
+  box-sizing: border-box;
+  display: flex;
+  flex-shrink: 0;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--shell-tags-height);
+  padding: 0 12px;
+  background: hsl(var(--background-deep) / 88%);
+  border-bottom: 1px solid hsl(var(--border) / 82%);
+}
+
+.shell-tags-scroll {
+  display: flex;
+  flex: 1;
+  gap: 6px;
+  align-items: center;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.shell-tags-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.shell-tag {
+  display: inline-flex;
+  flex-shrink: 0;
+  gap: 6px;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  font-size: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid hsl(var(--border) / 90%);
+  border-radius: 4px;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.shell-tag:hover {
+  color: var(--text-main);
+  border-color: hsl(var(--primary) / 45%);
+}
+
+.shell-tag.is-active {
+  color: hsl(var(--primary-foreground));
+  background: hsl(var(--primary));
+  border-color: hsl(var(--primary));
+}
+
+.shell-tag.is-active:hover {
+  color: hsl(var(--primary-foreground));
+  background: hsl(var(--primary) / 92%);
+  border-color: hsl(var(--primary) / 92%);
+}
+
+.shell-tag-icon {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+}
+
+.shell-tag-label {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shell-tags-actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 2px;
+  align-items: center;
+}
+
+.shell-tags-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  color: var(--text-muted);
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.shell-tags-action-btn:hover:not(:disabled) {
+  color: var(--text-main);
+  background-color: hsl(var(--muted) / 30%);
+}
+
+.shell-tags-action-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.shell-tags-action-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.shell-embed-host {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
   overflow: hidden;
 }
 
@@ -1674,59 +2094,108 @@ onUnmounted(() => {
 }
 
 @media (width <= 960px) {
-  :root {
-    --shell-sidebar-height: 44px;
+  .shell-bar {
+    padding: 0 12px;
   }
 
   .shell-body {
-    grid-template-columns: 1fr;
+    display: block;
+  }
+
+  .sidebar-resizer {
+    display: none;
   }
 
   .shell-sidebar {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    height: 44px;
-    padding: 6px 12px;
-    border-bottom: 1px solid hsl(var(--border));
+    position: fixed;
+    top: calc(var(--shell-top) - 2px);
+    left: 12px;
+    z-index: 25;
+    visibility: hidden;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    width: min(220px, calc(100vw - 24px));
+    max-height: calc(100vh - var(--shell-top) - 16px);
+    padding: 14px 10px 10px;
+    overflow: auto;
+    pointer-events: none;
+    background: hsl(var(--card) / 98%);
+    border: 1px solid hsl(var(--border) / 82%);
+    border-radius: 12px;
+    box-shadow: 0 10px 24px rgb(2 4 12 / 26%);
+    opacity: 0;
+    transform: translateY(-6px);
+    transition:
+      visibility 0.15s ease,
+      opacity 0.15s ease,
+      transform 0.15s ease;
+  }
+
+  .shell:has(.shell-brand-menu:hover) .shell-sidebar,
+  .shell:has(.shell-sidebar:hover) .shell-sidebar {
+    visibility: visible;
+    pointer-events: auto;
+    opacity: 1;
+    transform: translateY(0);
   }
 
   .sidebar-group,
   .sidebar-footer {
-    flex-direction: row;
-    gap: 4px;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .sidebar-footer {
+    padding-top: 8px;
+    margin-top: 8px;
+    border-top: 1px solid hsl(var(--border) / 62%);
   }
 
   .sidebar-item {
-    flex: none;
-    width: auto;
-    min-width: auto;
-    padding: 6px 12px;
-    font-size: 12px;
-    border-radius: 6px;
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    border-radius: 10px;
   }
 
   .sidebar-item.active {
-    color: hsl(var(--accent-foreground));
-    background: hsl(var(--accent));
+    color: var(--text-main);
+    background: hsl(var(--primary) / 16%);
+    border-color: hsl(var(--primary) / 42%);
   }
 
-  .sidebar-item svg {
-    width: 14px;
-    height: 14px;
-    margin-right: 4px;
+  .sidebar-item-icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
   }
 
   .sidebar-item-label {
     display: inline;
   }
 
-  .shell-bar {
-    padding: 0 12px;
+  .shell-body.sidebar-collapsed .shell-sidebar {
+    padding: 10px;
+  }
+
+  .shell-body.sidebar-collapsed .sidebar-item {
+    justify-content: flex-start;
+    padding: 10px 12px;
+  }
+
+  .shell-body.sidebar-collapsed .sidebar-item-label {
+    width: auto;
+    margin: 0;
+    opacity: 1;
+  }
+
+  .shell-body.sidebar-collapsed .sidebar-item-icon {
+    margin-right: 10px;
   }
 
   .shell-main {
-    height: calc(100vh - var(--shell-top) - 44px);
+    height: calc(100vh - var(--shell-top));
   }
 
   .auth-dropdown {

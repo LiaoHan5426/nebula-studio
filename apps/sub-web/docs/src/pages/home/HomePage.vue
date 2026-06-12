@@ -39,9 +39,11 @@ const navigateToPage = inject(DOCS_NAVIGATE_TO_FEATURE, null);
           Java / Spring Boot 框架文档，包括 RestService 注解、ApiResponse
           响应封装、BaseController 基类、读写分离 Service 等核心组件。
         </p>
-        <p class="home-card__source">
-          <code>f:\1-back\nebula</code>
-        </p>
+        <ul class="home-card__tags" aria-label="后端文档涵盖范围">
+          <li>Spring Boot</li>
+          <li>Core / Database</li>
+          <li>Security / System</li>
+        </ul>
         <NebulaButton variant="secondary" class="home-card__btn">
           进入后端文档 →
         </NebulaButton>
@@ -70,9 +72,11 @@ const navigateToPage = inject(DOCS_NAVIGATE_TO_FEATURE, null);
           Vue 3 组件库文档，包括 NebulaTable、NebulaPagination、Monaco
           Editor、Reader、Notify 等组件的示例与 API 说明。
         </p>
-        <p class="home-card__source">
-          <code>f:\2-front\nebula-studio\nebula-studio</code>
-        </p>
+        <ul class="home-card__tags" aria-label="前端文档涵盖范围">
+          <li>Vue 3</li>
+          <li>Table / Pagination</li>
+          <li>Monaco / Notify</li>
+        </ul>
         <NebulaButton variant="secondary" class="home-card__btn">
           进入前端文档 →
         </NebulaButton>
@@ -175,17 +179,22 @@ const navigateToPage = inject(DOCS_NAVIGATE_TO_FEATURE, null);
   color: hsl(var(--muted-foreground));
 }
 
-.home-card__source {
+.home-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  padding: 0;
   margin: 0;
-  font-size: 0.82rem;
-  color: hsl(var(--muted-foreground));
+  list-style: none;
 
-  code {
-    padding: 0.15rem 0.4rem;
-    font-size: 0.9em;
-    word-break: break-all;
-    background: hsl(var(--muted));
-    border-radius: 4px;
+  li {
+    padding: 0.2rem 0.55rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: hsl(var(--foreground));
+    background: hsl(var(--muted) / 72%);
+    border: 1px solid hsl(var(--border) / 72%);
+    border-radius: 999px;
   }
 }
 
