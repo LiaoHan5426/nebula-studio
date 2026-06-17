@@ -1,5 +1,10 @@
 import { app } from 'electron';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
+import {
+  registerShellIntegratedApps,
+  setShellIntegrableOrder,
+} from '@nebula-studio/app-shell';
+import { INTEGRATED_APPS, INTEGRABLE_ORDER } from './integratedAppsConfig';
 import { MainAppLauncher } from './bootstrap/MainAppLauncher';
 import { AppearanceSettingsModule } from './modules/AppearanceSettingsModule';
 import { ApplicationLogger } from './modules/ApplicationLogger';
@@ -14,6 +19,9 @@ import { WindowManager } from './modules/window/WindowManager';
 import { WindowManagerModule } from './modules/window/WindowManagerModule';
 
 app.whenReady().then(async () => {
+  registerShellIntegratedApps(INTEGRATED_APPS);
+  setShellIntegrableOrder(INTEGRABLE_ORDER);
+
   const configManager = new ConfigManager();
   const logger = new ApplicationLogger({
     configuredLogDir: configManager.getLogDir(),

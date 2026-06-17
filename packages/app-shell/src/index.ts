@@ -16,8 +16,12 @@ export type { PresentationHostKind } from './common/presentationHost';
 export { installWebPresentation } from './web/installWebPresentation';
 export type { InstallWebPresentationOptions } from './web/installWebPresentation';
 export {
-  shellIntegratedAppRegistry,
+  registerShellIntegratedApp,
+  registerShellIntegratedApps,
+  setShellIntegrableOrder,
+  getShellIntegratedAppRegistry,
   getShellIntegratedAppMeta,
+  tryGetShellIntegratedAppMeta,
   getDefaultEnabledShellIntegrableIds,
   isShellIntegrableAppId,
   listShellIntegrableAppIds,

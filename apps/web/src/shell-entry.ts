@@ -2,11 +2,17 @@ import '@nebula-studio-internal/tailwind/electron';
 import {
   installWebPresentation,
   redirectShellToWebLogin,
+  registerShellIntegratedApps,
+  setShellIntegrableOrder,
   shouldRedirectUnauthenticatedWebShell,
 } from '@nebula-studio/app-shell';
+import { INTEGRATED_APPS, INTEGRABLE_ORDER } from './integratedAppsConfig';
 import { ConfigProvider } from '@nebula-studio-electron/electron-shared-vue';
 import { createApp, h } from 'vue';
 import App from '@nebula-studio-renderer/main/app';
+
+registerShellIntegratedApps(INTEGRATED_APPS);
+setShellIntegrableOrder(INTEGRABLE_ORDER);
 
 installWebPresentation({
   scope: 'web-shell',
