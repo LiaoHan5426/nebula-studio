@@ -1,130 +1,158 @@
-# Nebula 集成平台前端应用
+# Nebula 集成平台 Demo
 
-基于 Nebula Camel 集成平台的前端管理界面，提供库表订阅、接口管理、连接器管理和数据源管理功能。
-
-## 功能特性
-
-### 库表订阅管理
-
-- 支持三种订阅类型：CDC、轮询、触发器
-- 订阅的创建、编辑、删除、暂停/恢复
-- 实时查看订阅状态和配置信息
-
-### 接口管理
-
-- **原子接口**：单个接口的配置和管理
-- **组合接口**：基于 BPMN 2.0 标准的流程编排
-- 集成 BPMN 流程编辑器，支持可视化流程设计
-- 接口的创建、编辑、删除、执行和测试
-
-### 连接器管理
-
-- 数据库连接器：MySQL、PostgreSQL、Oracle 等
-- 协议连接器：HTTP、Kafka、FTP 等
-- 连接器状态查看和连接测试
-
-### 数据源管理
-
-- 数据源的创建、编辑、删除
-- 支持数据库和协议数据源
-- 连接测试功能
+基于 Nebula Camel 集成后端的完整前端 Demo，覆盖连接器、数据源、库表订阅（SSE）、接口编排、流程定义与网关鉴权。
 
 ## 技术栈
 
-- **Vue 3**：渐进式 JavaScript 框架
-- **TypeScript**：类型安全的 JavaScript 超集
-- **Vue Router**：官方路由管理器
-- **Pinia**：状态管理库
-- **BPMN.js**：BPMN 2.0 流程编辑器
-- **Nebula UI**：Nebula Studio 组件库
-- **Nebula Flow Editor**：流程编辑器组件
-- **Nebula Integration Panel**：集成面板组件
+- Vue 3 + TypeScript（`<script setup>`）
+- Vue Router（懒加载 feature 页面）
+- Nebula UI（NebulaPane、NebulaButton、NebulaTag、NebulaTable）
+- Nebula Flow Editor（BPMN 2.0）
 
 ## 项目结构
 
 ```
 integration/
 ├── src/
-│   ├── types/           # TypeScript 类型定义
-│   ├── services/        # API 服务层
-│   ├── router/          # 路由配置
-│   ├── views/           # 页面组件
-│   ├── App.vue          # 主应用组件
-│   └── main.ts          # 应用入口
-├── index.html           # HTML 入口
-├── package.json         # 项目配置
-├── tsconfig.json        # TypeScript 配置
-└── vite.config.ts       # Vite 配置
+│   ├── app/              # AppLayout、AppHeader
+│   ├── features/         # 按功能划分的页面
+│   ├── shared/
+│   │   ├── api/          # client、integration、flows、auth
+│   │   ├── composables/  # useAuth、useTenant、useSubscriptionEvents
+│   │   └── types/
+│   ├── router/
+│   ├── App.vue
+│   └── main.ts
+├── vite.config.ts
+└── package.json
 ```
 
-## 开发指南
+## 开发环境
 
-### 安装依赖
+### 前置条件
+
+1. 后端 `demo-camel-integration` 运行在 **http://localhost:8080**
+2. 已安装 monorepo 依赖
+
+### 安装依赖（Web 壳，推荐）
+
+完整 `vp i` 会执行 Electron 原生依赖编译，耗时长且易看似「卡住」。仅开发 Web 集成 Demo 时：
 
 ```bash
-vp i
+# 在 nebula-studio 根目录
+vp run install:web
 ```
 
-### 启动开发服务器
+等价于 `pnpm install --ignore-scripts` + 工具链 stub，跳过 Electron postinstall。
+
+若需 Electron 桌面端，再执行完整 `vp i` 并等待数分钟。
+
+### 启动（Web 壳）
+
+在 **nebula-studio 根目录**：
 
 ```bash
+vp run dev:web
+```
+
+浏览器打开 **http://localhost:5173**，侧边栏进入「应用集成」→ 点击「集成平台」 tile。
+
+`/api` 已在 `apps/web/vite.config.ts` 代理到 `http://localhost:8080`。
+
+### 独立启动（可选）
+
+```bash
+cd apps/sub-web/integration
 vp dev
 ```
 
-应用将在 `http://localhost:5174` 启动。
+前端 **http://localhost:5174**（integration 子应用自带 proxy）。
 
-### 构建生产版本
+### 类型检查
+
+```bash
+vp typecheck
+```
+
+### 构建
 
 ```bash
 vp build
 ```
 
-## API 配置
+## API 端点
 
-应用默认代理 `/api` 请求到 `http://localhost:8080`，可在 `vite.config.ts` 中修改：
+| 模块 | 前缀 |
+| --- | --- |
+| 集成（订阅/接口/连接器/数据源/租户） | `/api/integration` |
+| 流程定义 | `/api/flows` |
+| 登录 | `POST /api/auth/login` |
+| 网关 | `/api/integration/gateway/{tenantId}/...` |
+| 订阅 SSE | `GET /api/integration/subscriptions/{id}/events` |
 
-```typescript
-server: {
-  port: 5174,
-  proxy: {
-    '/api': {
-      target: 'http://localhost:8080',
-      changeOrigin: true
-    }
-  }
-}
-```
+请求头自动注入：
 
-## 页面路由
+- `Authorization: Bearer {auth_token}`（localStorage）
+- `X-Tenant-Id: {tenant_id}`（localStorage）
 
-- `/` - 重定向到库表订阅页面
-- `/subscriptions` - 库表订阅管理
-- `/interfaces` - 接口管理
-- `/connectors` - 连接器管理
-- `/datasources` - 数据源管理
+## 路由
 
-## 主题适配
+| 路径             | 页面                        |
+| ---------------- | --------------------------- |
+| `/connectors`    | 连接器列表与连接测试        |
+| `/datasources`   | 数据源 CRUD                 |
+| `/subscriptions` | 订阅管理与 SSE 事件面板     |
+| `/interfaces`    | 原子/组合接口与 BPMN 编辑器 |
+| `/flows`         | 流程列表与设计              |
+| `/gateway`       | 网关鉴权演示                |
 
-应用完全适配 Nebula 主题系统，使用 `hsl(var(--primary))` 等主题变量，支持动态主题切换。
+## 七场景 Demo 脚本
 
-## 后端接口规范
+> 启动后端与前端后，按顺序操作以验证完整集成链路。
 
-前端应用基于以下后端接口规范：
+### 场景 1：登录与租户切换
 
-- **库表订阅**：`/api/integration/subscriptions`
-- **接口管理**：`/api/integration/interfaces`
-- **连接器管理**：`/api/integration/connectors`
-- **数据源管理**：`/api/integration/datasources`
-- **租户管理**：`/api/integration/tenant`
+1. 打开 http://localhost:5174
+2. 点击右上角 **登录**，用户名 `demo`，提交
+3. 在 Header 租户下拉框切换 **tenant-a** ↔ **tenant-b**
+4. 观察各列表数据随租户隔离变化
 
-详细接口定义请参考 [nebula-camel 技能文档](../../../2-back/nebula/.trae/skills/nebula-camel/SKILL.md)。
+### 场景 2：连接器测试
 
-## 注意事项
+1. 进入 **连接器**
+2. 在「数据库」Tab 选择 `ds-demo-pg`（或 seed 中的连接器）
+3. 点击 **测试连接**，填写 PostgreSQL 连接参数并验证
 
-1. 确保 Nebula UI、Nebula Flow Editor 和 Nebula Integration Panel 组件已正确安装
-2. 后端服务需要在 `http://localhost:8080` 运行
-3. BPMN 编辑器需要后端支持 BPMN XML 的保存和加载
-4. 租户上下文需要在请求头中传递认证信息
+### 场景 3：数据源 CRUD
+
+1. 进入 **数据源**
+2. **新建数据源**，从下拉选择连接器，填写连接信息
+3. **测试** 连接，**编辑** 名称后 **保存**
+
+### 场景 4：库表订阅与 SSE
+
+1. 进入 **库表订阅**
+2. **新建订阅**：数据源选 demo PG，表名 `demo_orders`，类型 **轮询**
+3. 对订阅点击 **激活**，再点击 **监听事件**
+4. 在后端触发 demo 表变更（或等待轮询），SSE 面板应收到事件
+
+### 场景 5：原子接口
+
+1. 进入 **接口管理** → **原子** Tab
+2. **新建原子接口**：端点 `/orders/query`，认证 **API_KEY**
+3. **执行** 接口或在场景 7 通过网关调用
+
+### 场景 6：组合接口与 BPMN
+
+1. **接口管理** → **组合** Tab → **新建组合接口**
+2. 填写元数据后进入 **BPMN 流程编辑器**，拖拽编排并 **保存流程**
+
+### 场景 7：流程定义与网关
+
+1. 进入 **流程定义**，**新建流程** → **设计** → 保存 BPMN → **发布**
+2. 进入 **网关演示**
+3. 路径 `/orders/query`，方法 GET，填写 `X-API-Key: demo-api-key-tenant-a`
+4. **发送请求**，验证 JWT / API Key / 租户头鉴权与响应
 
 ## 许可证
 

@@ -13,21 +13,18 @@ export enum SubscriptionStatus {
   ERROR = 'ERROR',
 }
 
-// 轮询配置
 export interface PollingConfig {
   intervalMs: number;
   lastModifiedColumn: string;
-  pollingQuery: string;
+  pollingQuery?: string | null;
 }
 
-// CDC 配置
 export interface CdcConfig {
   debeziumConnector: string;
   kafkaTopic: string;
   snapshotMode: string;
 }
 
-// 订阅配置
 export interface SubscriptionConfig {
   dataSourceId: string;
   tableName: string;
@@ -38,7 +35,6 @@ export interface SubscriptionConfig {
   eventTypes: string[];
 }
 
-// 库表订阅
 export interface TableSubscription {
   subscriptionId: string;
   tenantId: string;
@@ -50,13 +46,11 @@ export interface TableSubscription {
   config: SubscriptionConfig;
 }
 
-// 接口类型
 export enum InterfaceType {
   ATOMIC = 'ATOMIC',
   COMPOSITE = 'COMPOSITE',
 }
 
-// 接口方法
 export enum InterfaceMethod {
   GET = 'GET',
   POST = 'POST',
@@ -65,14 +59,12 @@ export enum InterfaceMethod {
   PATCH = 'PATCH',
 }
 
-// 接口状态
 export enum InterfaceStatus {
   ACTIVE = 'ACTIVE',
   INACTIVE = 'INACTIVE',
   DRAFT = 'DRAFT',
 }
 
-// 认证类型
 export enum AuthType {
   NONE = 'NONE',
   API_KEY = 'API_KEY',
@@ -80,16 +72,15 @@ export enum AuthType {
   JWT = 'JWT',
 }
 
-// 认证配置
 export interface AuthConfig {
   authType: AuthType;
   apiKeyHeader?: string;
+  apiKey?: string;
   oauth2ClientId?: string;
   oauth2Scope?: string;
   allowedTenants: string[];
 }
 
-// Schema 字段
 export interface SchemaField {
   name: string;
   type: string;
@@ -97,13 +88,11 @@ export interface SchemaField {
   description: string;
 }
 
-// 接口 Schema
 export interface InterfaceSchema {
   type: string;
   fields: Record<string, SchemaField>;
 }
 
-// 原子接口
 export interface AtomicInterface {
   interfaceId: string;
   tenantId: string;
@@ -122,7 +111,6 @@ export interface AtomicInterface {
   responseSchema: InterfaceSchema;
 }
 
-// 步骤类型
 export enum StepType {
   CALL = 'CALL',
   TRANSFORM = 'TRANSFORM',
@@ -131,7 +119,6 @@ export enum StepType {
   AGGREGATE = 'AGGREGATE',
 }
 
-// 错误处理
 export interface ErrorHandling {
   onError: string;
   fallbackInterfaceId?: string;
@@ -139,7 +126,6 @@ export interface ErrorHandling {
   retryDelayMs: number;
 }
 
-// 接口步骤
 export interface InterfaceStep {
   order: number;
   interfaceId: string;
@@ -149,7 +135,6 @@ export interface InterfaceStep {
   errorHandling: ErrorHandling;
 }
 
-// 组合接口
 export interface CompositeInterface {
   interfaceId: string;
   tenantId: string;
@@ -165,39 +150,33 @@ export interface CompositeInterface {
   flowExpression: string;
 }
 
-// API 接口（联合类型）
 export type ApiInterface = AtomicInterface | CompositeInterface;
 
-// 连接器类型
 export enum ConnectorType {
   DATABASE = 'DATABASE',
   PROTOCOL = 'PROTOCOL',
 }
 
-// 数据库配置
 export interface DatabaseConfig {
   host: string;
   port: number;
   database: string;
   username: string;
   password: string;
-  driverClassName: string;
+  driverClassName?: string;
 }
 
-// 协议配置
 export interface ProtocolConfig {
   endpointUri: string;
-  parameters: Record<string, any>;
+  parameters: Record<string, unknown>;
 }
 
-// 验证结果
 export interface ValidationResult {
   success: boolean;
   message: string;
   responseTimeMs: number;
 }
 
-// 数据库连接器
 export interface DatabaseConnector {
   connectorId: string;
   connectorType: ConnectorType.DATABASE;
@@ -206,7 +185,6 @@ export interface DatabaseConnector {
   status: 'ACTIVE' | 'INACTIVE';
 }
 
-// 协议连接器
 export interface ProtocolConnector {
   connectorId: string;
   connectorType: ConnectorType.PROTOCOL;
@@ -214,10 +192,8 @@ export interface ProtocolConnector {
   status: 'ACTIVE' | 'INACTIVE';
 }
 
-// 连接器（联合类型）
 export type Connector = DatabaseConnector | ProtocolConnector;
 
-// 数据源配置
 export interface DataSourceConfig {
   dataSourceId: string;
   name: string;
@@ -227,15 +203,23 @@ export interface DataSourceConfig {
   createdAt: string;
 }
 
-// API 响应
-export interface ApiResponse<T = any> {
-  success: boolean;
+/** nebula-core ApiResponse with legacy `success` compat */
+export interface ApiResponse<T = unknown> {
+  code?: number;
+  isSuccess?: boolean;
+  /** @deprecated use isSuccess */
+  success?: boolean;
   data: T;
   message?: string;
   error?: string;
 }
 
-// 分页响应
+export function isApiSuccess<T>(response: ApiResponse<T>): boolean {
+  if (typeof response.isSuccess === 'boolean') return response.isSuccess;
+  if (typeof response.success === 'boolean') return response.success;
+  return response.code === 200;
+}
+
 export interface PageResponse<T> {
   items: T[];
   total: number;
@@ -244,9 +228,50 @@ export interface PageResponse<T> {
   totalPages: number;
 }
 
-// 租户上下文
+export interface MybatisPage<T> {
+  records: T[];
+  total: number;
+  size: number;
+  current: number;
+  pages: number;
+}
+
 export interface TenantContext {
   tenantId: string;
   tenantName: string;
   allowedConnectors: string[];
+}
+
+export interface LoginResult {
+  token: string;
+  username: string;
+  userId: number;
+}
+
+export interface FlowDefinition {
+  id: string;
+  name: string;
+  category?: string;
+  tenantId: string;
+  status: string;
+  description?: string;
+  bpmnXml?: string;
+  currentVersionId?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface FlowCreateRequest {
+  name: string;
+  category?: string;
+  tenantId: string;
+  description?: string;
+  bpmnXml?: string;
+}
+
+export interface SubscriptionEvent {
+  id: string;
+  type: string;
+  timestamp: string;
+  payload: unknown;
 }

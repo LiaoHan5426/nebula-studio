@@ -6,5 +6,12 @@
     "src/**/*",
     "src/**/*.vue",
     "../../packages/nebula-ui/env.d.ts"
-  ]
+  ],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
 }

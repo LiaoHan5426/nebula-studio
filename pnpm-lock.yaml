@@ -664,6 +664,9 @@ importers:
       '@nebula-studio-renderer/docs':
         specifier: workspace:^
         version: link:../sub-web/docs
+      '@nebula-studio-renderer/integration':
+        specifier: workspace:^
+        version: link:../sub-web/integration
       '@nebula-studio-renderer/login':
         specifier: workspace:^
         version: link:../sub-web/login

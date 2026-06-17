@@ -21,6 +21,7 @@ verifyDepsBeforeRun: false
 ignoreWorkspaceRootCheck: true
 
 allowBuilds:
+  '@carbon/icons': true
   '@parcel/watcher': true
   electron: true
   electron-winstaller: true

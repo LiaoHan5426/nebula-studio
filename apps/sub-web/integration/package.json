@@ -5,7 +5,9 @@
   "type": "module",
   "exports": {
     "./app": "./src/App.vue",
-    "./router": "./src/router/index.ts"
+    "./router": "./src/router/index.ts",
+    "./bootstrap-auth": "./src/shared/composables/useAuth.ts",
+    "./auth/session": "./src/shared/auth/session.ts"
   },
   "scripts": {
     "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false",

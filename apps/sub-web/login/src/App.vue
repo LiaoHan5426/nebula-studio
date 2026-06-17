@@ -39,7 +39,9 @@ async function onSubmit(): Promise<void> {
   <div class="login-page" data-theme="dark">
     <div class="login-card">
       <h1 class="login-title">登录</h1>
-      <p class="login-hint">演示账号：任意用户名，密码 <code>demo</code></p>
+      <p class="login-hint">
+        使用后端账号登录（默认 demo / demo，或 admin / admin123）
+      </p>
 
       <label class="login-field">
         <span class="login-label">用户名</span>

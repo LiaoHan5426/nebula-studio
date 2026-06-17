@@ -1,10 +1,25 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
+import 'bpmn-js/dist/assets/diagram-js.css';
+import 'bpmn-js/dist/assets/bpmn-js.css';
+import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
+import '../styles/bpmn-theme.css';
 
-const props = defineProps<{
-  xml?: string;
-}>();
+import {
+  INTEGRATION_STARTER_BPMN,
+  isBlankBpmn,
+} from '../constants/integrationStarterBpmn';
+
+const props = withDefaults(
+  defineProps<{
+    xml?: string;
+    mode?: 'default' | 'integration';
+  }>(),
+  {
+    mode: 'default',
+  },
+);
 
 const emit = defineEmits<{
   (e: 'update:xml', xml: string): void;
@@ -15,25 +30,24 @@ const canvasRef = ref<HTMLDivElement>();
 
 let modeler: BpmnModeler | null = null;
 
-const defaultXml = `<?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
-                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
-                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
-                   xmlns:di="http://www.omg.org/spec/BPMN/20100524/DI"
-                   xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
-                   id="Definitions_1"
-                   targetNamespace="http://bpmn.io/schema/bpmn">
-  <bpmn:process id="Process_1" isExecutable="true">
-    <bpmn:startEvent id="StartEvent_1" name="开始"/>
-    <bpmn:serviceTask id="Activity_1" name="调用接口" camunda:async="true"/>
-    <bpmn:endEvent id="EndEvent_1" name="结束"/>
-    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="Activity_1"/>
-    <bpmn:sequenceFlow id="Flow_2" sourceRef="Activity_1" targetRef="EndEvent_1"/>
-  </bpmn:process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1"/>
-  </bpmndi:BPMNDiagram>
-</bpmn:definitions>`;
+function resolveInitialXml(): string {
+  const xml = props.xml;
+  if (!isBlankBpmn(xml)) {
+    return (xml ?? '').trim();
+  }
+  return INTEGRATION_STARTER_BPMN;
+}
+
+async function importDiagram(xml: string) {
+  if (!modeler) return;
+  try {
+    await modeler.importXML(xml);
+    const canvas = modeler.get('canvas') as { zoom: (level: string) => void };
+    canvas.zoom('fit-viewport');
+  } catch (err) {
+    console.error('Failed to import BPMN diagram:', err);
+  }
+}
 
 onMounted(async () => {
   if (!canvasRef.value) return;
@@ -42,16 +56,12 @@ onMounted(async () => {
     container: canvasRef.value,
   });
 
-  try {
-    await modeler.importXML(props.xml || defaultXml);
+  await importDiagram(resolveInitialXml());
 
-    modeler.on('commandStack.changed', () => {
-      saveXml();
-      emit('changed');
-    });
-  } catch (err) {
-    console.error('Failed to import BPMN diagram:', err);
-  }
+  modeler.on('commandStack.changed', () => {
+    saveXml();
+    emit('changed');
+  });
 });
 
 onBeforeUnmount(() => {
@@ -81,7 +91,7 @@ const handleDownload = () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'diagram.bpmn';
+    a.download = 'integration-flow.bpmn';
     a.click();
     URL.revokeObjectURL(url);
   });
@@ -89,30 +99,33 @@ const handleDownload = () => {
 
 const handleZoomIn = () => {
   if (!modeler) return;
-  const canvas = modeler.get('canvas') as any;
-  canvas.zoom(canvas.zoom() * 1.2);
+  const canvas = modeler.get('canvas') as { zoom: (level: number) => number };
+  canvas.zoom(canvas.zoom(1) * 1.2);
 };
 
 const handleZoomOut = () => {
   if (!modeler) return;
-  const canvas = modeler.get('canvas') as any;
-  canvas.zoom(canvas.zoom() / 1.2);
+  const canvas = modeler.get('canvas') as { zoom: (level: number) => number };
+  canvas.zoom(canvas.zoom(1) / 1.2);
 };
 
 const handleResetZoom = () => {
   if (!modeler) return;
-  const canvas = modeler.get('canvas') as any;
+  const canvas = modeler.get('canvas') as { zoom: (level: string) => void };
   canvas.zoom('fit-viewport');
 };
 
 watch(
   () => props.xml,
   async (newXml) => {
-    if (!modeler || !newXml) return;
-    try {
-      await modeler.importXML(newXml);
-    } catch (err) {
-      console.error('Failed to import new XML:', err);
+    if (!modeler) return;
+    if (isBlankBpmn(newXml)) {
+      await importDiagram(INTEGRATION_STARTER_BPMN);
+      return;
+    }
+    const trimmed = (newXml ?? '').trim();
+    if (trimmed) {
+      await importDiagram(trimmed);
     }
   },
 );
@@ -126,22 +139,44 @@ defineExpose({
 </script>
 
 <template>
-  <div class="bpmn-editor-wrapper">
+  <div
+    class="bpmn-editor-wrapper"
+    :class="{ 'bpmn-editor-wrapper--integration': mode === 'integration' }"
+  >
     <div class="toolbar">
-      <button class="toolbar-btn" @click="handleZoomIn" title="放大">
+      <span v-if="mode === 'integration'" class="toolbar-label"
+        >集成流程设计</span
+      >
+      <button
+        class="toolbar-btn"
+        type="button"
+        title="放大"
+        @click="handleZoomIn"
+      >
         <span>+</span>
       </button>
-      <button class="toolbar-btn" @click="handleZoomOut" title="缩小">
+      <button
+        class="toolbar-btn"
+        type="button"
+        title="缩小"
+        @click="handleZoomOut"
+      >
         <span>-</span>
       </button>
-      <button class="toolbar-btn" @click="handleResetZoom" title="适应画布">
+      <button
+        class="toolbar-btn"
+        type="button"
+        title="适应画布"
+        @click="handleResetZoom"
+      >
         <span>⊞</span>
       </button>
       <div class="toolbar-divider"></div>
       <button
         class="toolbar-btn primary"
-        @click="handleDownload"
+        type="button"
         title="下载 BPMN"
+        @click="handleDownload"
       >
         <span>↓</span>
       </button>
@@ -153,7 +188,7 @@ defineExpose({
   </div>
 </template>
 
-<style>
+<style scoped>
 .bpmn-editor-wrapper {
   display: flex;
   flex-direction: column;
@@ -164,9 +199,17 @@ defineExpose({
   border-radius: 8px;
 }
 
+.bpmn-editor-wrapper--integration .toolbar-label {
+  margin-right: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: hsl(var(--muted-foreground));
+}
+
 .toolbar {
   display: flex;
   gap: 4px;
+  align-items: center;
   padding: 8px 12px;
   background: hsl(var(--card));
   border-bottom: 1px solid hsl(var(--border));
@@ -217,23 +260,7 @@ defineExpose({
 
 .bpmn-canvas {
   flex: 1;
+  color: hsl(var(--foreground));
   background: hsl(var(--card));
-}
-
-/* BPMN.js 样式 */
-.bpmn-js .djs-palette {
-  border: 1px solid hsl(var(--border));
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
-}
-
-.bpmn-js .djs-palette .entry {
-  width: 26px;
-  height: 26px;
-  margin: 4px;
-}
-
-.bpmn-js .djs-palette .entry:hover {
-  background: hsl(var(--muted));
 }
 </style>

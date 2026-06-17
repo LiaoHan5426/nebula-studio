@@ -20,6 +20,10 @@ export const shellPresentationConfig = {
       preload: 'settings',
       renderer: 'settings',
     },
+    integration: {
+      preload: 'main',
+      renderer: 'integration',
+    },
   },
 } as const;
 

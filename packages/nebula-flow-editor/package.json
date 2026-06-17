@@ -10,7 +10,8 @@
       "types": "./src/index.ts",
       "default": "./src/index.ts"
     },
-    "./components/BpmnEditor.vue": "./src/components/BpmnEditor.vue"
+    "./components/BpmnEditor.vue": "./src/components/BpmnEditor.vue",
+    "./components/IntegrationBpmnEditor.vue": "./src/components/IntegrationBpmnEditor.vue"
   },
   "dependencies": {
     "vue": "catalog:vue",
