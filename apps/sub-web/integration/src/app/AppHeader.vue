@@ -1,43 +1,26 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
-import { NebulaButton, NebulaSelect } from '@nebula-studio/nebula-ui';
+import { onMounted, ref } from 'vue';
+import { NebulaButton } from '@nebula-studio/nebula-ui';
 
 import LoginPanel from '@/features/auth/LoginPanel.vue';
 import { ensureAuthFromShell, useAuth } from '@/shared/composables/useAuth';
 import { useTenant } from '@/shared/composables/useTenant';
 
 const { username, isLoggedIn, isShellHosted, logout } = useAuth();
-const { currentTenantId, availableTenants, switchTenant, refreshCurrent } =
-  useTenant();
+const { currentTenantName, refreshCurrent } = useTenant();
 
 const showLogin = ref(false);
-
-const tenantOptions = computed(() =>
-  availableTenants.value.map((id: string) => ({ label: id, value: id })),
-);
 
 onMounted(async () => {
   await ensureAuthFromShell();
   await refreshCurrent();
 });
-
-async function onTenantChange(value: unknown) {
-  if (typeof value === 'string') {
-    await switchTenant(value);
-  }
-}
 </script>
 
 <template>
   <header class="app-header" :class="{ 'app-header--embedded': isShellHosted }">
     <div class="app-header__left">
-      <span class="app-header__label">租户</span>
-      <NebulaSelect
-        :model-value="currentTenantId"
-        :options="tenantOptions"
-        class="app-header__tenant-select"
-        @update:model-value="onTenantChange"
-      />
+      <span class="app-header__tenant-name">{{ currentTenantName }}</span>
     </div>
 
     <!-- Web 壳已统一登录，embed 模式不再展示独立登录入口 -->
@@ -83,13 +66,10 @@ async function onTenantChange(value: unknown) {
   align-items: center;
 }
 
-.app-header__label {
+.app-header__tenant-name {
   font-size: 13px;
-  color: hsl(var(--muted-foreground));
-}
-
-.app-header__tenant-select {
-  min-width: 140px;
+  font-weight: 500;
+  color: hsl(var(--foreground));
 }
 
 .app-header__user {

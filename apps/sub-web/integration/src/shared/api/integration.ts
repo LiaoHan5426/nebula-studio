@@ -228,10 +228,20 @@ export const tenantApi = {
     return request('/tenant/current');
   },
 
-  switch(tenantId: string): Promise<ApiResponse<void>> {
-    return request('/tenant/switch', {
-      method: 'POST',
-      body: JSON.stringify({ tenantId }),
+  list(
+    page = 1,
+    pageSize = 20,
+    status?: string,
+  ): Promise<ApiResponse<unknown>> {
+    const params = new URLSearchParams({
+      page: String(page),
+      pageSize: String(pageSize),
     });
+    if (status) params.set('status', status);
+    return request(`/tenant?${params.toString()}`);
+  },
+
+  delete(tenantId: string): Promise<ApiResponse<void>> {
+    return request(`/tenant/${tenantId}`, { method: 'DELETE' });
   },
 };

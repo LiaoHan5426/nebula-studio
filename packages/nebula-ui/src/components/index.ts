@@ -11,6 +11,7 @@ export { NebulaButton } from './button/NebulaButton';
 export { NebulaDrag } from './drag/NebulaDrag';
 export { NebulaPane } from './pane/NebulaPane';
 export { NebulaPagination } from './pagination/NebulaPagination';
+export { NebulaDatePicker } from './date-picker/NebulaDatePicker';
 export { NebulaSelect } from './select/NebulaSelect';
 export { NebulaSwitch } from './switch/NebulaSwitch';
 export { NebulaTable } from './table/NebulaTable';

@@ -96,10 +96,8 @@ export function useSubscriptionEvents() {
       return;
     }
 
-    const tenantId = localStorage.getItem('tenant_id');
     const params = new URLSearchParams();
     params.set('token', token);
-    if (tenantId) params.set('tenantId', tenantId);
     const url = `${INTEGRATION_BASE}/subscriptions/${subscriptionId}/events?${params.toString()}`;
 
     source = new EventSource(url);
