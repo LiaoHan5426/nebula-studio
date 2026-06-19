@@ -43,6 +43,12 @@ export const NebulaTableColumn = defineComponent({
       >,
       default: undefined,
     },
+    showOverflow: {
+      type: [Boolean, String] as PropType<
+        boolean | 'ellipsis' | 'title' | 'tooltip' | 'none'
+      >,
+      default: undefined,
+    },
   },
   setup(props, { slots }) {
     return () =>
@@ -58,6 +64,7 @@ export const NebulaTableColumn = defineComponent({
           type: props.type || undefined,
           sortable: props.sortable,
           formatter: props.formatter,
+          showOverflow: props.showOverflow,
         },
         slots,
       );

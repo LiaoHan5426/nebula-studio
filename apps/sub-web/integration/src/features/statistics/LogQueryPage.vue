@@ -4,90 +4,57 @@ import {
   NebulaButton,
   NebulaDatePicker,
   NebulaTable,
+  NebulaTableColumn,
+  NebulaTag,
 } from '@nebula-studio/nebula-ui';
 
-const columns = [
-  { key: 'logId', label: '日志ID', width: 200 },
-  { key: 'tenantId', label: '租户ID', width: 150 },
-  { key: 'serviceId', label: '服务ID', width: 150 },
-  { key: 'serviceName', label: '服务名称', width: 150 },
-  { key: 'stepName', label: '步骤名称', width: 150 },
-  { key: 'inputParams', label: '入参', width: 150 },
-  { key: 'outputParams', label: '出参', width: 150 },
-  { key: 'duration', label: '耗时(ms)', width: 100 },
-  { key: 'status', label: '状态', width: 100 },
-  { key: 'errorMsg', label: '错误信息', width: 200 },
-  { key: 'createdAt', label: '执行时间', width: 180 },
-];
+import { monitorApi } from '@/shared/api/consoleApi';
+import { useTenant } from '@/shared/composables/useTenant';
+import { isApiSuccess } from '@/shared/types';
 
-// 模拟数据
-const logs = ref([
-  {
-    logId: 'log-001',
-    tenantId: 'tenant-001',
-    serviceId: 'svc-001',
-    serviceName: '用户查询服务',
-    stepName: '数据库查询',
-    inputParams: '{userId: 123}',
-    outputParams: '{user: {...}}',
-    duration: 45,
-    status: 'success',
-    errorMsg: '-',
-    createdAt: '2024-03-20 10:30:00',
-  },
-  {
-    logId: 'log-002',
-    tenantId: 'tenant-001',
-    serviceId: 'svc-002',
-    serviceName: '订单查询服务',
-    stepName: '参数转换',
-    inputParams: '{orderId: abc}',
-    outputParams: '-',
-    duration: 120,
-    status: 'error',
-    errorMsg: '转换失败：参数格式错误',
-    createdAt: '2024-03-20 10:31:00',
-  },
-  {
-    logId: 'log-003',
-    tenantId: 'tenant-002',
-    serviceId: 'svc-001',
-    serviceName: '用户查询服务',
-    stepName: '前置处理',
-    inputParams: '{userId: 456}',
-    outputParams: '{userId: 456}',
-    duration: 10,
-    status: 'success',
-    errorMsg: '-',
-    createdAt: '2024-03-20 10:32:00',
-  },
-]);
-
+const logs = ref<Array<Record<string, unknown>>>([]);
 const loading = ref(false);
 const dateRange = ref<[string, string] | null>(null);
+const { currentTenantId } = useTenant();
 
 onMounted(() => {
-  loadLogs();
+  void loadLogs();
 });
 
 async function loadLogs() {
   loading.value = true;
-  // TODO: 调用 API 获取日志列表
-  setTimeout(() => {
+  try {
+    const response = await monitorApi.callLogs({
+      tenantId: currentTenantId.value,
+      pageSize: 50,
+    });
+    if (isApiSuccess(response)) {
+      logs.value = (response.data.items ?? []).map((row) => ({
+        logId: row.logId ?? row.log_id,
+        tenantId: row.tenantId ?? row.tenant_id,
+        interfaceId: row.interfaceId ?? row.interface_id,
+        interfaceName: row.interfaceName ?? row.interface_name ?? '-',
+        durationMs: row.durationMs ?? row.duration_ms ?? '-',
+        status: row.status,
+        errorMessage: row.errorMessage ?? row.error_message ?? '-',
+        createdAt: row.createdAt ?? row.created_at,
+      }));
+    }
+  } finally {
     loading.value = false;
-  }, 300);
+  }
 }
 
-function handleSearch() {
-  loadLogs();
+function statusVariant(status: unknown) {
+  const value = String(status ?? '').toUpperCase();
+  if (value === 'SUCCESS' || value === 'OK') return 'success';
+  if (value === 'FAILED' || value === 'ERROR') return 'default';
+  return 'warning';
 }
 
-function handleExport() {
-  // TODO: 导出日志
-}
-
-function handleViewDetail(log: (typeof logs.value)[0]) {
-  void log;
+function formatTime(value: unknown) {
+  if (!value) return '-';
+  return String(value).replace('T', ' ').slice(0, 19);
 }
 </script>
 
@@ -96,47 +63,67 @@ function handleViewDetail(log: (typeof logs.value)[0]) {
     <header class="log-query-page__header">
       <div>
         <h2 class="log-query-page__title">日志查询</h2>
-        <p class="log-query-page__desc">
-          记录调用服务时每个步骤的执行情况，包括出入参数、时间、报错信息等。
-        </p>
+        <p class="log-query-page__desc">查询服务调用日志与错误信息</p>
+      </div>
+      <div class="log-query-page__actions">
+        <NebulaDatePicker v-model="dateRange" type="datetimerange" />
+        <NebulaButton variant="secondary" @click="loadLogs">查询</NebulaButton>
       </div>
     </header>
 
-    <div class="log-query-page__filters">
-      <NebulaDatePicker
-        v-model="dateRange"
-        type="datetimerange"
-        placeholder="选择时间范围"
-      />
-      <NebulaButton variant="primary" @click="handleSearch">
-        查询
-      </NebulaButton>
-      <NebulaButton variant="secondary" @click="handleExport">
-        导出
-      </NebulaButton>
+    <div class="log-query-page__table-wrap">
+      <NebulaTable
+        :data="logs"
+        :loading="loading"
+        :scroll-x="{ enabled: false }"
+        row-key="logId"
+        class="log-query-page__table"
+      >
+        <NebulaTableColumn
+          field="logId"
+          title="日志 ID"
+          min-width="160"
+          show-overflow="tooltip"
+        />
+        <NebulaTableColumn
+          field="tenantId"
+          title="租户 ID"
+          width="120"
+          show-overflow="tooltip"
+        />
+        <NebulaTableColumn
+          field="interfaceId"
+          title="服务 ID"
+          min-width="140"
+          show-overflow="tooltip"
+        />
+        <NebulaTableColumn
+          field="interfaceName"
+          title="服务名称"
+          min-width="120"
+          show-overflow="tooltip"
+        />
+        <NebulaTableColumn field="durationMs" title="耗时(ms)" width="100" />
+        <NebulaTableColumn field="status" title="状态" width="100">
+          <template #default="{ row }">
+            <NebulaTag :variant="statusVariant(row.status)">
+              {{ row.status }}
+            </NebulaTag>
+          </template>
+        </NebulaTableColumn>
+        <NebulaTableColumn
+          field="errorMessage"
+          title="错误信息"
+          min-width="140"
+          show-overflow="tooltip"
+        />
+        <NebulaTableColumn field="createdAt" title="执行时间" width="150">
+          <template #default="{ row }">
+            {{ formatTime(row.createdAt) }}
+          </template>
+        </NebulaTableColumn>
+      </NebulaTable>
     </div>
-
-    <NebulaTable
-      :columns="columns"
-      :data="logs"
-      :loading="loading"
-      row-key="logId"
-    >
-      <template #status="{ row }">
-        <span :class="['status-badge', row.status]">
-          {{ row.status === 'success' ? '成功' : '失败' }}
-        </span>
-      </template>
-      <template #actions="{ row }">
-        <NebulaButton
-          size="small"
-          variant="ghost"
-          @click="handleViewDetail(row)"
-        >
-          详情
-        </NebulaButton>
-      </template>
-    </NebulaTable>
   </div>
 </template>
 
@@ -145,10 +132,14 @@ function handleViewDetail(log: (typeof logs.value)[0]) {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  height: 100%;
+  padding-bottom: 8px;
 }
 
 .log-query-page__header {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: space-between;
   padding: 16px 20px;
   background: hsl(var(--card));
   border-radius: 8px;
@@ -166,26 +157,19 @@ function handleViewDetail(log: (typeof logs.value)[0]) {
   color: hsl(var(--muted-foreground));
 }
 
-.log-query-page__filters {
+.log-query-page__actions {
   display: flex;
   gap: 8px;
   align-items: center;
 }
 
-.status-badge {
-  display: inline-block;
-  padding: 2px 8px;
-  font-size: 12px;
-  border-radius: 4px;
+.log-query-page__table-wrap {
+  padding: 12px 16px;
+  background: hsl(var(--card));
+  border-radius: 8px;
 }
 
-.status-badge.success {
-  color: hsl(var(--success));
-  background: hsl(var(--success) / 12%);
-}
-
-.status-badge.error {
-  color: hsl(var(--destructive));
-  background: hsl(var(--destructive) / 12%);
+.log-query-page__table {
+  width: 100%;
 }
 </style>

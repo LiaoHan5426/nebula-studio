@@ -164,7 +164,7 @@ export function useSubscriptionEvents() {
 
     connectTimeoutTimer = setTimeout(() => {
       if (connectionState.value === 'connecting') {
-        failConnect('SSE 连接超时，请确认 demo-camel-integration 已启动');
+        failConnect('SSE 连接超时，请确认 demo-camel-console :8080 已启动');
       }
     }, CONNECT_TIMEOUT_MS);
 

@@ -1,4 +1,4 @@
-import { apiRequest, INTEGRATION_BASE } from '@/shared/api/client';
+import { integrationRequest } from '@/shared/api/client';
 import type {
   ApiInterface,
   ApiResponse,
@@ -7,9 +7,6 @@ import type {
   DatabaseConfig,
   PageResponse,
   ProtocolConfig,
-  SubscriptionConfig,
-  TableSubscription,
-  TenantContext,
   ValidationResult,
 } from '@/shared/types';
 
@@ -17,75 +14,10 @@ function request<T>(
   endpoint: string,
   options: RequestInit = {},
 ): Promise<ApiResponse<T>> {
-  return apiRequest<T>(INTEGRATION_BASE, endpoint, options);
+  return integrationRequest<T>(endpoint, options);
 }
 
-export const subscriptionApi = {
-  create(config: SubscriptionConfig): Promise<ApiResponse<TableSubscription>> {
-    return request('/subscriptions', {
-      method: 'POST',
-      body: JSON.stringify(config),
-    });
-  },
-
-  list(
-    params: {
-      page?: number;
-      pageSize?: number;
-      status?: string;
-    } = {},
-  ): Promise<ApiResponse<PageResponse<TableSubscription>>> {
-    const query = new URLSearchParams(
-      Object.entries(params)
-        .filter(([, v]) => v !== undefined && v !== '')
-        .map(([k, v]) => [k, String(v)]),
-    ).toString();
-    return request(`/subscriptions?${query}`);
-  },
-
-  get(subscriptionId: string): Promise<ApiResponse<TableSubscription>> {
-    return request(`/subscriptions/${subscriptionId}`);
-  },
-
-  update(
-    subscriptionId: string,
-    config: SubscriptionConfig,
-  ): Promise<ApiResponse<TableSubscription>> {
-    return request(`/subscriptions/${subscriptionId}`, {
-      method: 'PUT',
-      body: JSON.stringify(config),
-    });
-  },
-
-  delete(subscriptionId: string): Promise<ApiResponse<void>> {
-    return request(`/subscriptions/${subscriptionId}`, { method: 'DELETE' });
-  },
-
-  pause(subscriptionId: string): Promise<ApiResponse<void>> {
-    return request(`/subscriptions/${subscriptionId}/pause`, {
-      method: 'POST',
-    });
-  },
-
-  resume(subscriptionId: string): Promise<ApiResponse<void>> {
-    return request(`/subscriptions/${subscriptionId}/resume`, {
-      method: 'POST',
-    });
-  },
-
-  activate(subscriptionId: string): Promise<ApiResponse<void>> {
-    return request(`/subscriptions/${subscriptionId}/activate`, {
-      method: 'POST',
-    });
-  },
-
-  deactivate(subscriptionId: string): Promise<ApiResponse<void>> {
-    return request(`/subscriptions/${subscriptionId}/deactivate`, {
-      method: 'POST',
-    });
-  },
-};
-
+/** Legacy integration CRUD on console :8080 */
 export const interfaceApi = {
   create(intf: Partial<ApiInterface>): Promise<ApiResponse<ApiInterface>> {
     return request('/interfaces', {
@@ -100,6 +32,7 @@ export const interfaceApi = {
       pageSize?: number;
       interfaceType?: string;
       status?: string;
+      scope?: 'authorizable';
     } = {},
   ): Promise<ApiResponse<PageResponse<ApiInterface>>> {
     const query = new URLSearchParams(
@@ -136,20 +69,6 @@ export const interfaceApi = {
     return request(`/interfaces/${interfaceId}/xml`, {
       method: 'POST',
       body: JSON.stringify({ xml }),
-    });
-  },
-
-  execute(interfaceId: string, data: unknown): Promise<ApiResponse<unknown>> {
-    return request(`/interfaces/${interfaceId}/execute`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-  },
-
-  test(interfaceId: string, data: unknown): Promise<ApiResponse<unknown>> {
-    return request(`/interfaces/${interfaceId}/test`, {
-      method: 'POST',
-      body: JSON.stringify(data),
     });
   },
 };
@@ -223,25 +142,17 @@ export const dataSourceApi = {
   },
 };
 
-export const tenantApi = {
-  getCurrent(): Promise<ApiResponse<TenantContext>> {
-    return request('/tenant/current');
-  },
+export {
+  subscriptionApi,
+  tenantApi,
+  pluginApi,
+  subscriptionRequestApi,
+  monitorApi,
+  governanceApi,
+} from '@/shared/api/consoleApi';
 
-  list(
-    page = 1,
-    pageSize = 20,
-    status?: string,
-  ): Promise<ApiResponse<unknown>> {
-    const params = new URLSearchParams({
-      page: String(page),
-      pageSize: String(pageSize),
-    });
-    if (status) params.set('status', status);
-    return request(`/tenant?${params.toString()}`);
-  },
-
-  delete(tenantId: string): Promise<ApiResponse<void>> {
-    return request(`/tenant/${tenantId}`, { method: 'DELETE' });
-  },
-};
+export {
+  gatewayRequest,
+  buildGatewayUrl,
+  triggerDemoChange,
+} from '@/shared/api/executorApi';

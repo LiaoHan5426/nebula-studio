@@ -1,12 +1,15 @@
 export {
   shellPresentationConfig,
   getEmbeddedShellWindowIds,
+  isElectronIframeEmbedPresentation,
   WEB_SHELL_EMBED_QUERY,
 } from './common/shellPresentationConfig';
 export type {
   ShellWindowId,
   EmbeddedShellWindowId,
+  ElectronEmbeddedPresentation,
 } from './common/shellPresentationConfig';
+export { installShellIframeElectronBridge } from './electron/installShellIframeElectronBridge';
 export {
   getPresentationHost,
   isWebPresentationHost,

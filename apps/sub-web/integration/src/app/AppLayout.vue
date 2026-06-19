@@ -2,30 +2,30 @@
 import { computed, ref } from 'vue';
 
 import AppHeader from '@/app/AppHeader.vue';
+import { useAuth } from '@/shared/composables/useAuth';
 import { isIntegrationShellEmbed } from '@/shared/composables/useShellEmbed';
 
 const isShellHosted = computed(() => isIntegrationShellEmbed());
+const { isPlatformAdmin } = useAuth();
 
-// 当前所在端：user=用户端, admin=管理端
+// 当前所在端：admin=管理端, user=使用端
 const currentSide = ref<'user' | 'admin'>('admin');
 
-// 展开状态
-const expandedMenus = ref<Set<string>>(new Set());
-
-function toggleMenu(key: string) {
-  if (expandedMenus.value.has(key)) {
-    expandedMenus.value.delete(key);
-  } else {
-    expandedMenus.value.add(key);
-  }
+interface NavChild {
+  to: string;
+  label: string;
 }
 
-function isExpanded(key: string) {
-  return expandedMenus.value.has(key);
+interface NavItem {
+  key: string;
+  label: string;
+  icon?: string;
+  to?: string;
+  children?: NavChild[];
 }
 
-// 管理端菜单
-const adminNavItems = [
+/** 平台管理员：全量平台配置 */
+const platformAdminNavItems: NavItem[] = [
   {
     key: 'plugins',
     label: '插件管理',
@@ -43,6 +43,7 @@ const adminNavItems = [
   {
     key: 'tenant',
     label: '租户管理',
+    icon: '🏢',
     to: '/tenant',
   },
   {
@@ -53,7 +54,19 @@ const adminNavItems = [
       { to: '/service/register', label: '服务注册' },
       { to: '/service/publish', label: '服务发布' },
       { to: '/service/authorize', label: '服务授权' },
+      { to: '/service/subscription-requests', label: '订阅审批' },
       { to: '/service/governance', label: '服务治理' },
+      { to: '/service/test', label: '服务测试' },
+    ],
+  },
+  {
+    key: 'integration-core',
+    label: '集成核心',
+    icon: '🔧',
+    children: [
+      { to: '/datasources', label: '数据源' },
+      { to: '/flows', label: '流程定义' },
+      { to: '/dag', label: 'DAG 编排' },
     ],
   },
   {
@@ -66,68 +79,131 @@ const adminNavItems = [
       { to: '/statistics/topology', label: '服务拓扑' },
     ],
   },
+];
+
+/** 普通对接用户：自行管理插件/服务（启用与发布需审批） */
+const integratorAdminNavItems: NavItem[] = [
   {
-    key: 'datasources',
-    label: '数据源',
-    to: '/datasources',
+    key: 'plugins',
+    label: '插件管理',
+    icon: '🔌',
+    children: [
+      { to: '/plugins/database', label: '数据库适配插件' },
+      { to: '/plugins/protocol', label: '协议插件' },
+      { to: '/plugins/preprocessor', label: '前置处理器插件' },
+      { to: '/plugins/postprocessor', label: '后置处理器插件' },
+      { to: '/plugins/aggregator', label: '聚合插件' },
+      { to: '/plugins/dispatcher', label: '分发插件' },
+      { to: '/plugins/transformer', label: '转换插件' },
+    ],
   },
   {
-    key: 'flows',
-    label: '流程定义',
-    to: '/flows',
+    key: 'tenant',
+    label: '我的租户',
+    icon: '🏢',
+    to: '/tenant',
   },
   {
-    key: 'gateway',
-    label: '接口网关',
-    to: '/gateway',
+    key: 'service',
+    label: '服务管理',
+    icon: '⚙️',
+    children: [
+      { to: '/service/register', label: '服务注册' },
+      { to: '/service/publish', label: '服务发布' },
+      { to: '/service/authorize', label: '服务授权' },
+      { to: '/service/governance', label: '服务治理' },
+      { to: '/service/test', label: '服务测试' },
+    ],
+  },
+  {
+    key: 'integration-core',
+    label: '集成核心',
+    icon: '🔧',
+    children: [
+      { to: '/datasources', label: '数据源' },
+      { to: '/flows', label: '流程定义' },
+      { to: '/dag', label: 'DAG 编排' },
+    ],
+  },
+  {
+    key: 'statistics',
+    label: '服务统计',
+    icon: '📊',
+    children: [
+      { to: '/statistics/log-query', label: '日志查询' },
+      { to: '/statistics/log-stats', label: '日志统计' },
+      { to: '/statistics/topology', label: '服务拓扑' },
+    ],
   },
 ];
 
-// 用户端菜单
-const userNavItems = [
+const userNavItems: NavItem[] = [
   {
     key: 'subscriptions',
     label: '库表订阅',
     to: '/subscriptions',
   },
   {
-    key: 'my-interfaces',
-    label: '我的接口',
+    key: 'my-services',
+    label: '我的服务',
     to: '/my-interfaces',
   },
 ];
+
+const activeAdminNavItems = computed(() =>
+  isPlatformAdmin.value ? platformAdminNavItems : integratorAdminNavItems,
+);
+
+const expandedMenus = ref<Set<string>>(new Set(['integration-core']));
+
+function toggleMenu(key: string) {
+  if (expandedMenus.value.has(key)) {
+    expandedMenus.value.delete(key);
+  } else {
+    expandedMenus.value.add(key);
+  }
+}
+
+function isExpanded(key: string) {
+  return expandedMenus.value.has(key);
+}
 </script>
 
 <template>
   <div class="app-layout" :class="{ 'app-layout--embedded': isShellHosted }">
     <aside class="app-layout__sidebar">
-      <div v-if="!isShellHosted" class="app-layout__brand">
-        <h1 class="app-layout__title">集成平台</h1>
-        <p class="app-layout__subtitle">连接器 · 订阅 · 接口 · 流程</p>
+      <div class="app-layout__sidebar-head">
+        <div v-if="!isShellHosted" class="app-layout__brand">
+          <h1 class="app-layout__title">集成平台</h1>
+          <p class="app-layout__subtitle">插件 · 订阅 · 服务 · 流程</p>
+        </div>
+
+        <div class="app-layout__side-toggle" role="tablist" aria-label="端切换">
+          <button
+            type="button"
+            role="tab"
+            class="side-toggle-btn"
+            :class="{ active: currentSide === 'admin' }"
+            :aria-selected="currentSide === 'admin'"
+            @click="currentSide = 'admin'"
+          >
+            管理端
+          </button>
+          <button
+            type="button"
+            role="tab"
+            class="side-toggle-btn"
+            :class="{ active: currentSide === 'user' }"
+            :aria-selected="currentSide === 'user'"
+            @click="currentSide = 'user'"
+          >
+            使用端
+          </button>
+        </div>
       </div>
 
-      <!-- 端切换 -->
-      <div class="app-layout__side-toggle">
-        <button
-          class="side-toggle-btn"
-          :class="{ active: currentSide === 'admin' }"
-          @click="currentSide = 'admin'"
-        >
-          管理端
-        </button>
-        <button
-          class="side-toggle-btn"
-          :class="{ active: currentSide === 'user' }"
-          @click="currentSide = 'user'"
-        >
-          用户端
-        </button>
-      </div>
-
-      <!-- 管理端菜单 -->
       <nav v-if="currentSide === 'admin'" class="app-layout__nav">
-        <template v-for="item in adminNavItems" :key="item.key">
-          <!-- 有子菜单的项 -->
+        <template v-for="item in activeAdminNavItems" :key="item.key">
           <div v-if="item.children" class="nav-group">
             <button
               class="nav-group__header"
@@ -151,15 +227,13 @@ const userNavItems = [
               </RouterLink>
             </div>
           </div>
-          <!-- 无子菜单的项 -->
           <RouterLink v-else :to="item.to!" class="app-layout__nav-link">
-            <span v-if="item.icon" class="nav-link__icon">{{ item.icon }}</span>
+            <span class="nav-link__icon">{{ item.icon ?? ' ' }}</span>
             {{ item.label }}
           </RouterLink>
         </template>
       </nav>
 
-      <!-- 用户端菜单 -->
       <nav v-else class="app-layout__nav">
         <RouterLink
           v-for="item in userNavItems"
@@ -183,8 +257,9 @@ const userNavItems = [
 <style scoped>
 .app-layout {
   display: flex;
+  flex: 1;
   width: 100%;
-  height: 100%;
+  min-height: 0;
   color: hsl(var(--foreground));
   background: hsl(var(--background));
 }
@@ -197,63 +272,79 @@ const userNavItems = [
   display: flex;
   flex-shrink: 0;
   flex-direction: column;
-  width: 200px;
+  width: 220px;
+  min-height: 0;
+  overflow: hidden;
   background: hsl(var(--card));
   border-right: 1px solid hsl(var(--border));
 }
 
 .app-layout--embedded .app-layout__sidebar {
-  width: 168px;
+  width: 200px;
   background: hsl(var(--background));
   border-right-color: hsl(var(--border) / 60%);
 }
 
-.app-layout__brand {
-  padding: 20px 16px;
+.app-layout__sidebar-head {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 12px 12px;
   border-bottom: 1px solid hsl(var(--border));
+}
+
+.app-layout__brand {
+  min-width: 0;
 }
 
 .app-layout__title {
-  margin-bottom: 4px;
+  margin: 0 0 4px;
   font-size: 16px;
   font-weight: 700;
+  line-height: 1.25;
 }
 
 .app-layout__subtitle {
+  margin: 0;
   font-size: 12px;
+  line-height: 1.4;
   color: hsl(var(--muted-foreground));
 }
 
-/* 端切换按钮 */
 .app-layout__side-toggle {
   display: flex;
   gap: 4px;
-  padding: 12px 8px;
-  border-bottom: 1px solid hsl(var(--border));
+  padding: 3px;
+  background: hsl(var(--muted) / 60%);
+  border-radius: 8px;
 }
 
 .side-toggle-btn {
   flex: 1;
-  padding: 6px 8px;
+  min-width: 0;
+  padding: 7px 0;
   font-size: 12px;
   font-weight: 500;
+  line-height: 1;
   color: hsl(var(--muted-foreground));
   cursor: pointer;
   background: transparent;
-  border: 1px solid hsl(var(--border));
-  border-radius: 4px;
-  transition: all 0.15s;
+  border: none;
+  border-radius: 6px;
+  transition:
+    color 0.15s,
+    background 0.15s,
+    box-shadow 0.15s;
 }
 
 .side-toggle-btn:hover {
   color: hsl(var(--foreground));
-  background: hsl(var(--muted));
 }
 
 .side-toggle-btn.active {
   color: hsl(var(--primary));
-  background: hsl(var(--primary) / 12%);
-  border-color: hsl(var(--primary) / 30%);
+  background: hsl(var(--background));
+  box-shadow: 0 1px 2px hsl(var(--foreground) / 8%);
 }
 
 .app-layout__nav {
@@ -261,6 +352,7 @@ const userNavItems = [
   flex: 1;
   flex-direction: column;
   gap: 2px;
+  min-height: 0;
   padding: 12px 8px;
   overflow-y: auto;
 }
@@ -287,7 +379,6 @@ const userNavItems = [
   background: hsl(var(--primary) / 12%);
 }
 
-/* 菜单组 */
 .nav-group {
   display: flex;
   flex-direction: column;
@@ -319,7 +410,10 @@ const userNavItems = [
 }
 
 .nav-group__icon {
+  flex-shrink: 0;
+  width: 16px;
   font-size: 14px;
+  text-align: center;
 }
 
 .nav-group__label {
@@ -361,7 +455,10 @@ const userNavItems = [
 }
 
 .nav-link__icon {
+  flex-shrink: 0;
+  width: 16px;
   font-size: 14px;
+  text-align: center;
 }
 
 .app-layout__main {
@@ -369,10 +466,13 @@ const userNavItems = [
   flex: 1;
   flex-direction: column;
   min-width: 0;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .app-layout__content {
   flex: 1;
+  min-height: 0;
   padding: 0 4px 4px;
   overflow: auto;
 }

@@ -5,6 +5,12 @@ import type {
   RouteRecordRaw,
 } from 'vue-router';
 
+import { hasValidAuthToken, clearAuthSession } from '@/shared/auth/session';
+import { isPlatformAdmin } from '@/shared/auth/roles';
+import { isIntegrationShellIframeEmbed } from '@/shared/composables/useShellEmbed';
+
+const LoginPage = () => import('@/features/auth/LoginPage.vue');
+
 // 插件管理页面
 const PluginsPage = () => import('@/features/plugins/PluginsPage.vue');
 // 租户管理页面
@@ -16,6 +22,8 @@ const ServicePublishPage = () =>
   import('@/features/service/ServicePublishPage.vue');
 const ServiceAuthorizePage = () =>
   import('@/features/service/ServiceAuthorizePage.vue');
+const SubscriptionRequestsPage = () =>
+  import('@/features/service/SubscriptionRequestsPage.vue');
 const ServiceGovernancePage = () =>
   import('@/features/service/ServiceGovernancePage.vue');
 // 服务统计页面
@@ -26,11 +34,19 @@ const TopologyPage = () => import('@/features/statistics/TopologyPage.vue');
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: '/statistics/log-query',
+    redirect: () =>
+      isPlatformAdmin() ? '/statistics/log-query' : '/service/register',
   },
   {
     path: '/index.html',
-    redirect: '/statistics/log-query',
+    redirect: () =>
+      isPlatformAdmin() ? '/statistics/log-query' : '/service/register',
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: LoginPage,
+    meta: { title: '登录', public: true },
   },
   // 插件管理 - 数据库适配插件
   {
@@ -109,12 +125,26 @@ const routes: RouteRecordRaw[] = [
     component: ServiceAuthorizePage,
     meta: { title: '服务授权' },
   },
+  // 服务管理 - 订阅审批
+  {
+    path: '/service/subscription-requests',
+    name: 'service-subscription-requests',
+    component: SubscriptionRequestsPage,
+    meta: { title: '订阅审批', requiresAdmin: true },
+  },
   // 服务管理 - 服务治理
   {
     path: '/service/governance',
     name: 'service-governance',
     component: ServiceGovernancePage,
     meta: { title: '服务治理' },
+  },
+  // 服务管理 - 服务测试（经 executor 网关调用已发布服务）
+  {
+    path: '/service/test',
+    name: 'service-test',
+    component: () => import('@/features/gateway/GatewayDemoPage.vue'),
+    meta: { title: '服务测试' },
   },
   // 服务统计 - 日志查询
   {
@@ -138,6 +168,14 @@ const routes: RouteRecordRaw[] = [
     meta: { title: '服务拓扑' },
   },
   {
+    path: '/connectors',
+    redirect: '/plugins/database',
+  },
+  {
+    path: '/interfaces',
+    redirect: '/service/register',
+  },
+  {
     path: '/datasources',
     name: 'datasources',
     component: () => import('@/features/datasources/DataSourcesPage.vue'),
@@ -156,17 +194,21 @@ const routes: RouteRecordRaw[] = [
     meta: { title: '流程定义' },
   },
   {
+    path: '/dag',
+    name: 'dag',
+    component: () => import('@/features/flows/DagOrchestrationPage.vue'),
+    meta: { title: 'DAG 编排' },
+  },
+  {
     path: '/gateway',
-    name: 'gateway',
-    component: () => import('@/features/gateway/GatewayDemoPage.vue'),
-    meta: { title: '接口网关' },
+    redirect: '/service/test',
   },
   // 用户端 - 我的接口
   {
     path: '/my-interfaces',
     name: 'my-interfaces',
-    component: () => import('../shared/PlaceholderPage.vue'),
-    meta: { title: '我的接口' },
+    component: () => import('@/features/interfaces/MyInterfacesPage.vue'),
+    meta: { title: '我的服务' },
   },
 ];
 
@@ -182,6 +224,26 @@ router.beforeEach(
     next: NavigationGuardNext,
   ) => {
     document.title = `${to.meta.title || '集成平台'} - Nebula Studio`;
+
+    if (isIntegrationShellIframeEmbed()) {
+      next();
+      return;
+    }
+
+    const isPublic = to.meta.public === true || to.path === '/login';
+    const hasToken = hasValidAuthToken();
+
+    if (!hasToken && !isPublic) {
+      clearAuthSession();
+      next({ path: '/login', query: { redirect: to.fullPath } });
+      return;
+    }
+
+    if (to.meta.requiresAdmin === true && !isPlatformAdmin()) {
+      next({ path: '/service/register' });
+      return;
+    }
+
     next();
   },
 );

@@ -1,8 +1,8 @@
 import { shellPresentationConfig } from '@nebula-studio/app-shell/shell-config';
 
 /**
- * - `main`：整体 Electron **底座**（壳层 BrowserWindow，仅加载 shell renderer，**不使用 webview**）。
- * - 其余窗口键（如 `docs`）：在底座内以 **BrowserView** 展示对应子应用 renderer（类 wujie：壳层 + 内嵌内容区）。
+ * - `main`：整体 Electron **底座**（壳层 BrowserWindow，子应用默认以 iframe 内嵌，与 Web 一致）。
+ * - 若 `electronEmbeddedPresentation` 为 `browser-view`，则在底座内以 BrowserView 展示子应用。
  *
  * Preload：`apps/electron-preload/<slug>` → `@nebula-studio-preload/<slug>`
  * Renderer 源码：`apps/<renderers>/<包名>`（见 `renderers`）→ `@nebula-studio-renderer/<窗口键>`

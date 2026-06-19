@@ -63,6 +63,7 @@ export enum InterfaceStatus {
   ACTIVE = 'ACTIVE',
   INACTIVE = 'INACTIVE',
   DRAFT = 'DRAFT',
+  PENDING_REVIEW = 'PENDING_REVIEW',
 }
 
 export enum AuthType {
@@ -93,9 +94,21 @@ export interface InterfaceSchema {
   fields: Record<string, SchemaField>;
 }
 
-export interface AtomicInterface {
+export type SubscriptionMode = 'OPEN' | 'APPROVAL';
+export type OrchestrationType = 'ATOMIC' | 'BPMN' | 'DAG';
+
+export interface InterfaceOrchestrationMeta {
+  subscriptionMode?: SubscriptionMode;
+  orchestrationType?: OrchestrationType;
+  flowDefinitionId?: string;
+  dagDefinitionId?: string;
+  publishedAt?: string;
+}
+
+export interface AtomicInterface extends InterfaceOrchestrationMeta {
   interfaceId: string;
   tenantId: string;
+  createdBy?: string;
   interfaceName: string;
   interfaceType: InterfaceType.ATOMIC;
   endpointUri: string;
@@ -135,9 +148,10 @@ export interface InterfaceStep {
   errorHandling: ErrorHandling;
 }
 
-export interface CompositeInterface {
+export interface CompositeInterface extends InterfaceOrchestrationMeta {
   interfaceId: string;
   tenantId: string;
+  createdBy?: string;
   interfaceName: string;
   interfaceType: InterfaceType.COMPOSITE;
   endpointUri: string;
@@ -148,6 +162,19 @@ export interface CompositeInterface {
   lastModifiedAt: string;
   steps: InterfaceStep[];
   flowExpression: string;
+}
+
+export interface DagDefinitionRecord {
+  id: string;
+  dagName: string;
+  tenantId?: string;
+  version?: number;
+  status?: string;
+  createdBy?: string;
+  dagDefinition?: string;
+  nodeConfigs?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export type ApiInterface = AtomicInterface | CompositeInterface;
@@ -183,6 +210,9 @@ export interface DatabaseConnector {
   databaseType: string;
   jdbcUrlTemplate: string;
   status: 'ACTIVE' | 'INACTIVE';
+  pluginId?: string;
+  pluginName?: string;
+  pluginVersion?: string;
 }
 
 export interface ProtocolConnector {
@@ -190,6 +220,9 @@ export interface ProtocolConnector {
   connectorType: ConnectorType.PROTOCOL;
   protocolType: string;
   status: 'ACTIVE' | 'INACTIVE';
+  pluginId?: string;
+  pluginName?: string;
+  pluginVersion?: string;
 }
 
 export type Connector = DatabaseConnector | ProtocolConnector;
@@ -203,22 +236,8 @@ export interface DataSourceConfig {
   createdAt: string;
 }
 
-/** nebula-core ApiResponse with legacy `success` compat */
-export interface ApiResponse<T = unknown> {
-  code?: number;
-  isSuccess?: boolean;
-  /** @deprecated use isSuccess */
-  success?: boolean;
-  data: T;
-  message?: string;
-  error?: string;
-}
-
-export function isApiSuccess<T>(response: ApiResponse<T>): boolean {
-  if (typeof response.isSuccess === 'boolean') return response.isSuccess;
-  if (typeof response.success === 'boolean') return response.success;
-  return response.code === 200;
-}
+export type { ApiResponse } from '@nebula-studio/api-client';
+export { isApiSuccess } from '@nebula-studio/api-client';
 
 export interface PageResponse<T> {
   items: T[];
@@ -246,6 +265,13 @@ export interface LoginResult {
   token: string;
   username: string;
   userId: number;
+  roles?: string[];
+}
+
+export interface AuthProfile {
+  username: string;
+  userId: number;
+  roles: string[];
 }
 
 export interface FlowDefinition {

@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { gatewayRequest } from '@/shared/api/executorApi';
 import { NebulaButton, NebulaPane } from '@nebula-studio/nebula-ui';
 
 import { useAuth } from '@/shared/composables/useAuth';
-import { useTenant } from '@/shared/composables/useTenant';
 
 const { token } = useAuth();
-const { currentTenantId } = useTenant();
+
+const tenantId = ref('1_a');
 
 const path = ref('/orders/query');
 const method = ref('GET');
@@ -19,33 +20,25 @@ async function sendRequest() {
   loading.value = true;
   responseText.value = '';
   try {
-    const url = `/api/integration/gateway/${currentTenantId.value}${path.value.startsWith('/') ? path.value : `/${path.value}`}`;
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    };
-    if (token.value) {
-      headers.Authorization = `Bearer ${token.value}`;
-    }
-    if (apiKey.value) {
-      headers['X-API-Key'] = apiKey.value;
-    }
-    headers['X-Tenant-Id'] = currentTenantId.value;
+    const subPath = path.value.startsWith('/') ? path.value : `/${path.value}`;
+    const parsedBody = ['POST', 'PUT', 'PATCH'].includes(method.value)
+      ? JSON.parse(body.value)
+      : undefined;
 
-    const res = await fetch(url, {
+    const result = await gatewayRequest(tenantId.value, subPath, {
       method: method.value,
-      headers,
-      body: ['POST', 'PUT', 'PATCH'].includes(method.value)
-        ? body.value
-        : undefined,
+      apiKey: apiKey.value,
+      token: token.value,
+      body: parsedBody,
     });
-    const text = await res.text();
-    let formatted = text;
+
+    let formatted = result.body;
     try {
-      formatted = JSON.stringify(JSON.parse(text), null, 2);
+      formatted = JSON.stringify(JSON.parse(result.body), null, 2);
     } catch {
-      /* keep raw text */
+      /* keep raw */
     }
-    responseText.value = `HTTP ${res.status}\n\n${formatted}`;
+    responseText.value = `HTTP ${result.status}\n\n${formatted}`;
   } catch (e) {
     responseText.value = e instanceof Error ? e.message : 'Request failed';
   } finally {
@@ -57,13 +50,13 @@ async function sendRequest() {
 <template>
   <div class="page">
     <NebulaPane
-      title="接口网关"
-      description="通过集成网关路由测试已发布接口，支持 JWT、API Key 与租户头"
+      title="服务测试"
+      description="模拟外部租户经网关调用已发布服务，请求转发至 demo-camel-executor :8081"
     >
       <div class="page__form">
         <label class="field">
-          <span>租户（来自 Header 选择器）</span>
-          <input :value="currentTenantId" readonly class="field__readonly" />
+          <span>对接租户 ID</span>
+          <input v-model="tenantId" placeholder="例如 1_a" />
         </label>
         <label class="field">
           <span>路径</span>

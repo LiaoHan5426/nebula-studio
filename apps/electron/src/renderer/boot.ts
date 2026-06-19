@@ -1,6 +1,10 @@
 import '@nebula-studio-internal/tailwind/electron';
 import './styles/electron-overrides.css';
 
+import {
+  WEB_SHELL_EMBED_QUERY,
+  installShellIframeElectronBridge,
+} from '@nebula-studio/app-shell';
 import appConfig from '../../app.config';
 import { resolveRendererEntry } from '../main/windowRegistry';
 
@@ -86,7 +90,8 @@ function installRendererHmrFallback(rendererPkg: RendererPkg): void {
 }
 
 function windowIdFromSearch(): AnyBootWindowId {
-  const q = new URLSearchParams(window.location.search).get('renderer');
+  const params = new URLSearchParams(window.location.search);
+  const q = params.get('renderer') ?? params.get(WEB_SHELL_EMBED_QUERY);
   if (q !== null && q in appConfig.windows) {
     return q as WindowId;
   }
@@ -97,6 +102,9 @@ function windowIdFromSearch(): AnyBootWindowId {
 }
 
 async function start(): Promise<void> {
+  if (window.parent !== window) {
+    installShellIframeElectronBridge();
+  }
   const windowId = windowIdFromSearch();
   resolveRendererEntry(windowId);
   const pkg = resolveRendererEntry(windowId).renderer as RendererPkg;

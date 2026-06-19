@@ -1,5 +1,5 @@
 import { apiRequest, AUTH_BASE } from '@/shared/api/client';
-import type { ApiResponse, LoginResult } from '@/shared/types';
+import type { ApiResponse, AuthProfile, LoginResult } from '@/shared/types';
 
 export const authApi = {
   login(
@@ -11,5 +11,9 @@ export const authApi = {
       body: JSON.stringify({ username, password }),
       skipAuth: true,
     });
+  },
+
+  me(): Promise<ApiResponse<AuthProfile>> {
+    return apiRequest<AuthProfile>(AUTH_BASE, '/me');
   },
 };

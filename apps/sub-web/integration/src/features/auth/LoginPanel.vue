@@ -9,10 +9,17 @@ const emit = defineEmits<{
   success: [];
 }>();
 
+withDefaults(
+  defineProps<{
+    mode?: 'modal' | 'page';
+  }>(),
+  { mode: 'modal' },
+);
+
 const { login, loading, error } = useAuth();
 
-const username = ref('demo');
-const password = ref('');
+const username = ref('admin');
+const password = ref('admin123');
 
 async function handleSubmit() {
   const ok = await login(username.value, password.value);
@@ -40,7 +47,12 @@ async function handleSubmit() {
       </label>
       <p v-if="error" class="login-panel__error">{{ error }}</p>
       <div class="login-panel__actions">
-        <NebulaButton variant="secondary" type="button" @click="emit('close')">
+        <NebulaButton
+          v-if="mode === 'modal'"
+          variant="secondary"
+          type="button"
+          @click="emit('close')"
+        >
           取消
         </NebulaButton>
         <NebulaButton type="submit" :disabled="loading">

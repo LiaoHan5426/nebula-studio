@@ -97,14 +97,16 @@ vp build
 
 ## 路由
 
-| 路径             | 页面                        |
-| ---------------- | --------------------------- |
-| `/connectors`    | 连接器列表与连接测试        |
-| `/datasources`   | 数据源 CRUD                 |
-| `/subscriptions` | 订阅管理与 SSE 事件面板     |
-| `/interfaces`    | 原子/组合接口与 BPMN 编辑器 |
-| `/flows`         | 流程列表与设计              |
-| `/gateway`       | 网关鉴权演示                |
+| 路径                | 页面                              |
+| ------------------- | --------------------------------- |
+| `/plugins/database` | 数据库适配插件 + 已激活连接器测试 |
+| `/plugins/protocol` | 协议插件 + 已激活连接器测试       |
+| `/connectors`       | 重定向至 `/plugins/database`      |
+| `/datasources`      | 数据源 CRUD                       |
+| `/subscriptions`    | 订阅管理与 SSE 事件面板           |
+| `/interfaces`       | 原子/组合接口与 BPMN 编辑器       |
+| `/flows`            | 流程列表与设计                    |
+| `/gateway`          | 网关鉴权演示                      |
 
 ## 七场景 Demo 脚本
 
@@ -117,10 +119,10 @@ vp build
 3. 在 Header 租户下拉框切换 **tenant-a** ↔ **tenant-b**
 4. 观察各列表数据随租户隔离变化
 
-### 场景 2：连接器测试
+### 场景 2：插件与连接器测试
 
-1. 进入 **连接器**
-2. 在「数据库」Tab 选择 `ds-demo-pg`（或 seed 中的连接器）
+1. 进入 **插件管理 → 数据库适配插件**
+2. 在「已激活数据库连接器」区域选择 `postgresql-connector`（或 seed 中的连接器）
 3. 点击 **测试连接**，填写 PostgreSQL 连接参数并验证
 
 ### 场景 3：数据源 CRUD

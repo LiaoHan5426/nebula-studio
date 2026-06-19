@@ -18,7 +18,7 @@ import {
   NebulaDrag,
   NebulaThemeToggle,
 } from '@nebula-studio/nebula-ui';
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 
 type ThemeMode = 'light' | 'dark';
 type AppMode = 'dev' | 'build';
@@ -29,13 +29,23 @@ const usesIframeEmbed = shellHost.usesIframeEmbed;
 
 const embeddedViewIds = getEmbeddedShellWindowIds();
 
-const embedSrc = computed(() => {
+function buildEmbeddedSurfaceUrl(viewId: EmbeddedShellWindowId): string {
+  if (shellHost.kind === 'electron') {
+    const url = new URL(window.location.href);
+    url.hash = '';
+    url.searchParams.set('renderer', viewId);
+    return url.href;
+  }
   const base = import.meta.env.BASE_URL ?? '/';
   const normalizedBase = base.endsWith('/') ? base : `${base}/`;
+  const qs = `${WEB_SHELL_EMBED_QUERY}=${encodeURIComponent(viewId)}`;
+  return `${normalizedBase}index.html?${qs}`;
+}
+
+const embedSrc = computed(() => {
   const out = {} as Record<EmbeddedShellWindowId, string>;
   for (const id of embeddedViewIds) {
-    const qs = `${WEB_SHELL_EMBED_QUERY}=${encodeURIComponent(id)}`;
-    out[id] = `${normalizedBase}index.html?${qs}`;
+    out[id] = buildEmbeddedSurfaceUrl(id);
   }
   return out;
 });
@@ -76,11 +86,25 @@ const isSidebarCollapsed = ref(false);
 const showResizer = ref(false);
 /** 已创建过的 iframe，懒加载 + v-show 保活，避免每次进入子应用整页重载 */
 const loadedEmbedIds = ref<Set<string>>(new Set());
+/** 已完成首次渲染的子应用，再次进入时不展示过渡层 */
+const embedReadyViewIds = ref<Set<string>>(new Set());
+const embedLoadingViewId = ref<string | null>(null);
+const EMBED_SURFACE_MIN_LOADING_MS = 320;
+const EMBED_SURFACE_LOAD_TIMEOUT_MS = 12000;
+const embedLoadStartedAtByViewId = new Map<string, number>();
+const embedLoadTimeoutByViewId = new Map<string, number>();
 const embedHomeWaitByViewId = new Map<
   string,
   { resolve: () => void; timer: number }
 >();
 let suppressTileClickUntilTs = 0;
+
+function syncShellEmbeddedContentVisible(): void {
+  if (usesIframeEmbed) return;
+  window.electron.ipcRenderer.send('shell:embedded-content-visible', {
+    visible: !integrationOpen.value,
+  });
+}
 
 const settingsAvailable = computed(() =>
   availableViewIds.value.includes('settings'),
@@ -142,6 +166,94 @@ const activeShellTagKey = computed(
 
 const showShellTagsBar = computed(() => !integrationOpen.value);
 
+const showEmbedSurfaceTransition = computed(
+  () =>
+    embedLoadingViewId.value !== null &&
+    embedLoadingViewId.value === activeViewId.value,
+);
+
+const embedTransitionLabel = computed(() => {
+  const viewId = embedLoadingViewId.value;
+  return viewId ? resolveShellViewLabel(viewId) : '';
+});
+
+const embedTransitionIconSvg = computed(() => {
+  const viewId = embedLoadingViewId.value;
+  if (!viewId || !availableViewIds.value.includes(viewId)) return '';
+  return getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId).iconSvg;
+});
+
+function isEmbedSurfaceReady(viewId: string): boolean {
+  return (
+    embedReadyViewIds.value.has(viewId) && embedLoadingViewId.value !== viewId
+  );
+}
+
+function beginEmbedSurfaceLoading(viewId: string): void {
+  const pending = embedLoadTimeoutByViewId.get(viewId);
+  if (pending !== undefined) {
+    window.clearTimeout(pending);
+    embedLoadTimeoutByViewId.delete(viewId);
+  }
+  embedLoadStartedAtByViewId.set(viewId, Date.now());
+  embedLoadingViewId.value = viewId;
+  const timeout = window.setTimeout(() => {
+    embedLoadTimeoutByViewId.delete(viewId);
+    void completeEmbedSurfaceLoading(viewId);
+  }, EMBED_SURFACE_LOAD_TIMEOUT_MS);
+  embedLoadTimeoutByViewId.set(viewId, timeout);
+}
+
+async function completeEmbedSurfaceLoading(viewId: string): Promise<void> {
+  const startedAt = embedLoadStartedAtByViewId.get(viewId) ?? Date.now();
+  const remain = EMBED_SURFACE_MIN_LOADING_MS - (Date.now() - startedAt);
+  if (remain > 0) {
+    await new Promise<void>((resolve) => {
+      window.setTimeout(resolve, remain);
+    });
+  }
+  embedReadyViewIds.value = new Set([...embedReadyViewIds.value, viewId]);
+  embedLoadStartedAtByViewId.delete(viewId);
+  const pending = embedLoadTimeoutByViewId.get(viewId);
+  if (pending !== undefined) {
+    window.clearTimeout(pending);
+    embedLoadTimeoutByViewId.delete(viewId);
+  }
+  if (embedLoadingViewId.value === viewId) {
+    embedLoadingViewId.value = null;
+  }
+}
+
+function ensureEmbedSurfaceLoading(viewId: string | null | undefined): void {
+  if (!viewId || embedReadyViewIds.value.has(viewId)) return;
+  beginEmbedSurfaceLoading(viewId);
+  if (!usesIframeEmbed) {
+    void completeEmbedSurfaceLoading(viewId);
+  }
+}
+
+function tryCompleteEmbedFromExistingFrame(viewId: string): void {
+  const iframe = getEmbedIframe(viewId);
+  if (iframe?.contentDocument?.readyState === 'complete') {
+    void completeEmbedSurfaceLoading(viewId);
+  }
+}
+
+function onEmbedIframeLoad(viewId: string): void {
+  requestAnimationFrame(() => {
+    void completeEmbedSurfaceLoading(viewId);
+  });
+}
+
+function clearEmbedSurfaceLoadingTimers(): void {
+  for (const timer of embedLoadTimeoutByViewId.values()) {
+    window.clearTimeout(timer);
+  }
+  embedLoadTimeoutByViewId.clear();
+  embedLoadStartedAtByViewId.clear();
+  embedLoadingViewId.value = null;
+}
+
 function rememberVisitedView(viewId: string | null): void {
   if (!viewId || visitedViewIds.value.includes(viewId)) return;
   visitedViewIds.value = [...visitedViewIds.value, viewId];
@@ -149,7 +261,7 @@ function rememberVisitedView(viewId: string | null): void {
 
 function activateShellTag(key: string): void {
   if (key === SHELL_SURFACE_WORKSPACE) {
-    openWorkspace();
+    void openWorkspace();
     return;
   }
   void selectIntegratedApp(key);
@@ -158,6 +270,12 @@ function activateShellTag(key: string): void {
 function refreshActiveShellSurface(): void {
   const viewId = activeViewId.value;
   if (!viewId) return;
+  if (embedReadyViewIds.value.has(viewId)) {
+    embedReadyViewIds.value = new Set(
+      [...embedReadyViewIds.value].filter((id) => id !== viewId),
+    );
+  }
+  ensureEmbedSurfaceLoading(viewId);
   if (usesIframeEmbed) {
     const iframe = getEmbedIframe(viewId);
     iframe?.contentWindow?.location.reload();
@@ -266,6 +384,7 @@ function handleShellEmbedMessage(event: MessageEvent): void {
 }
 
 function resetIntegrableEmbedOnLeave(viewId: string | null): void {
+  if (!usesIframeEmbed) return;
   if (!viewId || !isShellIntegrableAppId(viewId)) return;
   requestEmbeddedViewHome(viewId);
 }
@@ -278,7 +397,8 @@ function handleMouseMove(event: MouseEvent) {
     event.clientX <= sidebarWidth + resizerWidth;
 }
 
-function openWorkspace(): void {
+async function openWorkspace(): Promise<void> {
+  embedLoadingViewId.value = null;
   const prevViewId = activeViewId.value;
   selectedSidebarItem.value = 'workspace';
   integrationClosable.value = true;
@@ -287,6 +407,12 @@ function openWorkspace(): void {
   resetIntegrableEmbedOnLeave(prevViewId);
   activeViewId.value = null;
   commitIntegrationOpenNow(false);
+  if (!usesIframeEmbed) {
+    reportShellViewport();
+    await window.electron.ipcRenderer.invoke(
+      'shell:clear-active-embedded-view',
+    );
+  }
 }
 
 function commitIntegrationOpenNow(
@@ -298,6 +424,7 @@ function commitIntegrationOpenNow(
 
 /** 与主进程 BrowserView 同区域：取嵌入内容宿主，排除顶栏与标签栏占位 */
 function reportShellViewport(): void {
+  if (usesIframeEmbed) return;
   const host = document.querySelector<HTMLElement>('.shell-embed-host');
   const rect = host?.getBoundingClientRect();
   window.electron.ipcRenderer.send('shell-viewport', {
@@ -328,6 +455,9 @@ async function loadShellState(): Promise<void> {
 }
 
 async function switchEmbeddedView(viewId: string): Promise<void> {
+  if (!usesIframeEmbed) {
+    reportShellViewport();
+  }
   const ok = await window.electron.ipcRenderer.invoke('shell:set-active-view', {
     viewId,
   });
@@ -365,12 +495,11 @@ async function reorderEmbeddedViews(
 
 async function selectIntegratedApp(viewId: string): Promise<void> {
   if (Date.now() < suppressTileClickUntilTs) return;
-  const iframeReady = loadedEmbedIds.value.has(viewId);
   markEmbedLoaded(viewId);
-  if (iframeReady && isShellIntegrableAppId(viewId)) {
-    await waitForEmbeddedViewHome(viewId);
-  }
+  ensureEmbedSurfaceLoading(viewId);
   await switchEmbeddedView(viewId);
+  await nextTick();
+  tryCompleteEmbedFromExistingFrame(viewId);
   integrationOpen.value = false;
   integrationClosable.value = false;
   addPickerOpen.value = false;
@@ -496,7 +625,7 @@ watch(integrationOpen, (open) => {
   if (integrationPreferenceHydrated.value) {
     shellHost.persistIntegrationOpenFromWatch(open);
   }
-  shellHost.onIntegrationOpenChanged(open);
+  syncShellEmbeddedContentVisible();
   persistCurrentShellSurface();
 });
 
@@ -523,6 +652,7 @@ onMounted(async () => {
     preferredSurface.viewId !== activeViewId.value
   ) {
     await switchEmbeddedView(preferredSurface.viewId);
+    ensureEmbedSurfaceLoading(preferredSurface.viewId);
   }
 
   addPickerOpen.value = false;
@@ -537,7 +667,7 @@ onMounted(async () => {
     activeViewId: activeViewId.value,
   });
   /** 须在算出 integrationOpen 之后再同步一次（勿对 watch 使用 immediate：否则会先于 loadShellState 把嵌入区设为可见，破坏了主进程「集成层打开」状态）。 */
-  shellHost.onIntegrationOpenChanged(integrationOpen.value);
+  syncShellEmbeddedContentVisible();
   if (integrationOpen.value) {
     selectedSidebarItem.value = 'integration';
   } else if (!activeViewId.value) {
@@ -546,10 +676,17 @@ onMounted(async () => {
     syncSidebarSelectionFromActiveView(activeViewId.value);
     markEmbedLoaded(activeViewId.value);
     rememberVisitedView(activeViewId.value);
+    ensureEmbedSurfaceLoading(activeViewId.value);
+    await nextTick();
+    if (activeViewId.value) {
+      tryCompleteEmbedFromExistingFrame(activeViewId.value);
+    }
   }
   await refreshAuthSession();
   reportShellViewport();
-  window.addEventListener('resize', reportShellViewport);
+  if (!usesIframeEmbed) {
+    window.addEventListener('resize', reportShellViewport);
+  }
   window.addEventListener('message', handleShellEmbedMessage);
   window.electron.ipcRenderer.on('settings:theme:changed', onThemeChanged);
   if (shellHost.shouldSubscribeAuthSessionChannel) {
@@ -563,7 +700,10 @@ onMounted(async () => {
 
 onUnmounted(() => {
   shellHost.onShellUnmount();
-  window.removeEventListener('resize', reportShellViewport);
+  clearEmbedSurfaceLoadingTimers();
+  if (!usesIframeEmbed) {
+    window.removeEventListener('resize', reportShellViewport);
+  }
   window.removeEventListener('message', handleShellEmbedMessage);
   for (const wait of embedHomeWaitByViewId.values()) {
     window.clearTimeout(wait.timer);
@@ -846,11 +986,39 @@ onUnmounted(() => {
                 v-if="loadedEmbedIds.has(viewId)"
                 v-show="viewId === activeViewId"
                 class="shell-embed-frame"
+                :class="{ 'is-surface-ready': isEmbedSurfaceReady(viewId) }"
                 :src="embedSrc[viewId as EmbeddedShellWindowId]"
                 :title="`Nebula Studio — ${viewId}`"
+                @load="onEmbedIframeLoad(viewId)"
               />
             </template>
           </div>
+
+          <Transition name="shell-embed-transition">
+            <div
+              v-if="showEmbedSurfaceTransition"
+              class="shell-embed-transition"
+              role="status"
+              aria-live="polite"
+              aria-busy="true"
+            >
+              <div class="shell-embed-transition-card">
+                <div
+                  v-if="embedTransitionIconSvg"
+                  class="shell-embed-transition-icon"
+                  v-html="embedTransitionIconSvg"
+                />
+                <div
+                  class="shell-embed-transition-spinner"
+                  aria-hidden="true"
+                />
+                <p class="shell-embed-transition-title">
+                  正在打开 {{ embedTransitionLabel }}
+                </p>
+                <p class="shell-embed-transition-hint">加载应用界面…</p>
+              </div>
+            </div>
+          </Transition>
 
           <div v-if="!activeViewId && !integrationOpen" class="workspace-empty">
             <div class="workspace-empty-icon">
@@ -1948,9 +2116,93 @@ onUnmounted(() => {
   width: 100%;
   min-height: 0;
   margin: 0;
-  pointer-events: auto;
+  pointer-events: none;
   background: hsl(var(--background));
   border: 0;
+  opacity: 0;
+  transition: opacity 0.24s ease;
+}
+
+.shell-embed-frame.is-surface-ready {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+.shell-embed-transition {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: hsl(var(--background-deep) / 94%);
+  backdrop-filter: blur(6px);
+}
+
+.shell-embed-transition-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+  min-width: 220px;
+  padding: 28px 32px;
+  text-align: center;
+  background: hsl(var(--card) / 88%);
+  border: 1px solid hsl(var(--border) / 78%);
+  border-radius: 16px;
+  box-shadow: 0 18px 40px rgb(2 4 12 / 22%);
+}
+
+.shell-embed-transition-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  color: hsl(var(--primary));
+}
+
+.shell-embed-transition-icon :deep(svg) {
+  width: 44px;
+  height: 44px;
+}
+
+.shell-embed-transition-spinner {
+  width: 28px;
+  height: 28px;
+  border: 2px solid hsl(var(--border) / 70%);
+  border-top-color: hsl(var(--primary));
+  border-radius: 50%;
+  animation: shell-embed-spin 0.75s linear infinite;
+}
+
+.shell-embed-transition-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+.shell-embed-transition-hint {
+  margin: 0;
+  font-size: 13px;
+  color: hsl(var(--muted-foreground));
+}
+
+.shell-embed-transition-enter-active,
+.shell-embed-transition-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.shell-embed-transition-enter-from,
+.shell-embed-transition-leave-to {
+  opacity: 0;
+}
+
+@keyframes shell-embed-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .integration-overlay {
@@ -2095,6 +2347,7 @@ onUnmounted(() => {
 
 @media (width <= 960px) {
   .shell-bar {
+    z-index: 30;
     padding: 0 12px;
   }
 
@@ -2110,7 +2363,7 @@ onUnmounted(() => {
     position: fixed;
     top: calc(var(--shell-top) - 2px);
     left: 12px;
-    z-index: 25;
+    z-index: 29;
     visibility: hidden;
     flex-direction: column;
     align-items: stretch;
@@ -2138,6 +2391,10 @@ onUnmounted(() => {
     pointer-events: auto;
     opacity: 1;
     transform: translateY(0);
+  }
+
+  .shell-brand-menu::after {
+    height: 28px;
   }
 
   .sidebar-group,

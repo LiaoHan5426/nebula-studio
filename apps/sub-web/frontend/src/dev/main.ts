@@ -8,6 +8,7 @@ import { ConfigProvider } from '@nebula-studio-electron/electron-shared-vue';
 import { createApp, h } from 'vue';
 import App from '../App.vue';
 import '../assets/main.css';
+import '../runtime/registerIntegratedApps';
 
 installWebPresentation({
   scope: 'web-shell',

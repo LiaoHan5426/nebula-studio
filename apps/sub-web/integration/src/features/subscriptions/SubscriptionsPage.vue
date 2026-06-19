@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue';
 import { NebulaButton, NebulaPane, NebulaTag } from '@nebula-studio/nebula-ui';
 
 import { dataSourceApi, subscriptionApi } from '@/shared/api/integration';
+import { useTenant } from '@/shared/composables/useTenant';
 import type {
   DataSourceConfig,
   SubscriptionConfig,
@@ -10,6 +11,8 @@ import type {
 } from '@/shared/types';
 import { SubscribeType, isApiSuccess } from '@/shared/types';
 import { useSubscriptionEvents } from '@/shared/composables/useSubscriptionEvents';
+
+const { currentTenantId } = useTenant();
 
 const subscriptions = ref<TableSubscription[]>([]);
 const dataSources = ref<DataSourceConfig[]>([]);
@@ -66,26 +69,6 @@ function setPollingDraft(subscriptionId: string, value: number) {
   };
 }
 
-function buildSubscriptionConfig(
-  sub: TableSubscription,
-  intervalMs: number,
-): SubscriptionConfig {
-  return {
-    dataSourceId: sub.dataSourceId,
-    tableName: sub.tableName,
-    subscribeType: sub.subscribeType,
-    columns: sub.config?.columns ?? ['*'],
-    eventTypes: sub.config?.eventTypes ?? ['INSERT', 'UPDATE', 'DELETE'],
-    pollingConfig: {
-      intervalMs,
-      lastModifiedColumn:
-        sub.config.pollingConfig?.lastModifiedColumn ?? 'updated_at',
-      pollingQuery: sub.config.pollingConfig?.pollingQuery ?? null,
-    },
-    cdcConfig: sub.config.cdcConfig,
-  };
-}
-
 onMounted(async () => {
   await Promise.all([loadSubscriptions(), loadDataSources()]);
 });
@@ -117,42 +100,9 @@ function pollingIntervalLabel(sub: TableSubscription): string {
 }
 
 async function applyPollingInterval(sub: TableSubscription) {
-  intervalNotice.value = null;
-
-  const raw = pollingIntervalDrafts.value[sub.subscriptionId];
-  if (typeof raw !== 'number' || Number.isNaN(raw)) {
-    intervalNotice.value = '请输入有效的轮询间隔（≥1 秒）';
-    return;
-  }
-
-  const seconds = Math.max(1, Math.round(raw));
-  const intervalMs = seconds * 1000;
-  const currentMs =
-    sub.config.pollingConfig?.intervalMs ?? DEFAULT_POLLING_INTERVAL_MS;
-
-  if (intervalMs === currentMs) {
-    intervalNotice.value = `当前已是 ${seconds} 秒/次，无需修改`;
-    return;
-  }
-
-  savingIntervalId.value = sub.subscriptionId;
-  try {
-    const response = await subscriptionApi.update(
-      sub.subscriptionId,
-      buildSubscriptionConfig(sub, intervalMs),
-    );
-    if (isApiSuccess(response)) {
-      intervalNotice.value = `轮询频率已更新为 ${seconds} 秒/次`;
-      await loadSubscriptions();
-    } else {
-      intervalNotice.value = response.message ?? '更新失败，请稍后重试';
-    }
-  } catch (err) {
-    intervalNotice.value =
-      err instanceof Error ? err.message : '更新失败，请检查网络或后端日志';
-  } finally {
-    savingIntervalId.value = null;
-  }
+  intervalNotice.value =
+    '轮询间隔修改需后端 PUT /api/console/subscription/{id} 支持，当前版本请删除后重建订阅';
+  void sub;
 }
 
 async function loadDataSources() {
@@ -175,7 +125,7 @@ async function handleCreate() {
       intervalMs: Math.max(1, createPollingIntervalSec.value) * 1000,
     };
   }
-  const response = await subscriptionApi.create(payload);
+  const response = await subscriptionApi.create(currentTenantId.value, payload);
   if (isApiSuccess(response)) {
     showCreate.value = false;
     await loadSubscriptions();

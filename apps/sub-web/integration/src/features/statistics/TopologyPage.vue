@@ -1,6 +1,10 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { NebulaButton } from '@nebula-studio/nebula-ui';
+
+import { monitorApi } from '@/shared/api/consoleApi';
+import { useTenant } from '@/shared/composables/useTenant';
+import { isApiSuccess } from '@/shared/types';
 
 interface TopologyNode {
   id: string;
@@ -16,48 +20,52 @@ interface TopologyLink {
   label?: string;
 }
 
-// 模拟拓扑数据
-const nodes = ref<TopologyNode[]>([
-  { id: 'tenant-001', name: '测试租户', type: 'tenant', x: 100, y: 200 },
-  { id: 'tenant-002', name: '生产租户', type: 'tenant', x: 100, y: 400 },
-  { id: 'svc-001', name: '用户查询服务', type: 'service', x: 300, y: 150 },
-  { id: 'svc-002', name: '订单查询服务', type: 'service', x: 300, y: 300 },
-  { id: 'svc-003', name: '组合服务-用户订单', type: 'service', x: 300, y: 450 },
-  { id: 'pre-001', name: '参数转换', type: 'plugin', x: 500, y: 200 },
-  { id: 'post-001', name: '结果转换', type: 'plugin', x: 500, y: 350 },
-  { id: 'db-001', name: 'MySQL主库', type: 'datasource', x: 700, y: 150 },
-  {
-    id: 'db-002',
-    name: 'PostgreSQL订单库',
-    type: 'datasource',
-    x: 700,
-    y: 300,
-  },
-]);
-
-const links = ref<TopologyLink[]>([
-  { source: 'tenant-001', target: 'svc-001', label: '调用' },
-  { source: 'tenant-001', target: 'svc-002', label: '调用' },
-  { source: 'tenant-002', target: 'svc-003', label: '调用' },
-  { source: 'svc-001', target: 'pre-001', label: '前置处理' },
-  { source: 'svc-002', target: 'pre-001', label: '前置处理' },
-  { source: 'pre-001', target: 'db-001', label: '查询' },
-  { source: 'pre-001', target: 'db-002', label: '查询' },
-  { source: 'svc-003', target: 'post-001', label: '后置处理' },
-]);
-
+const nodes = ref<TopologyNode[]>([]);
+const links = ref<TopologyLink[]>([]);
 const loading = ref(false);
+const { currentTenantId } = useTenant();
 
 onMounted(() => {
   loadTopology();
 });
 
+watch(currentTenantId, () => {
+  loadTopology();
+});
+
 async function loadTopology() {
+  if (!currentTenantId.value) {
+    nodes.value = [];
+    links.value = [];
+    return;
+  }
   loading.value = true;
-  // TODO: 调用 API 获取服务拓扑
-  setTimeout(() => {
+  try {
+    const [nodesRes, edgesRes] = await Promise.all([
+      monitorApi.topologyNodes(currentTenantId.value),
+      monitorApi.topologyEdges(currentTenantId.value),
+    ]);
+
+    if (isApiSuccess(nodesRes)) {
+      nodes.value = (nodesRes.data ?? []).map((n, index) => ({
+        id: String(n.nodeId ?? n.node_id ?? index),
+        name: String(n.nodeName ?? n.node_name ?? n.nodeId ?? 'node'),
+        type: (n.nodeType ?? n.node_type ?? 'service') as TopologyNode['type'],
+        x: 100 + (index % 4) * 180,
+        y: 100 + Math.floor(index / 4) * 120,
+      }));
+    }
+
+    if (isApiSuccess(edgesRes)) {
+      links.value = (edgesRes.data ?? []).map((e) => ({
+        source: String(e.sourceNodeId ?? e.source_node_id ?? ''),
+        target: String(e.targetNodeId ?? e.target_node_id ?? ''),
+        label: String(e.edgeType ?? e.edge_type ?? ''),
+      }));
+    }
+  } finally {
     loading.value = false;
-  }, 300);
+  }
 }
 
 function handleRefresh() {

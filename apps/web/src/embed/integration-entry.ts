@@ -1,4 +1,5 @@
 import '@nebula-studio-internal/tailwind/electron';
+import '@nebula-studio-renderer/integration/bootstrap-runtime';
 import { installWebPresentation } from '@nebula-studio/app-shell';
 import { ConfigProvider } from '@nebula-studio-electron/electron-shared-vue';
 import { createApp, h } from 'vue';

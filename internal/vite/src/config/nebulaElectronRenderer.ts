@@ -3,6 +3,7 @@ import { mergeConfig } from 'vite';
 import { nebulaRendererChunkBuildPartial } from './chunks/index.ts';
 import { nebulaBuildNodeVersionDefine } from '../env/nebulaBuildDefines.ts';
 import { nebulaRendererOptimizeDeps } from './nebulaRendererOptimizeDeps.ts';
+import { nebulaSubWebAliasPlugin } from '../plugin/nebulaSubWebAlias.ts';
 import { resolveNebulaRendererPluginList } from './nebulaRendererPlugins.ts';
 import type { NebulaRendererPluginSelection } from './nebulaRendererPlugins.ts';
 import { nebulaRendererResolve } from './nebulaRendererResolve.ts';
@@ -53,7 +54,10 @@ export function nebulaElectronRendererPartial(
     'define' | 'plugins' | 'resolve' | 'optimizeDeps'
   > = {
     define: nebulaBuildNodeVersionDefine(),
-    plugins: resolveNebulaRendererPluginList(options.plugins),
+    plugins: resolveNebulaRendererPluginList({
+      ...options.plugins,
+      extra: [nebulaSubWebAliasPlugin(), ...(options.plugins?.extra ?? [])],
+    }),
     resolve: nebulaRendererResolve,
     optimizeDeps: nebulaRendererOptimizeDeps,
   };

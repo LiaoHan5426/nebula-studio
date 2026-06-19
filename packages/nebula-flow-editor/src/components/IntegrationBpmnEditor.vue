@@ -47,7 +47,7 @@ const hints = computed(() => [
       <section class="aside-section">
         <h3 class="aside-section__title">可调用原子接口</h3>
         <p v-if="!atomicInterfaces?.length" class="aside-section__empty">
-          暂无原子接口。请先在「接口管理」创建 ATOMIC 类型接口。
+          暂无原子接口。请先在「服务注册」创建 ATOMIC 类型服务。
         </p>
         <ul v-else class="interface-list">
           <li

@@ -1,51 +1,181 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { NebulaButton, NebulaTable } from '@nebula-studio/nebula-ui';
+import { computed, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import {
+  NebulaButton,
+  NebulaPane,
+  NebulaTable,
+  NebulaTableColumn,
+  NebulaTag,
+} from '@nebula-studio/nebula-ui';
 
-import { tenantApi } from '@/shared/api/integration';
+import { tenantApi } from '@/shared/api/consoleApi';
+import type { TenantRecord } from '@/shared/api/consoleApi';
+import { getAuthUserId } from '@/shared/auth/session';
+import { useAuth } from '@/shared/composables/useAuth';
 import { isApiSuccess } from '@/shared/types';
 
-const columns = [
-  { key: 'tenantId', label: '租户ID', width: 200 },
-  { key: 'tenantName', label: '租户名称', width: 180 },
-  { key: 'authType', label: '验证方式', width: 150 },
-  { key: 'status', label: '状态', width: 100 },
-  { key: 'createdAt', label: '创建时间', width: 180 },
-  { key: 'actions', label: '操作', width: 240 },
-];
+type TenantFormMode = 'create' | 'edit';
 
-const tenants = ref<Array<Record<string, unknown>>>([]);
+interface TenantForm {
+  tenantId?: string;
+  userId: string;
+  slug: string;
+  tenantName: string;
+  description: string;
+  status: string;
+  authType: string;
+}
+
+const AUTH_TYPES = ['API_KEY', 'JWT', 'NONE'] as const;
+
+/** 控制台可绑定的系统用户（演示环境） */
+const CONSOLE_USERS = [
+  { userId: '1', username: 'demo', label: 'demo' },
+  { userId: '2', username: 'admin', label: 'admin' },
+] as const;
+
+function resolveBoundUsername(userId?: string) {
+  if (!userId) return '未绑定';
+  return (
+    CONSOLE_USERS.find((user) => user.userId === userId)?.username ?? '未绑定'
+  );
+}
+
+const router = useRouter();
+const { isPlatformAdmin, username } = useAuth();
+const tenants = ref<TenantRecord[]>([]);
 const loading = ref(false);
-const pendingDeleteTenant = ref<Record<string, unknown> | null>(null);
+const pendingDeleteTenant = ref<TenantRecord | null>(null);
+const showFormDialog = ref(false);
+const formMode = ref<TenantFormMode>('create');
+const saving = ref(false);
+
+const form = ref<TenantForm>({
+  userId: '',
+  slug: '',
+  tenantName: '',
+  description: '',
+  status: 'ACTIVE',
+  authType: 'API_KEY',
+});
+
+const previewTenantId = computed(() => {
+  const userId = isPlatformAdmin.value
+    ? form.value.userId.trim()
+    : (getAuthUserId() ?? '').trim();
+  const slug = form.value.slug.trim();
+  if (!slug) return '-';
+  return userId ? `${userId}_${slug}` : `tenant-${slug}`;
+});
 
 onMounted(() => {
-  loadTenants();
+  void loadTenants();
 });
 
 async function loadTenants() {
   loading.value = true;
   try {
-    const response = await tenantApi.list(1, 50);
+    if (isPlatformAdmin.value) {
+      const response = await tenantApi.list(1, 50);
+      if (isApiSuccess(response)) {
+        tenants.value = response.data.items ?? [];
+      }
+      return;
+    }
+    const response = await tenantApi.mine();
     if (isApiSuccess(response)) {
-      const payload = response.data as
-        | { items?: Array<Record<string, unknown>> }
-        | Array<Record<string, unknown>>;
-      tenants.value = Array.isArray(payload) ? payload : (payload?.items ?? []);
+      tenants.value = response.data ?? [];
     }
   } finally {
     loading.value = false;
   }
 }
 
-function handleEdit(tenant: Record<string, unknown>) {
-  console.warn('Edit tenant:', tenant);
+function openCreate() {
+  formMode.value = 'create';
+  form.value = {
+    userId: isPlatformAdmin.value ? '' : (getAuthUserId() ?? ''),
+    slug: '',
+    tenantName: '',
+    description: '',
+    status: 'ACTIVE',
+    authType: 'API_KEY',
+  };
+  showFormDialog.value = true;
 }
 
-function handleAuthorize(tenant: Record<string, unknown>) {
-  console.warn('Authorize tenant:', tenant);
+function openEdit(tenant: TenantRecord) {
+  formMode.value = 'edit';
+  form.value = {
+    tenantId: tenant.tenantId,
+    userId: tenant.userId ?? '',
+    slug: tenant.slug ?? '',
+    tenantName: tenant.tenantName,
+    description: String((tenant as { description?: string }).description ?? ''),
+    status: tenant.status ?? 'ACTIVE',
+    authType:
+      (tenant.authConfig as { authType?: string } | undefined)?.authType ??
+      'API_KEY',
+  };
+  showFormDialog.value = true;
 }
 
-function handleDelete(tenant: Record<string, unknown>) {
+async function saveTenant() {
+  saving.value = true;
+  try {
+    if (formMode.value === 'create') {
+      const response = await tenantApi.create({
+        ...(isPlatformAdmin.value
+          ? { userId: form.value.userId.trim() || undefined }
+          : {}),
+        slug: form.value.slug.trim(),
+        tenantName: form.value.tenantName.trim(),
+        description: form.value.description.trim(),
+        status: form.value.status,
+        authConfig: { authType: form.value.authType },
+      });
+      if (isApiSuccess(response)) {
+        showFormDialog.value = false;
+        await loadTenants();
+      }
+      return;
+    }
+
+    if (!form.value.tenantId) return;
+    const response = await tenantApi.update(form.value.tenantId, {
+      tenantName: form.value.tenantName.trim(),
+      description: form.value.description.trim(),
+      status: form.value.status,
+      authConfig: { authType: form.value.authType },
+    });
+    if (isApiSuccess(response)) {
+      showFormDialog.value = false;
+      await loadTenants();
+    }
+  } finally {
+    saving.value = false;
+  }
+}
+
+function handleAuthorize(tenant: TenantRecord) {
+  void router.push({
+    path: '/service/authorize',
+    query: { tenantId: tenant.tenantId },
+  });
+}
+
+function formatTime(value?: string) {
+  if (!value) return '-';
+  return value.replace('T', ' ').slice(0, 19);
+}
+
+function statusVariant(status: string) {
+  const normalized = status?.toUpperCase();
+  return normalized === 'ACTIVE' ? 'success' : 'default';
+}
+
+function handleDelete(tenant: TenantRecord) {
   pendingDeleteTenant.value = tenant;
 }
 
@@ -56,9 +186,7 @@ function cancelDelete() {
 async function confirmDelete() {
   const tenant = pendingDeleteTenant.value;
   if (!tenant) return;
-  const tenantId = tenant.tenantId as string;
-  if (!tenantId) return;
-  const response = await tenantApi.delete(tenantId);
+  const response = await tenantApi.delete(tenant.tenantId);
   pendingDeleteTenant.value = null;
   if (isApiSuccess(response)) {
     await loadTenants();
@@ -70,53 +198,185 @@ async function confirmDelete() {
   <div class="tenant-page">
     <header class="tenant-page__header">
       <div>
-        <h2 class="tenant-page__title">租户管理</h2>
+        <h2 class="tenant-page__title">
+          {{ isPlatformAdmin ? '租户管理' : '我的租户' }}
+        </h2>
         <p class="tenant-page__desc">
-          租户独立于系统用户体系，便于灵活管理使用。可单独设置租户调用接口等所需的验证方式，可单独授权租户使用接口。
+          <template v-if="isPlatformAdmin">
+            平台管理员维护全部对接租户。租户 ID 规则：绑定用户时生成
+            <code>{userId}_{slug}</code>，未绑定时为
+            <code>tenant-{slug}</code>。
+          </template>
+          <template v-else>
+            管理当前账号（{{
+              username
+            }}）下的对接租户，可新增租户、编辑配置、为租户授权服务。
+            新租户将自动绑定到当前账号，ID 格式为 <code>{userId}_{slug}</code>。
+          </template>
         </p>
       </div>
     </header>
 
     <div class="tenant-page__actions">
-      <NebulaButton variant="primary" @click="() => {}">
+      <NebulaButton variant="primary" @click="openCreate">
         新增租户
+      </NebulaButton>
+      <NebulaButton variant="secondary" @click="loadTenants">
+        刷新
       </NebulaButton>
     </div>
 
-    <NebulaTable
-      :columns="columns"
-      :data="tenants"
-      :loading="loading"
-      row-key="tenantId"
+    <div class="tenant-page__table-wrap">
+      <NebulaTable
+        :data="tenants"
+        :loading="loading"
+        :scroll-x="{ enabled: false }"
+        row-key="tenantId"
+        class="tenant-page__table"
+      >
+        <NebulaTableColumn
+          field="tenantId"
+          title="租户 ID"
+          min-width="120"
+          show-overflow="tooltip"
+        />
+        <NebulaTableColumn
+          field="slug"
+          title="Slug"
+          width="88"
+          show-overflow="tooltip"
+        />
+        <NebulaTableColumn
+          field="tenantName"
+          title="租户名称"
+          min-width="120"
+          show-overflow="tooltip"
+        />
+        <NebulaTableColumn title="验证方式" width="100">
+          <template #default="{ row }">
+            {{
+              (row.authConfig as { authType?: string } | undefined)?.authType ??
+              '-'
+            }}
+          </template>
+        </NebulaTableColumn>
+        <NebulaTableColumn field="status" title="状态" width="88">
+          <template #default="{ row }">
+            <NebulaTag :variant="statusVariant(row.status)">
+              {{ row.status === 'ACTIVE' ? '正常' : '禁用' }}
+            </NebulaTag>
+          </template>
+        </NebulaTableColumn>
+        <NebulaTableColumn field="createdAt" title="创建时间" width="150">
+          <template #default="{ row }">
+            {{ formatTime(row.createdAt) }}
+          </template>
+        </NebulaTableColumn>
+        <NebulaTableColumn title="操作" width="220">
+          <template #default="{ row }">
+            <div class="action-btns">
+              <NebulaButton variant="secondary" @click="handleAuthorize(row)">
+                授权
+              </NebulaButton>
+              <NebulaButton variant="secondary" @click="openEdit(row)">
+                编辑
+              </NebulaButton>
+              <NebulaButton
+                v-if="isPlatformAdmin"
+                variant="secondary"
+                @click="handleDelete(row)"
+              >
+                删除
+              </NebulaButton>
+            </div>
+          </template>
+        </NebulaTableColumn>
+      </NebulaTable>
+    </div>
+
+    <div
+      v-if="showFormDialog"
+      class="modal-overlay"
+      @click.self="showFormDialog = false"
     >
-      <template #status="{ row }">
-        <span :class="['status-badge', row.status]">
-          {{
-            row.status === 'active' || row.status === 'ACTIVE' ? '正常' : '禁用'
-          }}
-        </span>
-      </template>
-      <template #authType="{ row }">
-        <span class="auth-type">{{ row.authType || '-' }}</span>
-      </template>
-      <template #actions="{ row }">
-        <div class="action-btns">
-          <NebulaButton
-            size="small"
-            variant="ghost"
-            @click="handleAuthorize(row)"
-          >
-            授权
+      <NebulaPane
+        :title="formMode === 'create' ? '新增租户' : '编辑租户'"
+        class="modal"
+      >
+        <p v-if="formMode === 'create'" class="field-hint">
+          预览租户 ID：<strong>{{ previewTenantId }}</strong>
+        </p>
+        <label v-else class="field">
+          <span>租户 ID</span>
+          <input :value="form.tenantId" readonly class="field__readonly" />
+        </label>
+
+        <label v-if="formMode === 'create' && isPlatformAdmin" class="field">
+          <span>绑定系统用户</span>
+          <select v-model="form.userId" class="field__select">
+            <option value="">不绑定</option>
+            <option
+              v-for="user in CONSOLE_USERS"
+              :key="user.userId"
+              :value="user.userId"
+            >
+              {{ user.label }}
+            </option>
+          </select>
+        </label>
+        <p v-else-if="formMode === 'create'" class="field-hint">
+          将绑定当前账号：<strong>{{ username }}</strong>
+        </p>
+        <label v-else class="field">
+          <span>绑定系统用户</span>
+          <input
+            :value="resolveBoundUsername(form.userId)"
+            readonly
+            class="field__readonly"
+          />
+        </label>
+        <label class="field">
+          <span>Slug</span>
+          <input
+            v-model="form.slug"
+            placeholder="例如 a、b、admin"
+            :readonly="formMode === 'edit'"
+            :class="{ field__readonly: formMode === 'edit' }"
+          />
+        </label>
+        <label class="field">
+          <span>租户名称</span>
+          <input v-model="form.tenantName" placeholder="Tenant A" />
+        </label>
+        <label class="field">
+          <span>描述</span>
+          <input v-model="form.description" placeholder="可选" />
+        </label>
+        <label class="field">
+          <span>验证方式</span>
+          <select v-model="form.authType" class="field__select">
+            <option v-for="auth in AUTH_TYPES" :key="auth" :value="auth">
+              {{ auth }}
+            </option>
+          </select>
+        </label>
+        <label class="field">
+          <span>状态</span>
+          <select v-model="form.status" class="field__select">
+            <option value="ACTIVE">正常</option>
+            <option value="INACTIVE">禁用</option>
+          </select>
+        </label>
+        <div class="modal__actions">
+          <NebulaButton variant="secondary" @click="showFormDialog = false">
+            取消
           </NebulaButton>
-          <NebulaButton size="small" variant="ghost" @click="handleEdit(row)">
-            编辑
-          </NebulaButton>
-          <NebulaButton size="small" variant="ghost" @click="handleDelete(row)">
-            删除
+          <NebulaButton :disabled="saving" @click="saveTenant">
+            {{ saving ? '保存中…' : '保存' }}
           </NebulaButton>
         </div>
-      </template>
-    </NebulaTable>
+      </NebulaPane>
+    </div>
 
     <div
       v-if="pendingDeleteTenant"
@@ -152,7 +412,7 @@ async function confirmDelete() {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  height: 100%;
+  padding-bottom: 8px;
 }
 
 .tenant-page__header {
@@ -173,35 +433,81 @@ async function confirmDelete() {
   color: hsl(var(--muted-foreground));
 }
 
+.tenant-page__desc code {
+  padding: 1px 4px;
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  background: hsl(var(--muted) / 50%);
+  border-radius: 4px;
+}
+
 .tenant-page__actions {
   display: flex;
   gap: 8px;
 }
 
-.status-badge {
-  display: inline-block;
-  padding: 2px 8px;
-  font-size: 12px;
-  border-radius: 4px;
+.tenant-page__table-wrap {
+  padding: 12px 16px;
+  background: hsl(var(--card));
+  border-radius: 8px;
 }
 
-.status-badge.active {
-  color: hsl(var(--primary));
-  background: hsl(var(--primary) / 12%);
-}
-
-.status-badge.inactive {
-  color: hsl(var(--muted-foreground));
-  background: hsl(var(--muted));
-}
-
-.auth-type {
-  font-size: 13px;
+.tenant-page__table {
+  width: 100%;
 }
 
 .action-btns {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
   display: flex;
-  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  background: rgb(0 0 0 / 45%);
+}
+
+.modal {
+  width: min(520px, 92vw);
+}
+
+.field-hint {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: hsl(var(--muted-foreground));
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.field input,
+.field__select {
+  padding: 8px 10px;
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
+  border-radius: 6px;
+}
+
+.field__readonly {
+  color: hsl(var(--muted-foreground));
+  background: hsl(var(--muted) / 30%);
+}
+
+.modal__actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 8px;
 }
 
 .tenant-page__confirm-backdrop {

@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./app": "./src/App.vue"
+    "./app": "./src/App.vue",
+    "./platform/integrated-apps": "./src/platform/integratedApps.ts"
   },
   "scripts": {
     "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false",

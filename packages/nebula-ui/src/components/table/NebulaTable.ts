@@ -48,6 +48,12 @@ export const NebulaTable = defineComponent({
       type: Object as PropType<Record<string, unknown>>,
       default: undefined,
     },
+    scrollX: {
+      type: [Boolean, Object] as PropType<
+        boolean | { enabled?: boolean; gt?: number }
+      >,
+      default: undefined,
+    },
     dragMode: {
       type: String as PropType<NebulaTableDragMode>,
       default: 'none',
@@ -78,6 +84,7 @@ export const NebulaTable = defineComponent({
           maxHeight: props.maxHeight,
           rowConfig: computedRowConfig,
           columnConfig: props.columnConfig,
+          scrollX: props.scrollX,
           class: cn(
             'nebula-table',
             `nebula-table--drag-${props.dragMode}`,
