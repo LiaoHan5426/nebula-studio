@@ -2,16 +2,21 @@
 import {
   SHELL_SURFACE_WORKSPACE,
   WEB_SHELL_EMBED_QUERY,
+  clearWebAuthSession,
+  embeddedViewRequiresShellAuth,
   getEmbeddedShellWindowIds,
   getShellHostBridge,
   getShellIntegratedAppMeta,
+  hasValidShellAuthSession,
   isShellEmbedResetAckPayload,
   isShellIntegrableAppId,
   isShellIntegratableAppId,
   persistShellSurfacePreference,
   postShellEmbedReset,
   readShellSurfacePreference,
+  readWebAuthSession,
   shellPresentationConfig,
+  writeWebAuthSession,
 } from '@nebula-studio/app-shell';
 import type { EmbeddedShellWindowId } from '@nebula-studio/app-shell';
 import { NebulaButton, NebulaDrag } from '@nebula-studio/nebula-ui';
@@ -63,7 +68,44 @@ const theme = ref<ThemeMode>('dark');
 const availableViewIds = ref<string[]>([]);
 const dormantIntegrableIds = ref<string[]>([]);
 const activeViewId = ref<string | null>(null);
-const authSession = ref<{ user: string } | null>(null);
+const authSession = ref<{ user: string; token?: string } | null>(null);
+const authLoginWaiters = new Set<(ok: boolean) => void>();
+const SHELL_AUTH_WAIT_TIMEOUT_MS = 120_000;
+
+function resolveShellAuthLoginWaiters(ok: boolean): void {
+  for (const resolve of authLoginWaiters) {
+    resolve(ok);
+  }
+  authLoginWaiters.clear();
+}
+
+function hasAuthenticatedShellSession(): boolean {
+  return hasValidShellAuthSession(authSession.value ?? readWebAuthSession());
+}
+
+function waitForShellAuthSession(): Promise<boolean> {
+  if (hasAuthenticatedShellSession()) {
+    return Promise.resolve(true);
+  }
+  return new Promise((resolve) => {
+    authLoginWaiters.add(resolve);
+    window.setTimeout(() => {
+      if (!authLoginWaiters.delete(resolve)) return;
+      resolve(hasAuthenticatedShellSession());
+    }, SHELL_AUTH_WAIT_TIMEOUT_MS);
+  });
+}
+
+async function ensureShellAuthForEmbeddedView(
+  viewId: string,
+): Promise<boolean> {
+  if (shellHost.kind !== 'electron') return true;
+  if (!embeddedViewRequiresShellAuth(viewId)) return true;
+  await refreshAuthSession();
+  if (hasAuthenticatedShellSession()) return true;
+  await openLogin();
+  return waitForShellAuthSession();
+}
 const {
   orgEnabled,
   orgOptions,
@@ -591,6 +633,9 @@ async function loadShellState(): Promise<void> {
 }
 
 async function switchEmbeddedView(viewId: string): Promise<void> {
+  if (!(await ensureShellAuthForEmbeddedView(viewId))) {
+    return;
+  }
   if (!usesIframeEmbed) {
     reportShellViewport();
   }
@@ -716,11 +761,26 @@ async function applyTheme(nextTheme: ThemeMode): Promise<void> {
   }, 220);
 }
 
+function syncShellAuthSessionStorage(
+  payload: { user: string; token?: string } | null,
+): void {
+  if (payload?.user?.trim()) {
+    writeWebAuthSession({
+      user: payload.user,
+      token: payload.token,
+    });
+    return;
+  }
+  clearWebAuthSession();
+}
+
 async function refreshAuthSession(): Promise<void> {
   try {
     authSession.value = await window.api.auth.getSession();
+    syncShellAuthSessionStorage(authSession.value);
   } catch {
     authSession.value = null;
+    clearWebAuthSession();
   }
 }
 
@@ -731,6 +791,7 @@ async function openLogin(): Promise<void> {
 async function logout(): Promise<void> {
   await window.api.auth.logout();
   resetOrganizationSession();
+  clearWebAuthSession();
   if (shellHost.shouldRefreshAuthSessionAfterLogout) {
     await refreshAuthSession();
   }
@@ -756,13 +817,23 @@ const onThemeChanged = (
 
 const onAuthSessionChanged = (
   _event: unknown,
-  payload: { user: string } | null,
+  payload: { user: string; token?: string } | null,
 ): void => {
   authSession.value = payload;
+  syncShellAuthSessionStorage(payload);
+  if (hasValidShellAuthSession(payload)) {
+    resolveShellAuthLoginWaiters(true);
+  }
   if (payload) {
     void loadOrganizationContext();
   } else {
     resetOrganizationSession();
+  }
+};
+
+const onAuthLoginDismissed = (): void => {
+  if (!hasAuthenticatedShellSession()) {
+    resolveShellAuthLoginWaiters(false);
   }
 };
 
@@ -831,6 +902,14 @@ onMounted(async () => {
     }
   }
   await refreshAuthSession();
+  if (
+    shellHost.kind === 'electron' &&
+    activeViewId.value &&
+    embeddedViewRequiresShellAuth(activeViewId.value) &&
+    !hasAuthenticatedShellSession()
+  ) {
+    await ensureShellAuthForEmbeddedView(activeViewId.value);
+  }
   await loadOrganizationContext();
   reportShellViewport();
   if (!usesIframeEmbed) {
@@ -842,6 +921,10 @@ onMounted(async () => {
     window.electron.ipcRenderer.on(
       'auth:session-changed',
       onAuthSessionChanged,
+    );
+    window.electron.ipcRenderer.on(
+      'auth:login-dismissed',
+      onAuthLoginDismissed,
     );
   }
   requestAnimationFrame(() => reportShellViewport());
@@ -866,6 +949,10 @@ onUnmounted(() => {
     window.electron.ipcRenderer.removeListener(
       'auth:session-changed',
       onAuthSessionChanged,
+    );
+    window.electron.ipcRenderer.removeListener(
+      'auth:login-dismissed',
+      onAuthLoginDismissed,
     );
   }
 });

@@ -7,6 +7,8 @@ export interface ShellIntegratedAppMeta {
   defaultEnabled?: boolean;
   /** 为 false 时仅作为嵌入子应用（如侧栏「设置」），不出现在「应用集成」网格 */
   integratable?: boolean;
+  /** 打开该嵌入视图前需 Shell 登录态（含 JWT） */
+  requiresAuth?: boolean;
 }
 
 export type ShellIntegratedAppRegistry = Partial<
@@ -93,4 +95,9 @@ export function tryGetShellIntegratedAppMeta(
   id: EmbeddedShellWindowId,
 ): ShellIntegratedAppMeta | undefined {
   return shellIntegratedAppRegistry[id];
+}
+
+export function embeddedViewRequiresShellAuth(viewId: string): boolean {
+  if (!isShellIntegrableAppId(viewId)) return false;
+  return tryGetShellIntegratedAppMeta(viewId)?.requiresAuth === true;
 }

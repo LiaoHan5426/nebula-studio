@@ -2,7 +2,10 @@ import { createApiClient } from '@nebula-studio/api-client';
 
 import type { ApiRequestOptions, ApiResponse } from '@nebula-studio/api-client';
 
-import { readWebAuthSession } from '@nebula-studio/app-shell';
+import {
+  handleShellAuthUnauthorized,
+  readWebAuthSession,
+} from '@nebula-studio/app-shell';
 
 import { ensureAuthMode, isSessionAuthMode } from '@/shared/auth/authMode';
 
@@ -36,6 +39,8 @@ const apiClient = createApiClient({
 
     return 'include';
   },
+
+  onUnauthorized: () => handleShellAuthUnauthorized(),
 });
 
 export const { apiRequest } = apiClient;

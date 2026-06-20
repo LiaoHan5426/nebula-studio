@@ -96,7 +96,7 @@ export class WindowManager {
   #embeddedContentVisible = true;
   #mainWindow: BrowserWindow | null = null;
   #loginWindow: BrowserWindow | null = null;
-  #authSession: { user: string } | null = null;
+  #authSession: { user: string; token?: string } | null = null;
 
   constructor(securityRules: AbstractSecurityRule[] = []) {
     this.#securityRules = securityRules;
@@ -291,7 +291,28 @@ export class WindowManager {
         const modalWin = BrowserWindow.fromWebContents(event.sender);
         const shellWin = modalWin?.getParentWindow();
         shellWin?.webContents.send('auth:session-changed', this.#authSession);
+        this.broadcast('auth:session-changed', this.#authSession);
         return { ok: true as const, user };
+      },
+    );
+
+    ipcMain.handle(
+      'auth:establish-session',
+      (event, payload: { user?: string; token?: string }): boolean => {
+        const user = payload?.user?.trim();
+        const token = payload?.token?.trim();
+        if (!user || !token) return false;
+        this.#authSession = { user, token };
+        this.#mainWindow?.webContents.send(
+          'auth:session-changed',
+          this.#authSession,
+        );
+        this.broadcast('auth:session-changed', this.#authSession);
+        const loginWin = BrowserWindow.fromWebContents(event.sender);
+        if (loginWin && loginWin !== this.#mainWindow) {
+          loginWin.close();
+        }
+        return true;
       },
     );
 
@@ -302,6 +323,7 @@ export class WindowManager {
       const shellWin =
         BrowserWindow.fromWebContents(event.sender) ?? this.#mainWindow;
       shellWin?.webContents.send('auth:session-changed', null);
+      this.broadcast('auth:session-changed', null);
       return true;
     });
   }
@@ -470,7 +492,16 @@ export class WindowManager {
       win.show();
     });
     win.on('closed', () => {
+      const hadValidSession = Boolean(
+        this.#authSession?.user?.trim() &&
+        this.#authSession?.token?.trim() &&
+        this.#authSession.token.length >= 20,
+      );
       this.#loginWindow = null;
+      if (!hadValidSession) {
+        this.#mainWindow?.webContents.send('auth:login-dismissed');
+        this.broadcast('auth:login-dismissed');
+      }
     });
     this.#loginWindow = win;
   }

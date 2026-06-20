@@ -29,8 +29,14 @@ const api = {
       if (!r.ok) throw new Error(r.error);
       return r;
     },
-    getSession(): Promise<{ user: string } | null> {
+    getSession(): Promise<{ user: string; token?: string } | null> {
       return electronAPI.ipcRenderer.invoke('auth:get-session');
+    },
+    establishSession(payload: {
+      user: string;
+      token: string;
+    }): Promise<boolean> {
+      return electronAPI.ipcRenderer.invoke('auth:establish-session', payload);
     },
     logout(): Promise<boolean> {
       return electronAPI.ipcRenderer.invoke('auth:logout');

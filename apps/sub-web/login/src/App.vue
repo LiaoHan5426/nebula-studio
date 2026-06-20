@@ -22,17 +22,27 @@ const pendingLogin = ref<BackendLoginResult | null>(null);
 const selectedOrgId = ref('');
 
 async function finishLogin(username: string, token?: string): Promise<void> {
-  writeWebAuthSession({
-    user: username,
-    token,
-  });
   if (isWebPresentationHost()) {
+    writeWebAuthSession({
+      user: username,
+      token,
+    });
     const ret = new URLSearchParams(location.search).get('return');
     const fallback = new URL('index.html', location.href).toString();
     const target = ret && isSafeAuthReturnUrl(ret) ? ret : fallback;
     location.href = target;
     return;
   }
+
+  if (typeof window.api?.auth?.establishSession === 'function' && token) {
+    await window.api.auth.establishSession({ user: username, token });
+    return;
+  }
+
+  writeWebAuthSession({
+    user: username,
+    token,
+  });
   window.close();
 }
 

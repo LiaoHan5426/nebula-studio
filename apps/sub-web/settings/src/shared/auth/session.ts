@@ -8,7 +8,15 @@ let currentOrgId = '';
 
 function readShellSession(): { user?: string; token?: string } | null {
   try {
-    const raw = sessionStorage.getItem(SHELL_SESSION_KEY);
+    let storage = sessionStorage;
+    if (typeof window !== 'undefined' && window.parent !== window) {
+      const params = new URLSearchParams(window.location.search);
+      const surface = params.get('renderer') ?? params.get('embed');
+      if (surface) {
+        storage = window.parent.sessionStorage;
+      }
+    }
+    const raw = storage.getItem(SHELL_SESSION_KEY);
 
     if (!raw) return null;
 
@@ -53,11 +61,9 @@ export function clearAuthSession(): void {
 export function hasAuthenticatedSession(): boolean {
   const shell = readShellSession();
 
-  if (shell?.user?.trim()) return true;
+  const token = shell?.token?.trim() ?? getAuthToken()?.trim();
 
-  const token = getAuthToken();
-
-  return typeof token === 'string' && token.trim().length >= 20;
+  return Boolean(shell?.user?.trim() && token && token.length >= 20);
 }
 
 export function setCurrentOrgId(orgId: string): void {

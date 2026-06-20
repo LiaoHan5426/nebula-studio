@@ -75,6 +75,16 @@ function shouldTrackProgress(
   return config.progress !== false;
 }
 
+async function maybeHandleUnauthorized(
+  response: Response,
+  config: ApiClientConfig,
+  options: ApiRequestOptions,
+): Promise<void> {
+  if (response.status === 401 && !options.skipAuth && config.onUnauthorized) {
+    await config.onUnauthorized();
+  }
+}
+
 export function createApiClient(config: ApiClientConfig = {}) {
   async function fetchUrl(
     url: string,
@@ -96,10 +106,16 @@ export function createApiClient(config: ApiClientConfig = {}) {
       headers: buildHeaders(config, options),
     });
 
+    const run = async (): Promise<Response> => {
+      const response = await request;
+      await maybeHandleUnauthorized(response, config, options);
+      return response;
+    };
+
     if (!shouldTrackProgress(config, options)) {
-      return request;
+      return run();
     }
-    return trackRequestProgress(request);
+    return trackRequestProgress(run());
   }
 
   async function apiRequest<T>(
@@ -114,6 +130,7 @@ export function createApiClient(config: ApiClientConfig = {}) {
         credentials: resolveCredentials(config),
         headers: buildHeaders(config, options),
       });
+      await maybeHandleUnauthorized(response, config, options);
       return parseApiResponse<T>(response);
     };
 

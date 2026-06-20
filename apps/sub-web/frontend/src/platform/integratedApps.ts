@@ -28,11 +28,13 @@ export const shellIntegratedAppsCatalog = {
   integration: {
     label: '集成平台',
     iconSvg: ICON_INTEGRATION,
+    requiresAuth: true,
   },
   settings: {
     label: '设置',
     iconSvg: ICON_SETTINGS,
     integratable: false,
+    requiresAuth: true,
   },
 } as const satisfies Record<
   EmbeddedShellWindowId,

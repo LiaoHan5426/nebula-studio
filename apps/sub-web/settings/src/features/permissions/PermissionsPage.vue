@@ -238,11 +238,15 @@ function parentCode(row: PermissionNode): string {
           <template #default="{ row }">
             <div class="status-cell">
               <span class="status-label">停用</span>
-              <NebulaSwitch
-                :model-value="isActive(row)"
+              <span
+                class="status-switch"
                 :class="{ 'is-busy': statusUpdatingId === row.id }"
-                @update:model-value="toggleStatus(row, $event)"
-              />
+              >
+                <NebulaSwitch
+                  :model-value="isActive(row)"
+                  @update:model-value="toggleStatus(row, $event)"
+                />
+              </span>
               <span class="status-label">正常</span>
             </div>
           </template>

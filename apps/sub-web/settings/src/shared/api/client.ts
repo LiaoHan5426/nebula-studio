@@ -2,7 +2,13 @@ import { createApiClient } from '@nebula-studio/api-client';
 
 import type { ApiRequestOptions, ApiResponse } from '@nebula-studio/api-client';
 
-import { getAuthToken, getCurrentOrgId } from '@/shared/auth/session';
+import { handleShellAuthUnauthorized } from '@nebula-studio/app-shell';
+
+import {
+  clearAuthSession,
+  getAuthToken,
+  getCurrentOrgId,
+} from '@/shared/auth/session';
 
 export type { ApiRequestOptions, ApiResponse };
 
@@ -16,6 +22,11 @@ const apiClient = createApiClient({
   getOrgId: () => getCurrentOrgId() || null,
 
   credentials: 'include',
+
+  onUnauthorized: () => {
+    clearAuthSession();
+    return handleShellAuthUnauthorized();
+  },
 });
 
 export const { apiRequest, fetchUrl, parseApiResponse } = apiClient;

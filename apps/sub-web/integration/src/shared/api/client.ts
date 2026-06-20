@@ -1,6 +1,7 @@
 import { createApiClient } from '@nebula-studio/api-client';
 import type { ApiRequestOptions, ApiResponse } from '@nebula-studio/api-client';
-import { getAuthToken } from '@/shared/auth/session';
+import { handleShellAuthUnauthorized } from '@nebula-studio/app-shell';
+import { getAuthToken, clearAuthSession } from '@/shared/auth/session';
 
 export type { ApiRequestOptions };
 
@@ -19,6 +20,10 @@ export const EXECUTOR_INTEGRATION_BASE = '/api/integration';
 const apiClient = createApiClient({
   getAuthToken,
   getTenantId: () => localStorage.getItem('tenant_id'),
+  onUnauthorized: () => {
+    clearAuthSession();
+    return handleShellAuthUnauthorized();
+  },
 });
 
 export const { apiRequest, fetchUrl, parseApiResponse } = apiClient;

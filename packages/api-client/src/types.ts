@@ -34,6 +34,8 @@ export interface ApiClientConfig {
   getCredentials?: () => RequestCredentials | undefined;
   /** Default true — set false to disable progress for this client instance. */
   progress?: boolean;
+  /** Invoked once when a protected request receives HTTP 401. */
+  onUnauthorized?: () => void | Promise<void>;
 }
 
 export interface RequestProgressOptions {

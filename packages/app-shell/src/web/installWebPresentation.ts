@@ -4,7 +4,10 @@ import {
   mergeWebPreferenceBridges,
 } from '@nebula-studio-electron/electron-shared-vue';
 
-import { markWebPresentationHost } from '../common/presentationHost';
+import {
+  markWebPresentationHost,
+  markWebShellHost,
+} from '../common/presentationHost';
 import {
   clearWebAuthSession,
   readWebAuthSession,
@@ -67,6 +70,10 @@ export function installWebPresentation(
   if (g.electron) return;
 
   markWebPresentationHost();
+
+  if (options.registerShellHostIpc) {
+    markWebShellHost();
+  }
 
   const themeStorageKey =
     options.theme?.storageKey ?? options.storageKey ?? DEFAULT_WEB_THEME_KEY;
