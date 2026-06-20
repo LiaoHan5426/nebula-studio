@@ -5,7 +5,7 @@ import { monacoDocAnchorItems } from './demos/monacoDocAnchors';
 </script>
 
 <template>
-  <div class="editor-layout">
+  <div class="editor-layout nebula-anchor-rail">
     <NebulaAnchor
       :items="[...monacoDocAnchorItems]"
       title="On This Page"

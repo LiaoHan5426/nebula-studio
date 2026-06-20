@@ -2,11 +2,12 @@ import { promises as fs } from 'node:fs';
 import { join, normalize } from 'node:path';
 
 const rootDir = process.cwd();
+const isWindows = process.platform === 'win32';
 
-// 控制并发数量，避免创建过多的并发任务
 const CONCURRENCY_LIMIT = 10;
+const MAX_RECURSION_DEPTH = 10;
+const MAX_TRAVERSE_DEPTH = 20;
 
-// 需要跳过的目录，避免进入这些目录进行清理
 const SKIP_DIRS = new Set([
   '.DS_Store',
   '.git',
@@ -17,16 +18,165 @@ const SKIP_DIRS = new Set([
   'agent-skills',
 ]);
 
+const RM_OPTIONS = {
+  force: true,
+  recursive: true,
+  maxRetries: isWindows ? 8 : 3,
+  retryDelay: isWindows ? 250 : 100,
+};
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 /**
- * 处理单个文件/目录项
- * @param {string} currentDir - 当前目录路径
- * @param {string} item - 文件/目录名
- * @param {string[]} targets - 要删除的目标列表
- * @param {number} _depth - 当前递归深度
- * @returns {Promise<boolean>} - 是否需要进一步递归处理
+ * 删除 Vite task-cache 中的 SQLite 附属文件（Windows 上常见 EBUSY 来源）。
  */
+async function clearViteTaskCache(viteDir) {
+  const taskCacheDir = join(viteDir, 'task-cache');
+  let entries;
+  try {
+    entries = await fs.readdir(taskCacheDir, { withFileTypes: true });
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      return;
+    }
+    throw error;
+  }
+
+  for (const entry of entries) {
+    const filePath = join(taskCacheDir, entry.name);
+    if (entry.isDirectory()) {
+      await removePathWithRetry(filePath, { quiet: true, maxAttempts: 5 });
+      continue;
+    }
+    await fs
+      .rm(filePath, {
+        force: true,
+        maxRetries: RM_OPTIONS.maxRetries,
+        retryDelay: RM_OPTIONS.retryDelay,
+      })
+      .catch(() => {});
+  }
+}
+
+function isViteCacheDir(itemPath) {
+  return itemPath.split(/[/\\]/).includes('.vite');
+}
+
+/**
+ * 带重试删除；Windows 上先尝试清理 .vite/task-cache 再删目录。
+ */
+async function removePathWithRetry(
+  itemPath,
+  { maxAttempts = 6, quiet = false } = {},
+) {
+  const normalizedPath = normalize(itemPath);
+  let delayMs = 150;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      if (isViteCacheDir(normalizedPath)) {
+        await clearViteTaskCache(normalizedPath).catch(() => {});
+      }
+
+      await fs.rm(normalizedPath, RM_OPTIONS);
+      if (!quiet) {
+        console.log(`✅ Deleted: ${normalizedPath}`);
+      }
+      return true;
+    } catch (error) {
+      if (error.code === 'ENOENT') {
+        return true;
+      }
+
+      const retriable =
+        error.code === 'EBUSY' ||
+        error.code === 'EPERM' ||
+        error.code === 'EACCES' ||
+        error.code === 'ENOTEMPTY';
+
+      if (!retriable || attempt === maxAttempts) {
+        if (!quiet) {
+          console.error(
+            `❌ Failed to delete ${normalizedPath} after ${attempt} attempt(s): ${error.message}`,
+          );
+          if (isWindows && error.code === 'EBUSY') {
+            console.error(
+              '   Tip: stop running Vite / `vp run dev` processes, close IDE Vite extension tasks, then rerun `vp run clean`.',
+            );
+          }
+        }
+        return false;
+      }
+
+      if (isViteCacheDir(normalizedPath)) {
+        await clearViteTaskCache(normalizedPath).catch(() => {});
+      }
+
+      await sleep(delayMs);
+      delayMs = Math.min(Math.round(delayMs * 1.6), 2000);
+    }
+  }
+
+  return false;
+}
+
+/**
+ * 预清理：只删除各 workspace 下的 node_modules/.vite，不递归进入 node_modules 内部。
+ */
+async function precleanViteCaches(currentDir, depth = 0) {
+  if (depth > MAX_TRAVERSE_DEPTH) {
+    return;
+  }
+
+  let dirents;
+  try {
+    dirents = await fs.readdir(currentDir, { withFileTypes: true });
+  } catch {
+    return;
+  }
+
+  const subdirs = [];
+
+  for (const dirent of dirents) {
+    const name = dirent.name;
+    if (!dirent.isDirectory() || name === '.git') {
+      continue;
+    }
+
+    const itemPath = normalize(join(currentDir, name));
+
+    if (name === 'node_modules') {
+      const vitePath = join(itemPath, '.vite');
+      try {
+        await fs.access(vitePath);
+        console.log(`  clearing ${vitePath}`);
+        await removePathWithRetry(vitePath, { maxAttempts: 4, quiet: true });
+      } catch (error) {
+        if (error.code !== 'ENOENT') {
+          console.warn(`  skip ${vitePath}: ${error.message}`);
+        }
+      }
+      continue;
+    }
+
+    if (SKIP_DIRS.has(name) || name === 'dist' || name === '.turbo') {
+      continue;
+    }
+
+    subdirs.push(itemPath);
+  }
+
+  for (let i = 0; i < subdirs.length; i += CONCURRENCY_LIMIT) {
+    const batch = subdirs.slice(i, i + CONCURRENCY_LIMIT);
+    await Promise.allSettled(
+      batch.map((dir) => precleanViteCaches(dir, depth + 1)),
+    );
+  }
+}
+
 async function processItem(currentDir, item, targets, _depth) {
-  // 跳过特殊目录
   if (SKIP_DIRS.has(item)) {
     return false;
   }
@@ -35,54 +185,40 @@ async function processItem(currentDir, item, targets, _depth) {
     const itemPath = normalize(join(currentDir, item));
 
     if (targets.includes(item)) {
-      // 匹配到目标目录或文件时直接删除
-      await fs.rm(itemPath, { force: true, recursive: true });
-      console.log(`✅ Deleted: ${itemPath}`);
-      return false; // 已删除，无需递归
+      if (item === 'node_modules') {
+        const vitePath = join(itemPath, '.vite');
+        await removePathWithRetry(vitePath, { maxAttempts: 4, quiet: true });
+      }
+      await removePathWithRetry(itemPath);
+      return false;
     }
 
-    // 使用 readdir 的 withFileTypes 选项，避免额外的 lstat 调用
-    return true; // 可能需要递归，由调用方决定
+    return true;
   } catch (error) {
-    // 更详细的错误信息
     if (error.code === 'ENOENT') {
-      // 文件不存在，可能已被删除，这是正常情况
       return false;
-    } else if (error.code === 'EPERM' || error.code === 'EACCES') {
-      console.error(`❌ Permission denied: ${item} in ${currentDir}`);
-    } else {
-      console.error(
-        `❌ Error handling item ${item} in ${currentDir}: ${error.message}`,
-      );
     }
+    console.error(
+      `❌ Error handling item ${item} in ${currentDir}: ${error.message}`,
+    );
     return false;
   }
 }
 
-/**
- * 递归查找并删除目标目录（并发优化版本）
- * @param {string} currentDir - 当前遍历的目录路径
- * @param {string[]} targets - 要删除的目标列表
- * @param {number} depth - 当前递归深度，避免过深递归
- */
 async function cleanTargetsRecursively(currentDir, targets, depth = 0) {
-  // 限制递归深度，避免无限递归
-  if (depth > 10) {
+  if (depth > MAX_RECURSION_DEPTH) {
     console.warn(`Max recursion depth reached at: ${currentDir}`);
     return;
   }
 
   let dirents;
   try {
-    // 使用 withFileTypes 选项，一次性获取文件类型信息，避免后续 lstat 调用
     dirents = await fs.readdir(currentDir, { withFileTypes: true });
   } catch (error) {
-    // 如果无法读取目录，可能已被删除或权限不足
     console.warn(`Cannot read directory ${currentDir}: ${error.message}`);
     return;
   }
 
-  // 分批处理，控制并发数量
   for (let i = 0; i < dirents.length; i += CONCURRENCY_LIMIT) {
     const batch = dirents.slice(i, i + CONCURRENCY_LIMIT);
 
@@ -90,7 +226,6 @@ async function cleanTargetsRecursively(currentDir, targets, depth = 0) {
       const item = dirent.name;
       const shouldRecurse = await processItem(currentDir, item, targets, depth);
 
-      // 如果是目录且没有被删除，则递归处理
       if (shouldRecurse && dirent.isDirectory()) {
         const itemPath = normalize(join(currentDir, item));
         return cleanTargetsRecursively(itemPath, targets, depth + 1);
@@ -99,10 +234,7 @@ async function cleanTargetsRecursively(currentDir, targets, depth = 0) {
       return null;
     });
 
-    // 并发执行当前批次的任务
     const results = await Promise.allSettled(tasks);
-
-    // 检查是否有失败的任务（可选：用于调试）
     const failedTasks = results.filter(
       (result) => result.status === 'rejected',
     );
@@ -115,7 +247,6 @@ async function cleanTargetsRecursively(currentDir, targets, depth = 0) {
 }
 
 (async function startCleanup() {
-  // 要删除的目录及文件名称
   const targets = ['node_modules', 'dist', '.turbo', 'dist.zip'];
   const deleteLockFile = process.argv.includes('--del-lock');
   const cleanupTargets = [...targets];
@@ -129,15 +260,40 @@ async function cleanTargetsRecursively(currentDir, targets, depth = 0) {
   );
 
   const startTime = Date.now();
+  let hadFailure = false;
 
   try {
-    // 先统计要删除的目标数量
-    console.log('📊 Scanning for cleanup targets...');
+    console.log('🧹 Pre-cleaning Vite caches (node_modules/.vite) ...');
+    await precleanViteCaches(rootDir);
+    console.log('✅ Vite cache pre-clean done');
 
+    console.log('📊 Scanning for cleanup targets...');
     await cleanTargetsRecursively(rootDir, cleanupTargets);
+
+    const rootNodeModules = normalize(join(rootDir, 'node_modules'));
+    try {
+      await fs.access(rootNodeModules);
+      console.log('🔁 Retrying root node_modules deletion ...');
+      const ok = await removePathWithRetry(rootNodeModules, { maxAttempts: 8 });
+      if (!ok) {
+        hadFailure = true;
+      }
+    } catch (error) {
+      if (error.code !== 'ENOENT') {
+        throw error;
+      }
+    }
 
     const endTime = Date.now();
     const duration = (endTime - startTime) / 1000;
+
+    if (hadFailure) {
+      console.warn(
+        `⚠️ Cleanup finished with errors in ${duration.toFixed(2)}s (see messages above).`,
+      );
+      process.exitCode = 1;
+      return;
+    }
 
     console.log(
       `✨ Cleanup process completed successfully in ${duration.toFixed(2)}s`,

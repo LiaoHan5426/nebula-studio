@@ -1,0 +1,24 @@
+{
+  "name": "@nebula-studio/nebula-integration-panel",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "vue": "catalog:vue",
+    "@nebula-studio/nebula-ui": "workspace:^",
+    "@nebula-studio/nebula-flow-editor": "workspace:^"
+  },
+  "devDependencies": {
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "@nebula-studio/types": "workspace:^",
+    "sass": "catalog:style"
+  }
+}

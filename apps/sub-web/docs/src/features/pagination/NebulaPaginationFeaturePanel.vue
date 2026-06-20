@@ -7,7 +7,7 @@ import { paginationDocAnchorItems } from './demos/paginationDocAnchors';
 </script>
 
 <template>
-  <div class="pagination-layout">
+  <div class="pagination-layout nebula-anchor-rail">
     <NebulaAnchor
       :items="[...paginationDocAnchorItems]"
       title="On This Page"

@@ -7,7 +7,7 @@ import { placeholderApiRows } from './demos/placeholderApi';
 </script>
 
 <template>
-  <div class="placeholder-layout">
+  <div class="placeholder-layout nebula-anchor-rail">
     <NebulaAnchor
       :items="[...placeholderDocAnchorItems]"
       title="On This Page"

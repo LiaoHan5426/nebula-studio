@@ -1,0 +1,48 @@
+{
+  "name": "@nebula-studio-renderer/integration",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./app": "./src/App.vue",
+    "./router": "./src/router/index.ts",
+    "./bootstrap-auth": "./src/shared/composables/useAuth.ts",
+    "./bootstrap-runtime": "./src/bootstrap/runtime.ts",
+    "./auth/session": "./src/shared/auth/session.ts"
+  },
+  "scripts": {
+    "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false",
+    "dev": "vite dev",
+    "build": "vite build --base=/integration/",
+    "preview": "vite preview",
+    "build:web": "vite build",
+    "test": "vp test"
+  },
+  "dependencies": {
+    "@nebula-studio-electron/electron-shared": "workspace:^",
+    "@nebula-studio-electron/electron-shared-vue": "workspace:^",
+    "@nebula-studio-internal/tailwind": "workspace:^",
+    "@nebula-studio/app-shell": "workspace:^",
+    "@nebula-studio/api-client": "workspace:^",
+    "@nebula-studio/nebula-layout": "workspace:^",
+    "@nebula-studio/nebula-ui": "workspace:^",
+    "@nebula-studio/nebula-flow-editor": "workspace:^",
+    "@nebula-studio/nebula-dag-editor": "workspace:^",
+    "@nebula-studio/nebula-low-render": "workspace:^",
+    "@nebula-studio/nebula-integration-panel": "workspace:^",
+    "vue": "catalog:vue",
+    "vue-router": "catalog:vue"
+  },
+  "devDependencies": {
+    "@electron-toolkit/preload": "catalog:electron",
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "@nebula-studio-internal/vite": "workspace:^",
+    "@nebula-studio/types": "workspace:^",
+    "happy-dom": "catalog:vite",
+    "typescript": "catalog:types",
+    "vite": "catalog:vite",
+    "vite-plus": "catalog:vite",
+    "vitest": "catalog:vite",
+    "vue-tsc": "catalog:vue"
+  }
+}

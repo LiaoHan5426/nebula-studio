@@ -40,13 +40,27 @@ export const NebulaTable = defineComponent({
       type: Object as PropType<Record<string, unknown>>,
       default: undefined,
     },
+    rowKey: {
+      type: String,
+      default: undefined,
+    },
     columnConfig: {
       type: Object as PropType<Record<string, unknown>>,
+      default: undefined,
+    },
+    scrollX: {
+      type: [Boolean, Object] as PropType<
+        boolean | { enabled?: boolean; gt?: number }
+      >,
       default: undefined,
     },
     dragMode: {
       type: String as PropType<NebulaTableDragMode>,
       default: 'none',
+    },
+    treeConfig: {
+      type: Object as PropType<Record<string, unknown>>,
+      default: undefined,
     },
     class: {
       type: String,
@@ -54,6 +68,14 @@ export const NebulaTable = defineComponent({
     },
   },
   setup(props, { slots }) {
+    const computedRowConfig = {
+      ...props.rowConfig,
+    };
+
+    if (props.rowKey) {
+      computedRowConfig.useKey = props.rowKey;
+    }
+
     return () =>
       h(
         VxeTable as unknown as object,
@@ -61,19 +83,27 @@ export const NebulaTable = defineComponent({
           data: props.data,
           border: props.border,
           stripe: props.stripe,
-          loading: props.loading,
           size: props.size,
           height: props.height,
           maxHeight: props.maxHeight,
-          rowConfig: props.rowConfig,
+          rowConfig: computedRowConfig,
           columnConfig: props.columnConfig,
+          scrollX: props.scrollX,
+          treeConfig: props.treeConfig,
           class: cn(
             'nebula-table',
             `nebula-table--drag-${props.dragMode}`,
             props.class,
           ),
         },
-        slots,
+        {
+          ...slots,
+          loading:
+            slots.loading ||
+            (props.loading
+              ? () => h('div', { class: 'vxe-table--loading' }, '加载中...')
+              : undefined),
+        },
       );
   },
 });

@@ -7,7 +7,7 @@ import { sqlAgentInfo } from './demos/agentInfo';
 </script>
 
 <template>
-  <div class="agent-layout">
+  <div class="agent-layout nebula-anchor-rail">
     <NebulaAnchor
       :items="[...agentDocAnchorItems]"
       title="On This Page"

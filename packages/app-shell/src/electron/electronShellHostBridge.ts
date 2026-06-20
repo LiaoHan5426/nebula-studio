@@ -1,4 +1,8 @@
-import { persistActiveViewPreference } from '../common/activeViewPreference';
+import {
+  persistActiveViewPreference,
+  persistShellSurfacePreference,
+} from '../common/activeViewPreference';
+import { isElectronIframeEmbedPresentation } from '../common/shellPresentationConfig';
 import type { ShellHostBridge } from '../common/shellHostBridge';
 
 /** 已废弃：集成层显隐改由 `nebula-shell-active-view` 驱动，启动时删除以免误判 */
@@ -8,7 +12,7 @@ const LEGACY_SHELL_INTEGRATION_HOME_KEY = 'nebula-shell-integration-home';
 export function createElectronShellHostBridge(): ShellHostBridge {
   return {
     kind: 'electron',
-    usesIframeEmbed: false,
+    usesIframeEmbed: isElectronIframeEmbedPresentation(),
     shouldPersistActiveViewPreference: false,
     shouldRestoreActiveViewFromPreference: false,
     persistIntegrationOpenFromWatch() {
@@ -26,7 +30,7 @@ export function createElectronShellHostBridge(): ShellHostBridge {
       }
       /* 「回到集成首页」：清本地键 + 主进程选中子应用，刷新后与 Web 一致优先展开集成层 */
       if (options?.clearActiveViewOnOpen) {
-        persistActiveViewPreference(null);
+        persistShellSurfacePreference({ kind: 'integration' });
         void window.electron.ipcRenderer.invoke(
           'shell:clear-active-embedded-view',
         );

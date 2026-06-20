@@ -1,0 +1,37 @@
+{
+  "name": "@nebula-studio/api-client",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": [
+    "./src/styles/progress.ts"
+  ],
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./progress": {
+      "types": "./src/styles/progress.ts",
+      "default": "./src/styles/progress.ts"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vp test"
+  },
+  "dependencies": {
+    "nprogress": "catalog:"
+  },
+  "devDependencies": {
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "@nebula-studio/types": "workspace:^",
+    "@types/nprogress": "catalog:types",
+    "happy-dom": "catalog:vite",
+    "typescript": "catalog:types",
+    "vite-plus": "catalog:vite",
+    "vitest": "catalog:vite"
+  }
+}

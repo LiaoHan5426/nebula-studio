@@ -1,8 +1,0 @@
----
-description: 常亮：含糊/错别字反馈以仓库 Skill 为准
-alwaysApply: true
----
-
-# 含糊 / 错别字反馈
-
-以 `.cursor/skills/confirm-feedback-typo/SKILL.md` 为准；需要细节时读取该文件。

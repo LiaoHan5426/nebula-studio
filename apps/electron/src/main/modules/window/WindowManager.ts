@@ -18,6 +18,13 @@ import type { AbstractSecurityRule } from '../security/AbstractSecurityRule';
 
 type WindowId = keyof typeof appConfig.windows;
 
+/** 与壳层 `.shell-tags-view` 高度一致，用于 viewport 未上报前的安全默认区域 */
+const SHELL_TAGS_HEIGHT_PX = 40;
+
+function usesBrowserViewEmbed(): boolean {
+  return appConfig.electronEmbeddedPresentation === 'browser-view';
+}
+
 function preloadJsPath(slug: string): string {
   return resolve(__dirname, '../preload', `${slug}.mjs`);
 }
@@ -76,7 +83,7 @@ export class WindowManager {
   readonly #securityRules: AbstractSecurityRule[];
   readonly #shellViewportBoundsByShellContents = new WeakMap<
     WebContents,
-    { x: number; width: number }
+    { x: number; y: number; width: number; height: number }
   >();
   readonly #relayoutEmbeddedViewsByShellWindow = new WeakMap<
     BrowserWindow,
@@ -98,7 +105,16 @@ export class WindowManager {
   registerCoreIpc(): void {
     ipcMain.on(
       'shell-viewport',
-      (event, payload: { x?: number; width?: number }) => {
+      (
+        event,
+        payload: {
+          x?: number;
+          y?: number;
+          width?: number;
+          height?: number;
+        },
+      ) => {
+        if (!usesBrowserViewEmbed()) return;
         if (
           typeof payload?.width !== 'number' ||
           !Number.isFinite(payload.width)
@@ -108,9 +124,19 @@ export class WindowManager {
           typeof payload.x === 'number' && Number.isFinite(payload.x)
             ? payload.x
             : 0;
+        const y =
+          typeof payload.y === 'number' && Number.isFinite(payload.y)
+            ? payload.y
+            : appConfig.shell.topInsetPx;
+        const height =
+          typeof payload.height === 'number' && Number.isFinite(payload.height)
+            ? payload.height
+            : 0;
         this.#shellViewportBoundsByShellContents.set(event.sender, {
           x: Math.max(0, Math.floor(x)),
+          y: Math.max(0, Math.floor(y)),
           width: Math.floor(payload.width),
+          height: Math.max(0, Math.floor(height)),
         });
         const shellWin = BrowserWindow.fromWebContents(event.sender);
         if (shellWin)
@@ -151,7 +177,12 @@ export class WindowManager {
         if (typeof viewId !== 'string' || !viewId) return false;
         const wid = viewId as EmbeddedWindowId;
         if (!listShellIntegrableAppIds().includes(wid)) return false;
-        if (!this.#embeddedViewsById.has(wid)) return false;
+        if (usesBrowserViewEmbed() && !this.#embeddedViewsById.has(wid)) {
+          return false;
+        }
+        if (!usesBrowserViewEmbed() && !listEmbeddedWindowIds().includes(wid)) {
+          return false;
+        }
         if (!this.#enabledEmbeddedViewOrder.includes(wid)) {
           this.#enabledEmbeddedViewOrder.push(wid);
         }
@@ -166,7 +197,12 @@ export class WindowManager {
         if (typeof viewId !== 'string' || !viewId) return false;
         const wid = viewId as EmbeddedWindowId;
         if (!listShellIntegrableAppIds().includes(wid)) return false;
-        if (!this.#embeddedViewsById.has(wid)) return false;
+        if (usesBrowserViewEmbed() && !this.#embeddedViewsById.has(wid)) {
+          return false;
+        }
+        if (!usesBrowserViewEmbed() && !listEmbeddedWindowIds().includes(wid)) {
+          return false;
+        }
         if (!this.#enabledEmbeddedViewOrder.includes(wid)) return true;
         this.#enabledEmbeddedViewOrder = this.#enabledEmbeddedViewOrder.filter(
           (id) => id !== wid,
@@ -175,12 +211,6 @@ export class WindowManager {
           this.#activeEmbeddedViewId =
             this.getAvailableEmbeddedViewIds()[0] ?? null;
           if (this.#mainWindow) {
-            if (this.#activeEmbeddedViewId) {
-              const nextView = this.#embeddedViewsById.get(
-                this.#activeEmbeddedViewId,
-              );
-              if (nextView) this.#mainWindow.setTopBrowserView(nextView);
-            }
             this.#relayoutEmbeddedViewsByShellWindow.get(this.#mainWindow)?.();
           }
         }
@@ -196,8 +226,10 @@ export class WindowManager {
         const next = ordered.filter(
           (id): id is EmbeddedWindowId =>
             typeof id === 'string' &&
-            this.#embeddedViewsById.has(id as EmbeddedWindowId) &&
-            this.#enabledEmbeddedViewOrder.includes(id as EmbeddedWindowId),
+            this.#enabledEmbeddedViewOrder.includes(id as EmbeddedWindowId) &&
+            (usesBrowserViewEmbed()
+              ? this.#embeddedViewsById.has(id as EmbeddedWindowId)
+              : listEmbeddedWindowIds().includes(id as EmbeddedWindowId)),
         );
         if (next.length !== this.#enabledEmbeddedViewOrder.length) return false;
         if (new Set(next).size !== this.#enabledEmbeddedViewOrder.length)
@@ -209,23 +241,28 @@ export class WindowManager {
             ? this.#activeEmbeddedViewId
             : (this.#enabledEmbeddedViewOrder[0] ?? null);
         if (this.#mainWindow) {
-          const top = this.#activeEmbeddedViewId
-            ? this.#embeddedViewsById.get(this.#activeEmbeddedViewId)
-            : null;
-          if (top) this.#mainWindow.setTopBrowserView(top);
           this.#relayoutEmbeddedViewsByShellWindow.get(this.#mainWindow)?.();
         }
         return true;
       },
     );
 
+    ipcMain.on(
+      'shell:embedded-content-visible',
+      (event, payload: { visible?: boolean }) => {
+        if (!usesBrowserViewEmbed()) return;
+        if (BrowserWindow.fromWebContents(event.sender) !== this.#mainWindow) {
+          return;
+        }
+        this.#applyEmbeddedContentVisible(payload?.visible !== false);
+      },
+    );
+
     ipcMain.handle(
       'shell:set-embedded-content-visible',
       (_event, payload: { visible?: boolean }) => {
-        this.#embeddedContentVisible = payload?.visible !== false;
-        if (this.#mainWindow) {
-          this.#relayoutEmbeddedViewsByShellWindow.get(this.#mainWindow)?.();
-        }
+        if (!usesBrowserViewEmbed()) return true;
+        this.#applyEmbeddedContentVisible(payload?.visible !== false);
         return true;
       },
     );
@@ -289,24 +326,30 @@ export class WindowManager {
 
     const embeddedViews = new Map<EmbeddedWindowId, BrowserView>();
     const relayoutEmbedded = (): void => {
+      if (!usesBrowserViewEmbed()) return;
       this.#layoutEmbeddedBrowserViews(win, embeddedViews);
     };
     this.#relayoutEmbeddedViewsByShellWindow.set(win, relayoutEmbedded);
 
-    for (const id of listEmbeddedWindowIds()) {
-      const wcfg = resolveRendererEntry(id);
-      const view = new BrowserView({
-        webPreferences: {
-          ...rendererWebPreferences(wcfg.preload as string),
-          session: win.webContents.session,
-        },
-      });
-      this.#applySecurityRules(view.webContents);
-      loadRendererContents(view.webContents, id);
-      win.addBrowserView(view);
-      embeddedViews.set(id, view);
+    if (usesBrowserViewEmbed()) {
+      for (const id of listEmbeddedWindowIds()) {
+        const wcfg = resolveRendererEntry(id);
+        const view = new BrowserView({
+          webPreferences: {
+            ...rendererWebPreferences(wcfg.preload as string),
+            session: win.webContents.session,
+            // 子应用切走时尺寸为 0 会触发 Chromium 节流；关闭后可即时恢复显示
+            backgroundThrottling: false,
+          },
+        });
+        this.#applySecurityRules(view.webContents);
+        loadRendererContents(view.webContents, id);
+        embeddedViews.set(id, view);
+      }
+      this.#embeddedViewsById = embeddedViews;
+    } else {
+      this.#embeddedViewsById = new Map();
     }
-    this.#embeddedViewsById = embeddedViews;
     this.#enabledEmbeddedViewOrder = this.#initialEnabledEmbeddedViewOrder();
     // 与 Web 侧「无 nebula-shell-active-view 先展示应用集成」一致，不预选中首个 BrowserView
     this.#activeEmbeddedViewId = null;
@@ -378,11 +421,14 @@ export class WindowManager {
 
   setActiveEmbeddedView(viewId: EmbeddedWindowId): boolean {
     if (!this.#enabledEmbeddedViewOrder.includes(viewId)) return false;
-    const view = this.#embeddedViewsById.get(viewId);
-    if (!view) return false;
+    if (usesBrowserViewEmbed()) {
+      const view = this.#embeddedViewsById.get(viewId);
+      if (!view) return false;
+    } else if (!listEmbeddedWindowIds().includes(viewId)) {
+      return false;
+    }
     this.#activeEmbeddedViewId = viewId;
     if (this.#mainWindow) {
-      this.#mainWindow.setTopBrowserView(view);
       this.#relayoutEmbeddedViewsByShellWindow.get(this.#mainWindow)?.();
     }
     return true;
@@ -429,10 +475,18 @@ export class WindowManager {
     this.#loginWindow = win;
   }
 
+  #applyEmbeddedContentVisible(visible: boolean): void {
+    this.#embeddedContentVisible = visible;
+    if (this.#mainWindow) {
+      this.#relayoutEmbeddedViewsByShellWindow.get(this.#mainWindow)?.();
+    }
+  }
+
   #layoutEmbeddedBrowserViews(
     win: BrowserWindow,
     views: Map<EmbeddedWindowId, BrowserView>,
   ): void {
+    if (!usesBrowserViewEmbed()) return;
     const top = appConfig.shell.topInsetPx;
     const { width, height } = win.getContentBounds();
     const bounds = this.#shellViewportBoundsByShellContents.get(
@@ -440,16 +494,35 @@ export class WindowManager {
     );
     const w = Math.max(0, bounds?.width ?? width);
     const x = Math.max(0, bounds?.x ?? 0);
-    const h = Math.max(0, height - top);
+    const y = Math.max(0, bounds?.y ?? top + SHELL_TAGS_HEIGHT_PX);
+    const h = Math.max(
+      0,
+      bounds?.height && bounds.height > 0 ? bounds.height : height - y,
+    );
+    const viewX = x;
+    const viewW = w;
+
+    const attached = new Set(win.getBrowserViews());
+    let topView: BrowserView | null = null;
+
     for (const [id, view] of views) {
       const isActive = this.#activeEmbeddedViewId === id;
       const show = this.#embeddedContentVisible && isActive;
-      view.setBounds({
-        x: show ? x : 0,
-        y: top,
-        width: show ? w : 0,
-        height: show ? h : 0,
-      });
+      if (show) {
+        if (!attached.has(view)) {
+          win.addBrowserView(view);
+          attached.add(view);
+        }
+        view.setBounds({ x: viewX, y, width: viewW, height: h });
+        topView = view;
+      } else if (attached.has(view)) {
+        win.removeBrowserView(view);
+        attached.delete(view);
+      }
+    }
+
+    if (topView) {
+      win.setTopBrowserView(topView);
     }
   }
 

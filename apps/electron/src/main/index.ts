@@ -1,5 +1,6 @@
 import { app } from 'electron';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
+import { bootstrapShellIntegratedApps } from '@nebula-studio-renderer/main/platform/integrated-apps';
 import { MainAppLauncher } from './bootstrap/MainAppLauncher';
 import { AppearanceSettingsModule } from './modules/AppearanceSettingsModule';
 import { ApplicationLogger } from './modules/ApplicationLogger';
@@ -14,6 +15,8 @@ import { WindowManager } from './modules/window/WindowManager';
 import { WindowManagerModule } from './modules/window/WindowManagerModule';
 
 app.whenReady().then(async () => {
+  bootstrapShellIntegratedApps();
+
   const configManager = new ConfigManager();
   const logger = new ApplicationLogger({
     configuredLogDir: configManager.getLogDir(),

@@ -62,7 +62,9 @@ const editorContainerStyle = computed<CSSProperties>(() => ({
   visibility: isReady.value && !error.value ? 'visible' : 'hidden',
 }));
 
-const setEditorContainer = (element: Element | ComponentPublicInstance | null) => {
+const setEditorContainer = (
+  element: Element | ComponentPublicInstance | null,
+) => {
   container.value = element instanceof HTMLElement ? element : undefined;
 };
 

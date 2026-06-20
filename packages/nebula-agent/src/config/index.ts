@@ -29,7 +29,9 @@ const defaultConfig: AgentsConfig = {
 
 let currentConfig: AgentsConfig = { ...defaultConfig };
 
-export function updateConfig(config: Record<string, AgentConfig | undefined>): void {
+export function updateConfig(
+  config: Record<string, AgentConfig | undefined>,
+): void {
   Object.entries(config).forEach(([key, value]) => {
     if (value !== undefined) {
       currentConfig[key] = value;

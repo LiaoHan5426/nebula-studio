@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./app": "./src/App.vue"
+    "./app": "./src/App.vue",
+    "./platform/integrated-apps": "./src/platform/integratedApps.ts"
   },
   "scripts": {
     "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false",
@@ -15,7 +16,9 @@
   "dependencies": {
     "@nebula-studio-electron/electron-shared-vue": "workspace:^",
     "@nebula-studio-internal/tailwind": "workspace:^",
+    "@nebula-studio/api-client": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
+    "@nebula-studio/nebula-layout": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
     "vue": "catalog:vue"
   },

@@ -9,7 +9,7 @@ import { tableDocAnchorItems } from './demos/tableDocAnchors';
 </script>
 
 <template>
-  <div class="table-layout">
+  <div class="table-layout nebula-anchor-rail">
     <NebulaAnchor
       :items="[...tableDocAnchorItems]"
       title="On This Page"

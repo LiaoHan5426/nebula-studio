@@ -4,3 +4,4 @@ export {
   nebulaWebShellPlugin,
   type NebulaWebShellPluginOptions,
 } from './nebulaWebShell.ts';
+export { nebulaSubWebAliasPlugin } from './nebulaSubWebAlias.ts';

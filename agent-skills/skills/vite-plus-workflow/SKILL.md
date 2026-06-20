@@ -95,6 +95,61 @@ After pulling changes: `vp install`.
 
 Before finishing work: run whatever the repo documents (`vp check`, `vp test`, or package scripts).
 
+## Cursor agent shell (Windows PowerShell)
+
+When the agent runs `vp` via the **Shell tool** on Windows, output capture differs from an interactive local terminal. Follow these rules so builds and checks return usable results.
+
+### Do not tail or pipe `vp` output in the agent shell
+
+**Never** append `2>&1 | Select-Object -Last N` (or `| tail`, `| head`, `Select-Object -First`) to `vp` commands.
+
+PowerShell's `-Last` / `-First` must **buffer the entire stream** before emitting anything. Long commands such as `vp run build` or `vp check` then appear to produce **no output** in Cursor until they finish — and if `block_until_ms` expires first, the Shell tool backgrounds the job with an empty or near-empty capture even though the same one-liner works locally.
+
+```powershell
+# Wrong — Cursor agent often sees zero output until build exits (may never surface)
+cd F:\2-front\nebula-studio\nebula-studio; vp run --filter @nebula-studio/web build 2>&1 | Select-Object -Last 25
+
+# Correct — run plainly; prefer rtk for compact output (project RTK rules)
+rtk vp run --filter @nebula-studio/web build
+```
+
+### Shell tool settings for `vp`
+
+| Practice | Why |
+| --- | --- |
+| Set **`working_directory`** to the repo root (e.g. `F:\2-front\nebula-studio\nebula-studio`) | Avoid `cd path;` — redundant and easy to mis-quote |
+| **No stdout/stderr pipes** on `vp build`, `vp check`, `vp test` | Pipes hide output until the child process exits |
+| **`block_until_ms` ≥ 300000** (5 min) for scoped builds; **≥ 600000** (10 min) for `vp run build` / `vp check` on the full monorepo | Monorepo builds routinely exceed 2–3 minutes |
+| Prefix with **`rtk`** when available (`rtk vp run build`, `rtk vp check`) | Compact, file-grouped output; satisfies project RTK rules |
+| If the command was backgrounded, **`Await`** on the terminal file or **`Read`** the terminals log | Do not assume failure from an empty first poll |
+
+Chain with **`;`**, not `&&` — see `agent-skills/skills/powershell-shell-workflow/SKILL.md`.
+
+### When you only need the last lines after a build
+
+Run the build to completion **without** piping, then read the tail from the terminal log or a file:
+
+```powershell
+# Option A — after Shell/Await shows exit_code, read the terminal capture (preferred)
+
+# Option B — explicit log + tail (only when user/script needs a saved artifact)
+rtk vp run --filter @nebula-studio/web build *>&1 | Tee-Object -FilePath .vp-build.log
+Get-Content .vp-build.log -Tail 25
+```
+
+`Tee-Object` still buffers less aggressively than `Select-Object -Last` when used alone for the follow-up `Get-Content -Tail`; the critical rule is **do not pipe the running `vp` command through `-Last` / `-First`**.
+
+### Quick reference (agent)
+
+| Task | Shell tool command | `block_until_ms` |
+| --- | --- | --- |
+| Install | `rtk vp install` | 120000 |
+| Check / lint | `rtk vp check` | 300000 |
+| Test | `rtk vp test` | 300000 |
+| Scoped build | `rtk vp run --filter <pkg> build` | 300000 |
+| Full monorepo build | `rtk vp run build` | 600000 |
+| Dev server | `vp run dev:web` with `block_until_ms: 0` (background) | 0 |
+
 ### This repo: no `npm` / `pnpm` in scripts or CI
 
 In `package.json` `scripts` and `.github/workflows/*`, do not call `npm run`, `npx`, `pnpm`, or `pnpm run`. Use **`vp`** (`vp run`, `vp install`, `vp dlx`, …). If existing scripts currently call `npm`/`pnpm`/`npx`, update them by replacing those invocations with equivalent `vp` invocations (for example, replace `npm run build` with `vp run build`). If a script relies on package-manager-specific behavior, document those required changes before migration. CI should bootstrap with **`voidzero-dev/setup-vp`** and then `vp install` / `vp run …`. Keeping `packageManager` / `pnpm-lock.yaml` for Corepack and lockfile is fine; day-to-day commands stay on **`vp`**.

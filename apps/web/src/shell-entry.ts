@@ -4,9 +4,12 @@ import {
   redirectShellToWebLogin,
   shouldRedirectUnauthenticatedWebShell,
 } from '@nebula-studio/app-shell';
+import { bootstrapShellIntegratedApps } from '@nebula-studio-renderer/main/platform/integrated-apps';
 import { ConfigProvider } from '@nebula-studio-electron/electron-shared-vue';
 import { createApp, h } from 'vue';
 import App from '@nebula-studio-renderer/main/app';
+
+bootstrapShellIntegratedApps();
 
 installWebPresentation({
   scope: 'web-shell',

@@ -1,0 +1,345 @@
+/**
+ * BPMN.js theme overrides for Nebula dark/light shell.
+ * Popups attach to body — global rules for .djs-popup.
+ */
+
+.bpmn-editor-wrapper {
+  color: hsl(var(--foreground));
+  --bpmn-surface: hsl(var(--card));
+  --bpmn-surface-elevated: hsl(var(--popover, var(--card)));
+  --bpmn-surface-text: hsl(var(--popover-foreground, var(--foreground)));
+  --bpmn-border: hsl(var(--border));
+  --bpmn-muted: hsl(var(--muted));
+  --bpmn-line: hsl(var(--foreground) / 0.78);
+  --bpmn-line-strong: hsl(var(--foreground) / 0.95);
+  --bpmn-shape-fill: hsl(var(--muted));
+  --bpmn-shape-stroke: hsl(var(--foreground) / 0.62);
+  --bpmn-shape-stroke-strong: hsl(var(--foreground) / 0.88);
+}
+
+.bpmn-editor-wrapper .djs-container,
+.bpmn-editor-wrapper .djs-container svg.new-parent {
+  background-color: var(--bpmn-surface) !important;
+}
+
+/* ---- Diagram: connection lines & arrow markers ---- */
+.bpmn-editor-wrapper .djs-connection .djs-visual > path {
+  fill: none !important;
+  stroke: var(--bpmn-line-strong) !important;
+  stroke-width: 2px !important;
+}
+
+.bpmn-editor-wrapper .djs-connection .djs-visual path[stroke='black'],
+.bpmn-editor-wrapper .djs-connection .djs-visual path[stroke='#000'],
+.bpmn-editor-wrapper .djs-connection .djs-visual path[stroke='#000000'] {
+  stroke: var(--bpmn-line-strong) !important;
+}
+
+.bpmn-editor-wrapper .djs-connection .djs-visual path[style*='stroke'] {
+  stroke: var(--bpmn-line-strong) !important;
+}
+
+.bpmn-editor-wrapper .djs-connection.selected .djs-visual > path,
+.bpmn-editor-wrapper .djs-connection.hover .djs-visual > path {
+  stroke: hsl(var(--primary)) !important;
+}
+
+.bpmn-editor-wrapper .djs-connection .djs-hit {
+  fill: none !important;
+  stroke: none !important;
+}
+
+.bpmn-editor-wrapper defs marker path,
+.bpmn-editor-wrapper defs marker polygon,
+.bpmn-editor-wrapper defs marker polyline {
+  fill: var(--bpmn-line-strong) !important;
+  stroke: var(--bpmn-line-strong) !important;
+}
+
+/* Preview line while connecting */
+.bpmn-editor-wrapper .djs-dragging .djs-connection .djs-visual > path,
+.bpmn-editor-wrapper .djs-connect .djs-visual > path {
+  stroke: hsl(var(--primary)) !important;
+}
+
+/* ---- Diagram: shapes (task / event / gateway) ---- */
+.bpmn-editor-wrapper .djs-element:not(.djs-connection) .djs-visual > rect,
+.bpmn-editor-wrapper .djs-element:not(.djs-connection) .djs-visual > circle,
+.bpmn-editor-wrapper .djs-element:not(.djs-connection) .djs-visual > polygon,
+.bpmn-editor-wrapper
+  .djs-element:not(.djs-connection)
+  .djs-visual
+  > path:not(.djs-hit) {
+  fill: var(--bpmn-shape-fill) !important;
+  stroke: var(--bpmn-shape-stroke-strong) !important;
+  stroke-width: 1.5px !important;
+}
+
+.bpmn-editor-wrapper .djs-visual rect[fill='white'],
+.bpmn-editor-wrapper .djs-visual rect[fill='#fff'],
+.bpmn-editor-wrapper .djs-visual rect[fill='#ffffff'],
+.bpmn-editor-wrapper .djs-visual circle[fill='white'],
+.bpmn-editor-wrapper .djs-visual circle[fill='#fff'],
+.bpmn-editor-wrapper .djs-visual circle[fill='#ffffff'] {
+  fill: var(--bpmn-shape-fill) !important;
+}
+
+.bpmn-editor-wrapper .djs-visual rect[stroke='black'],
+.bpmn-editor-wrapper .djs-visual circle[stroke='black'],
+.bpmn-editor-wrapper .djs-visual polygon[stroke='black'] {
+  stroke: var(--bpmn-shape-stroke-strong) !important;
+}
+
+.bpmn-editor-wrapper
+  .djs-element.selected:not(.djs-connection)
+  .djs-visual
+  > rect,
+.bpmn-editor-wrapper
+  .djs-element.selected:not(.djs-connection)
+  .djs-visual
+  > circle,
+.bpmn-editor-wrapper
+  .djs-element.selected:not(.djs-connection)
+  .djs-visual
+  > polygon,
+.bpmn-editor-wrapper
+  .djs-element.selected:not(.djs-connection)
+  .djs-visual
+  > path:not(.djs-hit) {
+  stroke: hsl(var(--primary)) !important;
+}
+
+/* ---- Diagram: labels ---- */
+.bpmn-editor-wrapper .djs-label,
+.bpmn-editor-wrapper .djs-label tspan,
+.bpmn-editor-wrapper .djs-element .djs-visual text,
+.bpmn-editor-wrapper text.djs-label {
+  fill: hsl(var(--foreground)) !important;
+  stroke: none !important;
+}
+
+/* ---- Left palette ---- */
+.bpmn-editor-wrapper .djs-palette {
+  box-sizing: border-box;
+  width: 48px;
+  padding-bottom: 2px;
+  overflow: hidden;
+  background: var(--bpmn-surface-elevated) !important;
+  border: 1px solid var(--bpmn-border) !important;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 25%) !important;
+}
+
+.bpmn-editor-wrapper .djs-palette.open.two-column {
+  width: 94px;
+}
+
+.bpmn-editor-wrapper .djs-palette .djs-palette-entries {
+  box-sizing: border-box;
+  padding-bottom: 2px;
+}
+
+.bpmn-editor-wrapper .djs-palette .entry,
+.bpmn-editor-wrapper .djs-palette .djs-palette-toggle {
+  box-sizing: border-box;
+  width: 46px;
+  height: 46px;
+  margin: 0;
+  padding: 0;
+  line-height: 46px;
+  color: var(--bpmn-surface-text) !important;
+  background: transparent !important;
+  border-radius: 4px;
+}
+
+.bpmn-editor-wrapper .djs-palette .entry::before {
+  line-height: 46px;
+  vertical-align: middle;
+}
+
+.bpmn-editor-wrapper .djs-palette .entry:hover,
+.bpmn-editor-wrapper .djs-palette .djs-palette-toggle:hover,
+.bpmn-editor-wrapper .djs-palette .highlighted-entry {
+  color: hsl(var(--primary)) !important;
+  background: hsl(var(--muted)) !important;
+}
+
+.bpmn-editor-wrapper .djs-palette .separator {
+  box-sizing: border-box;
+  width: calc(100% - 12px);
+  margin: 4px 6px;
+  padding-top: 4px;
+  border-bottom-color: var(--bpmn-border) !important;
+}
+
+/* ---- Context pad (wrench menu) ---- */
+.bpmn-editor-wrapper .djs-context-pad {
+  background: var(--bpmn-surface-elevated) !important;
+  border: 1px solid var(--bpmn-border) !important;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 25%) !important;
+}
+
+.bpmn-editor-wrapper .djs-context-pad .entry {
+  color: hsl(var(--foreground)) !important;
+  background: transparent !important;
+}
+
+.bpmn-editor-wrapper .djs-context-pad .entry:hover {
+  background: var(--bpmn-muted) !important;
+}
+
+.bpmn-editor-wrapper .djs-context-pad .entry[class*='bpmn-icon']::before {
+  color: hsl(var(--foreground)) !important;
+}
+
+/* ---- Popups (Change element) — on document.body ---- */
+.djs-popup {
+  color: hsl(var(--popover-foreground, var(--foreground))) !important;
+  background: hsl(var(--popover, var(--card))) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 35%) !important;
+}
+
+.djs-popup .djs-popup-header,
+.djs-popup .djs-popup-title,
+.djs-popup .djs-popup-body,
+.djs-popup .djs-popup-search {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.djs-popup .djs-popup-header,
+.djs-popup .djs-popup-title,
+.djs-popup .djs-popup-label,
+.djs-popup .entry-header,
+.djs-popup .entry .djs-popup-label,
+.djs-popup .djs-popup-body .entry,
+.djs-popup .entry {
+  color: hsl(var(--popover-foreground, var(--foreground))) !important;
+}
+
+.djs-popup .entry-header {
+  font-size: 11px;
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+/* Default entry bg is white in diagram-js — causes flash on open */
+.djs-popup .entry {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.djs-popup .entry[class*='bpmn-icon']::before {
+  color: hsl(var(--popover-foreground, var(--foreground))) !important;
+}
+
+.djs-popup .entry:hover,
+.djs-popup .entry.highlighted,
+.djs-popup .entry.active,
+.djs-popup .entry:focus,
+.djs-popup .entry:focus-visible,
+.djs-popup .entry.selected,
+.djs-popup-body .entry:hover,
+.djs-popup-body .entry.highlighted {
+  background: hsl(var(--muted)) !important;
+  background-color: hsl(var(--muted)) !important;
+}
+
+.djs-popup .djs-popup-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 8px 10px !important;
+  margin: 0 !important;
+  border-bottom: 1px solid hsl(var(--border)) !important;
+}
+
+.djs-popup .djs-popup-search-icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  z-index: 1;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  color: hsl(var(--muted-foreground));
+  transform: translateY(-50%);
+}
+
+.djs-popup .djs-popup-search-icon path {
+  fill: currentColor !important;
+}
+
+.djs-popup .djs-popup-search input,
+.djs-popup input[type='text'] {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 10px 8px 34px !important;
+  line-height: 1.25 !important;
+  color: hsl(var(--foreground)) !important;
+  background: hsl(var(--background)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 6px;
+}
+
+.djs-popup .djs-popup-search input:focus {
+  background: hsl(var(--background)) !important;
+  border-color: hsl(var(--primary)) !important;
+  outline: none;
+  box-shadow: 0 0 0 1px hsl(var(--primary) / 35%);
+}
+
+.djs-popup .djs-popup-search input::placeholder {
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+.djs-popup .djs-popup-search-count {
+  padding: 4px 12px 0;
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+/* diagram-js may inline light hover/highlight colors */
+.djs-popup .entry[style*='background-color: rgb(255'],
+.djs-popup .entry[style*='background-color:#fff'],
+.djs-popup .entry[style*='background-color: white'],
+.djs-popup .entry[style*='background: rgb(255'],
+.djs-popup .entry[style*='background:#fff'] {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.djs-popup .entry.highlighted[style*='background'],
+.djs-popup .entry:hover[style*='background'] {
+  background: hsl(var(--muted)) !important;
+  background-color: hsl(var(--muted)) !important;
+}
+
+/* Inline rename */
+.djs-direct-editing-content,
+.djs-direct-editing-parent {
+  color: hsl(var(--foreground)) !important;
+  background: hsl(var(--popover, var(--card))) !important;
+  border: 1px solid hsl(var(--border)) !important;
+}
+
+/* Selection / hover outlines */
+.bpmn-editor-wrapper .djs-outline,
+.bpmn-editor-wrapper .djs-element.selected .djs-outline,
+.bpmn-editor-wrapper .djs-element.hover .djs-outline {
+  stroke: hsl(var(--primary)) !important;
+  stroke-width: 2px !important;
+}
+
+/* Alignment snap lines */
+.bpmn-editor-wrapper .djs-snap-line {
+  stroke: hsl(var(--primary) / 0.55) !important;
+}
+
+/* Watermark */
+.bpmn-editor-wrapper .bjs-powered-by {
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+.bpmn-editor-wrapper .bjs-powered-by svg {
+  fill: hsl(var(--muted-foreground)) !important;
+}

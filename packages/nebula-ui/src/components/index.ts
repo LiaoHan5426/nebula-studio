@@ -11,6 +11,7 @@ export { NebulaButton } from './button/NebulaButton';
 export { NebulaDrag } from './drag/NebulaDrag';
 export { NebulaPane } from './pane/NebulaPane';
 export { NebulaPagination } from './pagination/NebulaPagination';
+export { NebulaDatePicker } from './date-picker/NebulaDatePicker';
 export { NebulaSelect } from './select/NebulaSelect';
 export { NebulaSwitch } from './switch/NebulaSwitch';
 export { NebulaTable } from './table/NebulaTable';
@@ -23,6 +24,14 @@ export { NebulaThemeToggle } from './theme-toggle/NebulaThemeToggle';
 export type { NebulaThemeMode } from './theme-toggle/NebulaThemeToggle';
 export { NebulaTreeMenu } from './tree-menu/NebulaTreeMenu';
 export type { NebulaTreeNode } from './tree-menu/NebulaTreeMenu';
+export { NebulaIconButton } from './icon-button/NebulaIconButton';
+export { NebulaAvatar } from './avatar/NebulaAvatar';
+export {
+  NebulaDropdown,
+  NebulaDropdownItem,
+  NebulaDropdownDivider,
+} from './dropdown/NebulaDropdown';
+export { NebulaDrawer } from './drawer/NebulaDrawer';
 export { NebulaReader } from './reader/NebulaReader';
 export { default as NebulaEditor } from './editor/NebulaEditor.vue';
 export { default as NebulaMarkdownPane } from './markdown-pane/NebulaMarkdownPane.vue';

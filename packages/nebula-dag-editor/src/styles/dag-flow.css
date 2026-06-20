@@ -1,0 +1,121 @@
+.vue-flow__edge.selected .vue-flow__edge-path {
+  stroke: hsl(var(--primary));
+  stroke-width: 2px;
+}
+
+.vue-flow__edge-path {
+  stroke: hsl(var(--muted-foreground) / 70%);
+  stroke-width: 1.5px;
+}
+
+.vue-flow__connection-path {
+  stroke: hsl(var(--primary) / 80%);
+  stroke-width: 1.5px;
+  stroke-dasharray: 6 4;
+}
+
+.dag-editor .vue-flow__node {
+  width: auto;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  font-size: 12px;
+}
+
+.modal--dag.nebula-pane {
+  display: flex;
+  flex-direction: column;
+  width: min(98vw, 1440px) !important;
+  height: calc(94vh - 32px);
+  max-height: calc(94vh - 32px);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.modal-overlay--full .modal--dag.nebula-pane {
+  flex: 1 1 auto;
+  width: min(98vw, 1440px) !important;
+  max-width: 1440px;
+  min-height: 0;
+}
+
+.modal--dag .nebula-pane__header {
+  flex-shrink: 0;
+}
+
+.modal--dag .nebula-pane__body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.modal--dag .modal--dag__content {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.modal--dag .dag-editor {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.modal--dag .dag-editor__toolbar {
+  flex-shrink: 0;
+}
+
+.modal--dag .dag-editor__main {
+  display: grid;
+  flex: 1 1 auto;
+  grid-template-columns: 168px minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  min-height: 0;
+  overflow: hidden;
+  align-items: stretch;
+}
+
+.modal--dag .dag-editor__main--with-panel {
+  grid-template-columns: 168px minmax(0, 1fr) 232px;
+}
+
+.modal--dag .dag-editor__palette,
+.modal--dag .dag-editor__canvas-wrap,
+.modal--dag .dag-editor__panel {
+  min-height: 0;
+  height: 100%;
+}
+
+.modal--dag .dag-editor__canvas-wrap .vue-flow {
+  width: 100%;
+  height: 100%;
+}
+
+.modal--dag .modal__actions {
+  position: relative;
+  z-index: 20;
+  flex: 0 0 auto;
+  padding-top: 12px;
+  margin-top: 0;
+  background: hsl(var(--card));
+  border-top: 1px solid hsl(var(--border));
+}
+
+.modal--dag .dag-node-palette {
+  min-height: 0;
+  height: 100%;
+  overflow: auto;
+}
+
+.dag-editor__panel .nebula-select__dropdown {
+  z-index: 1200;
+}

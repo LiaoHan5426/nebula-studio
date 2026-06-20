@@ -2,7 +2,9 @@ import '@nebula-studio-internal/tailwind/electron';
 import { installWebPresentation } from '@nebula-studio/app-shell';
 import { ConfigProvider } from '@nebula-studio-electron/electron-shared-vue';
 import { createApp, h } from 'vue';
+
 import App from '../App.vue';
+import router from '../router';
 
 installWebPresentation({
   scope: 'web-embed-settings',
@@ -20,4 +22,6 @@ createApp({
         default: () => h(App),
       },
     ),
-}).mount('#app');
+})
+  .use(router)
+  .mount('#app');

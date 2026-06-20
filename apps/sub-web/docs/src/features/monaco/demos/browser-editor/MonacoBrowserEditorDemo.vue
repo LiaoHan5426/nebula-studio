@@ -1,6 +1,5 @@
 <script setup lang="ts"></script>
 
-
 <template>
   <div>
     <div class="monaco-browser-editor__top"></div>

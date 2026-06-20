@@ -18,5 +18,9 @@ void (async (): Promise<void> => {
     await import('./embed/login-entry.js');
     return;
   }
+  if (surface === 'integration') {
+    await import('./embed/integration-entry.js');
+    return;
+  }
   await import('./shell-entry.js');
 })();

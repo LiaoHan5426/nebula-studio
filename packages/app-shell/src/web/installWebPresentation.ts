@@ -11,6 +11,7 @@ import {
   redirectShellToWebLogin,
   writeWebAuthSession,
 } from './webAuth';
+import { loginWithBackendAuth } from './webBackendAuth';
 import { createWebNotifyApi } from './webNotify';
 import { createWebShellEmbeddedStateHandlers } from './webShellEmbeddedState';
 import type { PreferenceIpcListener } from './webShellEmbeddedState';
@@ -231,13 +232,22 @@ export function installWebPresentation(
     },
     auth: {
       login: async (payload: { user: string; password: string }) => {
-        const u = payload.user?.trim();
-        if (!u) throw new Error('请输入用户名');
-        if (payload.password !== 'demo') {
-          throw new Error('演示环境请使用密码：demo');
+        const result = await loginWithBackendAuth(
+          payload.user,
+          payload.password,
+        );
+        if (result.needsOrgSelection) {
+          return {
+            ok: false as const,
+            needsOrgSelection: true as const,
+            pending: result,
+          };
         }
-        writeWebAuthSession({ user: u, token: 'web-demo' });
-        return { ok: true as const, user: u };
+        writeWebAuthSession({
+          user: result.username,
+          token: result.token,
+        });
+        return { ok: true as const, user: result.username };
       },
       getSession: async () => readWebAuthSession(),
       logout: async () => {
