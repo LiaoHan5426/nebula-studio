@@ -29,6 +29,9 @@ export type ApiRequestOptions = RequestInit & {
 export interface ApiClientConfig {
   getAuthToken?: () => string | null | undefined;
   getTenantId?: () => string | null | undefined;
+  getOrgId?: () => string | null | undefined;
+  credentials?: RequestCredentials;
+  getCredentials?: () => RequestCredentials | undefined;
   /** Default true — set false to disable progress for this client instance. */
   progress?: boolean;
 }

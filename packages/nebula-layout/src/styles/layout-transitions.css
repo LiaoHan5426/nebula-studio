@@ -1,0 +1,18 @@
+.nebula-layout-transition {
+  transition:
+    width var(--layout-transition-duration) var(--layout-transition-ease),
+    min-width var(--layout-transition-duration) var(--layout-transition-ease),
+    max-width var(--layout-transition-duration) var(--layout-transition-ease),
+    opacity var(--layout-transition-duration) var(--layout-transition-ease),
+    transform var(--layout-transition-duration) var(--layout-transition-ease);
+}
+
+.nebula-layout-fade-enter-active,
+.nebula-layout-fade-leave-active {
+  transition: opacity 0.22s ease;
+}
+
+.nebula-layout-fade-enter-from,
+.nebula-layout-fade-leave-to {
+  opacity: 0;
+}

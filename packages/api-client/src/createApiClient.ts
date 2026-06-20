@@ -49,7 +49,20 @@ function buildHeaders(
     }
   }
 
+  if (config.getOrgId) {
+    const orgId = config.getOrgId();
+    if (orgId) {
+      headers['X-Org-Id'] = orgId;
+    }
+  }
+
   return mergeHeaders(headers, options.headers);
+}
+
+function resolveCredentials(
+  config: ApiClientConfig,
+): RequestCredentials | undefined {
+  return config.getCredentials?.() ?? config.credentials;
 }
 
 function shouldTrackProgress(
@@ -79,6 +92,7 @@ export function createApiClient(config: ApiClientConfig = {}) {
 
     const request = fetch(url, {
       ...fetchOptions,
+      credentials: resolveCredentials(config),
       headers: buildHeaders(config, options),
     });
 
@@ -97,6 +111,7 @@ export function createApiClient(config: ApiClientConfig = {}) {
     const execute = async (): Promise<ApiResponse<T>> => {
       const response = await fetch(url, {
         ...options,
+        credentials: resolveCredentials(config),
         headers: buildHeaders(config, options),
       });
       return parseApiResponse<T>(response);

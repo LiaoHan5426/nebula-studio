@@ -5,6 +5,10 @@ type ShellParentWindow = Window & {
   api?: Record<string, unknown>;
 };
 
+type ShellIframeApiHost = {
+  api: Record<string, unknown>;
+};
+
 type ShellElectronBridge = {
   ipcRenderer: {
     invoke(channel: string, ...args: unknown[]): Promise<unknown>;
@@ -32,7 +36,8 @@ function createSettingsApi(electron: ShellElectronBridge) {
       }) as Promise<ThemeMode>;
     },
     onThemeChanged(listener: (payload: { theme: ThemeMode }) => void) {
-      const handler = (_event: unknown, payload: { theme: ThemeMode }) => {
+      const handler = (_event: unknown, ...args: unknown[]) => {
+        const payload = args[0] as { theme: ThemeMode };
         listener(payload);
       };
       electron.ipcRenderer.on('settings:theme:changed', handler);
@@ -64,14 +69,14 @@ export function installShellIframeElectronBridge(): void {
 
   self.electron = electron;
 
-  const parentApi =
+  const parentApi: Record<string, unknown> =
     typeof parentWin.api === 'object' && parentWin.api !== null
-      ? { ...parentWin.api }
+      ? { ...(parentWin.api as Record<string, unknown>) }
       : {};
 
   if (parentApi.settings === undefined) {
     parentApi.settings = createSettingsApi(electron);
   }
 
-  self.api = parentApi;
+  (self as unknown as ShellIframeApiHost).api = parentApi;
 }

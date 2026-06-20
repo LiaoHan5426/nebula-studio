@@ -1,8 +1,0 @@
----
-description: 常亮：修复优先级以仓库 Skill 为准
-alwaysApply: true
----
-
-# 代码修复顺序
-
-以 `.cursor/skills/code-fix-workflow/SKILL.md` 为准；需要细节时读取该文件。

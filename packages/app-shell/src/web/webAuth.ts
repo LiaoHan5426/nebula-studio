@@ -5,7 +5,7 @@ export const SHELL_AUTH_SESSION_KEY = 'nebula-studio-auth-session';
 
 export interface ShellAuthSessionPayload {
   user: string;
-  token: string;
+  token?: string;
 }
 
 export function getWebShellEmbedSurface(): string | null {
@@ -18,7 +18,10 @@ export function shouldRedirectUnauthenticatedWebShell(): boolean {
   if (!isWebPresentationHost()) return false;
   if (getWebShellEmbedSurface() === 'login') return false;
   try {
-    return !sessionStorage.getItem(SHELL_AUTH_SESSION_KEY);
+    const raw = sessionStorage.getItem(SHELL_AUTH_SESSION_KEY);
+    if (!raw) return true;
+    const parsed = JSON.parse(raw) as ShellAuthSessionPayload;
+    return !parsed.user?.trim();
   } catch {
     return true;
   }

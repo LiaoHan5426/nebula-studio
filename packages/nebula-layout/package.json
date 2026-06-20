@@ -1,0 +1,41 @@
+{
+  "name": "@nebula-studio/nebula-layout",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": [
+    "./src/styles/layout-tokens.css",
+    "./src/styles/layout-transitions.css",
+    "./src/styles/layout-chrome.css"
+  ],
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./styles": {
+      "default": "./src/styles/layout-tokens.css"
+    }
+  },
+  "dependencies": {
+    "@nebula-studio/app-shell": "workspace:^",
+    "@nebula-studio/nebula-ui": "workspace:^",
+    "vue": "catalog:vue",
+    "vue-router": "catalog:vue"
+  },
+  "devDependencies": {
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "@nebula-studio/types": "workspace:^",
+    "sass": "catalog:style"
+  },
+  "peerDependencies": {
+    "@nebula-studio-electron/electron-shared-vue": "workspace:^"
+  },
+  "peerDependenciesMeta": {
+    "@nebula-studio-electron/electron-shared-vue": {
+      "optional": true
+    }
+  }
+}

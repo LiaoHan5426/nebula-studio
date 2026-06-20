@@ -28,6 +28,7 @@
   "devDependencies": {
     "@nebula-studio-internal/tsconfig": "workspace:^",
     "@nebula-studio/types": "workspace:^",
+    "@types/nprogress": "catalog:types",
     "happy-dom": "catalog:vite",
     "typescript": "catalog:types",
     "vite-plus": "catalog:vite",

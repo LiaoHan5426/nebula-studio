@@ -211,6 +211,9 @@ catalogs:
     '@types/node':
       specifier: ^24.12.4
       version: 24.12.4
+    '@types/nprogress':
+      specifier: ^0.2.3
+      version: 0.2.3
     typescript:
       specifier: ^6.0.3
       version: 6.0.3
@@ -270,16 +273,16 @@ importers:
         version: link:packages/types
       '@vitejs/plugin-vue':
         specifier: catalog:vite
-        version: 6.0.7(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(vue@3.5.35(typescript@6.0.3))
+        version: 6.0.7(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(vue@3.5.35(typescript@6.0.3))
       '@vitejs/plugin-vue-jsx':
         specifier: catalog:vite
-        version: 5.1.5(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(vue@3.5.35(typescript@6.0.3))
+        version: 5.1.5(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(vue@3.5.35(typescript@6.0.3))
       cross-env:
         specifier: 'catalog:'
         version: 10.1.0
       eslint-plugin-better-tailwindcss:
         specifier: catalog:lint
-        version: 4.6.0(eslint@10.4.1(jiti@2.7.0))(oxlint@1.68.0(oxlint-tsgolint@0.23.0)(vite-plus@0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)))(tailwindcss@4.3.1)(typescript@6.0.3)
+        version: 4.6.0(eslint@10.4.1(jiti@2.7.0))(oxlint@1.68.0(oxlint-tsgolint@0.23.0)(vite-plus@0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)))(tailwindcss@4.3.1)(typescript@6.0.3)
       eslint-plugin-command:
         specifier: catalog:lint
         version: 3.5.2(@typescript-eslint/rule-tester@8.60.0(eslint@10.4.1(jiti@2.7.0))(typescript@6.0.3))(@typescript-eslint/typescript-estree@8.60.1(typescript@6.0.3))(@typescript-eslint/utils@8.60.1(eslint@10.4.1(jiti@2.7.0))(typescript@6.0.3))(eslint@10.4.1(jiti@2.7.0))
@@ -297,10 +300,10 @@ importers:
         version: 7.5.0
       vite-plus:
         specifier: catalog:vite
-        version: 0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
+        version: 0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
       vitest:
         specifier: npm:@voidzero-dev/vite-plus-test@latest
-        version: '@voidzero-dev/vite-plus-test@0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)'
+        version: '@voidzero-dev/vite-plus-test@0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)'
 
   apps/electron:
     dependencies:
@@ -467,10 +470,10 @@ importers:
         version: 6.0.3
       vite:
         specifier: 8.0.10
-        version: 8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0)
+        version: 8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0)
       vite-plus:
         specifier: catalog:vite
-        version: 0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
+        version: 0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
       vue-tsc:
         specifier: catalog:vue
         version: 3.3.3(typescript@6.0.3)
@@ -483,9 +486,15 @@ importers:
       '@nebula-studio-internal/tailwind':
         specifier: workspace:^
         version: link:../../../tools/tailwindcss
+      '@nebula-studio/api-client':
+        specifier: workspace:^
+        version: link:../../../packages/api-client
       '@nebula-studio/app-shell':
         specifier: workspace:^
         version: link:../../../packages/app-shell
+      '@nebula-studio/nebula-layout':
+        specifier: workspace:^
+        version: link:../../../packages/nebula-layout
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
         version: link:../../../packages/nebula-ui
@@ -510,10 +519,10 @@ importers:
         version: 6.0.3
       vite:
         specifier: 8.0.10
-        version: 8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0)
+        version: 8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0)
       vite-plus:
         specifier: catalog:vite
-        version: 0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
+        version: 0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
       vue-tsc:
         specifier: catalog:vue
         version: 3.3.3(typescript@6.0.3)
@@ -544,6 +553,9 @@ importers:
       '@nebula-studio/nebula-integration-panel':
         specifier: workspace:^
         version: link:../../../packages/nebula-integration-panel
+      '@nebula-studio/nebula-layout':
+        specifier: workspace:^
+        version: link:../../../packages/nebula-layout
       '@nebula-studio/nebula-low-render':
         specifier: workspace:^
         version: link:../../../packages/nebula-low-render
@@ -577,13 +589,13 @@ importers:
         version: 6.0.3
       vite:
         specifier: 8.0.10
-        version: 8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0)
+        version: 8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0)
       vite-plus:
         specifier: catalog:vite
-        version: 0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
+        version: 0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
       vitest:
         specifier: npm:@voidzero-dev/vite-plus-test@latest
-        version: '@voidzero-dev/vite-plus-test@0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)'
+        version: '@voidzero-dev/vite-plus-test@0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)'
       vue-tsc:
         specifier: catalog:vue
         version: 3.3.3(typescript@6.0.3)
@@ -623,10 +635,10 @@ importers:
         version: 6.0.3
       vite:
         specifier: 8.0.10
-        version: 8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0)
+        version: 8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0)
       vite-plus:
         specifier: catalog:vite
-        version: 0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
+        version: 0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
       vue-tsc:
         specifier: catalog:vue
         version: 3.3.3(typescript@6.0.3)
@@ -639,15 +651,24 @@ importers:
       '@nebula-studio-internal/tailwind':
         specifier: workspace:^
         version: link:../../../tools/tailwindcss
+      '@nebula-studio/api-client':
+        specifier: workspace:^
+        version: link:../../../packages/api-client
       '@nebula-studio/app-shell':
         specifier: workspace:^
         version: link:../../../packages/app-shell
+      '@nebula-studio/nebula-layout':
+        specifier: workspace:^
+        version: link:../../../packages/nebula-layout
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
         version: link:../../../packages/nebula-ui
       vue:
         specifier: catalog:vue
         version: 3.5.35(typescript@6.0.3)
+      vue-router:
+        specifier: catalog:vue
+        version: 4.6.4(vue@3.5.35(typescript@6.0.3))
     devDependencies:
       '@electron-toolkit/preload':
         specifier: catalog:electron
@@ -666,10 +687,10 @@ importers:
         version: 6.0.3
       vite:
         specifier: 8.0.10
-        version: 8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0)
+        version: 8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0)
       vite-plus:
         specifier: catalog:vite
-        version: 0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
+        version: 0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
       vue-tsc:
         specifier: catalog:vue
         version: 3.3.3(typescript@6.0.3)
@@ -724,10 +745,10 @@ importers:
         version: 6.0.3
       vite:
         specifier: 8.0.10
-        version: 8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0)
+        version: 8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0)
       vite-plus:
         specifier: catalog:vite
-        version: 0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
+        version: 0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
       vue-tsc:
         specifier: catalog:vue
         version: 3.3.3(typescript@6.0.3)
@@ -752,16 +773,16 @@ importers:
     dependencies:
       '@vitejs/plugin-vue':
         specifier: catalog:vite
-        version: 6.0.7(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(vue@3.5.35(typescript@6.0.3))
+        version: 6.0.7(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(vue@3.5.35(typescript@6.0.3))
       sass:
         specifier: catalog:style
         version: 1.100.0
       vite:
         specifier: 8.0.10
-        version: 8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0)
+        version: 8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0)
       vite-plus:
         specifier: catalog:vite
-        version: 0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
+        version: 0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
       vue:
         specifier: catalog:vue
         version: 3.5.35(typescript@6.0.3)
@@ -774,7 +795,7 @@ importers:
         version: link:../../packages/types
       electron-vite:
         specifier: catalog:electron
-        version: 5.0.0(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))
+        version: 5.0.0(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))
       typescript:
         specifier: catalog:types
         version: 6.0.3
@@ -791,6 +812,9 @@ importers:
       '@nebula-studio/types':
         specifier: workspace:^
         version: link:../types
+      '@types/nprogress':
+        specifier: catalog:types
+        version: 0.2.3
       happy-dom:
         specifier: catalog:vite
         version: 20.10.6
@@ -799,10 +823,10 @@ importers:
         version: 6.0.3
       vite-plus:
         specifier: catalog:vite
-        version: 0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
+        version: 0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
       vitest:
         specifier: npm:@voidzero-dev/vite-plus-test@latest
-        version: '@voidzero-dev/vite-plus-test@0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)'
+        version: '@voidzero-dev/vite-plus-test@0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)'
 
   packages/app-shell:
     dependencies:
@@ -871,6 +895,15 @@ importers:
       '@nebula-studio/types':
         specifier: workspace:^
         version: link:../types
+      happy-dom:
+        specifier: catalog:vite
+        version: 20.10.6
+      vite-plus:
+        specifier: catalog:vite
+        version: 0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
+      vitest:
+        specifier: npm:@voidzero-dev/vite-plus-test@latest
+        version: '@voidzero-dev/vite-plus-test@0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)'
 
   packages/nebula-editor:
     dependencies:
@@ -907,7 +940,7 @@ importers:
         version: 18.18.0
       bpmn-js-properties-panel:
         specifier: ^5.58.0
-        version: 5.58.0(@bpmn-io/properties-panel@3.44.1)(bpmn-js@18.18.0)(camunda-bpmn-js-behaviors@1.16.1(bpmn-js@18.18.0)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.14.0))(diagram-js@15.17.0)
+        version: 5.58.0(@bpmn-io/properties-panel@3.44.1(@bpmn-io/cm-theme@0.1.0-alpha.2))(bpmn-js@18.18.0)(camunda-bpmn-js-behaviors@1.16.1(bpmn-js@18.18.0)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.14.0))(diagram-js@15.17.0)
       camunda-bpmn-moddle:
         specifier: ^7.0.1
         version: 7.0.1
@@ -936,6 +969,34 @@ importers:
       vue:
         specifier: catalog:vue
         version: 3.5.35(typescript@6.0.3)
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../tools/tsconfig
+      '@nebula-studio/types':
+        specifier: workspace:^
+        version: link:../types
+      sass:
+        specifier: catalog:style
+        version: 1.100.0
+
+  packages/nebula-layout:
+    dependencies:
+      '@nebula-studio-electron/electron-shared-vue':
+        specifier: workspace:^
+        version: link:../electron-shared-vue
+      '@nebula-studio/app-shell':
+        specifier: workspace:^
+        version: link:../app-shell
+      '@nebula-studio/nebula-ui':
+        specifier: workspace:^
+        version: link:../nebula-ui
+      vue:
+        specifier: catalog:vue
+        version: 3.5.35(typescript@6.0.3)
+      vue-router:
+        specifier: catalog:vue
+        version: 4.6.4(vue@3.5.35(typescript@6.0.3))
     devDependencies:
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
@@ -1208,16 +1269,16 @@ importers:
         version: link:../../packages/types
       vite:
         specifier: 8.0.10
-        version: 8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0)
+        version: 8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0)
       vite-plus:
         specifier: catalog:vite
-        version: 0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
+        version: 0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
 
   tools/tsconfig:
     dependencies:
       vite:
         specifier: 8.0.10
-        version: 8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0)
+        version: 8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0)
 
 packages:
 
@@ -1363,9 +1424,11 @@ packages:
   '@bpmn-io/extract-process-variables@2.2.1':
     resolution: {integrity: sha512-1E5ydNzTqgx513NxA1nxk2CqDb9OkusfU9Tf6WejD1BiY+5u130XnZOFE/FQX0JB6ZmPOeFMx4IDEuHjrGhOzw==}
 
-  '@bpmn-io/feel-editor@2.5.2':
-    resolution: {integrity: sha512-pxbhUDAlLe+zDAvmG7Y057o8rnVImKYEbgjH4+zZiq3WjPw5bZYu2kraJfpWMs3xkyOCvLR6H3J3f8yJRuHmgw==}
+  '@bpmn-io/feel-editor@2.6.0':
+    resolution: {integrity: sha512-rI7vFBATeKJVi/KpkfxnclTObAvQGYda0l5eKhNwGIJ8D3+aPQlgdNtxJATX1keXVkqsA1Q/+Yn8Ih+dnC0NMw==}
     engines: {node: '>= 20'}
+    peerDependencies:
+      '@bpmn-io/cm-theme': ^0.2.0
 
   '@bpmn-io/feel-lint@3.1.0':
     resolution: {integrity: sha512-nOCYWMXgwR0joU4XKhu4f3P5f4/AsmuyiV1e+fzcXTCh7iMLU8VYdHXSIzZuJ0zxz3Gsnp7A8S8lt+HJ43H6IA==}
@@ -1374,12 +1437,16 @@ packages:
     resolution: {integrity: sha512-nqmmlHRD9tl0ZcpYTEkZdpc/rAMoYc+ct0SOg9fFIFWRaEApme3DuXC7v9AMA5g+upGCKd6cUc3t97y+unpfMw==}
     engines: {node: '>= 20.12.0'}
 
-  '@bpmn-io/lang-feel@3.0.0':
-    resolution: {integrity: sha512-t/k0z5AW18J7Qz2i/bIFAlvlcS63RuyQB9OQ0YiC1WyMosxXRAnv98LHnVbwirx9vje1DLll85tkBT2B8KLjmQ==}
+  '@bpmn-io/lang-feel@4.0.2':
+    resolution: {integrity: sha512-rTPeJ77/2nYKbJXpvDmrNXy+opoIpD3Rsch0grCUZAO6xF68r41QeV8SqOdr2yZxD/4gI6YXlQhqh4rqFRDJXA==}
     engines: {node: '>= 20.12.0'}
 
   '@bpmn-io/lezer-feel@2.5.0':
     resolution: {integrity: sha512-09JlwNYeD5YYeFrl0dIFfgQKEL+NNiTyUwEtdcPhfftz1mYa7z+ylOPCv/8Z0GqG7X81uyMFvRZDFCRBFTiUPg==}
+    engines: {node: '>= 20.12.0'}
+
+  '@bpmn-io/lezer-feel@3.0.1':
+    resolution: {integrity: sha512-+wWg4DP2h8WOEQx2Bz51blsw9dCqKj3kIDKYccABuoAEhzZeDhmm0A2k4ANmm9lf0w5pJmVSYz2djtrbzOvzzA==}
     engines: {node: '>= 20.12.0'}
 
   '@bpmn-io/properties-panel@3.44.1':
@@ -2919,8 +2986,11 @@ packages:
   '@types/node@25.9.1':
     resolution: {integrity: sha512-xfrlY7UD5rMJk3ZVJP8BNzS28J36YJg+xp+LPXV1TdWxr8uMH5A860QNxYDGQe/ylDSgjxE52Q9VnO7p75tJxg==}
 
-  '@types/node@25.9.3':
-    resolution: {integrity: sha512-603BddQMv3pUcr4U2dhujk83N2tTDVr/34wII2B6bJy6g+8WD6yUb11jszNs0gdi4PesVWl7ABt8nYMVpnLUcg==}
+  '@types/node@26.0.0':
+    resolution: {integrity: sha512-vf2YFi1iY9lHGwNJMs01biZFbKJkrZR1T6/MlzjhJLPdntOHLhTrDSnSVcdtvjihi4VQNlrFRIxLsDBlQpAipA==}
+
+  '@types/nprogress@0.2.3':
+    resolution: {integrity: sha512-k7kRA033QNtC+gLc4VPlfnue58CM1iQLgn1IMAU8VPHGOj7oIHPp9UlhedEnD/Gl8evoCjwkZjlBORtZ3JByUA==}
 
   '@types/pegjs@0.10.6':
     resolution: {integrity: sha512-eLYXDbZWXh2uxf+w8sXS8d6KSoXTswfps6fvCUuVAGN8eRpfe7h9eSRydxiSJvo9Bf+GzifsDOr9TMQlmJdmkw==}
@@ -5984,6 +6054,9 @@ packages:
   undici-types@7.24.6:
     resolution: {integrity: sha512-WRNW+sJgj5OBN4/0JpHFqtqzhpbnV0GuB+OozA9gCL7a993SmU+1JBZCzLNxYsbMfIeDL+lTsphD5jN5N+n0zg==}
 
+  undici-types@8.3.0:
+    resolution: {integrity: sha512-j375ScV60dom+YkPFIfTLcOiPxkN/buHz5GobjLhixFuANaNs3C9l4GmrWqejgXWJ7BbJcFYpTEUkS1Ge8bpZQ==}
+
   undici@6.26.0:
     resolution: {integrity: sha512-4yqz8a3n5HmGTlsbADNtr/dJlhkh/55Rq798G6ibiULcXbDtaLpTl1pvdqcbFfeoj3iSi52lePFM7h9H21cw/A==}
     engines: {node: '>=18.17'}
@@ -6443,10 +6516,11 @@ snapshots:
     dependencies:
       min-dash: 5.0.0
 
-  '@bpmn-io/feel-editor@2.5.2':
+  '@bpmn-io/feel-editor@2.6.0(@bpmn-io/cm-theme@0.1.0-alpha.2)':
     dependencies:
+      '@bpmn-io/cm-theme': 0.1.0-alpha.2
       '@bpmn-io/feel-lint': 3.1.0
-      '@bpmn-io/lang-feel': 3.0.0
+      '@bpmn-io/lang-feel': 4.0.2
       '@camunda/feel-builtins': 1.2.0
       '@codemirror/autocomplete': 6.20.3
       '@codemirror/commands': 6.10.3
@@ -6470,9 +6544,9 @@ snapshots:
       luxon: 3.7.2
       min-dash: 5.0.0
 
-  '@bpmn-io/lang-feel@3.0.0':
+  '@bpmn-io/lang-feel@4.0.2':
     dependencies:
-      '@bpmn-io/lezer-feel': 2.5.0
+      '@bpmn-io/lezer-feel': 3.0.1
       '@codemirror/autocomplete': 6.20.3
       '@codemirror/language': 6.12.3
       '@lezer/common': 1.5.2
@@ -6483,9 +6557,15 @@ snapshots:
       '@lezer/lr': 1.4.10
       min-dash: 5.0.0
 
-  '@bpmn-io/properties-panel@3.44.1':
+  '@bpmn-io/lezer-feel@3.0.1':
     dependencies:
-      '@bpmn-io/feel-editor': 2.5.2
+      '@lezer/highlight': 1.2.3
+      '@lezer/lr': 1.4.10
+      min-dash: 5.0.0
+
+  '@bpmn-io/properties-panel@3.44.1(@bpmn-io/cm-theme@0.1.0-alpha.2)':
+    dependencies:
+      '@bpmn-io/feel-editor': 2.6.0(@bpmn-io/cm-theme@0.1.0-alpha.2)
       '@carbon/icons': 11.82.0
       '@codemirror/autocomplete': 6.20.3
       '@codemirror/commands': 6.10.3
@@ -6499,6 +6579,8 @@ snapshots:
       focus-trap: 8.2.1
       min-dash: 5.0.0
       min-dom: 5.3.0
+    transitivePeerDependencies:
+      - '@bpmn-io/cm-theme'
 
   '@cacheable/memory@2.0.9':
     dependencies:
@@ -7671,7 +7753,7 @@ snapshots:
   '@types/glob@7.2.0':
     dependencies:
       '@types/minimatch': 6.0.0
-      '@types/node': 25.9.3
+      '@types/node': 25.9.1
     optional: true
 
   '@types/http-cache-semantics@4.2.0': {}
@@ -7699,9 +7781,11 @@ snapshots:
     dependencies:
       undici-types: 7.24.6
 
-  '@types/node@25.9.3':
+  '@types/node@26.0.0':
     dependencies:
-      undici-types: 7.24.6
+      undici-types: 8.3.0
+
+  '@types/nprogress@0.2.3': {}
 
   '@types/pegjs@0.10.6': {}
 
@@ -7729,7 +7813,7 @@ snapshots:
 
   '@types/ws@8.18.1':
     dependencies:
-      '@types/node': 25.9.3
+      '@types/node': 26.0.0
 
   '@types/yauzl@2.10.3':
     dependencies:
@@ -7972,22 +8056,22 @@ snapshots:
     dependencies:
       valibot: 1.4.1(typescript@6.0.3)
 
-  '@vitejs/plugin-vue-jsx@5.1.5(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(vue@3.5.35(typescript@6.0.3))':
+  '@vitejs/plugin-vue-jsx@5.1.5(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(vue@3.5.35(typescript@6.0.3))':
     dependencies:
       '@babel/core': 7.29.7
       '@babel/plugin-syntax-typescript': 7.29.7(@babel/core@7.29.7)
       '@babel/plugin-transform-typescript': 7.29.7(@babel/core@7.29.7)
       '@rolldown/pluginutils': 1.0.1
       '@vue/babel-plugin-jsx': 2.0.1(@babel/core@7.29.7)
-      vite: 8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0)
+      vite: 8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0)
       vue: 3.5.35(typescript@6.0.3)
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-vue@6.0.7(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(vue@3.5.35(typescript@6.0.3))':
+  '@vitejs/plugin-vue@6.0.7(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(vue@3.5.35(typescript@6.0.3))':
     dependencies:
       '@rolldown/pluginutils': 1.0.1
-      vite: 8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0)
+      vite: 8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0)
       vue: 3.5.35(typescript@6.0.3)
 
   '@voidzero-dev/vite-plus-core@0.1.24(@types/node@24.12.4)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(yaml@2.9.0)':
@@ -8022,14 +8106,14 @@ snapshots:
       typescript: 6.0.3
       yaml: 2.9.0
 
-  '@voidzero-dev/vite-plus-core@0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(yaml@2.9.0)':
+  '@voidzero-dev/vite-plus-core@0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(yaml@2.9.0)':
     dependencies:
       '@oxc-project/runtime': 0.133.0
       '@oxc-project/types': 0.133.0
       lightningcss: 1.32.0
       postcss: 8.5.15
     optionalDependencies:
-      '@types/node': 25.9.3
+      '@types/node': 26.0.0
       esbuild: 0.28.1
       fsevents: 2.3.3
       jiti: 2.7.0
@@ -8138,11 +8222,11 @@ snapshots:
       - utf-8-validate
       - yaml
 
-  '@voidzero-dev/vite-plus-test@0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)':
+  '@voidzero-dev/vite-plus-test@0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)':
     dependencies:
       '@standard-schema/spec': 1.1.0
       '@types/chai': 5.2.3
-      '@voidzero-dev/vite-plus-core': 0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(yaml@2.9.0)
+      '@voidzero-dev/vite-plus-core': 0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(yaml@2.9.0)
       es-module-lexer: 1.7.0
       obug: 2.1.3
       pixelmatch: 7.2.0
@@ -8152,10 +8236,10 @@ snapshots:
       tinybench: 2.9.0
       tinyexec: 1.2.4
       tinyglobby: 0.2.17
-      vite: 8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0)
+      vite: 8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0)
       ws: 8.21.0
     optionalDependencies:
-      '@types/node': 25.9.3
+      '@types/node': 26.0.0
       happy-dom: 20.10.6
     transitivePeerDependencies:
       - '@arethetypeswrong/core'
@@ -8617,10 +8701,10 @@ snapshots:
   boolean@3.2.0:
     optional: true
 
-  bpmn-js-properties-panel@5.58.0(@bpmn-io/properties-panel@3.44.1)(bpmn-js@18.18.0)(camunda-bpmn-js-behaviors@1.16.1(bpmn-js@18.18.0)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.14.0))(diagram-js@15.17.0):
+  bpmn-js-properties-panel@5.58.0(@bpmn-io/properties-panel@3.44.1(@bpmn-io/cm-theme@0.1.0-alpha.2))(bpmn-js@18.18.0)(camunda-bpmn-js-behaviors@1.16.1(bpmn-js@18.18.0)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.14.0))(diagram-js@15.17.0):
     dependencies:
       '@bpmn-io/extract-process-variables': 2.2.1
-      '@bpmn-io/properties-panel': 3.44.1
+      '@bpmn-io/properties-panel': 3.44.1(@bpmn-io/cm-theme@0.1.0-alpha.2)
       array-move: 4.0.0
       bpmn-js: 18.18.0
       camunda-bpmn-js-behaviors: 1.16.1(bpmn-js@18.18.0)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.14.0)
@@ -8677,7 +8761,7 @@ snapshots:
 
   buffer-image-size@0.6.4:
     dependencies:
-      '@types/node': 25.9.3
+      '@types/node': 26.0.0
 
   buffer@5.7.1:
     dependencies:
@@ -9164,7 +9248,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  electron-vite@5.0.0(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0)):
+  electron-vite@5.0.0(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0)):
     dependencies:
       '@babel/core': 7.29.7
       '@babel/plugin-transform-arrow-functions': 7.29.7(@babel/core@7.29.7)
@@ -9172,7 +9256,7 @@ snapshots:
       esbuild: 0.25.11
       magic-string: 0.30.21
       picocolors: 1.1.1
-      vite: 8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0)
+      vite: 8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -9365,7 +9449,7 @@ snapshots:
       - '@eslint/css'
       - typescript
 
-  eslint-plugin-better-tailwindcss@4.6.0(eslint@10.4.1(jiti@2.7.0))(oxlint@1.68.0(oxlint-tsgolint@0.23.0)(vite-plus@0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)))(tailwindcss@4.3.1)(typescript@6.0.3):
+  eslint-plugin-better-tailwindcss@4.6.0(eslint@10.4.1(jiti@2.7.0))(oxlint@1.68.0(oxlint-tsgolint@0.23.0)(vite-plus@0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)))(tailwindcss@4.3.1)(typescript@6.0.3):
     dependencies:
       '@eslint/css-tree': 4.0.4
       '@valibot/to-json-schema': 1.7.1(valibot@1.4.1(typescript@6.0.3))
@@ -9378,7 +9462,7 @@ snapshots:
       valibot: 1.4.1(typescript@6.0.3)
     optionalDependencies:
       eslint: 10.4.1(jiti@2.7.0)
-      oxlint: 1.68.0(oxlint-tsgolint@0.23.0)(vite-plus@0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0))
+      oxlint: 1.68.0(oxlint-tsgolint@0.23.0)(vite-plus@0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0))
     transitivePeerDependencies:
       - '@eslint/css'
       - typescript
@@ -9881,7 +9965,7 @@ snapshots:
 
   happy-dom@20.10.6:
     dependencies:
-      '@types/node': 25.9.3
+      '@types/node': 26.0.0
       '@types/whatwg-mimetype': 3.0.2
       '@types/ws': 8.18.1
       buffer-image-size: 0.6.4
@@ -10496,7 +10580,7 @@ snapshots:
       '@oxfmt/binding-win32-x64-msvc': 0.52.0
       vite-plus: 0.1.24(@types/node@25.9.1)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
 
-  oxfmt@0.52.0(vite-plus@0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)):
+  oxfmt@0.52.0(vite-plus@0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)):
     dependencies:
       tinypool: 2.1.0
     optionalDependencies:
@@ -10519,7 +10603,7 @@ snapshots:
       '@oxfmt/binding-win32-arm64-msvc': 0.52.0
       '@oxfmt/binding-win32-ia32-msvc': 0.52.0
       '@oxfmt/binding-win32-x64-msvc': 0.52.0
-      vite-plus: 0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
+      vite-plus: 0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
 
   oxlint-tsgolint@0.23.0:
     optionalDependencies:
@@ -10578,7 +10662,7 @@ snapshots:
       oxlint-tsgolint: 0.23.0
       vite-plus: 0.1.24(@types/node@25.9.1)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
 
-  oxlint@1.67.0(oxlint-tsgolint@0.23.0)(vite-plus@0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)):
+  oxlint@1.67.0(oxlint-tsgolint@0.23.0)(vite-plus@0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)):
     optionalDependencies:
       '@oxlint/binding-android-arm-eabi': 1.67.0
       '@oxlint/binding-android-arm64': 1.67.0
@@ -10600,7 +10684,7 @@ snapshots:
       '@oxlint/binding-win32-ia32-msvc': 1.67.0
       '@oxlint/binding-win32-x64-msvc': 1.67.0
       oxlint-tsgolint: 0.23.0
-      vite-plus: 0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
+      vite-plus: 0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
 
   oxlint@1.68.0(oxlint-tsgolint@0.23.0)(vite-plus@0.1.24(@types/node@24.12.4)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@24.12.4)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)):
     optionalDependencies:
@@ -10626,7 +10710,7 @@ snapshots:
       oxlint-tsgolint: 0.23.0
       vite-plus: 0.1.24(@types/node@24.12.4)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@24.12.4)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
 
-  oxlint@1.68.0(oxlint-tsgolint@0.23.0)(vite-plus@0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)):
+  oxlint@1.68.0(oxlint-tsgolint@0.23.0)(vite-plus@0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)):
     optionalDependencies:
       '@oxlint/binding-android-arm-eabi': 1.68.0
       '@oxlint/binding-android-arm64': 1.68.0
@@ -10648,7 +10732,7 @@ snapshots:
       '@oxlint/binding-win32-ia32-msvc': 1.68.0
       '@oxlint/binding-win32-x64-msvc': 1.68.0
       oxlint-tsgolint: 0.23.0
-      vite-plus: 0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
+      vite-plus: 0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
     optional: true
 
   p-cancelable@2.1.1: {}
@@ -11326,6 +11410,8 @@ snapshots:
 
   undici-types@7.24.6: {}
 
+  undici-types@8.3.0: {}
+
   undici@6.26.0: {}
 
   undici@7.27.0:
@@ -11464,14 +11550,14 @@ snapshots:
       - vite
       - yaml
 
-  vite-plus@0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0):
+  vite-plus@0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0):
     dependencies:
       '@oxc-project/types': 0.133.0
       '@oxlint/plugins': 1.61.0
-      '@voidzero-dev/vite-plus-core': 0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(yaml@2.9.0)
-      '@voidzero-dev/vite-plus-test': 0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
-      oxfmt: 0.52.0(vite-plus@0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0))
-      oxlint: 1.67.0(oxlint-tsgolint@0.23.0)(vite-plus@0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0))
+      '@voidzero-dev/vite-plus-core': 0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(yaml@2.9.0)
+      '@voidzero-dev/vite-plus-test': 0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
+      oxfmt: 0.52.0(vite-plus@0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0))
+      oxlint: 1.67.0(oxlint-tsgolint@0.23.0)(vite-plus@0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0))
       oxlint-tsgolint: 0.23.0
     optionalDependencies:
       '@voidzero-dev/vite-plus-darwin-arm64': 0.1.24
@@ -11546,7 +11632,7 @@ snapshots:
       tsx: 4.22.4
       yaml: 2.9.0
 
-  vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0):
+  vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0):
     dependencies:
       lightningcss: 1.32.0
       picomatch: 4.0.4
@@ -11554,7 +11640,7 @@ snapshots:
       rolldown: 1.0.0-rc.17
       tinyglobby: 0.2.17
     optionalDependencies:
-      '@types/node': 25.9.3
+      '@types/node': 26.0.0
       esbuild: 0.28.1
       fsevents: 2.3.3
       jiti: 2.7.0

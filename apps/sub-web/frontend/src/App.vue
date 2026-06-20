@@ -7,18 +7,26 @@ import {
   getShellIntegratedAppMeta,
   isShellEmbedResetAckPayload,
   isShellIntegrableAppId,
+  isShellIntegratableAppId,
   persistShellSurfacePreference,
   postShellEmbedReset,
   readShellSurfacePreference,
   shellPresentationConfig,
 } from '@nebula-studio/app-shell';
 import type { EmbeddedShellWindowId } from '@nebula-studio/app-shell';
+import { NebulaButton, NebulaDrag } from '@nebula-studio/nebula-ui';
 import {
-  NebulaButton,
-  NebulaDrag,
-  NebulaThemeToggle,
-} from '@nebula-studio/nebula-ui';
+  NebulaShellLayout,
+  useLayoutPreferences,
+  ACCENT_PRESETS,
+} from '@nebula-studio/nebula-layout';
+import type {
+  BreadcrumbSegment,
+  ShellTagItem,
+} from '@nebula-studio/nebula-layout';
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+
+import { useOrganization } from '@/shared/composables/useOrganization';
 
 type ThemeMode = 'light' | 'dark';
 type AppMode = 'dev' | 'build';
@@ -56,6 +64,16 @@ const availableViewIds = ref<string[]>([]);
 const dormantIntegrableIds = ref<string[]>([]);
 const activeViewId = ref<string | null>(null);
 const authSession = ref<{ user: string } | null>(null);
+const {
+  orgEnabled,
+  orgOptions,
+  currentOrgId,
+  orgLoading,
+  canSwitchOrg,
+  loadOrganizationContext,
+  switchOrganization,
+  resetOrganizationSession,
+} = useOrganization();
 /** 默认不展开应用集成层；挂载后由 resolveInitialIntegrationOpen（仅看 active-view）决定 */
 const integrationOpen = ref(false);
 const integrationClosable = ref(false);
@@ -82,8 +100,15 @@ const activeViewPersistReady = ref(false);
 const sortableViewIds = ref<string[]>([]);
 const isSorting = ref(false);
 const isThemeSwitching = ref(false);
-const isSidebarCollapsed = ref(false);
-const showResizer = ref(false);
+const { preferences: layoutPreferences } = useLayoutPreferences();
+const preferencesOpen = ref(false);
+
+function applyAccentPreset(presetId: string): void {
+  const preset = ACCENT_PRESETS.find((item) => item.id === presetId);
+  if (preset) {
+    document.documentElement.style.setProperty('--primary', preset.primary);
+  }
+}
 /** 已创建过的 iframe，懒加载 + v-show 保活，避免每次进入子应用整页重载 */
 const loadedEmbedIds = ref<Set<string>>(new Set());
 /** 已完成首次渲染的子应用，再次进入时不展示过渡层 */
@@ -109,12 +134,6 @@ function syncShellEmbeddedContentVisible(): void {
 const settingsAvailable = computed(() =>
   availableViewIds.value.includes('settings'),
 );
-
-const authAvatarText = computed(() => {
-  const raw = authSession.value?.user?.trim();
-  if (!raw) return '?';
-  return raw.slice(0, 1).toUpperCase();
-});
 
 function resolveShellViewLabel(viewId: string): string {
   if (viewId === 'settings') return sidebarSectionLabels.settings;
@@ -147,6 +166,26 @@ const shellBreadcrumbTrail = computed((): string[] => {
   return [sidebarSectionLabels[section] ?? sidebarSectionLabels.workspace];
 });
 
+const shellBreadcrumbItems = computed((): BreadcrumbSegment[] => {
+  const trail = shellBreadcrumbTrail.value;
+  return trail.map((label, index) => {
+    let icon: BreadcrumbSegment['icon'] = 'file';
+    if (index === 0) {
+      icon =
+        label === sidebarSectionLabels.integration
+          ? 'integration'
+          : label === sidebarSectionLabels.settings
+            ? 'settings'
+            : 'home';
+    } else if (label === sidebarSectionLabels.integration) {
+      icon = 'integration';
+    } else if (label === sidebarSectionLabels.settings) {
+      icon = 'settings';
+    }
+    return { key: `${label}-${index}`, label, icon };
+  });
+});
+
 /** 已访问子应用，用于标签栏（与顶部面包屑路径分离） */
 const visitedViewIds = ref<string[]>([]);
 
@@ -160,11 +199,44 @@ const shellTags = computed(() => {
   return tags;
 });
 
+const shellTagItems = computed((): ShellTagItem[] =>
+  shellTags.value.map((tag) => ({
+    key: tag.key,
+    label: tag.label,
+    icon: tag.key === SHELL_SURFACE_WORKSPACE ? 'home' : undefined,
+    closable: tag.key !== SHELL_SURFACE_WORKSPACE,
+  })),
+);
+
 const activeShellTagKey = computed(
   () => activeViewId.value ?? SHELL_SURFACE_WORKSPACE,
 );
 
+function isShellTagClosable(key: string): boolean {
+  return key !== SHELL_SURFACE_WORKSPACE;
+}
+
+function getActiveShellTagIndex(): number {
+  const key = activeShellTagKey.value;
+  return shellTags.value.findIndex((tag) => tag.key === key);
+}
+
 const showShellTagsBar = computed(() => !integrationOpen.value);
+
+/** 应用集成网格：排除侧栏固定入口（如「设置」） */
+const integrationGridViewIds = computed({
+  get() {
+    return sortableViewIds.value.filter((viewId) =>
+      isShellIntegratableAppId(viewId),
+    );
+  },
+  set(next) {
+    const pinned = sortableViewIds.value.filter(
+      (viewId) => !isShellIntegratableAppId(viewId),
+    );
+    sortableViewIds.value = [...pinned, ...next];
+  },
+});
 
 const showEmbedSurfaceTransition = computed(
   () =>
@@ -267,6 +339,102 @@ function activateShellTag(key: string): void {
   void selectIntegratedApp(key);
 }
 
+function cleanupClosedShellTag(viewId: string): void {
+  resetIntegrableEmbedOnLeave(viewId);
+  if (loadedEmbedIds.value.has(viewId)) {
+    loadedEmbedIds.value = new Set(
+      [...loadedEmbedIds.value].filter((id) => id !== viewId),
+    );
+  }
+  if (embedReadyViewIds.value.has(viewId)) {
+    embedReadyViewIds.value = new Set(
+      [...embedReadyViewIds.value].filter((id) => id !== viewId),
+    );
+  }
+  const pending = embedLoadTimeoutByViewId.get(viewId);
+  if (pending !== undefined) {
+    window.clearTimeout(pending);
+    embedLoadTimeoutByViewId.delete(viewId);
+  }
+  embedLoadStartedAtByViewId.delete(viewId);
+  if (embedLoadingViewId.value === viewId) {
+    embedLoadingViewId.value = null;
+  }
+}
+
+function removeVisitedViews(viewIdsToRemove: string[]): void {
+  if (viewIdsToRemove.length === 0) return;
+  const removeSet = new Set(viewIdsToRemove);
+  for (const viewId of viewIdsToRemove) {
+    cleanupClosedShellTag(viewId);
+  }
+  visitedViewIds.value = visitedViewIds.value.filter(
+    (viewId) => !removeSet.has(viewId),
+  );
+}
+
+async function navigateAfterClosingActive(fallbackKey: string): Promise<void> {
+  if (fallbackKey === SHELL_SURFACE_WORKSPACE) {
+    await openWorkspace();
+    return;
+  }
+  await selectIntegratedApp(fallbackKey);
+}
+
+async function closeShellTag(viewId: string): Promise<void> {
+  if (!isShellTagClosable(viewId)) return;
+
+  const closingIndex = shellTags.value.findIndex((tag) => tag.key === viewId);
+  if (closingIndex < 0) return;
+
+  const isActive = activeShellTagKey.value === viewId;
+  removeVisitedViews([viewId]);
+
+  if (!isActive) return;
+
+  const remainingTags = shellTags.value;
+  const fallbackIndex = Math.min(closingIndex - 1, remainingTags.length - 1);
+  const fallbackKey =
+    remainingTags[fallbackIndex]?.key ?? SHELL_SURFACE_WORKSPACE;
+  await navigateAfterClosingActive(fallbackKey);
+}
+
+function closeShellTagsLeftOfAnchor(): void {
+  const activeIdx = getActiveShellTagIndex();
+  if (activeIdx <= 1) return;
+
+  const toRemove = shellTags.value
+    .slice(1, activeIdx)
+    .map((tag) => tag.key)
+    .filter(isShellTagClosable);
+  removeVisitedViews(toRemove);
+}
+
+function closeShellTagsRightOfAnchor(): void {
+  const activeIdx = getActiveShellTagIndex();
+  const tags = shellTags.value;
+  if (activeIdx < 0 || activeIdx >= tags.length - 1) return;
+
+  const toRemove = tags
+    .slice(activeIdx + 1)
+    .map((tag) => tag.key)
+    .filter(isShellTagClosable);
+  removeVisitedViews(toRemove);
+}
+
+function closeOtherShellTags(): void {
+  const activeKey = activeShellTagKey.value;
+  const toRemove = visitedViewIds.value.filter(
+    (viewId) => viewId !== activeKey,
+  );
+  removeVisitedViews(toRemove);
+}
+
+async function closeAllShellTags(): Promise<void> {
+  removeVisitedViews([...visitedViewIds.value]);
+  await openWorkspace();
+}
+
 function refreshActiveShellSurface(): void {
   const viewId = activeViewId.value;
   if (!viewId) return;
@@ -346,32 +514,6 @@ function requestEmbeddedViewHome(viewId: string): void {
   postShellEmbedReset(getEmbedIframe(viewId)?.contentWindow ?? null);
 }
 
-function waitForEmbeddedViewHome(
-  viewId: string,
-  timeoutMs = 500,
-): Promise<void> {
-  return new Promise((resolve) => {
-    const existing = embedHomeWaitByViewId.get(viewId);
-    if (existing) {
-      window.clearTimeout(existing.timer);
-      embedHomeWaitByViewId.delete(viewId);
-    }
-    const timer = window.setTimeout(() => {
-      embedHomeWaitByViewId.delete(viewId);
-      resolve();
-    }, timeoutMs);
-    embedHomeWaitByViewId.set(viewId, {
-      resolve: () => {
-        window.clearTimeout(timer);
-        embedHomeWaitByViewId.delete(viewId);
-        resolve();
-      },
-      timer,
-    });
-    requestEmbeddedViewHome(viewId);
-  });
-}
-
 function handleShellEmbedMessage(event: MessageEvent): void {
   if (!isShellEmbedResetAckPayload(event.data)) return;
   if (event.origin !== window.location.origin) return;
@@ -387,14 +529,6 @@ function resetIntegrableEmbedOnLeave(viewId: string | null): void {
   if (!usesIframeEmbed) return;
   if (!viewId || !isShellIntegrableAppId(viewId)) return;
   requestEmbeddedViewHome(viewId);
-}
-
-function handleMouseMove(event: MouseEvent) {
-  const sidebarWidth = isSidebarCollapsed.value ? 48 : 220;
-  const resizerWidth = 20;
-  showResizer.value =
-    event.clientX >= sidebarWidth - resizerWidth &&
-    event.clientX <= sidebarWidth + resizerWidth;
 }
 
 async function openWorkspace(): Promise<void> {
@@ -451,7 +585,9 @@ async function loadShellState(): Promise<void> {
   activeViewId.value =
     typeof state?.activeViewId === 'string' ? state.activeViewId : null;
   theme.value = nextTheme === 'light' ? 'light' : 'dark';
+  layoutPreferences.themeMode = theme.value;
   appMode.value = nextMode === 'dev' ? 'dev' : 'build';
+  applyAccentPreset(layoutPreferences.accentPreset);
 }
 
 async function switchEmbeddedView(viewId: string): Promise<void> {
@@ -570,6 +706,7 @@ function closeIntegrationLauncher(): void {
 }
 
 async function applyTheme(nextTheme: ThemeMode): Promise<void> {
+  layoutPreferences.themeMode = nextTheme;
   isThemeSwitching.value = true;
   theme.value = await window.electron.ipcRenderer.invoke('settings:theme:set', {
     theme: nextTheme,
@@ -593,9 +730,15 @@ async function openLogin(): Promise<void> {
 
 async function logout(): Promise<void> {
   await window.api.auth.logout();
+  resetOrganizationSession();
   if (shellHost.shouldRefreshAuthSessionAfterLogout) {
     await refreshAuthSession();
   }
+}
+
+async function onOrgChange(event: Event): Promise<void> {
+  const target = event.target as HTMLSelectElement;
+  await switchOrganization(target.value);
 }
 
 const onThemeChanged = (
@@ -616,6 +759,11 @@ const onAuthSessionChanged = (
   payload: { user: string } | null,
 ): void => {
   authSession.value = payload;
+  if (payload) {
+    void loadOrganizationContext();
+  } else {
+    resetOrganizationSession();
+  }
 };
 
 watch(integrationOpen, (open) => {
@@ -635,7 +783,7 @@ watch(activeViewId, (viewId) => {
   persistCurrentShellSurface();
 });
 
-watch([showShellTagsBar, isSidebarCollapsed], () => {
+watch([showShellTagsBar, () => layoutPreferences.collapsed], () => {
   requestAnimationFrame(() => reportShellViewport());
 });
 
@@ -683,6 +831,7 @@ onMounted(async () => {
     }
   }
   await refreshAuthSession();
+  await loadOrganizationContext();
   reportShellViewport();
   if (!usesIframeEmbed) {
     window.addEventListener('resize', reportShellViewport);
@@ -727,258 +876,127 @@ onUnmounted(() => {
     class="shell"
     :class="{ 'theme-switching': isThemeSwitching }"
     :data-theme="theme"
-    :style="{ '--shell-top': `${shellTopPx}px` }"
   >
-    <header class="shell-bar">
-      <div class="shell-bar-left">
-        <div class="shell-brand-menu">
-          <div class="shell-brand-group">
-            <button
-              type="button"
-              class="shell-brand shell-brand-btn"
-              title="返回应用集成"
-              @click="returnToIntegrationHome"
-            >
-              Nebula Studio
-            </button>
-            <span class="shell-badge">Host Shell</span>
+    <NebulaShellLayout
+      v-model:preferences-open="preferencesOpen"
+      :breadcrumbs="shellBreadcrumbItems"
+      :show-tags-bar="showShellTagsBar"
+      :tags="shellTagItems"
+      :active-tag-key="activeShellTagKey"
+      :theme="theme"
+      :auth-user="authSession?.user"
+      :show-auth="true"
+      @update:theme="applyTheme"
+      @login="openLogin"
+      @logout="logout"
+      @tag-activate="activateShellTag"
+      @tag-close="closeShellTag"
+      @tags-close-left="closeShellTagsLeftOfAnchor"
+      @tags-close-right="closeShellTagsRightOfAnchor"
+      @tags-close-others="closeOtherShellTags"
+      @tags-close-all="closeAllShellTags"
+      @tags-refresh="refreshActiveShellSurface"
+      @tags-fullscreen="toggleShellContentFullscreen"
+      @refresh="refreshActiveShellSurface"
+    >
+      <template #sidebar-brand>
+        <button
+          type="button"
+          class="nebula-layout-sidebar-brand nebula-layout-sidebar-brand--btn"
+          title="返回应用集成"
+          @click="returnToIntegrationHome"
+        >
+          <div class="nebula-layout-sidebar-brand__logo">N</div>
+          <div class="nebula-layout-sidebar-brand__text">
+            <div class="nebula-layout-sidebar-brand__title">Nebula Studio</div>
+            <span class="nebula-layout-sidebar-brand__badge">Host Shell</span>
           </div>
-        </div>
+        </button>
+      </template>
 
-        <nav class="breadcrumb" aria-label="当前位置">
-          <template
-            v-for="(segment, index) in shellBreadcrumbTrail"
-            :key="`${segment}-${index}`"
-          >
-            <span
-              class="breadcrumb-item"
-              :class="{
-                'is-current': index === shellBreadcrumbTrail.length - 1,
-              }"
-            >
-              {{ segment }}
-            </span>
-            <span
-              v-if="index < shellBreadcrumbTrail.length - 1"
-              class="breadcrumb-separator"
-              aria-hidden="true"
-            >
-              /
-            </span>
-          </template>
-        </nav>
-      </div>
-
-      <div class="shell-bar-actions">
-        <div class="shell-controls">
-          <button type="button" class="shell-control-btn" title="搜索">
+      <template #sidebar>
+        <button
+          type="button"
+          class="nebula-layout-nav-item"
+          :class="{ 'is-active': selectedSidebarItem === 'workspace' }"
+          @click="openWorkspace"
+        >
+          <span class="nebula-layout-nav-item__icon">
             <svg
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
               stroke-width="2"
             >
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
             </svg>
-          </button>
-        </div>
-
-        <NebulaThemeToggle
-          class="shell-btn"
-          :theme="theme"
-          @update:theme="applyTheme"
-        />
-        <NebulaButton
-          v-if="!authSession"
-          class="shell-btn"
-          variant="secondary"
-          @click="openLogin"
+          </span>
+          <span class="nebula-layout-nav-item__label">工作台</span>
+        </button>
+        <button
+          type="button"
+          class="nebula-layout-nav-item"
+          :class="{ 'is-active': selectedSidebarItem === 'integration' }"
+          @click="openIntegrationLauncher"
         >
-          登录
-        </NebulaButton>
-        <div v-if="authSession" class="auth-menu">
-          <button type="button" class="auth-avatar" :title="authSession.user">
-            {{ authAvatarText }}
-          </button>
-          <div class="auth-dropdown">
-            <div class="auth-dropdown-header">
-              <p class="auth-dropdown-title">账号信息</p>
-              <p class="auth-dropdown-user">{{ authSession.user }}</p>
-            </div>
-            <div class="auth-dropdown-divider" />
-            <div class="auth-dropdown-actions">
-              <NebulaButton
-                type="button"
-                class="auth-dropdown-logout"
-                variant="ghost"
-                @click="logout"
-              >
-                退出登录
-              </NebulaButton>
-            </div>
-          </div>
-        </div>
-      </div>
-    </header>
-
-    <div
-      class="shell-body"
-      :class="{ 'sidebar-collapsed': isSidebarCollapsed }"
-      @mousemove="handleMouseMove"
-      @mouseleave="showResizer = false"
-    >
-      <aside class="shell-sidebar">
-        <div class="sidebar-group">
-          <button
-            type="button"
-            class="sidebar-item"
-            :class="{ active: selectedSidebarItem === 'workspace' }"
-            @click="openWorkspace"
-          >
-            <span class="sidebar-item-icon">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <rect x="3" y="3" width="7" height="7"></rect>
-                <rect x="14" y="3" width="7" height="7"></rect>
-                <rect x="14" y="14" width="7" height="7"></rect>
-                <rect x="3" y="14" width="7" height="7"></rect>
-              </svg>
-            </span>
-            <span class="sidebar-item-label">工作台</span>
-          </button>
-          <button
-            type="button"
-            class="sidebar-item"
-            :class="{ active: selectedSidebarItem === 'integration' }"
-            @click="openIntegrationLauncher"
-          >
-            <span class="sidebar-item-icon">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12,6 12,12 16,14"></polyline>
-              </svg>
-            </span>
-            <span class="sidebar-item-label">应用集成</span>
-          </button>
-        </div>
-
-        <div class="sidebar-footer">
-          <button
-            type="button"
-            class="sidebar-item sidebar-item-settings"
-            :disabled="!settingsAvailable"
-            @click="selectIntegratedApp('settings')"
-          >
-            <span class="sidebar-item-icon">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <circle cx="12" cy="12" r="3"></circle>
-                <path
-                  d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"
-                ></path>
-              </svg>
-            </span>
-            <span class="sidebar-item-label">设置</span>
-          </button>
-        </div>
-      </aside>
-
-      <div
-        class="sidebar-resizer"
-        @click="isSidebarCollapsed = !isSidebarCollapsed"
-        :class="{ visible: showResizer }"
-        :title="isSidebarCollapsed ? '展开侧边栏' : '收起侧边栏'"
-      >
-        <span class="resizer-icon">{{ isSidebarCollapsed ? '→' : '←' }}</span>
-      </div>
-
-      <main class="shell-main">
-        <div v-if="showShellTagsBar" class="shell-tags-view">
-          <div class="shell-tags-scroll" role="tablist" aria-label="已打开页面">
-            <button
-              v-for="tag in shellTags"
-              :key="tag.key"
-              type="button"
-              role="tab"
-              class="shell-tag"
-              :class="{ 'is-active': tag.key === activeShellTagKey }"
-              :aria-selected="tag.key === activeShellTagKey"
-              @click="activateShellTag(tag.key)"
+          <span class="nebula-layout-nav-item__icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
             >
-              <svg
-                v-if="tag.key === SHELL_SURFACE_WORKSPACE"
-                class="shell-tag-icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                aria-hidden="true"
-              >
-                <path
-                  d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z"
-                />
-              </svg>
-              <span class="shell-tag-label">{{ tag.label }}</span>
-            </button>
-          </div>
-          <div class="shell-tags-actions">
-            <button
-              type="button"
-              class="shell-tags-action-btn"
-              title="刷新当前页"
-              :disabled="!activeViewId"
-              @click="refreshActiveShellSurface"
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12,6 12,12 16,14"></polyline>
+            </svg>
+          </span>
+          <span class="nebula-layout-nav-item__label">应用集成</span>
+        </button>
+        <button
+          type="button"
+          class="nebula-layout-nav-item"
+          :class="{ 'is-active': activeViewId === 'settings' }"
+          :disabled="!settingsAvailable"
+          @click="selectIntegratedApp('settings')"
+        >
+          <span class="nebula-layout-nav-item__icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
             >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                aria-hidden="true"
-              >
-                <polyline points="23 4 23 10 17 10"></polyline>
-                <polyline points="1 20 1 14 7 14"></polyline>
-                <path
-                  d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
-                ></path>
-              </svg>
-            </button>
-            <button
-              type="button"
-              class="shell-tags-action-btn"
-              title="内容区全屏"
-              @click="toggleShellContentFullscreen"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                aria-hidden="true"
-              >
-                <polyline points="15 3 21 3 21 9"></polyline>
-                <polyline points="9 21 3 21 3 15"></polyline>
-                <polyline points="21 15 21 21 15 21"></polyline>
-                <polyline points="3 9 3 3 9 3"></polyline>
-              </svg>
-            </button>
-          </div>
-        </div>
+              <circle cx="12" cy="12" r="3"></circle>
+              <path
+                d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"
+              />
+            </svg>
+          </span>
+          <span class="nebula-layout-nav-item__label">设置</span>
+        </button>
+      </template>
 
+      <template #header-actions>
+        <div v-if="orgEnabled && orgOptions.length > 0" class="org-switcher">
+          <label class="org-switcher__label" for="shell-org-select">组织</label>
+          <select
+            id="shell-org-select"
+            class="org-switcher__select"
+            :value="currentOrgId"
+            :disabled="orgLoading || !canSwitchOrg"
+            @change="onOrgChange"
+          >
+            <option v-for="org in orgOptions" :key="org.id" :value="org.id">
+              {{ org.orgName }}
+            </option>
+          </select>
+        </div>
+      </template>
+
+      <div class="shell-main">
         <div class="shell-embed-host">
           <div v-if="usesIframeEmbed" class="shell-embed">
             <template v-for="viewId in availableViewIds" :key="viewId">
@@ -1077,7 +1095,7 @@ onUnmounted(() => {
             <div class="integration-panel-body">
               <div class="integration-grid">
                 <NebulaDrag
-                  v-model="sortableViewIds"
+                  v-model="integrationGridViewIds"
                   class="integration-grid-apps"
                   :item-key="draggableItemKey"
                   handle=".integration-tile-icon"
@@ -1179,8 +1197,8 @@ onUnmounted(() => {
             </div>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </NebulaShellLayout>
   </div>
 </template>
 
@@ -1232,235 +1250,208 @@ onUnmounted(() => {
   --chip-bg: hsl(var(--muted) / 80%);
 }
 
-.shell-bar {
-  position: relative;
-  z-index: 3;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: var(--shell-top);
-  padding: 0 16px;
-  font:
-    13px/1.4 system-ui,
-    sans-serif;
-  background: var(--bar-bg);
-  border-bottom: 1px solid var(--bar-border);
-  box-shadow: 0 6px 20px rgb(8 9 14 / 18%);
-  -webkit-app-region: drag;
-}
-
-.shell-brand-menu {
-  position: relative;
-  flex-shrink: 0;
-  -webkit-app-region: no-drag;
-}
-
-.shell-brand-menu::after {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  height: 14px;
-  content: '';
-}
-
-.shell-brand-group {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  min-width: 0;
-}
-
-.shell-bar-left {
-  display: flex;
-  flex: 1;
-  gap: 16px;
-  align-items: center;
-  min-width: 0;
-  -webkit-app-region: no-drag;
-}
-
-.shell-bar-actions {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  -webkit-app-region: no-drag;
-}
-
-.breadcrumb {
+.org-switcher {
   display: flex;
   gap: 6px;
   align-items: center;
-  min-width: 0;
-  overflow: hidden;
 }
 
-.breadcrumb-item {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 14px;
+.org-switcher__label {
+  font-size: 12px;
   color: var(--text-muted);
-  white-space: nowrap;
 }
 
-.breadcrumb-item.is-current {
-  font-weight: 500;
+.org-switcher__select {
+  min-width: 140px;
+  max-width: 220px;
+  padding: 4px 8px;
+  font: inherit;
+  font-size: 12px;
   color: var(--text-main);
+  background: hsl(var(--background) / 80%);
+  border: 1px solid hsl(var(--border) / 72%);
+  border-radius: 6px;
 }
 
-.breadcrumb-separator {
-  flex-shrink: 0;
-  font-size: 13px;
-  color: hsl(var(--muted-foreground) / 70%);
-}
-
-/* 控制按钮 */
-.shell-controls {
+.shell-main {
+  position: relative;
   display: flex;
-  gap: 2px;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
 }
 
-.shell-control-btn {
+.shell-embed-host {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.workspace-empty {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - var(--shell-top) - 60px);
+  padding: 2rem;
+  text-align: center;
+}
+
+.workspace-empty-icon {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 1rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.workspace-empty-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+.workspace-empty-desc {
+  margin: 0;
+  font-size: 0.95rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.shell-embed {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+}
+
+.shell-embed-frame {
+  box-sizing: border-box;
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  height: 100%;
+  margin: 0;
+  pointer-events: none;
+  background: hsl(var(--background));
+  border: 0;
+  opacity: 0;
+  transition: opacity 0.24s ease;
+}
+
+.shell-embed-frame.is-surface-ready {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+.shell-embed-transition {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: hsl(var(--background-deep) / 94%);
+  backdrop-filter: blur(6px);
+}
+
+.shell-embed-transition-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+  min-width: 220px;
+  padding: 28px 32px;
+  text-align: center;
+  background: hsl(var(--card) / 88%);
+  border: 1px solid hsl(var(--border) / 78%);
+  border-radius: 16px;
+  box-shadow: 0 18px 40px rgb(2 4 12 / 22%);
+}
+
+.shell-embed-transition-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  color: hsl(var(--primary));
+}
+
+.shell-embed-transition-icon :deep(svg) {
+  width: 44px;
+  height: 44px;
+}
+
+.shell-embed-transition-spinner {
   width: 28px;
   height: 28px;
-  padding: 0;
-  color: var(--text-muted);
-  cursor: pointer;
-  background: transparent;
-  border: none;
-  border-radius: 6px;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
-}
-
-.shell-control-btn:hover {
-  color: var(--text-main);
-  background-color: hsl(var(--muted) / 30%);
-}
-
-.shell-control-btn svg {
-  width: 16px;
-  height: 16px;
-}
-
-.shell-left {
-  display: none;
-}
-
-.shell-brand {
-  flex-shrink: 0;
-  font-weight: 700;
-  color: var(--text-main);
-  letter-spacing: 0.2px;
-  -webkit-app-region: drag;
-}
-
-.shell-brand-btn {
-  padding: 0;
-  cursor: pointer;
-  background: transparent;
-  border: 0;
-  -webkit-app-region: no-drag;
-}
-
-.shell-brand-btn:hover {
-  opacity: 0.9;
-}
-
-.shell-badge {
-  flex-shrink: 0;
-  padding: 2px 8px;
-  font-size: 11px;
-  line-height: 1.3;
-  color: hsl(var(--primary));
-  background: hsl(var(--primary) / 14%);
-  border: 1px solid hsl(var(--primary) / 38%);
-  border-radius: 999px;
-  -webkit-app-region: drag;
-}
-
-.shell-desc {
-  min-width: 180px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 12px;
-  color: var(--text-muted);
-  white-space: nowrap;
-  -webkit-app-region: drag;
-}
-
-.shell-center {
-  display: flex;
-  flex-shrink: 1;
-  gap: 12px;
-  align-items: center;
-  min-width: 0;
-  overflow: hidden;
-  -webkit-app-region: no-drag;
-}
-
-.mode-chip {
-  display: inline-flex;
-  flex-shrink: 0;
-  gap: 6px;
-  align-items: center;
-  padding: 3px 10px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-  border-radius: 999px;
-}
-
-.mode-dev {
-  color: hsl(var(--success));
-  background: hsl(var(--success) / 20%);
-  border: 1px solid hsl(var(--success) / 45%);
-}
-
-.mode-build {
-  color: hsl(var(--warning));
-  background: hsl(var(--warning) / 20%);
-  border: 1px solid hsl(var(--warning) / 45%);
-}
-
-.mode-dot {
-  width: 8px;
-  height: 8px;
-  background: currentcolor;
+  border: 2px solid hsl(var(--border) / 70%);
+  border-top-color: hsl(var(--primary));
   border-radius: 50%;
+  animation: shell-embed-spin 0.75s linear infinite;
 }
 
-.shell-app-launcher-trigger {
-  display: flex;
-  flex-shrink: 1;
-  gap: 10px;
-  align-items: center;
-  min-width: 0;
-}
-
-.current-app-label {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 12px;
-  color: var(--text-muted);
-  white-space: nowrap;
-}
-
-.current-app-label strong {
+.shell-embed-transition-title {
+  margin: 0;
+  font-size: 15px;
   font-weight: 600;
-  color: var(--text-main);
+  color: hsl(var(--foreground));
 }
 
-.integration-open-btn {
-  flex-shrink: 0;
+.shell-embed-transition-hint {
+  margin: 0;
+  font-size: 13px;
+  color: hsl(var(--muted-foreground));
 }
 
-/* integration-overlay and panel styling moved into the new layout section */
+.shell-embed-transition-enter-active,
+.shell-embed-transition-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.shell-embed-transition-enter-from,
+.shell-embed-transition-leave-to {
+  opacity: 0;
+}
+
+@keyframes shell-embed-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.integration-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+.integration-panel {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100%;
+  max-height: 100%;
+  padding: 22px 24px 24px;
+  overflow: hidden;
+  background: hsl(var(--background) / 96%);
+}
 
 .integration-backdrop {
   position: absolute;
@@ -1602,6 +1593,7 @@ onUnmounted(() => {
 
 .integration-tile-icon {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
   width: 56px;
@@ -1699,534 +1691,6 @@ onUnmounted(() => {
   font-size: 12px;
   font-weight: 600;
   color: hsl(var(--primary));
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  white-space: nowrap;
-  border: 0;
-  clip-path: inset(0 0 0 0);
-}
-
-.shell-versions {
-  display: none;
-}
-
-.shell-actions {
-  display: none;
-}
-
-.shell-body {
-  --shell-sidebar-expanded-width: 220px;
-  --shell-sidebar-collapsed-width: 48px;
-  --shell-sidebar-width: var(--shell-sidebar-expanded-width);
-  --shell-sidebar-duration: 0.28s;
-  --shell-sidebar-ease: cubic-bezier(0.4, 0, 0.2, 1);
-
-  position: relative;
-  display: flex;
-  min-height: calc(100vh - var(--shell-top));
-  overflow: hidden;
-}
-
-.shell-body.sidebar-collapsed {
-  --shell-sidebar-width: var(--shell-sidebar-collapsed-width);
-}
-
-.shell-sidebar {
-  display: flex;
-  flex-shrink: 0;
-  flex-direction: column;
-  justify-content: space-between;
-  width: var(--shell-sidebar-width);
-  min-height: 0;
-  padding: 12px;
-  overflow: hidden;
-  background: hsl(var(--background-deep) / 96%);
-  border-right: 1px solid hsl(var(--border) / 82%);
-  transition:
-    width var(--shell-sidebar-duration) var(--shell-sidebar-ease),
-    padding var(--shell-sidebar-duration) var(--shell-sidebar-ease);
-  will-change: width;
-}
-
-.shell-body.sidebar-collapsed .shell-sidebar {
-  padding: 12px 0;
-}
-
-.shell-body.sidebar-collapsed .sidebar-item {
-  padding: 0 14px;
-}
-
-.shell-body.sidebar-collapsed .sidebar-item-label {
-  opacity: 0;
-  transition-delay: 0s;
-}
-
-.sidebar-group,
-.sidebar-footer {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.sidebar-item {
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: 40px;
-  padding: 0 12px;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text-main);
-  text-align: left;
-  cursor: pointer;
-  background: hsl(var(--muted) / 32%);
-  border: 1px solid transparent;
-  border-radius: 10px;
-  transition:
-    background 0.15s ease,
-    border-color 0.15s ease,
-    padding var(--shell-sidebar-duration) var(--shell-sidebar-ease);
-}
-
-.sidebar-item-icon {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  margin-right: 10px;
-}
-
-.sidebar-item-icon svg {
-  width: 100%;
-  height: 100%;
-}
-
-.sidebar-item-label {
-  flex: 1 1 auto;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  opacity: 1;
-  transition: opacity calc(var(--shell-sidebar-duration) * 0.6)
-    var(--shell-sidebar-ease);
-}
-
-.shell-body:not(.sidebar-collapsed) .sidebar-item-label {
-  transition-delay: 0.1s;
-}
-
-.sidebar-item:hover:not(:disabled) {
-  background: hsl(var(--primary) / 12%);
-}
-
-.sidebar-item.active {
-  background: hsl(var(--primary) / 16%);
-  border-color: hsl(var(--primary) / 42%);
-}
-
-.sidebar-item:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-.sidebar-item-settings {
-  margin-top: auto;
-}
-
-.sidebar-resizer {
-  position: absolute;
-  top: 0;
-  left: 220px;
-  z-index: 10;
-  width: 4px;
-  height: 100%;
-  cursor: pointer;
-  background-color: transparent;
-  opacity: 0;
-  transition:
-    opacity 0.2s ease,
-    background-color 0.2s ease,
-    left 0.3s ease;
-}
-
-.sidebar-resizer::before {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 40px;
-  content: '';
-  background: hsl(var(--background-deep) / 96%);
-  border: 1px solid hsl(var(--border) / 82%);
-  border-radius: 0 6px 6px 0;
-  opacity: 0;
-  transform: translateY(-50%);
-  transition:
-    opacity 0.2s ease,
-    background-color 0.2s ease,
-    border-color 0.2s ease;
-}
-
-.sidebar-resizer::after {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 8px;
-  height: 8px;
-  margin-left: 6px;
-  content: '';
-  border-bottom: 2px solid hsl(var(--foreground));
-  border-left: 2px solid hsl(var(--foreground));
-  opacity: 0;
-  transform: translateY(-50%) rotate(45deg);
-  transition:
-    opacity 0.2s ease,
-    transform 0.3s ease,
-    border-color 0.2s ease;
-}
-
-.sidebar-resizer.visible {
-  opacity: 1;
-}
-
-.sidebar-resizer.visible::before {
-  opacity: 1;
-}
-
-.sidebar-resizer.visible::after {
-  opacity: 1;
-}
-
-.sidebar-resizer:hover::before {
-  background: hsl(var(--primary) / 16%);
-  border-color: hsl(var(--primary) / 55%);
-}
-
-.sidebar-resizer:hover::after {
-  border-color: hsl(var(--primary));
-}
-
-.sidebar-collapsed .sidebar-resizer {
-  left: 48px;
-}
-
-.sidebar-collapsed .sidebar-resizer::before {
-  left: 0;
-  border-radius: 0 6px 6px 0;
-}
-
-.sidebar-collapsed .sidebar-resizer::after {
-  left: 0;
-  margin-left: 6px;
-  transform: translateY(-50%) rotate(-135deg);
-}
-
-.shell-main {
-  --shell-tags-height: 40px;
-
-  position: relative;
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  min-width: 0;
-  min-height: 0;
-  overflow: hidden;
-}
-
-.shell-tags-view {
-  box-sizing: border-box;
-  display: flex;
-  flex-shrink: 0;
-  gap: 8px;
-  align-items: center;
-  justify-content: space-between;
-  height: var(--shell-tags-height);
-  padding: 0 12px;
-  background: hsl(var(--background-deep) / 88%);
-  border-bottom: 1px solid hsl(var(--border) / 82%);
-}
-
-.shell-tags-scroll {
-  display: flex;
-  flex: 1;
-  gap: 6px;
-  align-items: center;
-  min-width: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.shell-tags-scroll::-webkit-scrollbar {
-  display: none;
-}
-
-.shell-tag {
-  display: inline-flex;
-  flex-shrink: 0;
-  gap: 6px;
-  align-items: center;
-  height: 28px;
-  padding: 0 12px;
-  font-size: 12px;
-  color: var(--text-muted);
-  cursor: pointer;
-  background: transparent;
-  border: 1px solid hsl(var(--border) / 90%);
-  border-radius: 4px;
-  transition:
-    background-color 0.2s ease,
-    border-color 0.2s ease,
-    color 0.2s ease;
-}
-
-.shell-tag:hover {
-  color: var(--text-main);
-  border-color: hsl(var(--primary) / 45%);
-}
-
-.shell-tag.is-active {
-  color: hsl(var(--primary-foreground));
-  background: hsl(var(--primary));
-  border-color: hsl(var(--primary));
-}
-
-.shell-tag.is-active:hover {
-  color: hsl(var(--primary-foreground));
-  background: hsl(var(--primary) / 92%);
-  border-color: hsl(var(--primary) / 92%);
-}
-
-.shell-tag-icon {
-  flex-shrink: 0;
-  width: 14px;
-  height: 14px;
-}
-
-.shell-tag-label {
-  max-width: 160px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.shell-tags-actions {
-  display: flex;
-  flex-shrink: 0;
-  gap: 2px;
-  align-items: center;
-}
-
-.shell-tags-action-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  padding: 0;
-  color: var(--text-muted);
-  cursor: pointer;
-  background: transparent;
-  border: none;
-  border-radius: 4px;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
-}
-
-.shell-tags-action-btn:hover:not(:disabled) {
-  color: var(--text-main);
-  background-color: hsl(var(--muted) / 30%);
-}
-
-.shell-tags-action-btn:disabled {
-  cursor: not-allowed;
-  opacity: 0.45;
-}
-
-.shell-tags-action-btn svg {
-  width: 15px;
-  height: 15px;
-}
-
-.shell-embed-host {
-  position: relative;
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  min-width: 0;
-  min-height: 0;
-  overflow: hidden;
-}
-
-.workspace-empty {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: calc(100vh - var(--shell-top) - 60px);
-  padding: 2rem;
-  text-align: center;
-}
-
-.workspace-empty-icon {
-  width: 64px;
-  height: 64px;
-  margin-bottom: 1rem;
-  color: hsl(var(--muted-foreground));
-}
-
-.workspace-empty-title {
-  margin: 0 0 0.5rem;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: hsl(var(--foreground));
-}
-
-.workspace-empty-desc {
-  margin: 0;
-  font-size: 0.95rem;
-  color: hsl(var(--muted-foreground));
-}
-
-.shell-embed {
-  display: flex;
-  flex: 1;
-  width: 100%;
-  min-height: 0;
-}
-
-.shell-embed-frame {
-  box-sizing: border-box;
-  flex: 1;
-  width: 100%;
-  min-height: 0;
-  margin: 0;
-  pointer-events: none;
-  background: hsl(var(--background));
-  border: 0;
-  opacity: 0;
-  transition: opacity 0.24s ease;
-}
-
-.shell-embed-frame.is-surface-ready {
-  pointer-events: auto;
-  opacity: 1;
-}
-
-.shell-embed-transition {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: hsl(var(--background-deep) / 94%);
-  backdrop-filter: blur(6px);
-}
-
-.shell-embed-transition-card {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  align-items: center;
-  min-width: 220px;
-  padding: 28px 32px;
-  text-align: center;
-  background: hsl(var(--card) / 88%);
-  border: 1px solid hsl(var(--border) / 78%);
-  border-radius: 16px;
-  box-shadow: 0 18px 40px rgb(2 4 12 / 22%);
-}
-
-.shell-embed-transition-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  color: hsl(var(--primary));
-}
-
-.shell-embed-transition-icon :deep(svg) {
-  width: 44px;
-  height: 44px;
-}
-
-.shell-embed-transition-spinner {
-  width: 28px;
-  height: 28px;
-  border: 2px solid hsl(var(--border) / 70%);
-  border-top-color: hsl(var(--primary));
-  border-radius: 50%;
-  animation: shell-embed-spin 0.75s linear infinite;
-}
-
-.shell-embed-transition-title {
-  margin: 0;
-  font-size: 15px;
-  font-weight: 600;
-  color: hsl(var(--foreground));
-}
-
-.shell-embed-transition-hint {
-  margin: 0;
-  font-size: 13px;
-  color: hsl(var(--muted-foreground));
-}
-
-.shell-embed-transition-enter-active,
-.shell-embed-transition-leave-active {
-  transition: opacity 0.2s ease;
-}
-
-.shell-embed-transition-enter-from,
-.shell-embed-transition-leave-to {
-  opacity: 0;
-}
-
-@keyframes shell-embed-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.integration-overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  display: flex;
-  align-items: stretch;
-  justify-content: center;
-  pointer-events: auto;
-}
-
-.integration-panel {
-  position: relative;
-  z-index: 1;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  min-height: 100%;
-  max-height: 100%;
-  padding: 22px 24px 24px;
-  overflow: hidden;
-  background: hsl(var(--background) / 96%);
 }
 
 .shell-btn {

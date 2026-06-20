@@ -49,6 +49,10 @@ export const NebulaTableColumn = defineComponent({
       >,
       default: undefined,
     },
+    treeNode: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup(props, { slots }) {
     return () =>
@@ -65,6 +69,7 @@ export const NebulaTableColumn = defineComponent({
           sortable: props.sortable,
           formatter: props.formatter,
           showOverflow: props.showOverflow,
+          treeNode: props.treeNode,
         },
         slots,
       );

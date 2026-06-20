@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import {
+  NebulaAdminContent,
+  NebulaAdminSubNav,
+  useShellHosted,
+} from '@nebula-studio/nebula-layout';
+import type { SubNavItem } from '@nebula-studio/nebula-layout';
 
 import AppHeader from '@/app/AppHeader.vue';
 import { useAuth } from '@/shared/composables/useAuth';
-import { isIntegrationShellEmbed } from '@/shared/composables/useShellEmbed';
 
-const isShellHosted = computed(() => isIntegrationShellEmbed());
+const { isShellHosted } = useShellHosted();
 const { isPlatformAdmin } = useAuth();
 
 // 当前所在端：admin=管理端, user=使用端
@@ -167,13 +172,69 @@ function toggleMenu(key: string) {
 function isExpanded(key: string) {
   return expandedMenus.value.has(key);
 }
+
+const embeddedSubNavItems = computed<SubNavItem[]>(() => {
+  if (currentSide.value === 'user') {
+    return userNavItems
+      .filter((item) => item.to)
+      .map((item) => ({
+        key: item.key,
+        label: item.label,
+        to: item.to,
+      }));
+  }
+  const items: SubNavItem[] = [];
+  for (const item of activeAdminNavItems.value) {
+    if (item.children) {
+      for (const child of item.children) {
+        items.push({ key: child.to, label: child.label, to: child.to });
+      }
+    } else if (item.to) {
+      items.push({ key: item.key, label: item.label, to: item.to });
+    }
+  }
+  return items;
+});
 </script>
 
 <template>
-  <div class="app-layout" :class="{ 'app-layout--embedded': isShellHosted }">
+  <NebulaAdminContent v-if="isShellHosted">
+    <template #subnav>
+      <div class="integration-embed-subnav">
+        <div
+          class="integration-embed-side-toggle"
+          role="tablist"
+          aria-label="端切换"
+        >
+          <button
+            type="button"
+            role="tab"
+            class="integration-embed-side-btn"
+            :class="{ active: currentSide === 'admin' }"
+            @click="currentSide = 'admin'"
+          >
+            管理端
+          </button>
+          <button
+            type="button"
+            role="tab"
+            class="integration-embed-side-btn"
+            :class="{ active: currentSide === 'user' }"
+            @click="currentSide = 'user'"
+          >
+            使用端
+          </button>
+        </div>
+        <NebulaAdminSubNav :items="embeddedSubNavItems" :max-visible="8" />
+      </div>
+    </template>
+    <slot />
+  </NebulaAdminContent>
+
+  <div v-else class="app-layout">
     <aside class="app-layout__sidebar">
       <div class="app-layout__sidebar-head">
-        <div v-if="!isShellHosted" class="app-layout__brand">
+        <div class="app-layout__brand">
           <h1 class="app-layout__title">集成平台</h1>
           <p class="app-layout__subtitle">插件 · 订阅 · 服务 · 流程</p>
         </div>
@@ -477,7 +538,30 @@ function isExpanded(key: string) {
   overflow: auto;
 }
 
-.app-layout--embedded .app-layout__content {
-  padding: 0 16px 16px;
+.integration-embed-subnav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.integration-embed-side-toggle {
+  display: flex;
+  gap: 6px;
+  padding: 8px 12px 0;
+}
+
+.integration-embed-side-btn {
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  background: hsl(var(--muted) / 40%);
+  border: 1px solid hsl(var(--border));
+  border-radius: 8px;
+}
+
+.integration-embed-side-btn.active {
+  color: hsl(var(--primary));
+  background: hsl(var(--primary) / 12%);
+  border-color: hsl(var(--primary) / 40%);
 }
 </style>

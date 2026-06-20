@@ -24,6 +24,14 @@ export { NebulaThemeToggle } from './theme-toggle/NebulaThemeToggle';
 export type { NebulaThemeMode } from './theme-toggle/NebulaThemeToggle';
 export { NebulaTreeMenu } from './tree-menu/NebulaTreeMenu';
 export type { NebulaTreeNode } from './tree-menu/NebulaTreeMenu';
+export { NebulaIconButton } from './icon-button/NebulaIconButton';
+export { NebulaAvatar } from './avatar/NebulaAvatar';
+export {
+  NebulaDropdown,
+  NebulaDropdownItem,
+  NebulaDropdownDivider,
+} from './dropdown/NebulaDropdown';
+export { NebulaDrawer } from './drawer/NebulaDrawer';
 export { NebulaReader } from './reader/NebulaReader';
 export { default as NebulaEditor } from './editor/NebulaEditor.vue';
 export { default as NebulaMarkdownPane } from './markdown-pane/NebulaMarkdownPane.vue';

@@ -32,17 +32,17 @@ export const shellIntegratedAppsCatalog = {
   settings: {
     label: '设置',
     iconSvg: ICON_SETTINGS,
+    integratable: false,
   },
 } as const satisfies Record<
   EmbeddedShellWindowId,
   ShellIntegratedAppCatalogEntry
 >;
 
-/** 应用集成面板中的展示顺序 */
+/** 应用集成面板中的展示顺序（不含侧栏固定入口如「设置」） */
 export const shellIntegrableDisplayOrder = [
   'docs',
   'integration',
-  'settings',
 ] as const satisfies readonly EmbeddedShellWindowId[];
 
 function assertCatalogAlignedWithWindows(): void {
@@ -72,7 +72,9 @@ function assertCatalogAlignedWithWindows(): void {
 
 export function buildShellIntegratedAppMetas(): ShellIntegratedAppMeta[] {
   assertCatalogAlignedWithWindows();
-  return shellIntegrableDisplayOrder.map((id) => ({
+  return (
+    Object.keys(shellIntegratedAppsCatalog) as EmbeddedShellWindowId[]
+  ).map((id) => ({
     id,
     ...shellIntegratedAppsCatalog[id],
   }));

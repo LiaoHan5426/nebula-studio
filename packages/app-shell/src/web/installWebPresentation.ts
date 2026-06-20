@@ -236,6 +236,13 @@ export function installWebPresentation(
           payload.user,
           payload.password,
         );
+        if (result.needsOrgSelection) {
+          return {
+            ok: false as const,
+            needsOrgSelection: true as const,
+            pending: result,
+          };
+        }
         writeWebAuthSession({
           user: result.username,
           token: result.token,
