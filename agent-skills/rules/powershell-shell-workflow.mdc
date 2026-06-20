@@ -1,0 +1,14 @@
+---
+description: 常亮：Windows PowerShell 下命令链接与后台进程以仓库 Skill 为准
+alwaysApply: true
+---
+
+# PowerShell / Windows shell
+
+以 `agent-skills/skills/powershell-shell-workflow/SKILL.md` 为准；需要细节时读取该文件。
+
+**硬规则摘要：**
+
+- 命令链接用 **`;`**，不用 **`&&`**
+- Java / Spring Boot、`vp dev`、其他常驻进程默认 **后台启动**（Shell 工具 `block_until_ms: 0`），不要阻塞等待进程结束
+- HTTP 探测用 **`curl.exe`**，不用 PowerShell 的 `curl` 别名

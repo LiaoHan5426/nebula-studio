@@ -49,7 +49,20 @@ function buildHeaders(
     }
   }
 
+  if (config.getOrgId) {
+    const orgId = config.getOrgId();
+    if (orgId) {
+      headers['X-Org-Id'] = orgId;
+    }
+  }
+
   return mergeHeaders(headers, options.headers);
+}
+
+function resolveCredentials(
+  config: ApiClientConfig,
+): RequestCredentials | undefined {
+  return config.getCredentials?.() ?? config.credentials;
 }
 
 function shouldTrackProgress(
@@ -60,6 +73,16 @@ function shouldTrackProgress(
     return false;
   }
   return config.progress !== false;
+}
+
+async function maybeHandleUnauthorized(
+  response: Response,
+  config: ApiClientConfig,
+  options: ApiRequestOptions,
+): Promise<void> {
+  if (response.status === 401 && !options.skipAuth && config.onUnauthorized) {
+    await config.onUnauthorized();
+  }
 }
 
 export function createApiClient(config: ApiClientConfig = {}) {
@@ -79,13 +102,20 @@ export function createApiClient(config: ApiClientConfig = {}) {
 
     const request = fetch(url, {
       ...fetchOptions,
+      credentials: resolveCredentials(config),
       headers: buildHeaders(config, options),
     });
 
+    const run = async (): Promise<Response> => {
+      const response = await request;
+      await maybeHandleUnauthorized(response, config, options);
+      return response;
+    };
+
     if (!shouldTrackProgress(config, options)) {
-      return request;
+      return run();
     }
-    return trackRequestProgress(request);
+    return trackRequestProgress(run());
   }
 
   async function apiRequest<T>(
@@ -97,8 +127,10 @@ export function createApiClient(config: ApiClientConfig = {}) {
     const execute = async (): Promise<ApiResponse<T>> => {
       const response = await fetch(url, {
         ...options,
+        credentials: resolveCredentials(config),
         headers: buildHeaders(config, options),
       });
+      await maybeHandleUnauthorized(response, config, options);
       return parseApiResponse<T>(response);
     };
 

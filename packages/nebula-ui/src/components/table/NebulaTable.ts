@@ -58,6 +58,10 @@ export const NebulaTable = defineComponent({
       type: String as PropType<NebulaTableDragMode>,
       default: 'none',
     },
+    treeConfig: {
+      type: Object as PropType<Record<string, unknown>>,
+      default: undefined,
+    },
     class: {
       type: String,
       default: '',
@@ -85,6 +89,7 @@ export const NebulaTable = defineComponent({
           rowConfig: computedRowConfig,
           columnConfig: props.columnConfig,
           scrollX: props.scrollX,
+          treeConfig: props.treeConfig,
           class: cn(
             'nebula-table',
             `nebula-table--drag-${props.dragMode}`,

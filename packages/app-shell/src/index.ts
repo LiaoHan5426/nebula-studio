@@ -13,7 +13,9 @@ export { installShellIframeElectronBridge } from './electron/installShellIframeE
 export {
   getPresentationHost,
   isWebPresentationHost,
+  isWebShellHost,
   markWebPresentationHost,
+  markWebShellHost,
 } from './common/presentationHost';
 export type { PresentationHostKind } from './common/presentationHost';
 export { installWebPresentation } from './web/installWebPresentation';
@@ -27,7 +29,9 @@ export {
   tryGetShellIntegratedAppMeta,
   getDefaultEnabledShellIntegrableIds,
   isShellIntegrableAppId,
+  isShellIntegratableAppId,
   listShellIntegrableAppIds,
+  embeddedViewRequiresShellAuth,
 } from './common/shellIntegration';
 export type { ShellIntegratedAppMeta } from './common/shellIntegration';
 export {
@@ -39,8 +43,24 @@ export {
   redirectShellToWebLogin,
   shouldRedirectUnauthenticatedWebShell,
   writeWebAuthSession,
+  hasValidShellAuthSession,
+  isShellIframeEmbed,
+  readParentShellAuthSession,
+  handleShellAuthUnauthorized,
+  SHELL_AUTH_UNAUTHORIZED_EVENT,
 } from './web/webAuth';
 export type { ShellAuthSessionPayload } from './web/webAuth';
+export {
+  completeLoginWithOrg,
+  fetchAuthMode,
+  loginWithBackendAuth,
+} from './web/webBackendAuth';
+export type {
+  AuthMode,
+  BackendLoginResult,
+  OrgSummary,
+  OrgSummary as BackendOrgSummary,
+} from './web/webBackendAuth';
 export { SHELL_ACTIVE_VIEW_STORAGE_KEY } from './common/shellHostStorageKeys';
 export {
   readActiveViewPreference,
@@ -70,3 +90,9 @@ export {
   type ShellHostBridge,
   type ShellHostKind,
 } from './common/shellHostBridge';
+export {
+  LAYOUT_PREFERENCES_STORAGE_KEY,
+  getLayoutHostMode,
+  isShellEmbedSurface,
+} from './common/layoutHost';
+export type { LayoutHostMode, ShellEmbedSurface } from './common/layoutHost';

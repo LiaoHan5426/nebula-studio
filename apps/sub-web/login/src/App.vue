@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import {
+  completeLoginWithOrg,
   isSafeAuthReturnUrl,
   isWebPresentationHost,
+  loginWithBackendAuth,
+  writeWebAuthSession,
+} from '@nebula-studio/app-shell';
+import type {
+  BackendLoginResult,
+  BackendOrgSummary,
 } from '@nebula-studio/app-shell';
 import { NebulaButton } from '@nebula-studio/nebula-ui';
 import { ref } from 'vue';
@@ -10,28 +17,82 @@ const user = ref('');
 const password = ref('');
 const errorMsg = ref('');
 const busy = ref(false);
+const step = ref<'credentials' | 'org'>('credentials');
+const pendingLogin = ref<BackendLoginResult | null>(null);
+const selectedOrgId = ref('');
+
+async function finishLogin(username: string, token?: string): Promise<void> {
+  if (isWebPresentationHost()) {
+    writeWebAuthSession({
+      user: username,
+      token,
+    });
+    const ret = new URLSearchParams(location.search).get('return');
+    const fallback = new URL('index.html', location.href).toString();
+    const target = ret && isSafeAuthReturnUrl(ret) ? ret : fallback;
+    location.href = target;
+    return;
+  }
+
+  if (typeof window.api?.auth?.establishSession === 'function' && token) {
+    await window.api.auth.establishSession({ user: username, token });
+    return;
+  }
+
+  writeWebAuthSession({
+    user: username,
+    token,
+  });
+  window.close();
+}
 
 async function onSubmit(): Promise<void> {
   errorMsg.value = '';
   busy.value = true;
   try {
-    await window.api.auth.login({
-      user: user.value,
-      password: password.value,
-    });
-    if (isWebPresentationHost()) {
-      const ret = new URLSearchParams(location.search).get('return');
-      const fallback = new URL('index.html', location.href).toString();
-      const target = ret && isSafeAuthReturnUrl(ret) ? ret : fallback;
-      location.href = target;
+    const result = await loginWithBackendAuth(user.value, password.value);
+    if (result.needsOrgSelection) {
+      pendingLogin.value = result;
+      selectedOrgId.value =
+        result.organizations?.find((org) => org.primary)?.id ??
+        result.organizations?.[0]?.id ??
+        '';
+      step.value = 'org';
       return;
     }
-    window.close();
+    await finishLogin(result.username, result.token);
   } catch (e) {
     errorMsg.value = e instanceof Error ? e.message : String(e);
   } finally {
     busy.value = false;
   }
+}
+
+async function onOrgSubmit(): Promise<void> {
+  if (!pendingLogin.value || !selectedOrgId.value) {
+    errorMsg.value = '请选择组织';
+    return;
+  }
+  errorMsg.value = '';
+  busy.value = true;
+  try {
+    const completed = await completeLoginWithOrg(
+      selectedOrgId.value,
+      pendingLogin.value.token,
+    );
+    await finishLogin(
+      pendingLogin.value.username,
+      completed.token ?? pendingLogin.value.token,
+    );
+  } catch (e) {
+    errorMsg.value = e instanceof Error ? e.message : String(e);
+  } finally {
+    busy.value = false;
+  }
+}
+
+function orgLabel(org: BackendOrgSummary): string {
+  return org.orgName || org.orgCode || org.id;
 }
 </script>
 
@@ -43,37 +104,66 @@ async function onSubmit(): Promise<void> {
         使用后端账号登录（默认 demo / demo，或 admin / admin123）
       </p>
 
-      <label class="login-field">
-        <span class="login-label">用户名</span>
-        <input
-          v-model="user"
-          class="login-input"
-          type="text"
-          autocomplete="username"
-          @keydown.enter.prevent="onSubmit"
-        />
-      </label>
-      <label class="login-field">
-        <span class="login-label">密码</span>
-        <input
-          v-model="password"
-          class="login-input"
-          type="password"
-          autocomplete="current-password"
-          @keydown.enter.prevent="onSubmit"
-        />
-      </label>
+      <template v-if="step === 'credentials'">
+        <label class="login-field">
+          <span class="login-label">用户名</span>
+          <input
+            v-model="user"
+            class="login-input"
+            type="text"
+            autocomplete="username"
+            @keydown.enter.prevent="onSubmit"
+          />
+        </label>
+        <label class="login-field">
+          <span class="login-label">密码</span>
+          <input
+            v-model="password"
+            class="login-input"
+            type="password"
+            autocomplete="current-password"
+            @keydown.enter.prevent="onSubmit"
+          />
+        </label>
 
-      <p v-if="errorMsg" class="login-error">{{ errorMsg }}</p>
+        <p v-if="errorMsg" class="login-error">{{ errorMsg }}</p>
 
-      <NebulaButton
-        class="login-submit"
-        variant="primary"
-        :disabled="busy"
-        @click="onSubmit"
-      >
-        {{ busy ? '登录中…' : '登录' }}
-      </NebulaButton>
+        <NebulaButton
+          class="login-submit"
+          variant="primary"
+          :disabled="busy"
+          @click="onSubmit"
+        >
+          {{ busy ? '登录中…' : '登录' }}
+        </NebulaButton>
+      </template>
+
+      <template v-else>
+        <p class="login-hint">请选择要进入的组织</p>
+        <label class="login-field">
+          <span class="login-label">组织</span>
+          <select v-model="selectedOrgId" class="login-input">
+            <option
+              v-for="org in pendingLogin?.organizations ?? []"
+              :key="org.id"
+              :value="org.id"
+            >
+              {{ orgLabel(org) }}
+            </option>
+          </select>
+        </label>
+
+        <p v-if="errorMsg" class="login-error">{{ errorMsg }}</p>
+
+        <NebulaButton
+          class="login-submit"
+          variant="primary"
+          :disabled="busy || !selectedOrgId"
+          @click="onOrgSubmit"
+        >
+          {{ busy ? '进入中…' : '进入系统' }}
+        </NebulaButton>
+      </template>
     </div>
   </div>
 </template>

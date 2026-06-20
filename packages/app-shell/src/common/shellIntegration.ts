@@ -5,6 +5,10 @@ export interface ShellIntegratedAppMeta {
   label: string;
   iconSvg: string;
   defaultEnabled?: boolean;
+  /** 为 false 时仅作为嵌入子应用（如侧栏「设置」），不出现在「应用集成」网格 */
+  integratable?: boolean;
+  /** 打开该嵌入视图前需 Shell 登录态（含 JWT） */
+  requiresAuth?: boolean;
 }
 
 export type ShellIntegratedAppRegistry = Partial<
@@ -36,13 +40,28 @@ export function getShellIntegratedAppRegistry(): ShellIntegratedAppRegistry {
 }
 
 export function listShellIntegrableAppIds(): EmbeddedShellWindowId[] {
+  const isIntegratable = (id: EmbeddedShellWindowId): boolean => {
+    const meta = shellIntegratedAppRegistry[id];
+    return meta !== undefined && meta.integratable !== false;
+  };
   const orderedIds = shellIntegrableOrder.filter(
-    (id) => id in shellIntegratedAppRegistry,
+    (id) => id in shellIntegratedAppRegistry && isIntegratable(id),
   );
   const unorderedIds = Object.keys(shellIntegratedAppRegistry).filter(
-    (id) => !orderedIds.includes(id as EmbeddedShellWindowId),
+    (id) =>
+      !orderedIds.includes(id as EmbeddedShellWindowId) &&
+      isIntegratable(id as EmbeddedShellWindowId),
   ) as EmbeddedShellWindowId[];
   return [...orderedIds, ...unorderedIds];
+}
+
+export function isShellIntegratableAppId(
+  id: string,
+): id is EmbeddedShellWindowId {
+  return (
+    isShellIntegrableAppId(id) &&
+    shellIntegratedAppRegistry[id]?.integratable !== false
+  );
 }
 
 export function isShellIntegrableAppId(
@@ -76,4 +95,9 @@ export function tryGetShellIntegratedAppMeta(
   id: EmbeddedShellWindowId,
 ): ShellIntegratedAppMeta | undefined {
   return shellIntegratedAppRegistry[id];
+}
+
+export function embeddedViewRequiresShellAuth(viewId: string): boolean {
+  if (!isShellIntegrableAppId(viewId)) return false;
+  return tryGetShellIntegratedAppMeta(viewId)?.requiresAuth === true;
 }

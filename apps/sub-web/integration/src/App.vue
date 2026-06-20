@@ -1,15 +1,20 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, onUnmounted } from 'vue';
 import { RouterView, useRoute, useRouter } from 'vue-router';
 
 import AppLayout from '@/app/AppLayout.vue';
 import {
+  bootstrapAuthFromShell,
   ensureAuthFromShell,
   syncAuthProfile,
 } from '@/shared/composables/useAuth';
 import { useTenant } from '@/shared/composables/useTenant';
 import { hasValidAuthToken } from '@/shared/auth/session';
-import { isIntegrationShellIframeEmbed } from '@/shared/composables/useShellEmbed';
+import {
+  isIntegrationShellEmbed,
+  isIntegrationShellIframeEmbed,
+} from '@/shared/composables/useShellEmbed';
+import { SHELL_AUTH_UNAUTHORIZED_EVENT } from '@nebula-studio/app-shell';
 
 const route = useRoute();
 const router = useRouter();
@@ -22,8 +27,46 @@ async function bootstrapIntegrationContext() {
   await loadTenantOptions();
 }
 
-onMounted(async () => {
+async function requestShellLoginIfNeeded(): Promise<void> {
+  if (!isIntegrationShellIframeEmbed()) return;
   await ensureAuthFromShell();
+  if (hasValidAuthToken()) return;
+  try {
+    const parentApi = (
+      window.parent as typeof window & {
+        api?: { shell?: { openLogin?: () => Promise<void> } };
+      }
+    ).api;
+    await parentApi?.shell?.openLogin?.();
+  } catch {
+    /* ignore cross-frame access errors */
+  }
+}
+
+function onShellAuthUnauthorized(): void {
+  if (isIntegrationShellIframeEmbed()) return;
+  void router.replace({
+    path: '/login',
+    query: { redirect: route.fullPath },
+  });
+}
+
+onMounted(async () => {
+  window.addEventListener(
+    SHELL_AUTH_UNAUTHORIZED_EVENT,
+    onShellAuthUnauthorized,
+  );
+  await ensureAuthFromShell();
+  if (
+    isIntegrationShellEmbed() &&
+    window.parent !== window &&
+    window.electron?.ipcRenderer
+  ) {
+    window.electron.ipcRenderer.on('auth:session-changed', () => {
+      void bootstrapAuthFromShell().then(() => syncAuthProfile());
+    });
+  }
+  await requestShellLoginIfNeeded();
   if (
     !isIntegrationShellIframeEmbed() &&
     !hasValidAuthToken() &&
@@ -37,6 +80,13 @@ onMounted(async () => {
   }
   await syncAuthProfile();
   await bootstrapIntegrationContext();
+});
+
+onUnmounted(() => {
+  window.removeEventListener(
+    SHELL_AUTH_UNAUTHORIZED_EVENT,
+    onShellAuthUnauthorized,
+  );
 });
 </script>
 

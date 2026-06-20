@@ -211,6 +211,9 @@ catalogs:
     '@types/node':
       specifier: ^24.12.4
       version: 24.12.4
+    '@types/nprogress':
+      specifier: ^0.2.3
+      version: 0.2.3
     typescript:
       specifier: ^6.0.3
       version: 6.0.3
@@ -483,9 +486,15 @@ importers:
       '@nebula-studio-internal/tailwind':
         specifier: workspace:^
         version: link:../../../tools/tailwindcss
+      '@nebula-studio/api-client':
+        specifier: workspace:^
+        version: link:../../../packages/api-client
       '@nebula-studio/app-shell':
         specifier: workspace:^
         version: link:../../../packages/app-shell
+      '@nebula-studio/nebula-layout':
+        specifier: workspace:^
+        version: link:../../../packages/nebula-layout
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
         version: link:../../../packages/nebula-ui
@@ -544,6 +553,9 @@ importers:
       '@nebula-studio/nebula-integration-panel':
         specifier: workspace:^
         version: link:../../../packages/nebula-integration-panel
+      '@nebula-studio/nebula-layout':
+        specifier: workspace:^
+        version: link:../../../packages/nebula-layout
       '@nebula-studio/nebula-low-render':
         specifier: workspace:^
         version: link:../../../packages/nebula-low-render
@@ -639,15 +651,24 @@ importers:
       '@nebula-studio-internal/tailwind':
         specifier: workspace:^
         version: link:../../../tools/tailwindcss
+      '@nebula-studio/api-client':
+        specifier: workspace:^
+        version: link:../../../packages/api-client
       '@nebula-studio/app-shell':
         specifier: workspace:^
         version: link:../../../packages/app-shell
+      '@nebula-studio/nebula-layout':
+        specifier: workspace:^
+        version: link:../../../packages/nebula-layout
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
         version: link:../../../packages/nebula-ui
       vue:
         specifier: catalog:vue
         version: 3.5.35(typescript@6.0.3)
+      vue-router:
+        specifier: catalog:vue
+        version: 4.6.4(vue@3.5.35(typescript@6.0.3))
     devDependencies:
       '@electron-toolkit/preload':
         specifier: catalog:electron
@@ -791,6 +812,9 @@ importers:
       '@nebula-studio/types':
         specifier: workspace:^
         version: link:../types
+      '@types/nprogress':
+        specifier: catalog:types
+        version: 0.2.3
       happy-dom:
         specifier: catalog:vite
         version: 20.10.6
@@ -871,6 +895,15 @@ importers:
       '@nebula-studio/types':
         specifier: workspace:^
         version: link:../types
+      happy-dom:
+        specifier: catalog:vite
+        version: 20.10.6
+      vite-plus:
+        specifier: catalog:vite
+        version: 0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
+      vitest:
+        specifier: npm:@voidzero-dev/vite-plus-test@latest
+        version: '@voidzero-dev/vite-plus-test@0.1.24(@types/node@25.9.3)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)'
 
   packages/nebula-editor:
     dependencies:
@@ -936,6 +969,34 @@ importers:
       vue:
         specifier: catalog:vue
         version: 3.5.35(typescript@6.0.3)
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../tools/tsconfig
+      '@nebula-studio/types':
+        specifier: workspace:^
+        version: link:../types
+      sass:
+        specifier: catalog:style
+        version: 1.100.0
+
+  packages/nebula-layout:
+    dependencies:
+      '@nebula-studio-electron/electron-shared-vue':
+        specifier: workspace:^
+        version: link:../electron-shared-vue
+      '@nebula-studio/app-shell':
+        specifier: workspace:^
+        version: link:../app-shell
+      '@nebula-studio/nebula-ui':
+        specifier: workspace:^
+        version: link:../nebula-ui
+      vue:
+        specifier: catalog:vue
+        version: 3.5.35(typescript@6.0.3)
+      vue-router:
+        specifier: catalog:vue
+        version: 4.6.4(vue@3.5.35(typescript@6.0.3))
     devDependencies:
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
@@ -2921,6 +2982,9 @@ packages:
 
   '@types/node@25.9.3':
     resolution: {integrity: sha512-603BddQMv3pUcr4U2dhujk83N2tTDVr/34wII2B6bJy6g+8WD6yUb11jszNs0gdi4PesVWl7ABt8nYMVpnLUcg==}
+
+  '@types/nprogress@0.2.3':
+    resolution: {integrity: sha512-k7kRA033QNtC+gLc4VPlfnue58CM1iQLgn1IMAU8VPHGOj7oIHPp9UlhedEnD/Gl8evoCjwkZjlBORtZ3JByUA==}
 
   '@types/pegjs@0.10.6':
     resolution: {integrity: sha512-eLYXDbZWXh2uxf+w8sXS8d6KSoXTswfps6fvCUuVAGN8eRpfe7h9eSRydxiSJvo9Bf+GzifsDOr9TMQlmJdmkw==}
@@ -7702,6 +7766,8 @@ snapshots:
   '@types/node@25.9.3':
     dependencies:
       undici-types: 7.24.6
+
+  '@types/nprogress@0.2.3': {}
 
   '@types/pegjs@0.10.6': {}
 

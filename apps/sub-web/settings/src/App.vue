@@ -1,109 +1,124 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue';
-import { NebulaPane, NebulaThemeToggle } from '@nebula-studio/nebula-ui';
-
-type ThemeMode = 'light' | 'dark';
-
-const currentTheme = ref<ThemeMode>('dark');
-const saving = ref(false);
-let disposeThemeListener: (() => void) | undefined;
-
-async function loadTheme(): Promise<void> {
-  currentTheme.value = await window.api.settings.getTheme();
-}
-
-async function applyTheme(theme: ThemeMode): Promise<void> {
-  if (saving.value) return;
-  saving.value = true;
-  try {
-    currentTheme.value = await window.api.settings.setTheme(theme);
-  } finally {
-    saving.value = false;
-  }
-}
-
-onMounted(async () => {
-  await loadTheme();
-  disposeThemeListener = window.api.settings.onThemeChanged(({ theme }) => {
-    currentTheme.value = theme;
-  });
-});
-
-onUnmounted(() => {
-  disposeThemeListener?.();
-  disposeThemeListener = undefined;
-});
+import { RouterView } from 'vue-router';
+import ConfirmDialog from '@/shared/components/ConfirmDialog.vue';
 </script>
 
 <template>
-  <main class="settings">
-    <header class="settings-header">
-      <h1>Settings</h1>
-      <p>Manage shell appearance and sync with ConfigManager.</p>
-    </header>
-
-    <NebulaPane
-      class="panel"
-      title="Theme"
-      description="Use unified nebula theme toggle"
-    >
-      <div class="theme-group">
-        <span class="theme-label">Dark mode</span>
-        <NebulaThemeToggle
-          :theme="currentTheme"
-          :disabled="saving"
-          tooltip="Toggle app theme"
-          @update:theme="applyTheme"
-        />
-      </div>
-      <p class="hint">
-        Current: <strong>{{ currentTheme }}</strong
-        >{{ saving ? ' (saving...)' : '' }}
-      </p>
-    </NebulaPane>
-  </main>
+  <RouterView />
+  <ConfirmDialog />
 </template>
 
-<style lang="scss" scoped>
-.settings {
-  min-height: 100vh;
-  padding: 24px;
-  color: hsl(var(--foreground));
-  background: linear-gradient(
-    160deg,
-    hsl(var(--background-deep)) 0%,
-    hsl(var(--background)) 100%
-  );
+<style>
+* {
+  box-sizing: border-box;
 }
 
-.settings-header h1 {
+html,
+body,
+#app {
+  min-height: 100%;
   margin: 0;
-  font-size: 28px;
 }
 
-.settings-header p {
-  margin-top: 6px;
-  color: hsl(var(--muted-foreground));
-}
-
-.panel {
-  margin-top: 18px;
-}
-
-.theme-group {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-top: 12px;
-}
-
-.theme-label {
-  font-size: 0.88rem;
+body {
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, sans-serif;
   color: hsl(var(--foreground));
+  background: hsl(var(--background));
+}
+</style>
+
+<style lang="scss">
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.hint {
-  margin-top: 10px;
+.page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.page__table-wrap {
+  overflow: hidden;
+  border: 1px solid hsl(var(--border) / 72%);
+  border-radius: 12px;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgb(8 10 18 / 52%);
+  backdrop-filter: blur(2px);
+}
+
+.modal {
+  width: min(480px, 100%);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+.field input,
+.field select,
+.field textarea {
+  padding: 8px 10px;
+  font: inherit;
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
+  border-radius: 8px;
+}
+
+.field__readonly {
+  opacity: 0.85;
+}
+
+.modal__actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.tree-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tree-node {
+  padding: 8px 10px;
+  font-size: 13px;
+  background: hsl(var(--muted) / 24%);
+  border: 1px solid hsl(var(--border) / 65%);
+  border-radius: 8px;
+}
+
+.tree-node__meta {
+  margin-top: 2px;
+  font-size: 12px;
   color: hsl(var(--muted-foreground));
+}
+
+.tree-children {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-left: 16px;
+  margin-top: 4px;
 }
 </style>

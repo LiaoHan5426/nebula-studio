@@ -5,4 +5,6 @@ alwaysApply: true
 
 # Vite+ / `vp`
 
-以 `.cursor/skills/vite-plus-workflow/SKILL.md` 为准；需要细节时读取该文件。仓库内 **`package.json` 脚本与 GitHub Actions 一律用 `vp`**，勿直接写 `npm` / `pnpm`（锁文件与 `packageManager` 字段除外）。
+以 `agent-skills/skills/vite-plus-workflow/SKILL.md` 为准；需要细节时读取该文件。仓库内 **`package.json` 脚本与 GitHub Actions 一律用 `vp`**，勿直接写 `npm` / `pnpm`（锁文件与 `packageManager` 字段除外）。
+
+**Cursor Shell（Windows）**：勿对 `vp build` / `vp check` 等长命令使用 `2>&1 | Select-Object -Last N`；用 `working_directory` + 足够长的 `block_until_ms`，直接运行 `rtk vp …`。
