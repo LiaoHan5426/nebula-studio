@@ -29,8 +29,6 @@ node_modules
 
 # AI agent worktrees
 .claude/worktrees/
-
 .cursor
 .rtk
-__pycache__/
-*.py[cod]
+
