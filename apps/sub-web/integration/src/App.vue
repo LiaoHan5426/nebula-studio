@@ -56,6 +56,7 @@ onMounted(async () => {
     SHELL_AUTH_UNAUTHORIZED_EVENT,
     onShellAuthUnauthorized,
   );
+
   await ensureAuthFromShell();
   if (
     isIntegrationShellEmbed() &&

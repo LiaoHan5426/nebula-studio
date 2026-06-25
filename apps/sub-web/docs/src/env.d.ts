@@ -4,7 +4,7 @@ import type { ElectronAPI } from '@electron-toolkit/preload';
 import type {
   AppNotifyPayload,
   AppNotifyResponsePayload,
-} from '@nebula-studio-electron/electron-shared';
+} from '@nebula-studio-electron/electron-bridge';
 
 declare module '@nebula-studio-internal/tailwind/electron';
 

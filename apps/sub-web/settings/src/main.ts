@@ -1,19 +1,6 @@
 import '@nebula-studio-internal/tailwind/electron';
-import { ConfigProvider } from '@nebula-studio-electron/electron-shared-vue';
-import { createApp, h } from 'vue';
+import { bootSubApp } from '@nebula-studio-electron/electron-bridge/vue';
 import App from './App.vue';
 import router from './router';
 
-createApp({
-  render() {
-    return h(
-      ConfigProvider,
-      { manageDom: true },
-      {
-        default: () => h(App),
-      },
-    );
-  },
-})
-  .use(router)
-  .mount('#app');
+bootSubApp({ App, router });

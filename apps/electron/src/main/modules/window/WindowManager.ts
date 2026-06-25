@@ -22,7 +22,7 @@ type WindowId = keyof typeof appConfig.windows;
 const SHELL_TAGS_HEIGHT_PX = 40;
 
 function usesBrowserViewEmbed(): boolean {
-  return appConfig.electronEmbeddedPresentation === 'browser-view';
+  return (appConfig.electronEmbeddedPresentation as string) === 'browser-view';
 }
 
 function preloadJsPath(slug: string): string {
@@ -456,7 +456,7 @@ export class WindowManager {
     return true;
   }
 
-  broadcast(channel: string, payload: unknown): void {
+  broadcast(channel: string, payload: unknown = null): void {
     this.#mainWindow?.webContents.send(channel, payload);
     for (const view of this.#embeddedViewsById.values()) {
       view.webContents.send(channel, payload);

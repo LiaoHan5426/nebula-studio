@@ -553,7 +553,7 @@ async function autoLayout() {
         <VueFlow
           v-model:nodes="nodes as unknown as import('@vue-flow/core').Node[]"
           v-model:edges="edges as unknown as import('@vue-flow/core').Edge[]"
-          :node-types="nodeTypes"
+          :node-types="nodeTypes as any"
           :default-edge-options="defaultEdgeOptions"
           :connection-mode="ConnectionMode.Loose"
           :connection-radius="48"
@@ -598,20 +598,20 @@ async function autoLayout() {
 <style scoped>
 .dag-editor {
   display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
   gap: 10px;
-  flex: 1 1 auto;
-  min-height: 0;
   height: 100%;
+  min-height: 0;
   overflow: hidden;
 }
 
 .dag-editor__toolbar {
   display: flex;
+  flex-shrink: 0;
   flex-wrap: wrap;
   gap: 8px;
   align-items: center;
-  flex-shrink: 0;
 }
 
 .dag-editor__selection-hint {
@@ -626,13 +626,13 @@ async function autoLayout() {
 
 .dag-editor__main {
   display: grid;
-  grid-template-columns: 168px minmax(0, 1fr);
-  grid-template-rows: minmax(0, 1fr);
-  gap: 10px;
   flex: 1 1 auto;
+  grid-template-rows: minmax(0, 1fr);
+  grid-template-columns: 168px minmax(0, 1fr);
+  gap: 10px;
+  align-items: stretch;
   min-height: 0;
   overflow: hidden;
-  align-items: stretch;
 }
 
 .dag-editor__main--with-panel {
@@ -641,19 +641,19 @@ async function autoLayout() {
 
 .dag-editor__palette {
   min-width: 0;
-  min-height: 0;
   height: 100%;
+  min-height: 0;
   overflow: auto;
 }
 
 .dag-editor__canvas-wrap {
-  min-height: 0;
-  height: 100%;
   align-self: stretch;
-  border: 1px solid hsl(var(--border));
-  border-radius: 8px;
+  height: 100%;
+  min-height: 0;
   overflow: hidden;
   outline: none;
+  border: 1px solid hsl(var(--border));
+  border-radius: 8px;
 }
 
 .dag-editor__canvas-wrap:focus-visible {
@@ -662,10 +662,10 @@ async function autoLayout() {
 
 .dag-editor__panel {
   padding: 10px;
+  overflow: visible;
   background: hsl(var(--card));
   border: 1px solid hsl(var(--border));
   border-radius: 8px;
-  overflow: visible;
 }
 
 .dag-editor__panel-head {

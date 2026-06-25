@@ -176,7 +176,7 @@ function isExpanded(key: string) {
 const embeddedSubNavItems = computed<SubNavItem[]>(() => {
   if (currentSide.value === 'user') {
     return userNavItems
-      .filter((item) => item.to)
+      .filter((item): item is typeof item & { to: string } => !!item.to)
       .map((item) => ({
         key: item.key,
         label: item.label,

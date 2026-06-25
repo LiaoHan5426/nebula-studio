@@ -8,7 +8,7 @@ import {
 } from '@nebula-studio/nebula-ui';
 import type { NebulaTreeNode } from '@nebula-studio/nebula-ui';
 import { WEB_SHELL_EMBED_QUERY } from '@nebula-studio/app-shell';
-import { useConfig } from '@nebula-studio-electron/electron-shared-vue';
+import { useConfig } from '@nebula-studio-electron/electron-bridge/vue';
 import DocsNotifyCenter from '../../components/DocsNotifyCenter.vue';
 import { useDocsNotify } from '../../features/notify/composables/useDocsNotify';
 import type {
@@ -122,7 +122,7 @@ const showInlineWebThemeToggle = computed(() => {
           <p class="brand-title">Nebula UI Docs</p>
           <p class="brand-subtitle">前端组件文档</p>
           <NebulaButton
-            variant="outline"
+            variant="ghost"
             size="small"
             class="brand-back-btn"
             @click="navigateToPage?.('home')"

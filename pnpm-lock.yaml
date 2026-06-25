@@ -313,12 +313,12 @@ importers:
       '@electron-toolkit/utils':
         specifier: catalog:electron
         version: 4.0.0(electron@42.3.1)
-      '@nebula-studio-electron/electron-shared':
+      '@nebula-studio-electron/electron-bridge':
         specifier: workspace:^
-        version: link:../../packages/electron-shared
+        version: link:../../packages/core/electron-shared
       '@nebula-studio/app-shell':
         specifier: workspace:^
-        version: link:../../packages/app-shell
+        version: link:../../packages/core/app-shell
       electron-updater:
         specifier: ^6.8.3
         version: 6.8.3
@@ -338,15 +338,6 @@ importers:
       '@nebula-studio-internal/vite':
         specifier: workspace:^
         version: link:../../internal/vite
-      '@nebula-studio-preload/docs':
-        specifier: workspace:^
-        version: link:../electron-preload/docs
-      '@nebula-studio-preload/main':
-        specifier: workspace:^
-        version: link:../electron-preload/main
-      '@nebula-studio-preload/settings':
-        specifier: workspace:^
-        version: link:../electron-preload/settings
       '@nebula-studio-renderer/main':
         specifier: workspace:^
         version: link:../sub-web/frontend
@@ -378,65 +369,17 @@ importers:
         specifier: catalog:vue
         version: 3.3.3(typescript@6.0.3)
 
-  apps/electron-preload/docs:
-    dependencies:
-      '@electron-toolkit/preload':
-        specifier: catalog:electron
-        version: 3.0.2(electron@42.3.1)
-      '@nebula-studio-electron/electron-shared':
-        specifier: workspace:^
-        version: link:../../../packages/electron-shared
-    devDependencies:
-      '@types/node':
-        specifier: catalog:types
-        version: 24.12.4
-      electron:
-        specifier: catalog:electron
-        version: 42.3.1
-
-  apps/electron-preload/main:
-    dependencies:
-      '@electron-toolkit/preload':
-        specifier: catalog:electron
-        version: 3.0.2(electron@42.3.1)
-      '@nebula-studio-electron/electron-shared':
-        specifier: workspace:^
-        version: link:../../../packages/electron-shared
-    devDependencies:
-      '@types/node':
-        specifier: catalog:types
-        version: 24.12.4
-      electron:
-        specifier: catalog:electron
-        version: 42.3.1
-
-  apps/electron-preload/settings:
-    dependencies:
-      '@electron-toolkit/preload':
-        specifier: catalog:electron
-        version: 3.0.2(electron@42.3.1)
-    devDependencies:
-      '@types/node':
-        specifier: catalog:types
-        version: 24.12.4
-      electron:
-        specifier: catalog:electron
-        version: 42.3.1
-
   apps/sub-web/docs:
     dependencies:
-      '@nebula-studio-electron/electron-shared':
+      '@nebula-studio-electron/electron-bridge':
         specifier: workspace:^
-        version: link:../../../packages/electron-shared
-      '@nebula-studio-electron/electron-shared-vue':
-        specifier: workspace:^
-        version: link:../../../packages/electron-shared-vue
+        version: link:../../../packages/core/electron-shared
       '@nebula-studio-internal/tailwind':
         specifier: workspace:^
         version: link:../../../tools/tailwindcss
       '@nebula-studio/app-shell':
         specifier: workspace:^
-        version: link:../../../packages/app-shell
+        version: link:../../../packages/core/app-shell
       '@nebula-studio/nebula-agent':
         specifier: workspace:^
         version: link:../../../packages/nebula-agent
@@ -480,9 +423,9 @@ importers:
 
   apps/sub-web/frontend:
     dependencies:
-      '@nebula-studio-electron/electron-shared-vue':
+      '@nebula-studio-electron/electron-bridge':
         specifier: workspace:^
-        version: link:../../../packages/electron-shared-vue
+        version: link:../../../packages/core/electron-shared
       '@nebula-studio-internal/tailwind':
         specifier: workspace:^
         version: link:../../../tools/tailwindcss
@@ -491,7 +434,10 @@ importers:
         version: link:../../../packages/api-client
       '@nebula-studio/app-shell':
         specifier: workspace:^
-        version: link:../../../packages/app-shell
+        version: link:../../../packages/core/app-shell
+      '@nebula-studio/auth-provider':
+        specifier: workspace:^
+        version: link:../../../packages/core/auth-provider
       '@nebula-studio/nebula-layout':
         specifier: workspace:^
         version: link:../../../packages/nebula-layout
@@ -529,12 +475,9 @@ importers:
 
   apps/sub-web/integration:
     dependencies:
-      '@nebula-studio-electron/electron-shared':
+      '@nebula-studio-electron/electron-bridge':
         specifier: workspace:^
-        version: link:../../../packages/electron-shared
-      '@nebula-studio-electron/electron-shared-vue':
-        specifier: workspace:^
-        version: link:../../../packages/electron-shared-vue
+        version: link:../../../packages/core/electron-shared
       '@nebula-studio-internal/tailwind':
         specifier: workspace:^
         version: link:../../../tools/tailwindcss
@@ -543,7 +486,10 @@ importers:
         version: link:../../../packages/api-client
       '@nebula-studio/app-shell':
         specifier: workspace:^
-        version: link:../../../packages/app-shell
+        version: link:../../../packages/core/app-shell
+      '@nebula-studio/auth-provider':
+        specifier: workspace:^
+        version: link:../../../packages/core/auth-provider
       '@nebula-studio/nebula-dag-editor':
         specifier: workspace:^
         version: link:../../../packages/nebula-dag-editor
@@ -602,15 +548,18 @@ importers:
 
   apps/sub-web/login:
     dependencies:
-      '@nebula-studio-electron/electron-shared-vue':
+      '@nebula-studio-electron/electron-bridge':
         specifier: workspace:^
-        version: link:../../../packages/electron-shared-vue
+        version: link:../../../packages/core/electron-shared
       '@nebula-studio-internal/tailwind':
         specifier: workspace:^
         version: link:../../../tools/tailwindcss
       '@nebula-studio/app-shell':
         specifier: workspace:^
-        version: link:../../../packages/app-shell
+        version: link:../../../packages/core/app-shell
+      '@nebula-studio/auth-provider':
+        specifier: workspace:^
+        version: link:../../../packages/core/auth-provider
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
         version: link:../../../packages/nebula-ui
@@ -645,9 +594,9 @@ importers:
 
   apps/sub-web/settings:
     dependencies:
-      '@nebula-studio-electron/electron-shared-vue':
+      '@nebula-studio-electron/electron-bridge':
         specifier: workspace:^
-        version: link:../../../packages/electron-shared-vue
+        version: link:../../../packages/core/electron-shared
       '@nebula-studio-internal/tailwind':
         specifier: workspace:^
         version: link:../../../tools/tailwindcss
@@ -656,7 +605,7 @@ importers:
         version: link:../../../packages/api-client
       '@nebula-studio/app-shell':
         specifier: workspace:^
-        version: link:../../../packages/app-shell
+        version: link:../../../packages/core/app-shell
       '@nebula-studio/nebula-layout':
         specifier: workspace:^
         version: link:../../../packages/nebula-layout
@@ -697,9 +646,9 @@ importers:
 
   apps/web:
     dependencies:
-      '@nebula-studio-electron/electron-shared-vue':
+      '@nebula-studio-electron/electron-bridge':
         specifier: workspace:^
-        version: link:../../packages/electron-shared-vue
+        version: link:../../packages/core/electron-shared
       '@nebula-studio-internal/tailwind':
         specifier: workspace:^
         version: link:../../tools/tailwindcss
@@ -720,7 +669,10 @@ importers:
         version: link:../sub-web/settings
       '@nebula-studio/app-shell':
         specifier: workspace:^
-        version: link:../../packages/app-shell
+        version: link:../../packages/core/app-shell
+      '@nebula-studio/auth-provider':
+        specifier: workspace:^
+        version: link:../../packages/core/auth-provider
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
         version: link:../../packages/nebula-ui
@@ -828,29 +780,30 @@ importers:
         specifier: npm:@voidzero-dev/vite-plus-test@latest
         version: '@voidzero-dev/vite-plus-test@0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)'
 
-  packages/app-shell:
+  packages/core/app-shell:
     dependencies:
-      '@nebula-studio-electron/electron-shared':
+      '@nebula-studio-electron/electron-bridge':
         specifier: workspace:^
         version: link:../electron-shared
-      '@nebula-studio-electron/electron-shared-vue':
-        specifier: workspace:^
-        version: link:../electron-shared-vue
     devDependencies:
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
-        version: link:../../tools/tsconfig
+        version: link:../../../tools/tsconfig
       '@nebula-studio/types':
         specifier: workspace:^
-        version: link:../types
+        version: link:../../types
 
-  packages/electron-shared: {}
-
-  packages/electron-shared-vue:
+  packages/core/auth-provider:
     dependencies:
-      '@nebula-studio-electron/electron-shared':
+      '@nebula-studio/app-shell':
         specifier: workspace:^
-        version: link:../electron-shared
+        version: link:../app-shell
+      vue:
+        specifier: catalog:vue
+        version: 3.5.35(typescript@6.0.3)
+
+  packages/core/electron-shared:
+    dependencies:
       vue:
         specifier: catalog:vue
         version: 3.5.35(typescript@6.0.3)
@@ -982,12 +935,12 @@ importers:
 
   packages/nebula-layout:
     dependencies:
-      '@nebula-studio-electron/electron-shared-vue':
+      '@nebula-studio-electron/electron-bridge':
         specifier: workspace:^
-        version: link:../electron-shared-vue
+        version: link:../core/electron-shared
       '@nebula-studio/app-shell':
         specifier: workspace:^
-        version: link:../app-shell
+        version: link:../core/app-shell
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
         version: link:../nebula-ui

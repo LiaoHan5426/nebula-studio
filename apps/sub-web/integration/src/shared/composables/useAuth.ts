@@ -18,6 +18,7 @@ import {
 } from '@/shared/composables/useShellEmbed';
 import { useTenant } from '@/shared/composables/useTenant';
 import { isApiSuccess } from '@/shared/types';
+import { globalAuthProvider } from '@nebula-studio/auth-provider';
 
 initAuthCacheFromStorage();
 
@@ -37,6 +38,8 @@ function applyShellSession(
   userRoles: string[] = [],
 ): void {
   setAuthSession(user, authToken, userRoles);
+  // Also update the global auth provider for cross-sub-app consistency.
+  globalAuthProvider.setSession({ user, token: authToken, roles: userRoles });
   token.value = authToken;
   username.value = user;
   roles.value = userRoles;

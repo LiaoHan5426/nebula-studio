@@ -7,10 +7,8 @@ function isSseRequest(url?: string): boolean {
   return url?.includes('/events') ?? false;
 }
 
-function configureSseProxy(proxy: {
-  on: (event: string, handler: (...args: unknown[]) => void) => void;
-}) {
-  proxy.on('proxyRes', (proxyRes, req) => {
+function configureSseProxy(proxy: any) {
+  proxy.on('proxyRes', (proxyRes: any, req: any) => {
     const res = proxyRes as {
       headers: Record<string, string | string[] | undefined>;
     };
@@ -23,7 +21,7 @@ function configureSseProxy(proxy: {
     res.headers['connection'] = 'keep-alive';
     res.headers['x-accel-buffering'] = 'no';
   });
-  proxy.on('error', (err, req, res) => {
+  proxy.on('error', (err: any, req: any, res: any) => {
     const request = req as { url?: string };
     const response = res as {
       headersSent?: boolean;

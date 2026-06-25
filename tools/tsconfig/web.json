@@ -8,6 +8,7 @@
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "useDefineForClassFields": true,
     "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
     "types": ["vite/client", "@nebula-studio/types"],
     "declaration": false
   }

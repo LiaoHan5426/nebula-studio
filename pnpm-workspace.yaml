@@ -1,9 +1,9 @@
 packages:
   - apps/*
   - apps/sub-web/*
-  - apps/electron-preload/*
   - internal/*
   - packages/*
+  - packages/core/*
   - tools/lint/*
   - tools/*
 publicHoistPattern:

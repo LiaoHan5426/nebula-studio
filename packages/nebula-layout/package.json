@@ -31,10 +31,10 @@
     "sass": "catalog:style"
   },
   "peerDependencies": {
-    "@nebula-studio-electron/electron-shared-vue": "workspace:^"
+    "@nebula-studio-electron/electron-bridge": "workspace:^"
   },
   "peerDependenciesMeta": {
-    "@nebula-studio-electron/electron-shared-vue": {
+    "@nebula-studio-electron/electron-bridge": {
       "optional": true
     }
   }

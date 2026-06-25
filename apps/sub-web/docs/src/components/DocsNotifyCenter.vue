@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ToastItem } from '@nebula-studio-electron/electron-shared';
+import type { ToastItem } from '@nebula-studio-electron/electron-bridge';
 import { NebulaButton, NebulaPane, NebulaTag } from '@nebula-studio/nebula-ui';
 
 defineProps<{

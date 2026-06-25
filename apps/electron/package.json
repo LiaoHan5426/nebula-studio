@@ -21,7 +21,7 @@
   "dependencies": {
     "@electron-toolkit/preload": "catalog:electron",
     "@electron-toolkit/utils": "catalog:electron",
-    "@nebula-studio-electron/electron-shared": "workspace:^",
+    "@nebula-studio-electron/electron-bridge": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
     "electron-updater": "^6.8.3",
     "yaml": "^2.9.0"
@@ -31,9 +31,6 @@
     "@nebula-studio-internal/tailwind": "workspace:^",
     "@nebula-studio-internal/tsconfig": "workspace:^",
     "@nebula-studio-internal/vite": "workspace:^",
-    "@nebula-studio-preload/docs": "workspace:^",
-    "@nebula-studio-preload/main": "workspace:^",
-    "@nebula-studio-preload/settings": "workspace:^",
     "@nebula-studio-renderer/main": "workspace:^",
     "@nebula-studio/types": "workspace:^",
     "@types/node": "catalog:types",

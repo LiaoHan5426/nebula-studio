@@ -80,7 +80,7 @@ const modules = [
           <p class="brand-title">Nebula Backend</p>
           <p class="brand-subtitle">后端框架文档</p>
           <NebulaButton
-            variant="outline"
+            variant="ghost"
             size="small"
             class="brand-back-btn"
             @click="navigateToPage?.('home')"

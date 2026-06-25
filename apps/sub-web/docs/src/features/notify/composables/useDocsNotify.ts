@@ -1,9 +1,9 @@
-import { useElectronNotify } from '@nebula-studio-electron/electron-shared-vue';
+import { useElectronNotify } from '@nebula-studio-electron/electron-bridge/vue';
 import type {
   AppNotifyLevel,
   AppNotifyPayload,
   AppNotifyType,
-} from '@nebula-studio-electron/electron-shared';
+} from '@nebula-studio-electron/electron-bridge';
 
 export function useDocsNotify() {
   const notify = useElectronNotify();

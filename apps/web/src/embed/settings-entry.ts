@@ -1,6 +1,6 @@
 import '@nebula-studio-internal/tailwind/electron';
 import { installWebPresentation } from '@nebula-studio/app-shell';
-import { ConfigProvider } from '@nebula-studio-electron/electron-shared-vue';
+import { ConfigProvider } from '@nebula-studio-electron/electron-bridge/vue';
 import { createApp, h } from 'vue';
 import App from '@nebula-studio-renderer/settings/app';
 import router from '@nebula-studio-renderer/settings/router';

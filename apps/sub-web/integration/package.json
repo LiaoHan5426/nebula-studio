@@ -19,8 +19,7 @@
     "test": "vp test"
   },
   "dependencies": {
-    "@nebula-studio-electron/electron-shared": "workspace:^",
-    "@nebula-studio-electron/electron-shared-vue": "workspace:^",
+    "@nebula-studio-electron/electron-bridge": "workspace:^",
     "@nebula-studio-internal/tailwind": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
     "@nebula-studio/api-client": "workspace:^",
@@ -31,7 +30,8 @@
     "@nebula-studio/nebula-low-render": "workspace:^",
     "@nebula-studio/nebula-integration-panel": "workspace:^",
     "vue": "catalog:vue",
-    "vue-router": "catalog:vue"
+    "vue-router": "catalog:vue",
+    "@nebula-studio/auth-provider": "workspace:^"
   },
   "devDependencies": {
     "@electron-toolkit/preload": "catalog:electron",

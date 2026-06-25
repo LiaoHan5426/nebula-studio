@@ -1,6 +1,6 @@
 import '@nebula-studio/nebula-ui/utils/highlightNebula';
 import '@nebula-studio-internal/tailwind/electron';
-import { ConfigProvider } from '@nebula-studio-electron/electron-shared-vue';
+import { ConfigProvider } from '@nebula-studio-electron/electron-bridge/vue';
 import { createApp, h } from 'vue';
 import App from '@nebula-studio-renderer/docs/app';
 import { installWebStubs } from '@nebula-studio-renderer/docs/install-web-stubs';

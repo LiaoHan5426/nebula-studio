@@ -25,7 +25,8 @@
     "postinstall": "vp run -r stub --if-present",
     "prepare": "vp config",
     "update:deps": "vp dlx taze -r -w",
-    "clean": "node ./scripts/clean.mjs"
+    "clean": "node ./scripts/clean.mjs",
+    "generate:configs": "node ./scripts/generate-window-configs.mjs"
   },
   "devDependencies": {
     "@eslint-community/eslint-plugin-eslint-comments": "catalog:lint",

@@ -4,7 +4,7 @@ import {
   redirectShellToWebLogin,
   shouldRedirectUnauthenticatedWebShell,
 } from '@nebula-studio/app-shell';
-import { ConfigProvider } from '@nebula-studio-electron/electron-shared-vue';
+import { ConfigProvider } from '@nebula-studio-electron/electron-bridge/vue';
 import { createApp, h } from 'vue';
 import App from '../App.vue';
 import '../assets/main.css';

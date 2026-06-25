@@ -160,10 +160,6 @@ const EMBED_SURFACE_MIN_LOADING_MS = 320;
 const EMBED_SURFACE_LOAD_TIMEOUT_MS = 12000;
 const embedLoadStartedAtByViewId = new Map<string, number>();
 const embedLoadTimeoutByViewId = new Map<string, number>();
-const embedHomeWaitByViewId = new Map<
-  string,
-  { resolve: () => void; timer: number }
->();
 let suppressTileClickUntilTs = 0;
 
 function syncShellEmbeddedContentVisible(): void {
@@ -477,7 +473,7 @@ async function closeAllShellTags(): Promise<void> {
   await openWorkspace();
 }
 
-function refreshActiveShellSurface(): void {
+async function refreshActiveShellSurface(): Promise<void> {
   const viewId = activeViewId.value;
   if (!viewId) return;
   if (embedReadyViewIds.value.has(viewId)) {
@@ -486,11 +482,33 @@ function refreshActiveShellSurface(): void {
     );
   }
   ensureEmbedSurfaceLoading(viewId);
+
+  // For iframe mode, reload the iframe src directly for faster refresh
   if (usesIframeEmbed) {
     const iframe = getEmbedIframe(viewId);
-    iframe?.contentWindow?.location.reload();
-    return;
+    if (iframe?.src) {
+      // Reload iframe by reassigning src
+      const currentSrc = iframe.src;
+      iframe.src = '';
+      iframe.src = currentSrc;
+      // Wait for iframe to load
+      await new Promise<void>((resolve) => {
+        const onLoad = () => {
+          iframe.removeEventListener('load', onLoad);
+          resolve();
+        };
+        iframe.addEventListener('load', onLoad);
+        // Fallback timeout in case load event doesn't fire
+        setTimeout(() => {
+          iframe.removeEventListener('load', onLoad);
+          resolve();
+        }, 5000);
+      });
+      return;
+    }
   }
+
+  // For non-iframe mode, use postMessage reset
   requestEmbeddedViewHome(viewId);
 }
 
@@ -556,15 +574,8 @@ function requestEmbeddedViewHome(viewId: string): void {
   postShellEmbedReset(getEmbedIframe(viewId)?.contentWindow ?? null);
 }
 
-function handleShellEmbedMessage(event: MessageEvent): void {
-  if (!isShellEmbedResetAckPayload(event.data)) return;
-  if (event.origin !== window.location.origin) return;
-  for (const [viewId, wait] of embedHomeWaitByViewId) {
-    if (getEmbedIframe(viewId)?.contentWindow === event.source) {
-      wait.resolve();
-      return;
-    }
-  }
+function handleShellEmbedMessage(_event: MessageEvent): void {
+  // No longer used - iframe refresh now uses direct src reload
 }
 
 function resetIntegrableEmbedOnLeave(viewId: string | null): void {
@@ -937,10 +948,6 @@ onUnmounted(() => {
     window.removeEventListener('resize', reportShellViewport);
   }
   window.removeEventListener('message', handleShellEmbedMessage);
-  for (const wait of embedHomeWaitByViewId.values()) {
-    window.clearTimeout(wait.timer);
-  }
-  embedHomeWaitByViewId.clear();
   window.electron.ipcRenderer.removeListener(
     'settings:theme:changed',
     onThemeChanged,
@@ -1424,8 +1431,8 @@ onUnmounted(() => {
   box-sizing: border-box;
   flex: 1;
   width: 100%;
-  min-height: 0;
   height: 100%;
+  min-height: 0;
   margin: 0;
   pointer-events: none;
   background: hsl(var(--background));
