@@ -19,12 +19,22 @@ function toAuthSession(
   payload: ShellAuthSessionPayload | null,
 ): AuthSession | null {
   if (!payload?.user) return null;
-  return { user: payload.user, token: payload.token };
+  return {
+    user: payload.user,
+    token: payload.token,
+    roles: payload.roles,
+    userId: payload.userId,
+  };
 }
 
 function toShellPayload(session: AuthSession | null): ShellAuthSessionPayload {
   if (!session) return { user: '' };
-  return { user: session.user, token: session.token };
+  return {
+    user: session.user,
+    token: session.token,
+    roles: session.roles,
+    userId: session.userId,
+  };
 }
 
 /**

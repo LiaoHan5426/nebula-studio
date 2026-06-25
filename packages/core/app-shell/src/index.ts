@@ -47,6 +47,8 @@ export {
   isShellIframeEmbed,
   readParentShellAuthSession,
   handleShellAuthUnauthorized,
+  isSurfaceEmbed,
+  isSurfaceIframeEmbed,
   SHELL_AUTH_UNAUTHORIZED_EVENT,
 } from './web/webAuth';
 export type { ShellAuthSessionPayload } from './web/webAuth';

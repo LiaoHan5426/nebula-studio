@@ -1,14 +1,7 @@
-import {
-  defineComponent,
-  h,
-  nextTick,
-  onMounted,
-  onUnmounted,
-  ref,
-  watch,
-  computed,
-} from 'vue';
+import { defineComponent, h, computed, ref, watch } from 'vue';
 import type { VNode } from 'vue';
+import { useScrollSpy } from '../../composables/useScrollSpy';
+import { useBackToTop } from '../../composables/useBackToTop';
 
 export type NebulaAnchorItem = {
   id: string;
@@ -16,45 +9,6 @@ export type NebulaAnchorItem = {
 };
 
 export type NebulaAnchorBackTopMode = 'inline' | 'float';
-
-/** window 或内部滚动容器上的滚动度量 */
-function getScrollMetrics(root: Window | HTMLElement): {
-  scrollTop: number;
-  clientHeight: number;
-  scrollHeight: number;
-} {
-  if (root === window) {
-    const scrollTop =
-      window.scrollY ||
-      document.documentElement.scrollTop ||
-      document.body.scrollTop;
-    return {
-      scrollTop,
-      clientHeight: window.innerHeight,
-      scrollHeight: document.documentElement.scrollHeight,
-    };
-  }
-  const el = root as HTMLElement;
-  return {
-    scrollTop: el.scrollTop,
-    clientHeight: el.clientHeight,
-    scrollHeight: el.scrollHeight,
-  };
-}
-
-/** 区块顶部相对「滚动文档」的纵向位置（与 scrollTop 同一坐标系） */
-function sectionScrollTop(
-  section: HTMLElement,
-  scrollRoot: Window | HTMLElement,
-): number {
-  if (scrollRoot === window) {
-    return section.getBoundingClientRect().top + window.scrollY;
-  }
-  const root = scrollRoot as HTMLElement;
-  const sr = section.getBoundingClientRect();
-  const rr = root.getBoundingClientRect();
-  return root.scrollTop + (sr.top - rr.top);
-}
 
 export const NebulaAnchor = defineComponent({
   name: 'NebulaAnchor',
@@ -71,10 +25,6 @@ export const NebulaAnchor = defineComponent({
       type: Boolean,
       default: true,
     },
-    /**
-     * 已废弃：高亮改由滚动位置计算（避免最后一节无法 Intersect）。
-     * 保留属性以免破坏已有调用。
-     */
     observerRootMargin: {
       type: String,
       default: '-18% 0px -60% 0px',
@@ -83,15 +33,10 @@ export const NebulaAnchor = defineComponent({
       type: Array as () => number[],
       default: () => [0.1, 0.25, 0.45, 0.7],
     },
-    /**
-     * 视口内用于判定「当前读到哪一节」的参考线：距视口顶部的比例（0–1）。
-     * 例如 0.22 表示参考线在距视口顶约 22% 高度处。
-     */
     activationViewportRatio: {
       type: Number,
       default: 0.22,
     },
-    /** 距滚动容器底部小于该值（px）时，强制高亮 `items` 中最后一项（解决尾段 API 等无法高亮） */
     scrollBottomSlack: {
       type: Number,
       default: 20,
@@ -138,10 +83,6 @@ export const NebulaAnchor = defineComponent({
     const internalActiveId = ref<string>(
       props.activeId ?? props.items[0]?.id ?? '',
     );
-    const backTopVisible = ref(false);
-
-    let scrollRootEl: Window | HTMLElement = window;
-    let scrollHandler: (() => void) | null = null;
 
     const isControlled = computed(() => props.activeId !== undefined);
 
@@ -182,108 +123,27 @@ export const NebulaAnchor = defineComponent({
       emit('update:activeId', id);
     }
 
-    function resolveScrollRoot(): Window | HTMLElement {
-      if (props.scrollRoot) {
-        const el = document.querySelector(props.scrollRoot);
-        if (el instanceof HTMLElement) return el;
-      }
-      return window;
-    }
+    const { reattach: reattachScroll } = useScrollSpy({
+      items: () => props.items,
+      trackScroll: () => props.trackScroll,
+      scrollRoot: () => props.scrollRoot,
+      activationViewportRatio: () => props.activationViewportRatio,
+      scrollBottomSlack: () => props.scrollBottomSlack,
+      onActivate: setActive,
+    });
 
-    function syncActiveAnchor(): void {
-      if (!props.trackScroll || props.items.length === 0) return;
-
-      const root = scrollRootEl;
-      const { scrollTop, clientHeight, scrollHeight } = getScrollMetrics(root);
-      const lastDef = props.items[props.items.length - 1];
-
-      if (
-        lastDef &&
-        scrollTop + clientHeight >= scrollHeight - props.scrollBottomSlack
-      ) {
-        setActive(lastDef.id);
-        return;
-      }
-
-      const ratio = Math.min(
-        0.48,
-        Math.max(0.06, props.activationViewportRatio),
-      );
-      const lineY = scrollTop + clientHeight * ratio;
-
-      let chosen = props.items[0]?.id ?? '';
-      for (const item of props.items) {
-        const el = document.getElementById(item.id);
-        if (!el) continue;
-        const top = sectionScrollTop(el, root);
-        if (top <= lineY) {
-          chosen = item.id;
-        }
-      }
-      setActive(chosen);
-    }
-
-    function updateBackTopVisible(): void {
-      if (!props.backTop || props.backTopMode !== 'float') return;
-      const { scrollTop } = getScrollMetrics(scrollRootEl);
-      backTopVisible.value = scrollTop > props.backTopThreshold;
-    }
+    const backTop = useBackToTop({
+      enabled: () => props.backTop,
+      mode: () => props.backTopMode,
+      threshold: () => props.backTopThreshold,
+      behavior: () => props.backTopBehavior,
+      scrollRoot: () => props.scrollRoot,
+    });
 
     function scrollToTop(): void {
-      const target = props.scrollRoot
-        ? document.querySelector(props.scrollRoot)
-        : null;
-      if (target instanceof HTMLElement) {
-        target.scrollTo({ top: 0, behavior: props.backTopBehavior });
-      } else {
-        window.scrollTo({ top: 0, behavior: props.backTopBehavior });
-      }
+      backTop.scrollToTop();
       emit('back-top');
     }
-
-    function onScroll(): void {
-      syncActiveAnchor();
-      updateBackTopVisible();
-    }
-
-    function attachScrollListeners(): void {
-      detachScrollListeners();
-      scrollRootEl = resolveScrollRoot();
-
-      const needAnchor = props.trackScroll && props.items.length > 0;
-      const needBackTop = props.backTop && props.backTopMode === 'float';
-
-      if (!needAnchor && !needBackTop) return;
-
-      scrollHandler = onScroll;
-      if (scrollRootEl === window) {
-        window.addEventListener('scroll', scrollHandler, { passive: true });
-      } else {
-        scrollRootEl.addEventListener('scroll', scrollHandler, {
-          passive: true,
-        });
-      }
-      onScroll();
-    }
-
-    function detachScrollListeners(): void {
-      if (!scrollHandler) return;
-      if (scrollRootEl === window) {
-        window.removeEventListener('scroll', scrollHandler);
-      } else {
-        scrollRootEl.removeEventListener('scroll', scrollHandler);
-      }
-      scrollHandler = null;
-      scrollRootEl = window;
-    }
-
-    onMounted(() => {
-      attachScrollListeners();
-    });
-
-    onUnmounted(() => {
-      detachScrollListeners();
-    });
 
     watch(
       () => [
@@ -293,20 +153,15 @@ export const NebulaAnchor = defineComponent({
         props.activationViewportRatio,
         props.scrollBottomSlack,
       ],
-      () => {
-        void nextTick(() => {
-          detachScrollListeners();
-          attachScrollListeners();
-        });
-      },
+      () => reattachScroll(),
       { deep: true },
     );
 
     watch(
       () => [props.backTop, props.backTopMode],
       () => {
-        detachScrollListeners();
-        attachScrollListeners();
+        backTop.detach();
+        backTop.attach();
       },
     );
 
@@ -316,7 +171,7 @@ export const NebulaAnchor = defineComponent({
       const showAside = showNav || showInlineBackTop;
 
       const showFloatBackTop =
-        props.backTop && props.backTopMode === 'float' && backTopVisible.value;
+        props.backTop && props.backTopMode === 'float' && backTop.visible.value;
 
       const aside = showAside
         ? h(

@@ -19,6 +19,7 @@
     "@nebula-studio/app-shell": "workspace:^",
     "@nebula-studio/nebula-layout": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
+    "@nebula-studio/use-confirm": "workspace:^",
     "vue": "catalog:vue",
     "vue-router": "catalog:vue",
     "@nebula-studio-electron/electron-bridge": "workspace:^"

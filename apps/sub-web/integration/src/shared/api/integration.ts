@@ -5,8 +5,13 @@ import type {
   Connector,
   DataSourceConfig,
   DatabaseConfig,
+  MybatisPage,
   PageResponse,
   ProtocolConfig,
+  ResourceCreateRequest,
+  ResourceQueryParams,
+  ResourceRecord,
+  ResourceUpdateRequest,
   ValidationResult,
 } from '@/shared/types';
 
@@ -152,3 +157,52 @@ export {
 } from '@/shared/api/consoleApi';
 
 export { gatewayRequest } from '@/shared/api/executorApi';
+
+// ==================== Resource API ====================
+
+export const resourceApi = {
+  list(
+    params: ResourceQueryParams,
+  ): Promise<ApiResponse<MybatisPage<ResourceRecord>>> {
+    const query = new URLSearchParams(
+      Object.entries(params)
+        .filter(([, v]) => v !== undefined && v !== '')
+        .map(([k, v]) => [k, String(v)]),
+    ).toString();
+    return request(`/resources?${query}`);
+  },
+
+  get(resourceId: string): Promise<ApiResponse<ResourceRecord>> {
+    return request(`/resources/${resourceId}`);
+  },
+
+  create(data: ResourceCreateRequest): Promise<ApiResponse<ResourceRecord>> {
+    return request('/resources', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  update(
+    resourceId: string,
+    data: ResourceUpdateRequest,
+  ): Promise<ApiResponse<ResourceRecord>> {
+    return request(`/resources/${resourceId}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  },
+
+  delete(resourceId: string): Promise<ApiResponse<void>> {
+    return request(`/resources/${resourceId}`, { method: 'DELETE' });
+  },
+
+  listByType(
+    tenantId: string,
+    resourceType: string,
+  ): Promise<ApiResponse<ResourceRecord[]>> {
+    return request(
+      `/resources/by-type?tenantId=${encodeURIComponent(tenantId)}&resourceType=${encodeURIComponent(resourceType)}`,
+    );
+  },
+};

@@ -1,13 +1,8 @@
-import {
-  defineComponent,
-  h,
-  onMounted,
-  onUnmounted,
-  Teleport,
-  watch,
-} from 'vue';
+import { defineComponent, h, Teleport } from 'vue';
 import { cn } from '../../utils/cn';
 import { NebulaIconButton } from '../icon-button/NebulaIconButton';
+import { useBodyScrollLock } from '../../composables/useBodyScrollLock';
+import { useOverlayDismiss } from '../../composables/useOverlayDismiss';
 
 export const NebulaDrawer = defineComponent({
   name: 'NebulaDrawer',
@@ -44,26 +39,8 @@ export const NebulaDrawer = defineComponent({
       emit('close');
     };
 
-    const onKeydown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && props.open) close();
-    };
-
-    const lockBody = (locked: boolean) => {
-      if (typeof document === 'undefined') return;
-      document.body.style.overflow = locked ? 'hidden' : '';
-    };
-
-    watch(
-      () => props.open,
-      (open) => lockBody(open),
-      { immediate: true },
-    );
-
-    onMounted(() => document.addEventListener('keydown', onKeydown));
-    onUnmounted(() => {
-      document.removeEventListener('keydown', onKeydown);
-      lockBody(false);
-    });
+    useBodyScrollLock(() => props.open);
+    useOverlayDismiss({ isOpen: () => props.open, onDismiss: close });
 
     return () => {
       if (!props.open) return null;

@@ -9,7 +9,7 @@ import {
 
 describe('auth session', () => {
   beforeEach(() => {
-    localStorage.clear();
+    sessionStorage.clear();
     clearAuthSession();
   });
 

@@ -508,6 +508,12 @@ importers:
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
         version: link:../../../packages/ui/nebula-ui
+      '@nebula-studio/sse-events':
+        specifier: workspace:^
+        version: link:../../../packages/core/sse-events
+      '@nebula-studio/tenant':
+        specifier: workspace:^
+        version: link:../../../packages/core/tenant
       vue:
         specifier: catalog:vue
         version: 3.5.35(typescript@6.0.3)
@@ -612,6 +618,9 @@ importers:
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
         version: link:../../../packages/ui/nebula-ui
+      '@nebula-studio/use-confirm':
+        specifier: workspace:^
+        version: link:../../../packages/features/use-confirm
       vue:
         specifier: catalog:vue
         version: 3.5.35(typescript@6.0.3)
@@ -808,6 +817,18 @@ importers:
         specifier: catalog:vue
         version: 3.5.35(typescript@6.0.3)
 
+  packages/core/sse-events:
+    dependencies:
+      vue:
+        specifier: catalog:vue
+        version: 3.5.35(typescript@6.0.3)
+
+  packages/core/tenant:
+    dependencies:
+      vue:
+        specifier: catalog:vue
+        version: 3.5.35(typescript@6.0.3)
+
   packages/editors/code-editor:
     dependencies:
       monaco-editor:
@@ -979,6 +1000,19 @@ importers:
       '@nebula-studio/api-client':
         specifier: workspace:^
         version: link:../../core/api-client
+      vue:
+        specifier: catalog:vue
+        version: 3.5.35(typescript@6.0.3)
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../../tools/tsconfig
+      '@nebula-studio/types':
+        specifier: workspace:^
+        version: link:../../types
+
+  packages/features/use-confirm:
+    dependencies:
       vue:
         specifier: catalog:vue
         version: 3.5.35(typescript@6.0.3)

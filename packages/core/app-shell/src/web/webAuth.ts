@@ -9,6 +9,8 @@ export const SHELL_AUTH_SESSION_KEY = 'nebula-studio-auth-session';
 export interface ShellAuthSessionPayload {
   user: string;
   token?: string;
+  roles?: string[];
+  userId?: string;
 }
 
 export function getWebShellEmbedSurface(): string | null {
@@ -152,4 +154,18 @@ export function isSafeAuthReturnUrl(url: string): boolean {
   } catch {
     return false;
   }
+}
+
+/** Check whether the current page is embedded for a specific surface (e.g. 'integration', 'settings'). */
+export function isSurfaceEmbed(surface: string): boolean {
+  return getWebShellEmbedSurface() === surface;
+}
+
+/** Check whether the current page is embedded for the given surface AND inside an iframe. */
+export function isSurfaceIframeEmbed(surface: string): boolean {
+  return (
+    isSurfaceEmbed(surface) &&
+    typeof window !== 'undefined' &&
+    window.parent !== window
+  );
 }

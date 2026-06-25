@@ -1,13 +1,7 @@
-import {
-  defineComponent,
-  h,
-  onMounted,
-  onUnmounted,
-  ref,
-  Teleport,
-  watch,
-} from 'vue';
+import { defineComponent, h, ref, Teleport } from 'vue';
 import { cn } from '../../utils/cn';
+import { useDropdownPosition } from '../../composables/useDropdownPosition';
+import { useDropdownDismiss } from '../../composables/useDropdownDismiss';
 
 export const NebulaDropdown = defineComponent({
   name: 'NebulaDropdown',
@@ -37,7 +31,6 @@ export const NebulaDropdown = defineComponent({
   setup(props, { slots, emit }) {
     const triggerRef = ref<HTMLElement | null>(null);
     const menuRef = ref<HTMLElement | null>(null);
-    const menuStyle = ref<Record<string, string>>({});
 
     const close = () => {
       if (props.open) emit('update:open', false);
@@ -49,62 +42,18 @@ export const NebulaDropdown = defineComponent({
       emit('update:open', !props.open);
     };
 
-    const updatePosition = () => {
-      const el = triggerRef.value;
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
-      const top = rect.bottom + props.offset;
-      if (props.placement === 'bottom-start') {
-        menuStyle.value = {
-          position: 'fixed',
-          top: `${top}px`,
-          left: `${rect.left}px`,
-          zIndex: '99990',
-        };
-      } else {
-        menuStyle.value = {
-          position: 'fixed',
-          top: `${top}px`,
-          right: `${window.innerWidth - rect.right}px`,
-          zIndex: '99990',
-        };
-      }
-    };
-
-    const onDocClick = (event: MouseEvent) => {
-      if (!props.open) return;
-      const target = event.target as Node;
-      if (triggerRef.value?.contains(target)) return;
-      if (menuRef.value?.contains(target)) return;
-      close();
-    };
-
-    const onKeydown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') close();
-    };
-
-    watch(
-      () => props.open,
-      (open) => {
-        if (open) {
-          updatePosition();
-          requestAnimationFrame(updatePosition);
-        }
-      },
-    );
-
-    onMounted(() => {
-      document.addEventListener('click', onDocClick);
-      document.addEventListener('keydown', onKeydown);
-      window.addEventListener('resize', updatePosition);
-      window.addEventListener('scroll', updatePosition, true);
+    const { menuStyle } = useDropdownPosition({
+      triggerRef,
+      open: () => props.open,
+      placement: () => props.placement,
+      offset: () => props.offset,
     });
 
-    onUnmounted(() => {
-      document.removeEventListener('click', onDocClick);
-      document.removeEventListener('keydown', onKeydown);
-      window.removeEventListener('resize', updatePosition);
-      window.removeEventListener('scroll', updatePosition, true);
+    useDropdownDismiss({
+      triggerRef,
+      menuRef,
+      open: () => props.open,
+      onClose: close,
     });
 
     return () =>

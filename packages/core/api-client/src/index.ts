@@ -12,4 +12,7 @@ export {
   type ApiRequestOptions,
   type ApiResponse,
   type RequestProgressOptions,
+  type MybatisPage,
+  type PageResult,
+  type PageResponse,
 } from './types';

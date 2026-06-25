@@ -238,22 +238,11 @@ export interface DataSourceConfig {
 
 export type { ApiResponse } from '@nebula-studio/api-client';
 export { isApiSuccess } from '@nebula-studio/api-client';
-
-export interface PageResponse<T> {
-  items: T[];
-  total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
-}
-
-export interface MybatisPage<T> {
-  records: T[];
-  total: number;
-  size: number;
-  current: number;
-  pages: number;
-}
+export type {
+  PageResponse,
+  MybatisPage,
+  PageResult,
+} from '@nebula-studio/api-client';
 
 export interface TenantContext {
   tenantId: string;
@@ -300,4 +289,138 @@ export interface SubscriptionEvent {
   type: string;
   timestamp: string;
   payload: unknown;
+}
+
+// ==================== Resource 模型 ====================
+
+export enum ResourceType {
+  API = 'API',
+  CONNECTOR = 'CONNECTOR',
+  PLUGIN = 'PLUGIN',
+  FLOW = 'FLOW',
+  DATASOURCE = 'DATASOURCE',
+}
+
+export enum ResourceStatus {
+  DRAFT = 'DRAFT',
+  VERSIONED = 'VERSIONED',
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+  DEPRECATED = 'DEPRECATED',
+  ARCHIVED = 'ARCHIVED',
+}
+
+export interface ResourceRecord {
+  id: string;
+  name: string;
+  description: string;
+  resourceType: ResourceType | string;
+  status: ResourceStatus | string;
+  tenantId: string;
+  ownerId: string;
+  versionId: string;
+  labels: string;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ResourceCreateRequest {
+  name: string;
+  description?: string;
+  resourceType: ResourceType | string;
+  tenantId: string;
+  labels?: string;
+}
+
+export interface ResourceUpdateRequest {
+  name?: string;
+  description?: string;
+  status?: ResourceStatus | string;
+  labels?: string;
+  versionId?: string;
+}
+
+export interface ResourceQueryParams {
+  tenantId: string;
+  resourceType?: string;
+  status?: string;
+  keyword?: string;
+  page?: number;
+  size?: number;
+}
+
+// ==================== 发布流程模型 ====================
+
+export enum PublishStatus {
+  DRAFT = 'DRAFT',
+  VERSION = 'VERSION',
+  APPROVAL = 'APPROVAL',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
+  DEPLOYING = 'DEPLOYING',
+  DEPLOYED = 'DEPLOYED',
+  ROLLED_BACK = 'ROLLED_BACK',
+}
+
+export interface GovernanceRequest {
+  requestId: string;
+  resourceId: string;
+  resourceType: string;
+  applicant: string;
+  status: PublishStatus;
+  submittedAt: string;
+  approver?: string;
+  comment?: string;
+  versionSnapshot?: string;
+}
+
+export interface GovernanceApprovalRequest {
+  resourceId: string;
+  resourceType: string;
+  description?: string;
+}
+
+export interface GovernanceApprovalDecision {
+  requestId: string;
+  approved: boolean;
+  comment: string;
+}
+
+export interface VersionSnapshot {
+  snapshotId: string;
+  resourceId: string;
+  version: string;
+  content: string;
+  createdAt: string;
+  createdBy: string;
+}
+
+export interface ReleaseRecord {
+  releaseId: string;
+  requestId: string;
+  resourceId: string;
+  status: 'DEPLOYING' | 'DEPLOYED' | 'FAILED' | 'ROLLED_BACK';
+  deployedAt?: string;
+  deployedBy?: string;
+}
+
+// ==================== 治理策略模型 ====================
+
+export enum GovernancePolicyType {
+  RATE_LIMIT = 'RATE_LIMIT',
+  CIRCUIT_BREAKER = 'CIRCUIT_BREAKER',
+  WHITELIST = 'WHITELIST',
+  BLACKLIST = 'BLACKLIST',
+}
+
+export interface GovernancePolicy {
+  policyId: string;
+  resourceId: string;
+  policyType: GovernancePolicyType;
+  config: Record<string, unknown>;
+  enabled: boolean;
+  tenantId: string;
+  createdAt: string;
+  updatedAt: string;
 }

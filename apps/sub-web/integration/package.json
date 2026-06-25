@@ -31,7 +31,9 @@
     "@nebula-studio/nebula-integration-panel": "workspace:^",
     "vue": "catalog:vue",
     "vue-router": "catalog:vue",
-    "@nebula-studio/auth-provider": "workspace:^"
+    "@nebula-studio/auth-provider": "workspace:^",
+    "@nebula-studio/sse-events": "workspace:^",
+    "@nebula-studio/tenant": "workspace:^"
   },
   "devDependencies": {
     "@electron-toolkit/preload": "catalog:electron",

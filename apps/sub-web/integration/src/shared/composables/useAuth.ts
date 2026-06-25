@@ -8,26 +8,23 @@ import {
   getAuthToken,
   getAuthUsername,
   hasValidAuthToken,
-  initAuthCacheFromStorage,
   setAuthSession,
 } from '@/shared/auth/session';
 import { isPlatformAdmin as checkPlatformAdmin } from '@/shared/auth/roles';
 import {
-  isIntegrationShellEmbed,
+  isSurfaceEmbed,
   readParentShellAuthSession,
-} from '@/shared/composables/useShellEmbed';
+} from '@nebula-studio/app-shell';
 import { useTenant } from '@/shared/composables/useTenant';
 import { isApiSuccess } from '@/shared/types';
 import { globalAuthProvider } from '@nebula-studio/auth-provider';
 
-initAuthCacheFromStorage();
-
 const token = ref<string | null>(getAuthToken());
-const username = ref<string | null>(localStorage.getItem('auth_username'));
+const username = ref<string | null>(getAuthUsername());
 const roles = ref<string[]>(getAuthRoles());
 const loading = ref(false);
 const error = ref<string | null>(null);
-const shellEmbed = isIntegrationShellEmbed();
+const shellEmbed = isSurfaceEmbed('integration');
 const { resetTenantSession } = useTenant();
 
 export { getAuthToken } from '@/shared/auth/session';

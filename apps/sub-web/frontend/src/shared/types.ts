@@ -1,21 +1,11 @@
 export { isApiSuccess } from '@nebula-studio/api-client';
 
+// Re-export shared types from app-shell (single source of truth)
+export type { AuthMode, OrgSummary } from '@nebula-studio/app-shell';
+
 export interface OrgPolicy {
   enabled: boolean;
   multiOrgEnabled: boolean;
-}
-
-export interface AuthMode {
-  authType: string;
-  orgEnabled: boolean;
-  multiOrgEnabled: boolean;
-}
-
-export interface OrgSummary {
-  id: string;
-  orgName: string;
-  orgCode: string;
-  primary?: boolean;
 }
 
 export interface AuthMe {

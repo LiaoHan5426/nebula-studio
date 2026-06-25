@@ -9,10 +9,20 @@ import {
 import type {
   ApiResponse,
   DagDefinitionRecord,
+  GovernanceApprovalDecision,
+  GovernanceApprovalRequest,
+  GovernancePolicy,
+  GovernanceRequest,
   PageResponse,
+  ReleaseRecord,
+  ResourceCreateRequest,
+  ResourceQueryParams,
+  ResourceRecord,
+  ResourceUpdateRequest,
   SubscriptionConfig,
   TableSubscription,
   TenantContext,
+  VersionSnapshot,
 } from '@/shared/types';
 import type { GrantScheduleType } from '@/shared/grant/schedule';
 
@@ -575,5 +585,170 @@ export const dagApi = {
 export const pluginCatalogApi = {
   list(): Promise<ApiResponse<Record<string, unknown>[]>> {
     return consoleRequest('/plugin-catalog');
+  },
+};
+
+// ==================== Resource API ====================
+
+export const resourceApi = {
+  list(
+    params: ResourceQueryParams,
+  ): Promise<ApiResponse<PageResponse<ResourceRecord>>> {
+    const query = new URLSearchParams();
+    query.set('tenantId', params.tenantId);
+    if (params.resourceType) query.set('resourceType', params.resourceType);
+    if (params.status) query.set('status', params.status);
+    if (params.keyword) query.set('keyword', params.keyword);
+    if (params.page) query.set('page', String(params.page));
+    if (params.size) query.set('size', String(params.size));
+    return consoleRequest(`/resource/list?${query.toString()}`);
+  },
+
+  get(resourceId: string): Promise<ApiResponse<ResourceRecord>> {
+    return consoleRequest(`/resource/${resourceId}`);
+  },
+
+  create(body: ResourceCreateRequest): Promise<ApiResponse<ResourceRecord>> {
+    return consoleRequest('/resource', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
+  },
+
+  update(
+    resourceId: string,
+    body: ResourceUpdateRequest,
+  ): Promise<ApiResponse<ResourceRecord>> {
+    return consoleRequest(`/resource/${resourceId}`, {
+      method: 'PUT',
+      body: JSON.stringify(body),
+    });
+  },
+
+  delete(resourceId: string): Promise<ApiResponse<void>> {
+    return consoleRequest(`/resource/${resourceId}`, { method: 'DELETE' });
+  },
+};
+
+// ==================== Approval API ====================
+
+export const approvalApi = {
+  submitRequest(
+    body: GovernanceApprovalRequest,
+  ): Promise<ApiResponse<GovernanceRequest>> {
+    return governanceRequest('/approval/request', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
+  },
+
+  listRequests(tenantId: string): Promise<ApiResponse<GovernanceRequest[]>> {
+    return governanceRequest(`/approval/requests?tenantId=${tenantId}`);
+  },
+
+  getRequest(requestId: string): Promise<ApiResponse<GovernanceRequest>> {
+    return governanceRequest(`/approval/request/${requestId}`);
+  },
+
+  decide(
+    body: GovernanceApprovalDecision,
+  ): Promise<ApiResponse<GovernanceRequest>> {
+    return governanceRequest('/approval/decide', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
+  },
+
+  withdraw(requestId: string): Promise<ApiResponse<void>> {
+    return governanceRequest(`/approval/request/${requestId}`, {
+      method: 'DELETE',
+    });
+  },
+};
+
+// ==================== Version Control API ====================
+
+export const versionApi = {
+  createSnapshot(
+    resourceId: string,
+    content: string,
+  ): Promise<ApiResponse<VersionSnapshot>> {
+    return governanceRequest('/version/snapshot', {
+      method: 'POST',
+      body: JSON.stringify({ resourceId, content }),
+    });
+  },
+
+  listSnapshots(resourceId: string): Promise<ApiResponse<VersionSnapshot[]>> {
+    return governanceRequest(`/version/snapshots?resourceId=${resourceId}`);
+  },
+
+  diff(
+    snapshotIdA: string,
+    snapshotIdB: string,
+  ): Promise<ApiResponse<Record<string, unknown>>> {
+    return governanceRequest(`/version/diff?a=${snapshotIdA}&b=${snapshotIdB}`);
+  },
+};
+
+// ==================== Release API ====================
+
+export const releaseApi = {
+  deploy(requestId: string): Promise<ApiResponse<ReleaseRecord>> {
+    return governanceRequest('/release/deploy', {
+      method: 'POST',
+      body: JSON.stringify({ requestId }),
+    });
+  },
+
+  rollback(releaseId: string): Promise<ApiResponse<ReleaseRecord>> {
+    return governanceRequest(`/release/${releaseId}/rollback`, {
+      method: 'POST',
+    });
+  },
+
+  getRelease(releaseId: string): Promise<ApiResponse<ReleaseRecord>> {
+    return governanceRequest(`/release/${releaseId}`);
+  },
+};
+
+// ==================== Governance Policy API ====================
+
+export const governancePolicyApi = {
+  list(resourceId: string): Promise<ApiResponse<GovernancePolicy[]>> {
+    return governanceRequest(`/policy?resourceId=${resourceId}`);
+  },
+
+  create(
+    body: Partial<GovernancePolicy>,
+  ): Promise<ApiResponse<GovernancePolicy>> {
+    return governanceRequest('/policy', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
+  },
+
+  update(
+    policyId: string,
+    body: Partial<GovernancePolicy>,
+  ): Promise<ApiResponse<GovernancePolicy>> {
+    return governanceRequest(`/policy/${policyId}`, {
+      method: 'PUT',
+      body: JSON.stringify(body),
+    });
+  },
+
+  delete(policyId: string): Promise<ApiResponse<void>> {
+    return governanceRequest(`/policy/${policyId}`, { method: 'DELETE' });
+  },
+
+  toggle(
+    policyId: string,
+    enabled: boolean,
+  ): Promise<ApiResponse<GovernancePolicy>> {
+    return governanceRequest(`/policy/${policyId}/toggle`, {
+      method: 'POST',
+      body: JSON.stringify({ enabled }),
+    });
   },
 };
