@@ -94,7 +94,7 @@ const customConfig: Linter.Config[] = [
       'internal/**/**',
       'scripts/**/**',
       'apps/electron/**/**',
-      'packages/nebula-editor/**/**',
+      'packages/editors/code-editor/**/**',
     ],
     rules: {
       'no-console': 'off',

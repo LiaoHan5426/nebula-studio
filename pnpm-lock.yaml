@@ -382,10 +382,10 @@ importers:
         version: link:../../../packages/core/app-shell
       '@nebula-studio/nebula-agent':
         specifier: workspace:^
-        version: link:../../../packages/nebula-agent
+        version: link:../../../packages/ui/nebula-agent
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
-        version: link:../../../packages/nebula-ui
+        version: link:../../../packages/ui/nebula-ui
       marked:
         specifier: 'catalog:'
         version: 18.0.4
@@ -431,7 +431,7 @@ importers:
         version: link:../../../tools/tailwindcss
       '@nebula-studio/api-client':
         specifier: workspace:^
-        version: link:../../../packages/api-client
+        version: link:../../../packages/core/api-client
       '@nebula-studio/app-shell':
         specifier: workspace:^
         version: link:../../../packages/core/app-shell
@@ -440,10 +440,10 @@ importers:
         version: link:../../../packages/core/auth-provider
       '@nebula-studio/nebula-layout':
         specifier: workspace:^
-        version: link:../../../packages/nebula-layout
+        version: link:../../../packages/ui/nebula-layout
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
-        version: link:../../../packages/nebula-ui
+        version: link:../../../packages/ui/nebula-ui
       vue:
         specifier: catalog:vue
         version: 3.5.35(typescript@6.0.3)
@@ -483,7 +483,7 @@ importers:
         version: link:../../../tools/tailwindcss
       '@nebula-studio/api-client':
         specifier: workspace:^
-        version: link:../../../packages/api-client
+        version: link:../../../packages/core/api-client
       '@nebula-studio/app-shell':
         specifier: workspace:^
         version: link:../../../packages/core/app-shell
@@ -492,22 +492,22 @@ importers:
         version: link:../../../packages/core/auth-provider
       '@nebula-studio/nebula-dag-editor':
         specifier: workspace:^
-        version: link:../../../packages/nebula-dag-editor
+        version: link:../../../packages/editors/dag-editor
       '@nebula-studio/nebula-flow-editor':
         specifier: workspace:^
-        version: link:../../../packages/nebula-flow-editor
+        version: link:../../../packages/editors/flow-editor
       '@nebula-studio/nebula-integration-panel':
         specifier: workspace:^
-        version: link:../../../packages/nebula-integration-panel
+        version: link:../../../packages/editors/integration-panel
       '@nebula-studio/nebula-layout':
         specifier: workspace:^
-        version: link:../../../packages/nebula-layout
+        version: link:../../../packages/ui/nebula-layout
       '@nebula-studio/nebula-low-render':
         specifier: workspace:^
-        version: link:../../../packages/nebula-low-render
+        version: link:../../../packages/editors/low-code-form
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
-        version: link:../../../packages/nebula-ui
+        version: link:../../../packages/ui/nebula-ui
       vue:
         specifier: catalog:vue
         version: 3.5.35(typescript@6.0.3)
@@ -562,7 +562,7 @@ importers:
         version: link:../../../packages/core/auth-provider
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
-        version: link:../../../packages/nebula-ui
+        version: link:../../../packages/ui/nebula-ui
       vue:
         specifier: catalog:vue
         version: 3.5.35(typescript@6.0.3)
@@ -602,16 +602,16 @@ importers:
         version: link:../../../tools/tailwindcss
       '@nebula-studio/api-client':
         specifier: workspace:^
-        version: link:../../../packages/api-client
+        version: link:../../../packages/core/api-client
       '@nebula-studio/app-shell':
         specifier: workspace:^
         version: link:../../../packages/core/app-shell
       '@nebula-studio/nebula-layout':
         specifier: workspace:^
-        version: link:../../../packages/nebula-layout
+        version: link:../../../packages/ui/nebula-layout
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
-        version: link:../../../packages/nebula-ui
+        version: link:../../../packages/ui/nebula-ui
       vue:
         specifier: catalog:vue
         version: 3.5.35(typescript@6.0.3)
@@ -675,7 +675,7 @@ importers:
         version: link:../../packages/core/auth-provider
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
-        version: link:../../packages/nebula-ui
+        version: link:../../packages/ui/nebula-ui
       marked:
         specifier: 'catalog:'
         version: 18.0.4
@@ -752,7 +752,7 @@ importers:
         specifier: catalog:types
         version: 6.0.3
 
-  packages/api-client:
+  packages/core/api-client:
     dependencies:
       nprogress:
         specifier: 'catalog:'
@@ -760,10 +760,10 @@ importers:
     devDependencies:
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
-        version: link:../../tools/tsconfig
+        version: link:../../../tools/tsconfig
       '@nebula-studio/types':
         specifier: workspace:^
-        version: link:../types
+        version: link:../../types
       '@types/nprogress':
         specifier: catalog:types
         version: 0.2.3
@@ -808,57 +808,7 @@ importers:
         specifier: catalog:vue
         version: 3.5.35(typescript@6.0.3)
 
-  packages/nebula-agent:
-    dependencies:
-      mustache:
-        specifier: ^4.2.0
-        version: 4.2.0
-    devDependencies:
-      '@types/mustache':
-        specifier: ^4.2.6
-        version: 4.2.6
-      node-sql-parser:
-        specifier: 'catalog:'
-        version: 5.4.0
-
-  packages/nebula-dag-editor:
-    dependencies:
-      '@nebula-studio/nebula-low-render':
-        specifier: workspace:^
-        version: link:../nebula-low-render
-      '@nebula-studio/nebula-ui':
-        specifier: workspace:^
-        version: link:../nebula-ui
-      '@vue-flow/background':
-        specifier: ^1.3.0
-        version: 1.3.2(@vue-flow/core@1.48.2(vue@3.5.35(typescript@6.0.3)))(vue@3.5.35(typescript@6.0.3))
-      '@vue-flow/controls':
-        specifier: ^1.1.2
-        version: 1.1.3(@vue-flow/core@1.48.2(vue@3.5.35(typescript@6.0.3)))(vue@3.5.35(typescript@6.0.3))
-      '@vue-flow/core':
-        specifier: ^1.41.2
-        version: 1.48.2(vue@3.5.35(typescript@6.0.3))
-      vue:
-        specifier: catalog:vue
-        version: 3.5.35(typescript@6.0.3)
-    devDependencies:
-      '@nebula-studio-internal/tsconfig':
-        specifier: workspace:^
-        version: link:../../tools/tsconfig
-      '@nebula-studio/types':
-        specifier: workspace:^
-        version: link:../types
-      happy-dom:
-        specifier: catalog:vite
-        version: 20.10.6
-      vite-plus:
-        specifier: catalog:vite
-        version: 0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
-      vitest:
-        specifier: npm:@voidzero-dev/vite-plus-test@latest
-        version: '@voidzero-dev/vite-plus-test@0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)'
-
-  packages/nebula-editor:
+  packages/editors/code-editor:
     dependencies:
       monaco-editor:
         specifier: 'catalog:'
@@ -883,11 +833,48 @@ importers:
         specifier: ^0.1.24
         version: 0.1.24(@types/node@25.9.1)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@25.9.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
 
-  packages/nebula-flow-editor:
+  packages/editors/dag-editor:
+    dependencies:
+      '@nebula-studio/nebula-low-render':
+        specifier: workspace:^
+        version: link:../low-code-form
+      '@nebula-studio/nebula-ui':
+        specifier: workspace:^
+        version: link:../../ui/nebula-ui
+      '@vue-flow/background':
+        specifier: ^1.3.0
+        version: 1.3.2(@vue-flow/core@1.48.2(vue@3.5.35(typescript@6.0.3)))(vue@3.5.35(typescript@6.0.3))
+      '@vue-flow/controls':
+        specifier: ^1.1.2
+        version: 1.1.3(@vue-flow/core@1.48.2(vue@3.5.35(typescript@6.0.3)))(vue@3.5.35(typescript@6.0.3))
+      '@vue-flow/core':
+        specifier: ^1.41.2
+        version: 1.48.2(vue@3.5.35(typescript@6.0.3))
+      vue:
+        specifier: catalog:vue
+        version: 3.5.35(typescript@6.0.3)
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../../tools/tsconfig
+      '@nebula-studio/types':
+        specifier: workspace:^
+        version: link:../../types
+      happy-dom:
+        specifier: catalog:vite
+        version: 20.10.6
+      vite-plus:
+        specifier: catalog:vite
+        version: 0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)
+      vitest:
+        specifier: npm:@voidzero-dev/vite-plus-test@latest
+        version: '@voidzero-dev/vite-plus-test@0.1.24(@types/node@26.0.0)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.0)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)'
+
+  packages/editors/flow-editor:
     dependencies:
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
-        version: link:../nebula-ui
+        version: link:../../ui/nebula-ui
       bpmn-js:
         specifier: ^18.0.0
         version: 18.18.0
@@ -903,44 +890,150 @@ importers:
     devDependencies:
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
-        version: link:../../tools/tsconfig
+        version: link:../../../tools/tsconfig
       '@nebula-studio/types':
         specifier: workspace:^
-        version: link:../types
+        version: link:../../types
       sass:
         specifier: catalog:style
         version: 1.100.0
 
-  packages/nebula-integration-panel:
+  packages/editors/integration-panel:
     dependencies:
       '@nebula-studio/nebula-flow-editor':
         specifier: workspace:^
-        version: link:../nebula-flow-editor
+        version: link:../flow-editor
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
-        version: link:../nebula-ui
+        version: link:../../ui/nebula-ui
       vue:
         specifier: catalog:vue
         version: 3.5.35(typescript@6.0.3)
     devDependencies:
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
-        version: link:../../tools/tsconfig
+        version: link:../../../tools/tsconfig
       '@nebula-studio/types':
         specifier: workspace:^
-        version: link:../types
+        version: link:../../types
       sass:
         specifier: catalog:style
         version: 1.100.0
 
-  packages/nebula-layout:
+  packages/editors/low-code-form:
+    dependencies:
+      '@nebula-studio/nebula-ui':
+        specifier: workspace:^
+        version: link:../../ui/nebula-ui
+      vue:
+        specifier: catalog:vue
+        version: 3.5.35(typescript@6.0.3)
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../../tools/tsconfig
+      '@nebula-studio/types':
+        specifier: workspace:^
+        version: link:../../types
+
+  packages/features/plugin-installer:
+    dependencies:
+      '@nebula-studio/api-client':
+        specifier: workspace:^
+        version: link:../../core/api-client
+      '@nebula-studio/nebula-ui':
+        specifier: workspace:^
+        version: link:../../ui/nebula-ui
+      vue:
+        specifier: catalog:vue
+        version: 3.5.35(typescript@6.0.3)
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../../tools/tsconfig
+      '@nebula-studio/types':
+        specifier: workspace:^
+        version: link:../../types
+
+  packages/features/route-designer:
+    dependencies:
+      '@nebula-studio/api-client':
+        specifier: workspace:^
+        version: link:../../core/api-client
+      '@nebula-studio/nebula-dag-editor':
+        specifier: workspace:^
+        version: link:../../editors/dag-editor
+      vue:
+        specifier: catalog:vue
+        version: 3.5.35(typescript@6.0.3)
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../../tools/tsconfig
+      '@nebula-studio/types':
+        specifier: workspace:^
+        version: link:../../types
+
+  packages/features/subscription-manager:
+    dependencies:
+      '@nebula-studio/api-client':
+        specifier: workspace:^
+        version: link:../../core/api-client
+      vue:
+        specifier: catalog:vue
+        version: 3.5.35(typescript@6.0.3)
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../../tools/tsconfig
+      '@nebula-studio/types':
+        specifier: workspace:^
+        version: link:../../types
+
+  packages/features/version-diff:
+    dependencies:
+      '@nebula-studio/api-client':
+        specifier: workspace:^
+        version: link:../../core/api-client
+      '@nebula-studio/nebula-ui':
+        specifier: workspace:^
+        version: link:../../ui/nebula-ui
+      vue:
+        specifier: catalog:vue
+        version: 3.5.35(typescript@6.0.3)
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../../tools/tsconfig
+      '@nebula-studio/types':
+        specifier: workspace:^
+        version: link:../../types
+
+  packages/styles: {}
+
+  packages/types: {}
+
+  packages/ui/nebula-agent:
+    dependencies:
+      mustache:
+        specifier: ^4.2.0
+        version: 4.2.0
+    devDependencies:
+      '@types/mustache':
+        specifier: ^4.2.6
+        version: 4.2.6
+      node-sql-parser:
+        specifier: 'catalog:'
+        version: 5.4.0
+
+  packages/ui/nebula-layout:
     dependencies:
       '@nebula-studio-electron/electron-bridge':
         specifier: workspace:^
-        version: link:../core/electron-shared
+        version: link:../../core/electron-shared
       '@nebula-studio/app-shell':
         specifier: workspace:^
-        version: link:../core/app-shell
+        version: link:../../core/app-shell
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
         version: link:../nebula-ui
@@ -953,31 +1046,15 @@ importers:
     devDependencies:
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
-        version: link:../../tools/tsconfig
+        version: link:../../../tools/tsconfig
       '@nebula-studio/types':
         specifier: workspace:^
-        version: link:../types
+        version: link:../../types
       sass:
         specifier: catalog:style
         version: 1.100.0
 
-  packages/nebula-low-render:
-    dependencies:
-      '@nebula-studio/nebula-ui':
-        specifier: workspace:^
-        version: link:../nebula-ui
-      vue:
-        specifier: catalog:vue
-        version: 3.5.35(typescript@6.0.3)
-    devDependencies:
-      '@nebula-studio-internal/tsconfig':
-        specifier: workspace:^
-        version: link:../../tools/tsconfig
-      '@nebula-studio/types':
-        specifier: workspace:^
-        version: link:../types
-
-  packages/nebula-ui:
+  packages/ui/nebula-ui:
     dependencies:
       '@codemirror/commands':
         specifier: 'catalog:'
@@ -1039,17 +1116,13 @@ importers:
     devDependencies:
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
-        version: link:../../tools/tsconfig
+        version: link:../../../tools/tsconfig
       '@nebula-studio/types':
         specifier: workspace:^
-        version: link:../types
+        version: link:../../types
       sass:
         specifier: catalog:style
         version: 1.100.0
-
-  packages/styles: {}
-
-  packages/types: {}
 
   tools/lint/eslint:
     dependencies:
@@ -1417,9 +1490,6 @@ packages:
   '@carbon/icons@11.82.0':
     resolution: {integrity: sha512-XMJiHEUKd9/4kJKLbzbHX2KizUVb6mrzJbJg9gb03jYVq+tFjxUO8WmT6czmHls0mj3mv0Y2rMeMtl7/v+aQjw==}
 
-  '@codemirror/autocomplete@6.20.2':
-    resolution: {integrity: sha512-G5FPkgIiLjOgZMjqVjvuKQ1rGPtHogLldJr33eFJdVLtmwY+giGrlv/ewljLz6b9BSQLkjxuwBc6g6omDM+YxQ==}
-
   '@codemirror/autocomplete@6.20.3':
     resolution: {integrity: sha512-tlosUqb+3BbxCxZdu4tKeRghPFC+QM7q4X5YhKV2eCmPG+1r2F3f4AaSz5sCrFqUtX4Jh20VFTKecl16MgiV9g==}
 
@@ -1452,9 +1522,6 @@ packages:
 
   '@codemirror/language@6.12.3':
     resolution: {integrity: sha512-QwCZW6Tt1siP37Jet9Tb02Zs81TQt6qQrZR2H+eGMcFsL1zMrk2/b9CLC7/9ieP1fjIUMgviLWMmgiHoJrj+ZA==}
-
-  '@codemirror/lint@6.9.6':
-    resolution: {integrity: sha512-6Kp7r6XfCi/D/5sdXieMfg9pJU1bUEx96WITuLU6ESaKizCz0QHFMjY/TaFSbigDdEAIgi93itLBIUETP4oK+A==}
 
   '@codemirror/lint@6.9.7':
     resolution: {integrity: sha512-28/+iWLYxKxsvGYhSYL7zaCZqLz5+FFFDq9tVsvGv9kv8RY4fFAchJ5WX9M3YrrRlTIsECjsXPqeNgnSmNP2dg==}
@@ -5744,8 +5811,8 @@ packages:
     resolution: {integrity: sha512-94hK0Hh8rPqQl2xXc3HsaBoOXKV20MToPkcXvwbISWLEs+64sBq5kFgn2kJDHb1Pry9yrP0dxrCI9RRci7RXKg==}
     engines: {node: '>= 6.0.0', npm: '>= 3.0.0'}
 
-  snabbdom@3.6.3:
-    resolution: {integrity: sha512-W2lHLLw2qR2Vv0DcMmcxXqcfdBaIcoN+y/86SmHv8fn4DazEQSH6KN3TjZcWvwujW56OHiiirsbHWZb4vx/0fg==}
+  snabbdom@3.6.4:
+    resolution: {integrity: sha512-VmxEfuw1/Y/eFj5VtMhYnukExpYiPkNzoo3+N3qwAOUDMl8wXgbli5ebR+j0knE3lZ/0eYskLxNcX64uy10N9w==}
     engines: {node: '>=12.17.0'}
 
   sortablejs@1.14.0:
@@ -6579,13 +6646,6 @@ snapshots:
     dependencies:
       '@ibm/telemetry-js': 1.11.0
 
-  '@codemirror/autocomplete@6.20.2':
-    dependencies:
-      '@codemirror/language': 6.12.3
-      '@codemirror/state': 6.6.0
-      '@codemirror/view': 6.43.0
-      '@lezer/common': 1.5.2
-
   '@codemirror/autocomplete@6.20.3':
     dependencies:
       '@codemirror/language': 6.12.3
@@ -6596,8 +6656,8 @@ snapshots:
   '@codemirror/commands@6.10.3':
     dependencies:
       '@codemirror/language': 6.12.3
-      '@codemirror/state': 6.6.0
-      '@codemirror/view': 6.43.0
+      '@codemirror/state': 6.7.0
+      '@codemirror/view': 6.43.2
       '@lezer/common': 1.5.2
 
   '@codemirror/commands@6.10.4':
@@ -6609,20 +6669,20 @@ snapshots:
 
   '@codemirror/lang-css@6.3.1':
     dependencies:
-      '@codemirror/autocomplete': 6.20.2
+      '@codemirror/autocomplete': 6.20.3
       '@codemirror/language': 6.12.3
-      '@codemirror/state': 6.6.0
+      '@codemirror/state': 6.7.0
       '@lezer/common': 1.5.2
       '@lezer/css': 1.3.3
 
   '@codemirror/lang-html@6.4.11':
     dependencies:
-      '@codemirror/autocomplete': 6.20.2
+      '@codemirror/autocomplete': 6.20.3
       '@codemirror/lang-css': 6.3.1
       '@codemirror/lang-javascript': 6.2.5
       '@codemirror/language': 6.12.3
-      '@codemirror/state': 6.6.0
-      '@codemirror/view': 6.43.0
+      '@codemirror/state': 6.7.0
+      '@codemirror/view': 6.43.2
       '@lezer/common': 1.5.2
       '@lezer/css': 1.3.3
       '@lezer/html': 1.3.13
@@ -6634,11 +6694,11 @@ snapshots:
 
   '@codemirror/lang-javascript@6.2.5':
     dependencies:
-      '@codemirror/autocomplete': 6.20.2
+      '@codemirror/autocomplete': 6.20.3
       '@codemirror/language': 6.12.3
-      '@codemirror/lint': 6.9.6
-      '@codemirror/state': 6.6.0
-      '@codemirror/view': 6.43.0
+      '@codemirror/lint': 6.9.7
+      '@codemirror/state': 6.7.0
+      '@codemirror/view': 6.43.2
       '@lezer/common': 1.5.2
       '@lezer/javascript': 1.5.4
 
@@ -6649,36 +6709,30 @@ snapshots:
 
   '@codemirror/lang-markdown@6.5.0':
     dependencies:
-      '@codemirror/autocomplete': 6.20.2
+      '@codemirror/autocomplete': 6.20.3
       '@codemirror/lang-html': 6.4.11
       '@codemirror/language': 6.12.3
-      '@codemirror/state': 6.6.0
-      '@codemirror/view': 6.43.0
+      '@codemirror/state': 6.7.0
+      '@codemirror/view': 6.43.2
       '@lezer/common': 1.5.2
       '@lezer/markdown': 1.6.4
 
   '@codemirror/lang-python@6.2.1':
     dependencies:
-      '@codemirror/autocomplete': 6.20.2
+      '@codemirror/autocomplete': 6.20.3
       '@codemirror/language': 6.12.3
-      '@codemirror/state': 6.6.0
+      '@codemirror/state': 6.7.0
       '@lezer/common': 1.5.2
       '@lezer/python': 1.1.19
 
   '@codemirror/language@6.12.3':
     dependencies:
-      '@codemirror/state': 6.6.0
-      '@codemirror/view': 6.43.0
+      '@codemirror/state': 6.7.0
+      '@codemirror/view': 6.43.2
       '@lezer/common': 1.5.2
       '@lezer/highlight': 1.2.3
       '@lezer/lr': 1.4.10
       style-mod: 4.1.3
-
-  '@codemirror/lint@6.9.6':
-    dependencies:
-      '@codemirror/state': 6.6.0
-      '@codemirror/view': 6.43.0
-      crelt: 1.0.6
 
   '@codemirror/lint@6.9.7':
     dependencies:
@@ -6688,8 +6742,8 @@ snapshots:
 
   '@codemirror/search@6.7.0':
     dependencies:
-      '@codemirror/state': 6.6.0
-      '@codemirror/view': 6.43.0
+      '@codemirror/state': 6.7.0
+      '@codemirror/view': 6.43.2
       crelt: 1.0.6
 
   '@codemirror/state@6.6.0':
@@ -6703,13 +6757,13 @@ snapshots:
   '@codemirror/theme-one-dark@6.1.3':
     dependencies:
       '@codemirror/language': 6.12.3
-      '@codemirror/state': 6.6.0
-      '@codemirror/view': 6.43.0
+      '@codemirror/state': 6.7.0
+      '@codemirror/view': 6.43.2
       '@lezer/highlight': 1.2.3
 
   '@codemirror/view@6.43.0':
     dependencies:
-      '@codemirror/state': 6.6.0
+      '@codemirror/state': 6.7.0
       crelt: 1.0.6
       style-mod: 4.1.3
       w3c-keyname: 2.2.8
@@ -7716,7 +7770,7 @@ snapshots:
     dependencies:
       '@types/http-cache-semantics': 4.2.0
       '@types/keyv': 3.1.4
-      '@types/node': 24.12.4
+      '@types/node': 25.9.1
       '@types/responselike': 1.0.3
 
   '@types/chai@5.2.3':
@@ -7738,7 +7792,7 @@ snapshots:
 
   '@types/fs-extra@9.0.13':
     dependencies:
-      '@types/node': 24.12.4
+      '@types/node': 25.9.1
 
   '@types/glob@7.2.0':
     dependencies:
@@ -7752,7 +7806,7 @@ snapshots:
 
   '@types/keyv@3.1.4':
     dependencies:
-      '@types/node': 24.12.4
+      '@types/node': 25.9.1
 
   '@types/minimatch@6.0.0':
     dependencies:
@@ -7781,13 +7835,13 @@ snapshots:
 
   '@types/plist@3.0.5':
     dependencies:
-      '@types/node': 24.12.4
+      '@types/node': 25.9.1
       xmlbuilder: 15.1.1
     optional: true
 
   '@types/responselike@1.0.3':
     dependencies:
-      '@types/node': 24.12.4
+      '@types/node': 25.9.1
 
   '@types/retry@0.12.2': {}
 
@@ -7803,11 +7857,11 @@ snapshots:
 
   '@types/ws@8.18.1':
     dependencies:
-      '@types/node': 26.0.0
+      '@types/node': 25.9.1
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 24.12.4
+      '@types/node': 25.9.1
     optional: true
 
   '@typescript-eslint/eslint-plugin@8.60.1(@typescript-eslint/parser@8.60.1(eslint@10.4.1(jiti@2.7.0))(typescript@6.0.3))(eslint@10.4.1(jiti@2.7.0))(typescript@6.0.3)':
@@ -7941,7 +7995,7 @@ snapshots:
       '@typescript-eslint/visitor-keys': 8.60.1
       debug: 4.4.3
       minimatch: 10.2.5
-      semver: 7.8.1
+      semver: 7.8.5
       tinyglobby: 0.2.17
       ts-api-utils: 2.5.0(typescript@6.0.3)
       typescript: 6.0.3
@@ -8444,25 +8498,25 @@ snapshots:
       vue: 3.5.35(typescript@6.0.3)
       xe-utils: 4.0.8
 
-  '@wangeditor-next/basic-modules@3.0.1(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3))(dom7@4.0.6)(lodash.throttle@4.1.1)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3)':
+  '@wangeditor-next/basic-modules@3.0.1(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4))(dom7@4.0.6)(lodash.throttle@4.1.1)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4)':
     dependencies:
-      '@wangeditor-next/core': 1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3)
+      '@wangeditor-next/core': 1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4)
       dom7: 4.0.6
       is-url: 1.2.4
       lodash.throttle: 4.1.1
       nanoid: 5.1.11
       slate: 0.124.1
-      snabbdom: 3.6.3
+      snabbdom: 3.6.4
 
-  '@wangeditor-next/code-highlight@3.0.1(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3))(dom7@4.0.6)(slate@0.124.1)(snabbdom@3.6.3)':
+  '@wangeditor-next/code-highlight@3.0.1(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4))(dom7@4.0.6)(slate@0.124.1)(snabbdom@3.6.4)':
     dependencies:
-      '@wangeditor-next/core': 1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3)
+      '@wangeditor-next/core': 1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4)
       dom7: 4.0.6
       prismjs: 1.30.0
       slate: 0.124.1
-      snabbdom: 3.6.3
+      snabbdom: 3.6.4
 
-  '@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3)':
+  '@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4)':
     dependencies:
       '@types/event-emitter': 0.3.5
       '@uppy/core': 5.2.0
@@ -8482,7 +8536,7 @@ snapshots:
       scroll-into-view-if-needed: 3.1.0
       slate: 0.124.1
       slate-history: 0.115.0(slate@0.124.1)
-      snabbdom: 3.6.3
+      snabbdom: 3.6.4
 
   '@wangeditor-next/editor-for-vue@5.1.14(@wangeditor-next/editor@5.7.7)(vue@3.5.35(typescript@6.0.3))':
     dependencies:
@@ -8493,13 +8547,13 @@ snapshots:
     dependencies:
       '@uppy/core': 5.2.0
       '@uppy/xhr-upload': 5.2.0(@uppy/core@5.2.0)
-      '@wangeditor-next/basic-modules': 3.0.1(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3))(dom7@4.0.6)(lodash.throttle@4.1.1)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3)
-      '@wangeditor-next/code-highlight': 3.0.1(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3))(dom7@4.0.6)(slate@0.124.1)(snabbdom@3.6.3)
-      '@wangeditor-next/core': 1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3)
-      '@wangeditor-next/list-module': 3.0.1(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3))(dom7@4.0.6)(slate@0.124.1)(snabbdom@3.6.3)
-      '@wangeditor-next/table-module': 3.0.1(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3))(dom7@4.0.6)(lodash.debounce@4.0.8)(lodash.throttle@4.1.1)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3)
-      '@wangeditor-next/upload-image-module': 3.0.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(@wangeditor-next/basic-modules@3.0.1(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3))(dom7@4.0.6)(lodash.throttle@4.1.1)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3))(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3))(dom7@4.0.6)(lodash.foreach@4.5.0)(slate@0.124.1)(snabbdom@3.6.3)
-      '@wangeditor-next/video-module': 3.0.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3))(dom7@4.0.6)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3)
+      '@wangeditor-next/basic-modules': 3.0.1(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4))(dom7@4.0.6)(lodash.throttle@4.1.1)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4)
+      '@wangeditor-next/code-highlight': 3.0.1(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4))(dom7@4.0.6)(slate@0.124.1)(snabbdom@3.6.4)
+      '@wangeditor-next/core': 1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4)
+      '@wangeditor-next/list-module': 3.0.1(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4))(dom7@4.0.6)(slate@0.124.1)(snabbdom@3.6.4)
+      '@wangeditor-next/table-module': 3.0.1(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4))(dom7@4.0.6)(lodash.debounce@4.0.8)(lodash.throttle@4.1.1)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4)
+      '@wangeditor-next/upload-image-module': 3.0.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(@wangeditor-next/basic-modules@3.0.1(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4))(dom7@4.0.6)(lodash.throttle@4.1.1)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4))(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4))(dom7@4.0.6)(lodash.foreach@4.5.0)(slate@0.124.1)(snabbdom@3.6.4)
+      '@wangeditor-next/video-module': 3.0.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4))(dom7@4.0.6)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4)
       dom7: 4.0.6
       is-hotkey: 0.2.0
       lodash.camelcase: 4.3.0
@@ -8510,45 +8564,45 @@ snapshots:
       lodash.toarray: 4.4.0
       nanoid: 5.1.11
       slate: 0.124.1
-      snabbdom: 3.6.3
+      snabbdom: 3.6.4
 
-  '@wangeditor-next/list-module@3.0.1(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3))(dom7@4.0.6)(slate@0.124.1)(snabbdom@3.6.3)':
+  '@wangeditor-next/list-module@3.0.1(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4))(dom7@4.0.6)(slate@0.124.1)(snabbdom@3.6.4)':
     dependencies:
-      '@wangeditor-next/core': 1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3)
+      '@wangeditor-next/core': 1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4)
       dom7: 4.0.6
       slate: 0.124.1
-      snabbdom: 3.6.3
+      snabbdom: 3.6.4
 
-  '@wangeditor-next/table-module@3.0.1(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3))(dom7@4.0.6)(lodash.debounce@4.0.8)(lodash.throttle@4.1.1)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3)':
+  '@wangeditor-next/table-module@3.0.1(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4))(dom7@4.0.6)(lodash.debounce@4.0.8)(lodash.throttle@4.1.1)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4)':
     dependencies:
-      '@wangeditor-next/core': 1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3)
+      '@wangeditor-next/core': 1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4)
       dom7: 4.0.6
       lodash.debounce: 4.0.8
       lodash.throttle: 4.1.1
       nanoid: 5.1.11
       slate: 0.124.1
-      snabbdom: 3.6.3
+      snabbdom: 3.6.4
 
-  '@wangeditor-next/upload-image-module@3.0.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(@wangeditor-next/basic-modules@3.0.1(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3))(dom7@4.0.6)(lodash.throttle@4.1.1)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3))(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3))(dom7@4.0.6)(lodash.foreach@4.5.0)(slate@0.124.1)(snabbdom@3.6.3)':
+  '@wangeditor-next/upload-image-module@3.0.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(@wangeditor-next/basic-modules@3.0.1(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4))(dom7@4.0.6)(lodash.throttle@4.1.1)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4))(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4))(dom7@4.0.6)(lodash.foreach@4.5.0)(slate@0.124.1)(snabbdom@3.6.4)':
     dependencies:
       '@uppy/core': 5.2.0
       '@uppy/xhr-upload': 5.2.0(@uppy/core@5.2.0)
-      '@wangeditor-next/basic-modules': 3.0.1(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3))(dom7@4.0.6)(lodash.throttle@4.1.1)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3)
-      '@wangeditor-next/core': 1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3)
+      '@wangeditor-next/basic-modules': 3.0.1(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4))(dom7@4.0.6)(lodash.throttle@4.1.1)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4)
+      '@wangeditor-next/core': 1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4)
       dom7: 4.0.6
       lodash.foreach: 4.5.0
       slate: 0.124.1
-      snabbdom: 3.6.3
+      snabbdom: 3.6.4
 
-  '@wangeditor-next/video-module@3.0.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3))(dom7@4.0.6)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3)':
+  '@wangeditor-next/video-module@3.0.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(@wangeditor-next/core@1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4))(dom7@4.0.6)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4)':
     dependencies:
       '@uppy/core': 5.2.0
       '@uppy/xhr-upload': 5.2.0(@uppy/core@5.2.0)
-      '@wangeditor-next/core': 1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.3)
+      '@wangeditor-next/core': 1.9.1(@uppy/core@5.2.0)(@uppy/xhr-upload@5.2.0(@uppy/core@5.2.0))(dom7@4.0.6)(is-hotkey@0.2.0)(lodash.camelcase@4.3.0)(lodash.clonedeep@4.5.0)(lodash.debounce@4.0.8)(lodash.foreach@4.5.0)(lodash.throttle@4.1.1)(lodash.toarray@4.4.0)(nanoid@5.1.11)(slate@0.124.1)(snabbdom@3.6.4)
       dom7: 4.0.6
       nanoid: 5.1.11
       slate: 0.124.1
-      snabbdom: 3.6.3
+      snabbdom: 3.6.4
 
   '@xmldom/xmldom@0.8.13': {}
 
@@ -8761,7 +8815,7 @@ snapshots:
 
   buffer-image-size@0.6.4:
     dependencies:
-      '@types/node': 26.0.0
+      '@types/node': 25.9.1
 
   buffer@5.7.1:
     dependencies:
@@ -8805,7 +8859,7 @@ snapshots:
       cac: 7.0.0
       jsonc-parser: 3.3.1
       package-manager-detector: 1.6.0
-      semver: 7.8.1
+      semver: 7.8.5
       tinyexec: 1.2.4
       tinyglobby: 0.2.17
       unconfig: 7.5.0
@@ -8901,13 +8955,13 @@ snapshots:
 
   codemirror@6.0.2:
     dependencies:
-      '@codemirror/autocomplete': 6.20.2
-      '@codemirror/commands': 6.10.3
+      '@codemirror/autocomplete': 6.20.3
+      '@codemirror/commands': 6.10.4
       '@codemirror/language': 6.12.3
-      '@codemirror/lint': 6.9.6
+      '@codemirror/lint': 6.9.7
       '@codemirror/search': 6.7.0
-      '@codemirror/state': 6.6.0
-      '@codemirror/view': 6.43.0
+      '@codemirror/state': 6.7.0
+      '@codemirror/view': 6.43.2
 
   color-convert@2.0.1:
     dependencies:
@@ -9427,7 +9481,7 @@ snapshots:
   eslint-compat-utils@0.5.1(eslint@10.4.1(jiti@2.7.0)):
     dependencies:
       eslint: 10.4.1(jiti@2.7.0)
-      semver: 7.8.1
+      semver: 7.8.5
 
   eslint-json-compat-utils@0.2.3(eslint@10.4.1(jiti@2.7.0))(jsonc-eslint-parser@3.1.0):
     dependencies:
@@ -9903,7 +9957,7 @@ snapshots:
       es6-error: 4.1.1
       matcher: 3.0.0
       roarr: 2.15.3
-      semver: 7.8.1
+      semver: 7.8.5
       serialize-error: 7.0.1
     optional: true
 
@@ -10183,7 +10237,7 @@ snapshots:
     dependencies:
       acorn: 8.16.0
       eslint-visitor-keys: 5.0.1
-      semver: 7.8.1
+      semver: 7.8.5
 
   jsonc-parser@3.3.1: {}
 
@@ -10440,7 +10494,7 @@ snapshots:
 
   node-abi@4.31.0:
     dependencies:
-      semver: 7.8.1
+      semver: 7.8.5
 
   node-addon-api@1.7.2:
     optional: true
@@ -10450,7 +10504,7 @@ snapshots:
 
   node-api-version@0.2.1:
     dependencies:
-      semver: 7.8.1
+      semver: 7.8.5
 
   node-gyp@12.3.0:
     dependencies:
@@ -10459,7 +10513,7 @@ snapshots:
       graceful-fs: 4.2.11
       nopt: 9.0.0
       proc-log: 6.0.0
-      semver: 7.8.1
+      semver: 7.8.5
       tar: 7.5.16
       tinyglobby: 0.2.17
       undici: 6.26.0
@@ -11097,7 +11151,7 @@ snapshots:
   smart-buffer@4.2.0:
     optional: true
 
-  snabbdom@3.6.3: {}
+  snabbdom@3.6.4: {}
 
   sortablejs@1.14.0: {}
 

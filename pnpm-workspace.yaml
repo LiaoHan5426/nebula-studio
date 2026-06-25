@@ -4,6 +4,9 @@ packages:
   - internal/*
   - packages/*
   - packages/core/*
+  - packages/ui/*
+  - packages/editors/*
+  - packages/features/*
   - tools/lint/*
   - tools/*
 publicHoistPattern:
