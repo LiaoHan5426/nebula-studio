@@ -151,8 +151,4 @@ export {
   governanceApi,
 } from '@/shared/api/consoleApi';
 
-export {
-  gatewayRequest,
-  buildGatewayUrl,
-  triggerDemoChange,
-} from '@/shared/api/executorApi';
+export { gatewayRequest } from '@/shared/api/executorApi';

@@ -1,3 +1,6 @@
+/**
+ * @experimental SQL Agent 功能尚未上线，仅供实验用途。
+ */
 import { getAgentConfig } from '../../config';
 import { LLMClient } from '../../llm';
 import { ApiClient } from '../../api-client';

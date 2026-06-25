@@ -7,6 +7,7 @@ import { ApplicationLogger } from './modules/ApplicationLogger';
 import { ApplicationTerminatorOnLastWindowCloseModule } from './modules/ApplicationTerminatorOnLastWindowCloseModule';
 import { AutoUpdaterModule } from './modules/AutoUpdaterModule';
 import { ConfigManager } from './modules/ConfigManager';
+import { IpcAuthModule } from './modules/IpcAuthModule';
 import { IpcNotificationModule } from './modules/IpcNotificationModule';
 import { RuntimePluginManager } from './modules/RuntimePluginManager';
 import { SingleInstanceAppModule } from './modules/SingleInstanceAppModule';
@@ -42,6 +43,7 @@ app.whenReady().then(async () => {
   const launcher = new MainAppLauncher()
     .use(new SingleInstanceAppModule())
     .use(new AppearanceSettingsModule())
+    .use(new IpcAuthModule())
     .use(new IpcNotificationModule())
     .use(new AutoUpdaterModule())
     .use(new WindowManagerModule())

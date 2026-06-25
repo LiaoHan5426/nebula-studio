@@ -1,10 +1,5 @@
 import { executorFetch } from '@/shared/api/client';
 
-export function buildGatewayUrl(tenantId: string, subPath: string): string {
-  const normalized = subPath.startsWith('/') ? subPath : `/${subPath}`;
-  return `/api/integration/gateway/${tenantId}${normalized}`;
-}
-
 export async function gatewayRequest(
   tenantId: string,
   subPath: string,
@@ -47,14 +42,4 @@ export async function gatewayRequest(
     status: response.status,
     body: await response.text(),
   };
-}
-
-export async function triggerDemoChange(
-  subscriptionId: string,
-): Promise<{ status: number; body: string }> {
-  const response = await executorFetch('/demo/trigger-change', {
-    method: 'POST',
-    body: JSON.stringify({ subscriptionId }),
-  });
-  return { status: response.status, body: await response.text() };
 }
