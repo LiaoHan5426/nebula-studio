@@ -146,7 +146,7 @@ catalogs:
     unconfig: ^7.5.0
   vite:
     '@vitejs/plugin-vue': ^6.0.7
-    '@vitejs/plugin-vue-jsx': ^5.1.5
+    '@vitejs/plugin-vue-jsx': ^5.1.6
     happy-dom: ^20.10.6
     #vite: npm:@voidzero-dev/vite-plus-core@latest
     vite: 8.0.10
