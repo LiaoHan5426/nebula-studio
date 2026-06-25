@@ -2,7 +2,7 @@ log:
   dir: ""
 windowState:
   mainWindowBounds:
-    width: 1101
-    height: 722
+    width: 1722
+    height: 928
 ui:
   theme: dark

@@ -3,7 +3,6 @@
   "include": ["index.html", "src/env.d.ts", "src/**/*", "src/**/*.vue"],
   "compilerOptions": {
     "baseUrl": ".",
-    "ignoreDeprecations": "6.0",
     "paths": {
       "@/*": ["./src/*"],
       "@renderer/*": ["./src/*"]

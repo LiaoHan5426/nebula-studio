@@ -8,7 +8,6 @@ import {
   getShellHostBridge,
   getShellIntegratedAppMeta,
   hasValidShellAuthSession,
-  isShellEmbedResetAckPayload,
   isShellIntegrableAppId,
   isShellIntegratableAppId,
   persistShellSurfacePreference,
