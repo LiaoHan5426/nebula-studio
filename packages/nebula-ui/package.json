@@ -22,6 +22,10 @@
     "./utils/highlightNebula": {
       "types": "./src/utils/highlightNebula.ts",
       "default": "./src/utils/highlightNebula.ts"
+    },
+    "./env": {
+      "types": "./env.d.ts",
+      "default": "./env.d.ts"
     }
   },
   "dependencies": {

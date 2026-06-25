@@ -5,7 +5,7 @@
     "src/env.d.ts",
     "src/**/*",
     "src/**/*.vue",
-    "../../packages/nebula-ui/env.d.ts"
+    "vite.integrationProxy.ts"
   ],
   "compilerOptions": {
     "baseUrl": ".",

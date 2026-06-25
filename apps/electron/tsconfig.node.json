@@ -1,6 +1,11 @@
 {
   "extends": "@nebula-studio-internal/tsconfig/node.json",
-  "include": ["electron.vite.config.*", "app.config.ts", "src/main/**/*"],
+  "include": [
+    "electron.vite.config.*",
+    "app.config.ts",
+    "src/main/**/*",
+    "../sub-web/integration/**/*"
+  ],
   "compilerOptions": {
     "composite": true,
     "allowImportingTsExtensions": true,

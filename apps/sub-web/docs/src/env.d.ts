@@ -1,4 +1,5 @@
 /// <reference types="vite/client" />
+/// <reference types="@nebula-studio/nebula-ui/env" />
 
 import type { ElectronAPI } from '@electron-toolkit/preload';
 import type {
