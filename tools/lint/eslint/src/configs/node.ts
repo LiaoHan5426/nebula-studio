@@ -27,7 +27,6 @@ export async function node(): Promise<Linter.Config[]> {
             ],
           },
         ],
-        // 'n/no-unpublished-import': 'off',
         'n/no-unsupported-features/es-syntax': [
           'error',
           {
@@ -36,7 +35,6 @@ export async function node(): Promise<Linter.Config[]> {
           },
         ],
         'n/prefer-global/buffer': ['error', 'never'],
-        // 'n/no-missing-import': 'off',
         'n/prefer-global/process': ['error', 'never'],
         'n/process-exit-as-throw': 'error',
       },
