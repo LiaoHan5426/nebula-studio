@@ -18,4 +18,4 @@ const useTenantCore = createUseTenant({
   isApiSuccess,
 });
 
-export const useTenant = useTenantCore;
+export const useTenant = () => useTenantCore;

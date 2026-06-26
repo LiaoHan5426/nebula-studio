@@ -161,7 +161,7 @@ function nextPage() {
           min-width="120"
         />
         <NebulaTableColumn field="message" title="内容" min-width="220" />
-        <NebulaTableColumn field="createdAt" title="时间" min-width="160" />
+        <NebulaTableColumn field="createTime" title="时间" min-width="160" />
       </NebulaTable>
     </div>
 
