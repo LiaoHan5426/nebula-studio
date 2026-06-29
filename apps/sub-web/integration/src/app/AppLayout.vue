@@ -72,6 +72,7 @@ const platformAdminNavItems: NavItem[] = [
       { to: '/datasources', label: '数据源' },
       { to: '/flows', label: '流程定义' },
       { to: '/dag', label: 'DAG 编排' },
+      { to: '/tasks', label: '任务调度' },
     ],
   },
   {
@@ -128,6 +129,7 @@ const integratorAdminNavItems: NavItem[] = [
       { to: '/datasources', label: '数据源' },
       { to: '/flows', label: '流程定义' },
       { to: '/dag', label: 'DAG 编排' },
+      { to: '/tasks', label: '任务调度' },
     ],
   },
   {

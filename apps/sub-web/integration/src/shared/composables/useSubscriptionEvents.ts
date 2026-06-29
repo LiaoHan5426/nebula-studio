@@ -10,14 +10,14 @@ import type {
   SseConnectionState,
 } from '@nebula-studio/sse-events';
 
-import { INTEGRATION_BASE } from '@/shared/api/client';
+import { CAMEL_SUBSCRIBE_BASE } from '@/shared/api/client';
 import { getAuthToken } from '@/shared/auth/session';
 
 export type { SseEventRecord, SseConnectionState };
 
 export function useSubscriptionEvents() {
   return useCoreSubscriptionEvents({
-    baseUrl: INTEGRATION_BASE,
+    baseUrl: CAMEL_SUBSCRIBE_BASE,
     getAuthToken,
   });
 }

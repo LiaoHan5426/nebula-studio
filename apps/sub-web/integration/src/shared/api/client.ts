@@ -13,6 +13,10 @@ export const FLOWS_BASE = '/api/flows';
 export const AUTH_BASE = '/api/auth';
 export const MONITOR_BASE = '/api/monitor';
 export const GOVERNANCE_BASE = '/api/security/governance';
+export const TASK_BASE = '/api/task';
+export const SUBSCRIBE_BASE = '/api/subscribe';
+export const CAMEL_SUBSCRIBE_BASE = '/api/subscribe/camel';
+export const CAMEL_TOPOLOGY_BASE = '/api/camel/topology';
 
 /** Executor process (demo-camel-executor :8081) — proxied in dev */
 export const EXECUTOR_INTEGRATION_BASE = '/api/integration';
@@ -61,4 +65,32 @@ export function executorFetch(
   options: ApiRequestOptions = {},
 ): Promise<Response> {
   return fetchUrl(`${EXECUTOR_INTEGRATION_BASE}${endpoint}`, options);
+}
+
+export function taskRequest<T>(
+  endpoint: string,
+  options: ApiRequestOptions = {},
+): Promise<ApiResponse<T>> {
+  return apiRequest<T>(TASK_BASE, endpoint, options);
+}
+
+export function subscribeRequest<T>(
+  endpoint: string,
+  options: ApiRequestOptions = {},
+): Promise<ApiResponse<T>> {
+  return apiRequest<T>(SUBSCRIBE_BASE, endpoint, options);
+}
+
+export function camelSubscribeRequest<T>(
+  endpoint: string,
+  options: ApiRequestOptions = {},
+): Promise<ApiResponse<T>> {
+  return apiRequest<T>(CAMEL_SUBSCRIBE_BASE, endpoint, options);
+}
+
+export function topologyRequest<T>(
+  endpoint: string,
+  options: ApiRequestOptions = {},
+): Promise<ApiResponse<T>> {
+  return apiRequest<T>(CAMEL_TOPOLOGY_BASE, endpoint, options);
 }

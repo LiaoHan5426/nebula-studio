@@ -54,3 +54,25 @@ export interface SubscriptionEvent {
   timestamp: string;
   payload: unknown;
 }
+
+export interface CamelSubscriptionCreateRequest {
+  dataSourceId: string;
+  tableName: string;
+  subscribeType: string;
+  pollingConfig?: Record<string, unknown>;
+  cdcConfig?: Record<string, unknown>;
+  columns?: string[];
+  eventTypes?: string[];
+}
+
+export interface SubscriptionRequestRecord {
+  id: string;
+  subscriptionId: string;
+  requestType: string;
+  status: string;
+  reason?: string;
+  requestedBy?: string;
+  approvedBy?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}

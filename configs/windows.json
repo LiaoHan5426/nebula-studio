@@ -4,6 +4,18 @@
     "topInsetPx": 56
   },
   "electronEmbeddedPresentation": "iframe",
+  "apiBases": {
+    "console": "/api/console",
+    "executor": "/api/executor",
+    "platform": "/api/platform",
+    "system": "/api/system",
+    "auth": "/api/auth"
+  },
+  "apiTargets": {
+    "platform": "http://localhost:8090",
+    "console": "http://localhost:8080",
+    "executor": "http://localhost:8081"
+  },
   "windows": {
     "main": {
       "preload": "main",

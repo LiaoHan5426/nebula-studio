@@ -1,5 +1,6 @@
 import type { ProxyOptions } from 'vite';
 
+const PLATFORM_TARGET = 'http://localhost:8090';
 const CONSOLE_TARGET = 'http://localhost:8080';
 const EXECUTOR_TARGET = 'http://localhost:8081';
 
@@ -57,6 +58,34 @@ export function integrationApiProxy(): Record<string, ProxyOptions> {
     '/api/integration/gateway': proxyOptions(EXECUTOR_TARGET),
     '/api/integration/demo': proxyOptions(EXECUTOR_TARGET),
     '/api/executor': proxyOptions(EXECUTOR_TARGET),
+    // system 路径 → :8090 (platform-console)
+    '/api/system': proxyOptions(PLATFORM_TARGET),
+    // 其余 /api → :8080 (camel-console)
     '/api': proxyOptions(CONSOLE_TARGET),
+  };
+}
+
+/**
+ * Simple proxy options (no SSE support).
+ *
+ * Used by frontend / settings / login sub-web apps.
+ */
+function simpleProxyOptions(target: string): ProxyOptions {
+  return {
+    target,
+    changeOrigin: true,
+  };
+}
+
+/**
+ * Dev proxy for non-integration sub-web apps (frontend, settings, login).
+ *
+ * - `/api/system/**` → :8090 (platform-console)
+ * - `/api/**`        → :8080 (camel-console)
+ */
+export function nebulaApiProxy(): Record<string, ProxyOptions> {
+  return {
+    '/api/system': simpleProxyOptions(PLATFORM_TARGET),
+    '/api': simpleProxyOptions(CONSOLE_TARGET),
   };
 }

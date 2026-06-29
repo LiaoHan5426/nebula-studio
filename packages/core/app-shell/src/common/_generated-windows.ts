@@ -1,6 +1,6 @@
 // AUTO-GENERATED — do not edit manually.
 // Source: configs/windows.json
-// Generated at: 2026-06-29T07:14:34.189Z
+// Generated at: 2026-06-29T10:51:28.848Z
 
 export interface GeneratedWindowEntry {
   preload: string;
@@ -86,5 +86,19 @@ export const GENERATED_DISPLAY_ORDER: readonly string[] = [
   'docs',
   'integration',
 ] as const;
+
+export const GENERATED_API_BASES: Record<string, string> = {
+  console: '/api/console',
+  executor: '/api/executor',
+  platform: '/api/platform',
+  system: '/api/system',
+  auth: '/api/auth',
+} as const;
+
+export const GENERATED_API_TARGETS: Record<string, string> = {
+  platform: 'http://localhost:8090',
+  console: 'http://localhost:8080',
+  executor: 'http://localhost:8081',
+} as const;
 
 export type GeneratedWindowId = 'main' | 'docs' | 'settings' | 'integration';

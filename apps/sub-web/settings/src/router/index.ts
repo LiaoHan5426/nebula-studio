@@ -54,6 +54,12 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/features/appearance/AppearancePage.vue'),
         meta: { title: '外观设置' },
       },
+      {
+        path: 'config',
+        name: 'config',
+        component: () => import('@/features/config/ConfigPage.vue'),
+        meta: { title: '配置管理' },
+      },
     ],
   },
   {

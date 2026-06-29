@@ -158,6 +158,10 @@ export {
 
 export { gatewayRequest } from '@/shared/api/executorApi';
 
+export { taskApi } from '@/shared/api/taskApi';
+export { camelSubscribeApi } from '@/shared/api/subscribeApi';
+export { camelTopologyApi } from '@/shared/api/topologyApi';
+
 // ==================== Resource API ====================
 
 export const resourceApi = {

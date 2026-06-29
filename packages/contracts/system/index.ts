@@ -82,6 +82,20 @@ export interface ShellAppRecord {
   status?: string;
 }
 
+// ==================== 配置 ====================
+
+export interface ConfigItem {
+  id: string;
+  key: string;
+  value: string;
+  scope: string;
+  tenantId?: string;
+  group?: string;
+  type?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 // ==================== 日志 ====================
 
 export interface LogRecord {

@@ -20,6 +20,7 @@ const navItems = [
   { to: '/apps', label: '应用管理' },
   { to: '/logs', label: '日志管理' },
   { to: '/appearance', label: '外观设置' },
+  { to: '/config', label: '配置管理' },
 ] as const;
 
 const subNavItems = computed<SubNavItem[]>(() =>

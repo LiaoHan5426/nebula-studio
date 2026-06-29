@@ -189,6 +189,12 @@ const routes: RouteRecordRaw[] = [
     meta: { title: '库表订阅' },
   },
   {
+    path: '/tasks',
+    name: 'tasks',
+    component: () => import('@/features/tasks/TasksPage.vue'),
+    meta: { title: '任务调度' },
+  },
+  {
     path: '/flows',
     name: 'flows',
     component: () => import('@/features/flows/FlowsPage.vue'),

@@ -2,7 +2,8 @@
 import { onMounted, ref } from 'vue';
 import { NebulaButton, NebulaPane, NebulaTag } from '@nebula-studio/nebula-ui';
 
-import { dataSourceApi, subscriptionApi } from '@/shared/api/integration';
+import { dataSourceApi } from '@/shared/api/integration';
+import { camelSubscribeApi } from '@/shared/api/subscribeApi';
 import { useTenant } from '@/shared/composables/useTenant';
 import type {
   DataSourceConfig,
@@ -76,10 +77,10 @@ onMounted(async () => {
 async function loadSubscriptions() {
   loading.value = true;
   try {
-    const response = await subscriptionApi.list({ pageSize: 50 });
+    const response = await camelSubscribeApi.list();
     if (isApiSuccess(response)) {
-      subscriptions.value = response.data.items;
-      for (const sub of response.data.items) {
+      subscriptions.value = response.data;
+      for (const sub of response.data) {
         pollingIntervalDrafts.value[sub.subscriptionId] =
           pollingIntervalSec(sub);
       }
@@ -125,7 +126,14 @@ async function handleCreate() {
       intervalMs: Math.max(1, createPollingIntervalSec.value) * 1000,
     };
   }
-  const response = await subscriptionApi.create(currentTenantId.value, payload);
+  const response = await camelSubscribeApi.create({
+    dataSourceId: payload.dataSourceId,
+    tableName: payload.tableName,
+    subscribeType: payload.subscribeType,
+    pollingConfig: payload.pollingConfig as Record<string, unknown>,
+    columns: payload.columns,
+    eventTypes: payload.eventTypes,
+  });
   if (isApiSuccess(response)) {
     showCreate.value = false;
     await loadSubscriptions();
@@ -133,18 +141,18 @@ async function handleCreate() {
 }
 
 async function handleActivate(id: string) {
-  await subscriptionApi.activate(id);
+  await camelSubscribeApi.resume(id);
   await loadSubscriptions();
 }
 
 async function handleDeactivate(id: string) {
-  await subscriptionApi.deactivate(id);
+  await camelSubscribeApi.pause(id);
   await loadSubscriptions();
 }
 
 async function handleDelete(id: string) {
   if (selectedSubId.value === id) handleDisconnect();
-  await subscriptionApi.delete(id);
+  await camelSubscribeApi.delete(id);
   await loadSubscriptions();
 }
 
@@ -365,8 +373,8 @@ function statusVariant(status: string) {
 
 <style scoped>
 .page {
-  padding: 24px;
   max-width: 1200px;
+  padding: 24px;
   margin: 0 auto;
 }
 
@@ -378,8 +386,8 @@ function statusVariant(status: string) {
 
 .page__empty {
   padding: 24px;
-  text-align: center;
   color: hsl(var(--muted-foreground));
+  text-align: center;
 }
 
 .page__empty--error {
@@ -393,9 +401,9 @@ function statusVariant(status: string) {
 
 .page__card {
   padding: 16px;
+  background: hsl(var(--background));
   border: 1px solid hsl(var(--border));
   border-radius: 8px;
-  background: hsl(var(--background));
 }
 
 .page__card-head {
@@ -423,8 +431,8 @@ function statusVariant(status: string) {
 .page__interval {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-end;
   gap: 8px;
+  align-items: flex-end;
   margin-bottom: 12px;
 }
 
@@ -438,10 +446,10 @@ function statusVariant(status: string) {
 .page__interval-input {
   width: 88px;
   padding: 6px 8px;
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
   border: 1px solid hsl(var(--border));
   border-radius: 6px;
-  background: hsl(var(--background));
-  color: hsl(var(--foreground));
 }
 
 .page__interval-notice {
@@ -464,10 +472,10 @@ function statusVariant(status: string) {
 .page__event {
   padding: 8px;
   margin-bottom: 8px;
-  font-size: 12px;
   overflow: auto;
-  border-radius: 6px;
+  font-size: 12px;
   background: hsl(var(--muted) / 40%);
+  border-radius: 6px;
 }
 
 .modal-overlay {
@@ -494,10 +502,10 @@ function statusVariant(status: string) {
 .field input,
 .field__select {
   padding: 8px 10px;
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
   border: 1px solid hsl(var(--border));
   border-radius: 6px;
-  background: hsl(var(--background));
-  color: hsl(var(--foreground));
 }
 
 .field__hint {

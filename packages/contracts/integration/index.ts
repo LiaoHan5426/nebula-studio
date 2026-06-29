@@ -11,6 +11,8 @@ export * from './resource.js';
 export * from './governance.js';
 export * from './flow.js';
 export * from './tenant.js';
+export * from './task.js';
+export * from './topology.js';
 
 // api-client 传输类型 re-export
 export type { ApiResponse } from '@nebula-studio/api-client';

@@ -10,6 +10,7 @@
   },
   "scripts": {
     "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false",
+    "test": "vp test",
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview"

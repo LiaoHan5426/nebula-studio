@@ -198,6 +198,22 @@ function generateTypeScript(config) {
     lines.push('');
   }
 
+  // API bases
+  if (config.apiBases) {
+    lines.push(
+      `export const GENERATED_API_BASES: Record<string, string> = ${JSON.stringify(config.apiBases, null, 2)} as const;`,
+    );
+    lines.push('');
+  }
+
+  // API targets (dev proxy)
+  if (config.apiTargets) {
+    lines.push(
+      `export const GENERATED_API_TARGETS: Record<string, string> = ${JSON.stringify(config.apiTargets, null, 2)} as const;`,
+    );
+    lines.push('');
+  }
+
   // Window IDs union type
   const windowIds = Object.keys(config.windows);
   lines.push(
