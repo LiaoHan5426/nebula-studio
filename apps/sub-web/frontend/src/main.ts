@@ -1,8 +1,11 @@
-import '@nebula-studio-internal/tailwind/electron';
-import { bootSubApp } from '@nebula-studio-electron/electron-bridge/vue';
 import './assets/main.css';
-import './runtime/registerIntegratedApps';
+import { bootFrontend } from './boot';
 
-import App from './App.vue';
+// Electron 由 preload/bridge 注入 window.electron；
+// Web standalone 无 window.electron，默认 standalone。
+if (!window.__NEBULA_RUNTIME_MODE__) {
+  window.__NEBULA_RUNTIME_MODE__ =
+    typeof (window as any).electron !== 'undefined' ? 'electron' : 'standalone';
+}
 
-bootSubApp({ App });
+void bootFrontend();

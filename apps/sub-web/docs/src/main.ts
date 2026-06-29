@@ -1,22 +1,10 @@
-import '@nebula-studio/nebula-ui/utils/highlightNebula';
-import '@nebula-studio-internal/tailwind/electron';
-import { bootSubApp } from '@nebula-studio-electron/electron-bridge/vue';
-import App from './App.vue';
-import { installWebStubs } from './runtime/installWebStubs';
+import { bootDocs } from './boot';
 
-installWebStubs({
-  scope: 'web',
-  theme: {
-    storageKey: 'nebula-docs-theme',
-    default: 'dark',
-  },
-  locale: {
-    storageKey: 'nebula-docs-locale',
-    default: 'zh-CN',
-  },
-  processVersions: {
-    node: __NEBULA_BUILD_NODE_VERSION__,
-  },
-});
+// Electron 由 preload/bridge 注入 window.electron；
+// Web standalone 无 window.electron，默认 standalone。
+if (!window.__NEBULA_RUNTIME_MODE__) {
+  window.__NEBULA_RUNTIME_MODE__ =
+    typeof (window as any).electron !== 'undefined' ? 'electron' : 'standalone';
+}
 
-bootSubApp({ App });
+void bootDocs();

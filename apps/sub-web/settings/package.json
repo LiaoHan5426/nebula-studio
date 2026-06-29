@@ -5,7 +5,8 @@
   "type": "module",
   "exports": {
     "./app": "./src/App.vue",
-    "./router": "./src/router/index.ts"
+    "./router": "./src/router/index.ts",
+    "./boot": "./src/boot.ts"
   },
   "scripts": {
     "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false",
@@ -24,6 +25,7 @@
     "@nebula-studio/use-confirm": "workspace:^",
     "vue": "catalog:vue",
     "vue-router": "catalog:vue",
+    "@nebula-studio/runtime": "workspace:^",
     "@nebula-studio-electron/electron-bridge": "workspace:^"
   },
   "devDependencies": {

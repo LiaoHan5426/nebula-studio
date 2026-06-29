@@ -2,6 +2,7 @@ import { defineNebulaConfig } from '@nebula-studio-internal/vite';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
+const CONSOLE_TARGET = 'http://localhost:8080';
 
 export default defineNebulaConfig({
   platform: 'web',
@@ -10,5 +11,15 @@ export default defineNebulaConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
+  },
+  merge: {
+    server: {
+      proxy: {
+        '/api': {
+          target: CONSOLE_TARGET,
+          changeOrigin: true,
+        },
+      },
+    },
   },
 });

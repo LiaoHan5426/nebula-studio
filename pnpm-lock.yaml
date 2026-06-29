@@ -382,6 +382,9 @@ importers:
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
         version: link:../../../packages/ui/nebula-ui
+      '@nebula-studio/runtime':
+        specifier: workspace:^
+        version: link:../../../packages/core/runtime
       marked:
         specifier: 'catalog:'
         version: 18.0.4
@@ -443,6 +446,9 @@ importers:
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
         version: link:../../../packages/ui/nebula-ui
+      '@nebula-studio/runtime':
+        specifier: workspace:^
+        version: link:../../../packages/core/runtime
       vue:
         specifier: catalog:vue
         version: 3.5.35(typescript@6.0.3)
@@ -577,6 +583,9 @@ importers:
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
         version: link:../../../packages/ui/nebula-ui
+      '@nebula-studio/runtime':
+        specifier: workspace:^
+        version: link:../../../packages/core/runtime
       vue:
         specifier: catalog:vue
         version: 3.5.35(typescript@6.0.3)
@@ -632,6 +641,9 @@ importers:
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
         version: link:../../../packages/ui/nebula-ui
+      '@nebula-studio/runtime':
+        specifier: workspace:^
+        version: link:../../../packages/core/runtime
       '@nebula-studio/use-confirm':
         specifier: workspace:^
         version: link:../../../packages/features/use-confirm

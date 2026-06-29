@@ -5,7 +5,8 @@
   "type": "module",
   "exports": {
     "./app": "./src/App.vue",
-    "./platform/integrated-apps": "./src/platform/integratedApps.ts"
+    "./platform/integrated-apps": "./src/platform/integratedApps.ts",
+    "./boot": "./src/boot.ts"
   },
   "scripts": {
     "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false",
@@ -21,6 +22,7 @@
     "@nebula-studio/nebula-layout": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
     "vue": "catalog:vue",
+    "@nebula-studio/runtime": "workspace:^",
     "@nebula-studio-electron/electron-bridge": "workspace:^",
     "@nebula-studio/auth-provider": "workspace:^"
   },

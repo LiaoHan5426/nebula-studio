@@ -3,6 +3,7 @@ import type { RouteRecordRaw } from 'vue-router';
 
 import SettingsLayout from '@/layout/SettingsLayout.vue';
 import { hasValidAuthToken } from '@nebula-studio/auth-provider/session';
+import { detectRuntimeMode } from '@nebula-studio/runtime';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -69,11 +70,11 @@ const router = createRouter({
 router.beforeEach((to, _from, next) => {
   document.title = `${to.meta.title ?? '设置'} - Nebula Studio`;
 
-  // TODO(Plan-05): 完整 auth guard，复用 AuthBootstrap standalone 策略
-  // 当前仅做基本检查：无 token 时阻止访问
-  if (!hasValidAuthToken()) {
-    // Settings 作为 Shell 子应用，认证状态由 Shell 层管理
-    // standalone 模式下的完整守卫将在 Plan-05 实现
+  // standalone 模式下无 token 拦截访问，embed/electron 不拦截（Shell 层管认证）
+  if (detectRuntimeMode() === 'standalone' && !hasValidAuthToken()) {
+    // 重定向到 login 子应用（standalone 端口约定：:5176）
+    window.location.href = '/login';
+    return;
   }
 
   next();

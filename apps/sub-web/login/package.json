@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./app": "./src/App.vue"
+    "./app": "./src/App.vue",
+    "./boot": "./src/boot.ts"
   },
   "scripts": {
     "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false",
@@ -17,6 +18,7 @@
     "@nebula-studio/app-shell": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
     "vue": "catalog:vue",
+    "@nebula-studio/runtime": "workspace:^",
     "@nebula-studio-electron/electron-bridge": "workspace:^",
     "@nebula-studio/auth-provider": "workspace:^"
   },
