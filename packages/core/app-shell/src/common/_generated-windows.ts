@@ -1,6 +1,6 @@
 // AUTO-GENERATED — do not edit manually.
 // Source: configs/windows.json
-// Generated at: 2026-06-25T03:50:14.618Z
+// Generated at: 2026-06-29T07:14:34.189Z
 
 export interface GeneratedWindowEntry {
   preload: string;

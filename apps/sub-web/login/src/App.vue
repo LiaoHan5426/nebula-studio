@@ -34,8 +34,21 @@ async function finishLogin(username: string, token?: string): Promise<void> {
     return;
   }
 
-  if (typeof window.api?.auth?.establishSession === 'function' && token) {
-    await window.api.auth.establishSession({ user: username, token });
+  const electronWindow = window as unknown as {
+    api?: {
+      auth?: {
+        establishSession?: (payload: {
+          user: string;
+          token: string;
+        }) => Promise<boolean>;
+      };
+    };
+  };
+  if (
+    typeof electronWindow.api?.auth?.establishSession === 'function' &&
+    token
+  ) {
+    await electronWindow.api.auth.establishSession({ user: username, token });
     return;
   }
 

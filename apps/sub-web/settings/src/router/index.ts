@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import type { RouteRecordRaw } from 'vue-router';
 
 import SettingsLayout from '@/layout/SettingsLayout.vue';
+import { hasValidAuthToken } from '@nebula-studio/auth-provider/session';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -67,6 +68,14 @@ const router = createRouter({
 
 router.beforeEach((to, _from, next) => {
   document.title = `${to.meta.title ?? '设置'} - Nebula Studio`;
+
+  // TODO(Plan-05): 完整 auth guard，复用 AuthBootstrap standalone 策略
+  // 当前仅做基本检查：无 token 时阻止访问
+  if (!hasValidAuthToken()) {
+    // Settings 作为 Shell 子应用，认证状态由 Shell 层管理
+    // standalone 模式下的完整守卫将在 Plan-05 实现
+  }
+
   next();
 });
 

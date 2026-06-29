@@ -1,5 +1,5 @@
 {
-  "name": "@nebula-studio/runtime",
+  "name": "@nebula-studio/auth",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -16,10 +16,8 @@
   },
   "dependencies": {
     "@nebula-studio/app-shell": "workspace:^",
-    "@nebula-studio/auth": "workspace:^",
-    "@nebula-studio-electron/electron-bridge": "workspace:^",
-    "vue": "catalog:vue",
-    "vue-router": "catalog:vue"
+    "@nebula-studio/auth-provider": "workspace:^",
+    "@nebula-studio/contracts": "workspace:^"
   },
   "devDependencies": {
     "@nebula-studio-internal/tsconfig": "workspace:^",

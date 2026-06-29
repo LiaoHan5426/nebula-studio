@@ -1,5 +1,7 @@
 export {
   shellPresentationConfig,
+  modalRenderersConfig,
+  displayOrderConfig,
   getEmbeddedShellWindowIds,
   isElectronIframeEmbedPresentation,
   WEB_SHELL_EMBED_QUERY,
@@ -8,7 +10,14 @@ export type {
   ShellWindowId,
   EmbeddedShellWindowId,
   ElectronEmbeddedPresentation,
+  GeneratedWindowEntry,
+  GeneratedModalRendererEntry,
 } from './common/shellPresentationConfig';
+export {
+  GENERATED_WINDOWS,
+  GENERATED_DISPLAY_ORDER,
+  GENERATED_MODAL_RENDERERS,
+} from './common/_generated-windows';
 export { installShellIframeElectronBridge } from './electron/installShellIframeElectronBridge';
 export {
   getPresentationHost,

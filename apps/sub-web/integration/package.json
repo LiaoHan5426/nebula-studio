@@ -31,6 +31,7 @@
     "@nebula-studio/nebula-dag-editor": "workspace:^",
     "@nebula-studio/nebula-low-render": "workspace:^",
     "@nebula-studio/nebula-integration-panel": "workspace:^",
+    "@nebula-studio-renderer/login": "workspace:^",
     "vue": "catalog:vue",
     "vue-router": "catalog:vue",
     "@nebula-studio/auth-provider": "workspace:^",

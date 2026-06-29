@@ -9,7 +9,8 @@ import { hasValidAuthToken, clearAuthSession } from '@/shared/auth/session';
 import { isPlatformAdmin } from '@/shared/auth/roles';
 import { isIntegrationShellIframeEmbed } from '@/shared/composables/useShellEmbed';
 
-const LoginPage = () => import('@/features/auth/LoginPage.vue');
+// 登录页：复用 login 子应用组件（@nebula-studio-renderer/login/app）
+const LoginApp = () => import('@nebula-studio-renderer/login/app');
 
 // 插件管理页面
 const PluginsPage = () => import('@/features/plugins/PluginsPage.vue');
@@ -45,7 +46,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/login',
     name: 'login',
-    component: LoginPage,
+    component: LoginApp,
     meta: { title: '登录', public: true },
   },
   // 插件管理 - 数据库适配插件

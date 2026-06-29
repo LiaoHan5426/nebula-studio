@@ -40,11 +40,27 @@ export interface BootMicroAppOptions {
   /**
    * 认证守卫：返回 true 表示已认证可继续挂载。
    * 不传则跳过认证检查。
+   *
+   * @deprecated 使用 `auth` 选项替代，由 AuthBootstrap 统一处理。
    */
   authGuard?: () => Promise<boolean>;
 
   /** 认证失败回调 */
   onAuthFailed?: () => void;
+
+  /**
+   * 统一认证配置。
+   * - `enabled: true` 时由 AuthBootstrap 按 mode 自动注册策略
+   * - 也可传自定义 bootstrap 函数
+   *
+   * 与 `authGuard` 互斥；同时存在时 `auth` 优先。
+   */
+  auth?: {
+    /** 为 true 时由 AuthBootstrap 按 mode 自动注册 */
+    enabled?: boolean;
+    /** 自定义认证 bootstrap（替代自动策略） */
+    bootstrap?: () => Promise<boolean>;
+  };
 
   /**
    * platform-embed 模式：router 无匹配时 replace 到默认路由。

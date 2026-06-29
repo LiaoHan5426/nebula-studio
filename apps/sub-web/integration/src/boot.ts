@@ -2,7 +2,6 @@ import '@nebula-studio-internal/tailwind/electron';
 import '@nebula-studio-renderer/integration/bootstrap-runtime';
 import { bootMicroApp, detectRuntimeMode } from '@nebula-studio/runtime';
 import type { RuntimeMode } from '@nebula-studio/runtime';
-import { bootstrapAuthFromShell } from '@nebula-studio-renderer/integration/bootstrap-auth';
 import { install as installVxeTable } from 'vxe-table';
 import { install as installVxePcUi } from 'vxe-pc-ui';
 import AppComponent from './App.vue';
@@ -36,13 +35,8 @@ export async function bootIntegration(opts?: {
                 : 'integration-standalone',
             processVersions: { node: __NEBULA_BUILD_NODE_VERSION__ },
           },
-    authGuard:
-      mode === 'platform-embed'
-        ? async () => {
-            await bootstrapAuthFromShell();
-            return true;
-          }
-        : undefined,
+    // 统一认证：由 AuthBootstrap 按 mode 自动选择策略
+    auth: { enabled: true },
     embedDefaultRoute: mode === 'platform-embed' ? '/subscriptions' : undefined,
     beforeMount(app) {
       installVxePcUi(app);

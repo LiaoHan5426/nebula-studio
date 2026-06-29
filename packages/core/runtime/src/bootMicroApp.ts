@@ -8,7 +8,7 @@ import type { BootMicroAppOptions } from './index';
  *
  * 内部启动顺序：
  * 1. bridge 注入（Web 模式 → installWebPresentation；Electron → 跳过）
- * 2. authGuard（可选）
+ * 2. auth（AuthBootstrap 或 authGuard）
  * 3. beforeMountAsync（可选，异步）
  * 4. 委托 bootSubApp（ConfigProvider + mount）
  */
@@ -26,13 +26,11 @@ export async function bootMicroApp(
     });
   }
 
-  // 2. Auth guard（可选）
-  if (options.authGuard) {
-    const ok = await options.authGuard();
-    if (!ok) {
-      options.onAuthFailed?.();
-      return;
-    }
+  // 2. Auth：优先使用 auth 配置（AuthBootstrap），回退到 authGuard
+  const authOk = await runAuth(options, mode);
+  if (!authOk) {
+    options.onAuthFailed?.();
+    return;
   }
 
   // 3. 异步 before-mount（如 bootstrapAuthFromShell）
@@ -58,4 +56,44 @@ export async function bootMicroApp(
       }
     },
   });
+}
+
+/**
+ * 执行认证流程。
+ *
+ * 优先级：
+ * 1. `auth.bootstrap` — 自定义 bootstrap 函数
+ * 2. `auth.enabled` — 委托 AuthBootstrap.register()
+ * 3. `authGuard` — 旧版认证守卫（兼容）
+ * 4. 无认证配置 → 直接返回 true
+ */
+async function runAuth(
+  options: BootMicroAppOptions,
+  mode: string,
+): Promise<boolean> {
+  // 1. 自定义 bootstrap
+  if (options.auth?.bootstrap) {
+    return options.auth.bootstrap();
+  }
+
+  // 2. AuthBootstrap 自动策略
+  if (options.auth?.enabled) {
+    try {
+      // 动态导入避免循环依赖：runtime → auth → runtime
+      const { AuthBootstrap } = await import('@nebula-studio/auth');
+      await AuthBootstrap.register(mode as import('./detectMode').RuntimeMode);
+      return true;
+    } catch (error) {
+      console.error('[bootMicroApp] AuthBootstrap failed:', error);
+      return false;
+    }
+  }
+
+  // 3. 旧版 authGuard（兼容）
+  if (options.authGuard) {
+    return options.authGuard();
+  }
+
+  // 4. 无认证配置
+  return true;
 }
