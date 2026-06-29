@@ -3,6 +3,12 @@
  */
 declare const __NEBULA_BUILD_NODE_VERSION__: string;
 
+type NebulaRuntimeMode = 'standalone' | 'platform-embed' | 'electron';
+
+interface Window {
+  __NEBULA_RUNTIME_MODE__?: NebulaRuntimeMode;
+}
+
 /**
  * 工作区侧效 CSS / 工具链入口：无运行时导出，由 `compilerOptions.types` 挂到各 renderer（见 `tools/tsconfig/web.json`）。
  */

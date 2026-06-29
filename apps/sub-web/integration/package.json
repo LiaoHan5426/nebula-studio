@@ -6,6 +6,7 @@
   "exports": {
     "./app": "./src/App.vue",
     "./router": "./src/router/index.ts",
+    "./boot": "./src/boot.ts",
     "./bootstrap-auth": "./src/shared/composables/useAuth.ts",
     "./bootstrap-runtime": "./src/bootstrap/runtime.ts",
     "./auth/session": "./src/shared/auth/session.ts"
@@ -33,6 +34,7 @@
     "vue": "catalog:vue",
     "vue-router": "catalog:vue",
     "@nebula-studio/auth-provider": "workspace:^",
+    "@nebula-studio/runtime": "workspace:^",
     "@nebula-studio/sse-events": "workspace:^",
     "@nebula-studio/tenant": "workspace:^"
   },

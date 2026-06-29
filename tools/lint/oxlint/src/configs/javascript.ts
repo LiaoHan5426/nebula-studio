@@ -71,7 +71,11 @@ const javascript: OxlintConfig = {
     'no-underscore-dangle': [
       'warn',
       {
-        allow: ['__NEBULA_BUILD_NODE_VERSION__'],
+        allow: [
+          '__NEBULA_BUILD_NODE_VERSION__',
+          '__NEBULA_RUNTIME_MODE__',
+          '__NEBULA_PRESENTATION_HOST__',
+        ],
       },
     ],
     'no-unused-expressions': [

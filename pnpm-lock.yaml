@@ -510,6 +510,9 @@ importers:
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
         version: link:../../../packages/ui/nebula-ui
+      '@nebula-studio/runtime':
+        specifier: workspace:^
+        version: link:../../../packages/core/runtime
       '@nebula-studio/sse-events':
         specifier: workspace:^
         version: link:../../../packages/core/sse-events
@@ -840,6 +843,37 @@ importers:
       vue:
         specifier: catalog:vue
         version: 3.5.35(typescript@6.0.3)
+
+  packages/core/runtime:
+    dependencies:
+      '@nebula-studio-electron/electron-bridge':
+        specifier: workspace:^
+        version: link:../electron-shared
+      '@nebula-studio/app-shell':
+        specifier: workspace:^
+        version: link:../app-shell
+      vue:
+        specifier: catalog:vue
+        version: 3.5.35(typescript@6.0.3)
+      vue-router:
+        specifier: catalog:vue
+        version: 4.6.4(vue@3.5.35(typescript@6.0.3))
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../../tools/tsconfig
+      '@nebula-studio/types':
+        specifier: workspace:^
+        version: link:../../types
+      happy-dom:
+        specifier: catalog:vite
+        version: 20.10.6
+      typescript:
+        specifier: catalog:types
+        version: 6.0.3
+      vitest:
+        specifier: npm:@voidzero-dev/vite-plus-test@latest
+        version: '@voidzero-dev/vite-plus-test@0.1.24(@types/node@26.0.1)(esbuild@0.28.1)(happy-dom@20.10.6)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(typescript@6.0.3)(vite@8.0.10(@types/node@26.0.1)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.100.0)(tsx@4.22.4)(yaml@2.9.0))(yaml@2.9.0)'
 
   packages/core/sse-events:
     dependencies:
