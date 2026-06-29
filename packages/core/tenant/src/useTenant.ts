@@ -77,9 +77,9 @@ export function createUseTenant(options: UseTenantOptions) {
     loading.value = true;
     try {
       const response = await tenantApi.get(currentTenantId.value);
-      if (isApiSuccess(response)) {
-        currentTenantName.value =
-          response.data.tenantName ?? response.data.tenantId;
+      if (isApiSuccess(response) && response.data) {
+        const { tenantName, tenantId } = response.data;
+        currentTenantName.value = tenantName ?? tenantId;
       } else {
         currentTenantName.value = currentTenantId.value;
       }

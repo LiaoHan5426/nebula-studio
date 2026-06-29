@@ -20,7 +20,8 @@
     }
   },
   "dependencies": {
-    "@nebula-studio-electron/electron-bridge": "workspace:^"
+    "@nebula-studio-electron/electron-bridge": "workspace:^",
+    "@nebula-studio/contracts": "workspace:^"
   },
   "devDependencies": {
     "@nebula-studio-internal/tsconfig": "workspace:^",

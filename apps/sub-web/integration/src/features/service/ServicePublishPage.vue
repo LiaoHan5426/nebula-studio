@@ -24,7 +24,7 @@ import type {
   SubscriptionMode,
 } from '@/shared/types';
 import {
-  AuthType,
+  InterfaceAuthType,
   InterfaceMethod,
   InterfaceStatus,
   InterfaceType,
@@ -62,7 +62,7 @@ const compositeForm = ref<Partial<CompositeInterface>>({
   endpointUri: '/orders/flow',
   method: InterfaceMethod.POST,
   status: InterfaceStatus.DRAFT,
-  authConfig: { authType: AuthType.NONE, allowedTenants: ['*'] },
+  authConfig: { authType: InterfaceAuthType.NONE, allowedTenants: ['*'] },
   steps: [],
   flowExpression: '',
   orchestrationType: 'DAG',
@@ -209,7 +209,7 @@ function openCreateComposite() {
     endpointUri: '/orders/flow',
     method: InterfaceMethod.POST,
     status: InterfaceStatus.DRAFT,
-    authConfig: { authType: AuthType.NONE, allowedTenants: ['*'] },
+    authConfig: { authType: InterfaceAuthType.NONE, allowedTenants: ['*'] },
     steps: [],
     flowExpression: '',
     orchestrationType: 'DAG',
@@ -759,9 +759,9 @@ function formatTime(value?: string) {
 }
 
 .modal-overlay--full {
-  padding: 16px;
   align-items: stretch;
   justify-content: center;
+  padding: 16px;
 }
 
 .modal {

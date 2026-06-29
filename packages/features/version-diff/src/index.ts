@@ -6,3 +6,6 @@
  */
 
 // TODO: 实现版本对比逻辑
+
+/** Reserved entry until version-diff UI is implemented. */
+export const VERSION_DIFF_MODULE = '@nebula-studio/version-diff' as const;

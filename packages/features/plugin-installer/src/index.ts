@@ -6,3 +6,7 @@
  */
 
 // TODO: 实现插件安装器逻辑
+
+/** Reserved entry until plugin-installer is implemented. */
+export const PLUGIN_INSTALLER_MODULE =
+  '@nebula-studio/plugin-installer' as const;

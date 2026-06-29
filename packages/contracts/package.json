@@ -1,0 +1,27 @@
+{
+  "name": "@nebula-studio/contracts",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./auth": {
+      "types": "./auth/index.ts",
+      "default": "./auth/index.ts"
+    },
+    "./system": {
+      "types": "./system/index.ts",
+      "default": "./system/index.ts"
+    },
+    "./integration": {
+      "types": "./integration/index.ts",
+      "default": "./integration/index.ts"
+    }
+  },
+  "dependencies": {
+    "@nebula-studio/api-client": "workspace:^"
+  },
+  "devDependencies": {
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "typescript": "catalog:types"
+  }
+}

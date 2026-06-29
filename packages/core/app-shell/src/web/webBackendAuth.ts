@@ -1,24 +1,14 @@
-export interface OrgSummary {
-  id: string;
-  orgName: string;
-  orgCode: string;
-  primary?: boolean;
-}
+import type {
+  AuthMode,
+  BackendLoginResult,
+  OrgSummary,
+} from '@nebula-studio/contracts/auth';
 
-export interface AuthMode {
-  authType: string;
-  orgEnabled: boolean;
-  multiOrgEnabled: boolean;
-}
-
-export interface BackendLoginResult {
-  token?: string;
-  username: string;
-  needsOrgSelection?: boolean;
-  organizations?: OrgSummary[];
-  currentOrgId?: string;
-  currentOrgName?: string;
-}
+export type {
+  AuthMode,
+  BackendLoginResult,
+  OrgSummary,
+} from '@nebula-studio/contracts/auth';
 
 interface BackendLoginResponse {
   data?: {
