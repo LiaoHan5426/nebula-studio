@@ -5,7 +5,7 @@
   展示集成应用网格、拖拽排序、添加/隐藏应用。
 -->
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import type { EmbeddedShellWindowId } from '@nebula-studio/app-shell';
 import { getShellIntegratedAppMeta } from '@nebula-studio/app-shell';
 import { NebulaButton, NebulaDrag } from '@nebula-studio/nebula-ui';
@@ -32,9 +32,16 @@ const emit = defineEmits<{
   reorder: [orderedViewIds: string[]];
   /** 关闭面板 */
   close: [];
+  /** grid v-model 更新 */
+  'update:gridViewIds': [value: string[]];
 }>();
 
 const isSorting = ref(false);
+
+const gridModel = computed({
+  get: () => props.gridViewIds,
+  set: (val: string[]) => emit('update:gridViewIds', val),
+});
 const addPickerOpen = ref(false);
 let suppressTileClickUntilTs = 0;
 
@@ -89,7 +96,7 @@ function selectApp(viewId: string): void {
       <div class="integration-panel-body">
         <div class="integration-grid">
           <NebulaDrag
-            v-model="gridViewIds"
+            v-model="gridModel"
             class="integration-grid-apps"
             :item-key="draggableItemKey"
             handle=".integration-tile-icon"

@@ -354,7 +354,7 @@ async function handleLogin(): Promise<void> {
         <AppDock
           :open="integrationOpen"
           :closable="integrationClosable"
-          :grid-view-ids="integrationGridViewIds"
+          v-model:grid-view-ids="integrationGridViewIds"
           :dormant-integrable-ids="dormantIntegrableIds"
           @select-app="selectIntegratedApp"
           @hide-app="hideIntegratedApp"
