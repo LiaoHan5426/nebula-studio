@@ -124,12 +124,10 @@ export class IpcAuthModule implements MainModule {
       const body = (await response.json()) as {
         data?: { token?: string; username?: string };
         isSuccess?: boolean;
-        success?: boolean;
         code?: number;
       };
       const ok =
         body.isSuccess === true ||
-        body.success === true ||
         body.code === 200 ||
         Boolean(body.data?.token);
       if (!ok || !body.data?.username) {

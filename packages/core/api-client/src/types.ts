@@ -1,9 +1,7 @@
-/** nebula-core ApiResponse with legacy `success` compat */
+/** nebula-core ApiResponse */
 export interface ApiResponse<T = unknown> {
   code?: number;
   isSuccess?: boolean;
-  /** @deprecated use isSuccess */
-  success?: boolean;
   data: T;
   message?: string;
   error?: string;
@@ -12,9 +10,6 @@ export interface ApiResponse<T = unknown> {
 export function isApiSuccess<T>(response: ApiResponse<T>): boolean {
   if (typeof response.isSuccess === 'boolean') {
     return response.isSuccess;
-  }
-  if (typeof response.success === 'boolean') {
-    return response.success;
   }
   return response.code === 200;
 }

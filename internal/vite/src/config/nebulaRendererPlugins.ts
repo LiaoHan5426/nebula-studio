@@ -43,8 +43,3 @@ export function resolveNebulaRendererPluginList(
   const extra = selection?.extra ?? [];
   return [...core, ...extra];
 }
-
-/** @deprecated 请使用 `resolveNebulaRendererPluginList()` */
-export function nebulaRendererPlugins(): PluginOption[] {
-  return resolveNebulaRendererPluginList();
-}

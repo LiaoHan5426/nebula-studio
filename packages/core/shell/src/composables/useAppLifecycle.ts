@@ -7,6 +7,7 @@
  */
 import {
   SHELL_SURFACE_WORKSPACE,
+  WEB_SHELL_EMBED_QUERY,
   clearWebAuthSession,
   getShellHostBridge,
   getShellIntegratedAppMeta,
@@ -526,7 +527,8 @@ export function useAppLifecycle(opts: UseAppLifecycleOptions) {
       } else {
         const base = import.meta.env.BASE_URL ?? '/';
         const nb = base.endsWith('/') ? base : `${base}/`;
-        out[id] = `${nb}index.html?nebula_embed=${encodeURIComponent(id)}`;
+        out[id] =
+          `${nb}index.html?${WEB_SHELL_EMBED_QUERY}=${encodeURIComponent(id)}`;
       }
     }
     return out;

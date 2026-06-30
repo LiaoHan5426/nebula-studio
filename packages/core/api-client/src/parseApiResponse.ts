@@ -32,7 +32,7 @@ export async function parseApiResponse<T>(
     json &&
     typeof json === 'object' &&
     'data' in json &&
-    ('isSuccess' in json || 'success' in json || 'code' in json)
+    ('isSuccess' in json || 'code' in json)
   ) {
     return json as unknown as ApiResponse<T>;
   }

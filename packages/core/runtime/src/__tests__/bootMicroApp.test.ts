@@ -68,7 +68,7 @@ describe('bootMicroApp', () => {
     expect(mockBootSubApp).toHaveBeenCalled();
   });
 
-  it('platform-embed: calls installWebPresentation and authGuard before bootSubApp', async () => {
+  it('platform-embed: calls installWebPresentation and bootSubApp', async () => {
     const callOrder: string[] = [];
     mockInstallWebPresentation.mockImplementation(() => {
       callOrder.push('installWebPresentation');
@@ -82,17 +82,9 @@ describe('bootMicroApp', () => {
       mode: 'platform-embed',
       rootComponent: dummyComponent,
       webPresentation: { scope: 'web-embed-test' },
-      authGuard: async () => {
-        callOrder.push('authGuard');
-        return true;
-      },
     });
 
-    expect(callOrder).toEqual([
-      'installWebPresentation',
-      'authGuard',
-      'bootSubApp',
-    ]);
+    expect(callOrder).toEqual(['installWebPresentation', 'bootSubApp']);
   });
 
   it('electron: does NOT call installWebPresentation', async () => {
@@ -107,7 +99,7 @@ describe('bootMicroApp', () => {
     expect(mockBootSubApp).toHaveBeenCalled();
   });
 
-  it('authGuard returns false: does not mount, calls onAuthFailed', async () => {
+  it('auth.bootstrap returns false: does not mount, calls onAuthFailed', async () => {
     const onAuthFailed = vi.fn();
 
     await bootMicroApp({
@@ -115,7 +107,7 @@ describe('bootMicroApp', () => {
       mode: 'standalone',
       rootComponent: dummyComponent,
       webPresentation: { scope: 'test' },
-      authGuard: async () => false,
+      auth: { bootstrap: async () => false },
       onAuthFailed,
     });
 

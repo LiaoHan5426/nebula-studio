@@ -8,7 +8,7 @@ import type { BootMicroAppOptions } from './index';
  *
  * 内部启动顺序：
  * 1. bridge 注入（Web 模式 → installWebPresentation；Electron → 跳过）
- * 2. auth（AuthBootstrap 或 authGuard）
+ * 2. auth（AuthBootstrap）
  * 3. beforeMountAsync（可选，异步）
  * 4. 委托 bootSubApp（ConfigProvider + mount）
  */
@@ -26,7 +26,7 @@ export async function bootMicroApp(
     });
   }
 
-  // 2. Auth：优先使用 auth 配置（AuthBootstrap），回退到 authGuard
+  // 2. Auth：优先使用 auth 配置（AuthBootstrap）
   const authOk = await runAuth(options, mode);
   if (!authOk) {
     options.onAuthFailed?.();
@@ -64,8 +64,7 @@ export async function bootMicroApp(
  * 优先级：
  * 1. `auth.bootstrap` — 自定义 bootstrap 函数
  * 2. `auth.enabled` — 委托 AuthBootstrap.register()
- * 3. `authGuard` — 旧版认证守卫（兼容）
- * 4. 无认证配置 → 直接返回 true
+ * 3. 无认证配置 → 直接返回 true
  */
 async function runAuth(
   options: BootMicroAppOptions,
@@ -89,11 +88,6 @@ async function runAuth(
     }
   }
 
-  // 3. 旧版 authGuard（兼容）
-  if (options.authGuard) {
-    return options.authGuard();
-  }
-
-  // 4. 无认证配置
+  // 3. 无认证配置
   return true;
 }

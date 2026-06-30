@@ -24,7 +24,6 @@ export enum InterfaceStatus {
   PENDING_REVIEW = 'PENDING_REVIEW',
 }
 
-/** @deprecated 使用 {@link InterfaceAuthType} */
 export enum InterfaceAuthType {
   NONE = 'NONE',
   API_KEY = 'API_KEY',

@@ -55,12 +55,18 @@ function proxyOptions(target: string): ProxyOptions {
  */
 export function integrationApiProxy(): Record<string, ProxyOptions> {
   return {
+    // 运行时 API → executor :8081
     '/api/integration/gateway': proxyOptions(EXECUTOR_TARGET),
     '/api/integration/demo': proxyOptions(EXECUTOR_TARGET),
     '/api/executor': proxyOptions(EXECUTOR_TARGET),
-    // system 路径 → :8090 (platform-console)
+    // 平台管理 API → platform-console :8090
     '/api/system': proxyOptions(PLATFORM_TARGET),
-    // 其余 /api → :8080 (camel-console)
+    // 治理/版本/发布 API → camel-console :8080
+    '/api/security/governance': proxyOptions(CONSOLE_TARGET),
+    '/api/version': proxyOptions(CONSOLE_TARGET),
+    '/api/release': proxyOptions(CONSOLE_TARGET),
+    '/api/releases': proxyOptions(CONSOLE_TARGET),
+    // 其余 /api → camel-console :8080
     '/api': proxyOptions(CONSOLE_TARGET),
   };
 }

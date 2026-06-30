@@ -2,7 +2,7 @@
  * ElectronStrategy — Electron 桌面模式认证策略。
  *
  * 认证逻辑：
- * 1. 通过 IPC `auth:getSession` 检查当前 session
+ * 1. 通过 IPC `auth:get-session` 检查当前 session
  * 2. 若已有 session，写入 auth-provider
  * 3. 监听 `auth:session-changed` 事件同步 session 变更
  * 4. 登录由 login 子应用 App.vue 处理（通过 `auth:establish-session`）
@@ -43,7 +43,7 @@ export class ElectronStrategy implements AuthStrategy {
     // 1. 从 Electron 主进程获取当前 session
     try {
       const session = (await electron.ipcRenderer.invoke(
-        'auth:getSession',
+        'auth:get-session',
       )) as {
         user?: string;
         token?: string;

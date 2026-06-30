@@ -15,7 +15,7 @@ import {
   OrgSwitcher,
   useAppLifecycle,
 } from '@nebula-studio/nebula-shell';
-import { onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 
 import { useOrganization } from '@/shared/composables/useOrganization';
 
@@ -114,8 +114,10 @@ const {
   layoutPreferences,
 });
 
-// ─── Computed helpers ────────────────────────────────────
-const settingsAvailable = availableViewIds.value.includes('settings');
+// ── Computed helpers ────────────────────────────────────
+const settingsAvailable = computed(() =>
+  availableViewIds.value.includes('settings'),
+);
 
 // ─── Lifecycle hooks ─────────────────────────────────────
 onMounted(async () => {

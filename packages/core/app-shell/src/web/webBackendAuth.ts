@@ -20,23 +20,17 @@ interface BackendLoginResponse {
     currentOrgName?: string;
   };
   isSuccess?: boolean;
-  success?: boolean;
   code?: number;
 }
 
 interface BackendModeResponse {
   data?: AuthMode;
   isSuccess?: boolean;
-  success?: boolean;
   code?: number;
 }
 
-function isResponseOk(body: {
-  isSuccess?: boolean;
-  success?: boolean;
-  code?: number;
-}): boolean {
-  return body.isSuccess === true || body.success === true || body.code === 200;
+function isResponseOk(body: { isSuccess?: boolean; code?: number }): boolean {
+  return body.isSuccess === true || body.code === 200;
 }
 
 async function parseJson<T>(response: Response): Promise<T> {
@@ -65,7 +59,6 @@ async function fetchMe(token?: string): Promise<OrgSummary[]> {
   const body = await parseJson<{
     data?: { organizations?: OrgSummary[] };
     isSuccess?: boolean;
-    success?: boolean;
     code?: number;
   }>(
     await fetch('/api/auth/me', {

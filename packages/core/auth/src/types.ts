@@ -37,7 +37,7 @@ export interface AuthBootstrapOptions {
  * 每种 RuntimeMode 对应一个策略实现：
  * - `standalone` → StandaloneStrategy（router guard + login 子应用）
  * - `platform-embed` → EmbedStrategy（readParentShellAuthSession）
- * - `electron` → ElectronStrategy（IPC auth:getSession / establishSession）
+ * - `electron` → ElectronStrategy（IPC auth:get-session / establish-session）
  */
 export interface AuthStrategy {
   /**

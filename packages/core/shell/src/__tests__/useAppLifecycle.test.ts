@@ -8,7 +8,7 @@ import { useAppLifecycle } from '../composables/useAppLifecycle.js';
 
 vi.mock('@nebula-studio/app-shell', () => ({
   SHELL_SURFACE_WORKSPACE: 'workspace',
-  WEB_SHELL_EMBED_QUERY: 'nebula_embed',
+  WEB_SHELL_EMBED_QUERY: 'embed',
   clearWebAuthSession: vi.fn(),
   getEmbeddedShellWindowIds: vi.fn(() => ['integration', 'settings']),
   getShellHostBridge: vi.fn(() => ({

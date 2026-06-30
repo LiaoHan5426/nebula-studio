@@ -33,17 +33,9 @@ export interface BootMicroAppOptions {
 
   /**
    * mount 前异步回调（如 bootstrapAuthFromShell）。
-   * 在 authGuard 之后、bootSubApp 之前执行。
+   * 在 auth 之后、bootSubApp 之前执行。
    */
   beforeMountAsync?: () => Promise<void>;
-
-  /**
-   * 认证守卫：返回 true 表示已认证可继续挂载。
-   * 不传则跳过认证检查。
-   *
-   * @deprecated 使用 `auth` 选项替代，由 AuthBootstrap 统一处理。
-   */
-  authGuard?: () => Promise<boolean>;
 
   /** 认证失败回调 */
   onAuthFailed?: () => void;
@@ -53,7 +45,7 @@ export interface BootMicroAppOptions {
    * - `enabled: true` 时由 AuthBootstrap 按 mode 自动注册策略
    * - 也可传自定义 bootstrap 函数
    *
-   * 与 `authGuard` 互斥；同时存在时 `auth` 优先。
+   * 与 `auth.bootstrap` 互斥；同时存在时 `auth.bootstrap` 优先。
    */
   auth?: {
     /** 为 true 时由 AuthBootstrap 按 mode 自动注册 */

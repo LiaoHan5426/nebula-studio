@@ -21,7 +21,6 @@ export default defineNebulaConfig({
       },
     },
     server: {
-      port: 5175,
       proxy: nebulaApiProxy(),
     },
   },

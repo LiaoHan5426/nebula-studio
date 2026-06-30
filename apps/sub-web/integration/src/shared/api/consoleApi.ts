@@ -1,5 +1,6 @@
 import {
   CONSOLE_BASE,
+  apiRequest,
   consoleRequest,
   fetchUrl,
   governanceRequest,
@@ -22,6 +23,7 @@ import type {
   SubscriptionConfig,
   TableSubscription,
   TenantContext,
+  VersionDiff,
   VersionSnapshot,
 } from '@/shared/types';
 import type { GrantScheduleType } from '@/shared/grant/schedule';
@@ -642,8 +644,9 @@ export const approvalApi = {
     });
   },
 
-  listRequests(tenantId: string): Promise<ApiResponse<GovernanceRequest[]>> {
-    return governanceRequest(`/approval/requests?tenantId=${tenantId}`);
+  listRequests(tenantId?: string): Promise<ApiResponse<GovernanceRequest[]>> {
+    const query = tenantId ? `?tenantId=${tenantId}` : '';
+    return governanceRequest(`/approval/requests${query}`);
   },
 
   getRequest(requestId: string): Promise<ApiResponse<GovernanceRequest>> {
@@ -668,26 +671,46 @@ export const approvalApi = {
 
 // ==================== Version Control API ====================
 
+const VERSION_BASE = '/api/version';
+
 export const versionApi = {
-  createSnapshot(
-    resourceId: string,
-    content: string,
-  ): Promise<ApiResponse<VersionSnapshot>> {
-    return governanceRequest('/version/snapshot', {
+  createSnapshot(body: {
+    resourceId: string;
+    label: string;
+    snapshotJson: string;
+    operatorId?: string;
+  }): Promise<ApiResponse<VersionSnapshot>> {
+    return apiRequest(VERSION_BASE, '/snapshots', {
       method: 'POST',
-      body: JSON.stringify({ resourceId, content }),
+      body: JSON.stringify(body),
     });
   },
 
   listSnapshots(resourceId: string): Promise<ApiResponse<VersionSnapshot[]>> {
-    return governanceRequest(`/version/snapshots?resourceId=${resourceId}`);
+    return apiRequest(VERSION_BASE, `/snapshots?resourceId=${resourceId}`);
   },
 
-  diff(
-    snapshotIdA: string,
-    snapshotIdB: string,
-  ): Promise<ApiResponse<Record<string, unknown>>> {
-    return governanceRequest(`/version/diff?a=${snapshotIdA}&b=${snapshotIdB}`);
+  getSnapshot(snapshotId: string): Promise<ApiResponse<VersionSnapshot>> {
+    return apiRequest(VERSION_BASE, `/snapshots/${snapshotId}`);
+  },
+
+  diff(leftId: string, rightId: string): Promise<ApiResponse<VersionDiff>> {
+    return apiRequest(
+      VERSION_BASE,
+      `/snapshots/diff?leftId=${leftId}&rightId=${rightId}`,
+    );
+  },
+
+  rollback(
+    snapshotId: string,
+    operatorId?: string,
+  ): Promise<ApiResponse<VersionSnapshot>> {
+    const query = operatorId ? `?operatorId=${operatorId}` : '';
+    return apiRequest(
+      VERSION_BASE,
+      `/snapshots/${snapshotId}/rollback${query}`,
+      { method: 'POST' },
+    );
   },
 };
 
@@ -701,14 +724,33 @@ export const releaseApi = {
     });
   },
 
-  rollback(releaseId: string): Promise<ApiResponse<ReleaseRecord>> {
-    return governanceRequest(`/release/${releaseId}/rollback`, {
+  rollback(
+    releaseId: string,
+    operatorId?: string,
+  ): Promise<ApiResponse<ReleaseRecord>> {
+    const query = operatorId ? `?operatorId=${operatorId}` : '';
+    return governanceRequest(`/release/${releaseId}/rollback${query}`, {
       method: 'POST',
     });
   },
 
   getRelease(releaseId: string): Promise<ApiResponse<ReleaseRecord>> {
     return governanceRequest(`/release/${releaseId}`);
+  },
+
+  listReleases(tenantId?: string): Promise<ApiResponse<ReleaseRecord[]>> {
+    const query = tenantId ? `?tenantId=${tenantId}` : '';
+    return governanceRequest(`/releases${query}`);
+  },
+
+  approve(
+    releaseId: string,
+    operatorId?: string,
+  ): Promise<ApiResponse<ReleaseRecord>> {
+    const query = operatorId ? `?operatorId=${operatorId}` : '';
+    return governanceRequest(`/release/${releaseId}/approve${query}`, {
+      method: 'POST',
+    });
   },
 };
 

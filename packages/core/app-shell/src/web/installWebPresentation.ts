@@ -42,10 +42,6 @@ export interface InstallWebPresentationOptions {
     default?: string;
     crossDocumentStorageKey?: string;
   };
-  /** @deprecated Use `theme.storageKey`. */
-  storageKey?: string;
-  /** @deprecated Use `theme.default`. */
-  defaultTheme?: ThemeMode;
   /**
    * 覆盖 `window.electron.process.versions`（Web 无 Node 运行时，`node` 可传 **构建时** 注入的版本号）。
    */
@@ -75,16 +71,11 @@ export function installWebPresentation(
     markWebShellHost();
   }
 
-  const themeStorageKey =
-    options.theme?.storageKey ?? options.storageKey ?? DEFAULT_WEB_THEME_KEY;
+  const themeStorageKey = options.theme?.storageKey ?? DEFAULT_WEB_THEME_KEY;
   const themeCrossKey =
     options.theme?.crossDocumentStorageKey ?? themeStorageKey;
   const defaultTheme: ThemeMode =
-    options.theme?.default === 'light'
-      ? 'light'
-      : options.defaultTheme === 'light'
-        ? 'light'
-        : 'dark';
+    options.theme?.default === 'light' ? 'light' : 'dark';
 
   const localeStorageKey = options.locale?.storageKey ?? DEFAULT_WEB_LOCALE_KEY;
   const localeCrossKey =

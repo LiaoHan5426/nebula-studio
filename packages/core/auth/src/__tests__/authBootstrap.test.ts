@@ -184,7 +184,7 @@ describe('electronStrategy', () => {
     const strategy = new ElectronStrategy();
     await strategy.bootstrap();
 
-    expect(mockIpcRenderer.invoke).toHaveBeenCalledWith('auth:getSession');
+    expect(mockIpcRenderer.invoke).toHaveBeenCalledWith('auth:get-session');
     expect(mockIpcRenderer.on).toHaveBeenCalledWith(
       'auth:session-changed',
       expect.any(Function),

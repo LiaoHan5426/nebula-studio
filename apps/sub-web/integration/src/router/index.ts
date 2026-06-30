@@ -27,6 +27,15 @@ const SubscriptionRequestsPage = () =>
   import('@/features/service/SubscriptionRequestsPage.vue');
 const ServiceGovernancePage = () =>
   import('@/features/service/ServiceGovernancePage.vue');
+// 发布管理页面
+const ServiceReleasePage = () =>
+  import('@/features/service/ServiceReleasePage.vue');
+// 审批管理页面
+const ServiceApprovalPage = () =>
+  import('@/features/service/ServiceApprovalPage.vue');
+// 版本管理页面
+const ServiceVersionPage = () =>
+  import('@/features/service/ServiceVersionPage.vue');
 // 服务统计页面
 const LogQueryPage = () => import('@/features/statistics/LogQueryPage.vue');
 const LogStatsPage = () => import('@/features/statistics/LogStatsPage.vue');
@@ -139,6 +148,27 @@ const routes: RouteRecordRaw[] = [
     name: 'service-governance',
     component: ServiceGovernancePage,
     meta: { title: '服务治理' },
+  },
+  // 服务管理 - 发布管理
+  {
+    path: '/service/releases',
+    name: 'service-releases',
+    component: ServiceReleasePage,
+    meta: { title: '发布管理' },
+  },
+  // 服务管理 - 审批管理
+  {
+    path: '/service/approvals',
+    name: 'service-approvals',
+    component: ServiceApprovalPage,
+    meta: { title: '审批管理' },
+  },
+  // 服务管理 - 版本管理
+  {
+    path: '/service/versions',
+    name: 'service-versions',
+    component: ServiceVersionPage,
+    meta: { title: '版本管理' },
   },
   // 服务管理 - 服务测试（经 executor 网关调用已发布服务）
   {

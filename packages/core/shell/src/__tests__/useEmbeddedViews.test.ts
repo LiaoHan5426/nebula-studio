@@ -7,7 +7,7 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { useEmbeddedViews } from '../composables/useEmbeddedViews.js';
 
 vi.mock('@nebula-studio/app-shell', () => ({
-  WEB_SHELL_EMBED_QUERY: 'nebula_embed',
+  WEB_SHELL_EMBED_QUERY: 'embed',
   getEmbeddedShellWindowIds: vi.fn(() => ['integration', 'settings']),
   getShellHostBridge: vi.fn(() => ({
     kind: 'web',
@@ -37,8 +37,8 @@ describe('useEmbeddedViews', () => {
     const src = embedSrc.value;
     expect(src).toHaveProperty('integration');
     expect(src).toHaveProperty('settings');
-    expect(src.integration).toContain('nebula_embed=integration');
-    expect(src.settings).toContain('nebula_embed=settings');
+    expect(src.integration).toContain('embed=integration');
+    expect(src.settings).toContain('embed=settings');
   });
 
   it('manages loaded and ready state', () => {
