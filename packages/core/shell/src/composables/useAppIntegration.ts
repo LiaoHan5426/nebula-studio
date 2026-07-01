@@ -25,6 +25,8 @@ export interface UseAppIntegrationOptions {
   embedLoadingViewId: { value: string | null };
   /** 选中侧边栏项（响应式） */
   selectedSidebarItem: { value: string };
+  /** 根据当前嵌入视图同步侧栏高亮 */
+  syncSidebarSelection: (viewId: string | null) => void;
   /** 宿主桥接 */
   shellHost: ReturnType<
     typeof import('@nebula-studio/app-shell').getShellHostBridge
@@ -139,6 +141,7 @@ export function useAppIntegration(opts: UseAppIntegrationOptions) {
   }
 
   async function selectIntegratedApp(viewId: string): Promise<void> {
+    opts.syncSidebarSelection(viewId);
     opts.loadedEmbedIds.value.add(viewId);
     opts.ensureEmbedSurfaceLoading(viewId);
     await opts.switchEmbeddedView(viewId);

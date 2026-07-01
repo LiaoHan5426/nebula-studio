@@ -54,13 +54,11 @@ const {
   loadedEmbedIds,
   embedReadyViewIds,
   embedLoadingViewId,
-  shellTags,
   shellTagItems,
   activeShellTagKey,
   showShellTagsBar,
   shellBreadcrumbItems,
   usesIframeEmbed,
-  shellTopPx,
   shellHost,
   // Actions
   loadShellState,
@@ -86,7 +84,6 @@ const {
   closeOtherShellTags,
   closeAllShellTags,
   refreshActiveShellSurface,
-  toggleShellContentFullscreen,
   syncShellAuthSessionStorage,
   onThemeChanged,
   onAuthSessionChanged,
@@ -245,8 +242,8 @@ async function handleLogin(): Promise<void> {
       @tags-close-others="closeOtherShellTags"
       @tags-close-all="closeAllShellTags"
       @tags-refresh="refreshActiveShellSurface"
-      @tags-fullscreen="toggleShellContentFullscreen"
       @refresh="refreshActiveShellSurface"
+      @content-fullscreen-change="reportShellViewport"
     >
       <template #sidebar-brand>
         <button
@@ -307,7 +304,7 @@ async function handleLogin(): Promise<void> {
         <button
           type="button"
           class="nebula-layout-nav-item"
-          :class="{ 'is-active': activeViewId === 'settings' }"
+          :class="{ 'is-active': selectedSidebarItem === 'settings' }"
           :disabled="!settingsAvailable"
           @click="selectIntegratedApp('settings')"
         >

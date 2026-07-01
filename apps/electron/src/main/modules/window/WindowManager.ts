@@ -7,6 +7,7 @@ import {
   getDefaultEnabledShellIntegrableIds,
   listShellIntegrableAppIds,
 } from '@nebula-studio/app-shell/shell-integration';
+import type { EmbeddedShellWindowId } from '@nebula-studio/app-shell';
 import icon from '../../../../resources/icon.png?asset';
 import appConfig from '../../../../app.config';
 import {
@@ -174,18 +175,21 @@ export class WindowManager {
       (_event, payload: { viewId?: string }) => {
         const viewId = payload?.viewId;
         if (typeof viewId !== 'string' || !viewId) return false;
-        const wid = viewId as EmbeddedWindowId;
+        const wid = viewId as EmbeddedShellWindowId;
         if (!listShellIntegrableAppIds().includes(wid)) return false;
         if (usesBrowserViewEmbed() && !this.#embeddedViewsById.has(wid)) {
           return false;
         }
-        if (!usesBrowserViewEmbed() && !listEmbeddedWindowIds().includes(wid)) {
+        if (
+          !usesBrowserViewEmbed() &&
+          !listEmbeddedWindowIds().includes(wid as EmbeddedWindowId)
+        ) {
           return false;
         }
         if (!this.#enabledEmbeddedViewOrder.includes(wid)) {
           this.#enabledEmbeddedViewOrder.push(wid);
         }
-        return this.setActiveEmbeddedView(wid);
+        return this.setActiveEmbeddedView(wid as EmbeddedWindowId);
       },
     );
 
@@ -194,12 +198,15 @@ export class WindowManager {
       (_event, payload: { viewId?: string }) => {
         const viewId = payload?.viewId;
         if (typeof viewId !== 'string' || !viewId) return false;
-        const wid = viewId as EmbeddedWindowId;
+        const wid = viewId as EmbeddedShellWindowId;
         if (!listShellIntegrableAppIds().includes(wid)) return false;
         if (usesBrowserViewEmbed() && !this.#embeddedViewsById.has(wid)) {
           return false;
         }
-        if (!usesBrowserViewEmbed() && !listEmbeddedWindowIds().includes(wid)) {
+        if (
+          !usesBrowserViewEmbed() &&
+          !listEmbeddedWindowIds().includes(wid as EmbeddedWindowId)
+        ) {
           return false;
         }
         if (!this.#enabledEmbeddedViewOrder.includes(wid)) return true;
@@ -269,6 +276,7 @@ export class WindowManager {
 
   createShellWindow(): BrowserWindow {
     const cfg = appConfig.windows.main;
+    if (!cfg) throw new Error('Main window config not found');
     const win = new BrowserWindow({
       title: '',
       width: 960,

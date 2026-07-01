@@ -11,7 +11,7 @@ import {
   setAuthSession,
 } from '@/shared/auth/session';
 import { isPlatformAdmin as checkPlatformAdmin } from '@/shared/auth/roles';
-import { isSurfaceEmbed } from '@nebula-studio/app-shell';
+import { isSurfaceIframeEmbed } from '@nebula-studio/app-shell';
 import { useTenant } from '@/shared/composables/useTenant';
 import { isApiSuccess } from '@/shared/types';
 
@@ -20,7 +20,7 @@ const username = ref<string | null>(getAuthUsername());
 const roles = ref<string[]>(getAuthRoles());
 const loading = ref(false);
 const error = ref<string | null>(null);
-const shellEmbed = isSurfaceEmbed('integration');
+const shellEmbed = isSurfaceIframeEmbed('integration');
 const { resetTenantSession } = useTenant();
 
 export { getAuthToken } from '@/shared/auth/session';

@@ -20,6 +20,10 @@ const overflowItems = computed(() => props.items.slice(maxVisible.value));
 function isActive(to: string) {
   return route.path === to || route.path.startsWith(`${to}/`);
 }
+
+function closeDrawer() {
+  drawerOpen.value = false;
+}
 </script>
 
 <template>
@@ -40,33 +44,36 @@ function isActive(to: string) {
         v-if="overflowItems.length"
         type="button"
         class="nebula-admin-subnav__more"
-        @click="drawerOpen = true"
+        @click="drawerOpen = !drawerOpen"
+        :aria-expanded="drawerOpen"
       >
         更多
       </button>
     </div>
 
-    <div v-if="drawerOpen" class="nebula-admin-subnav__drawer">
-      <div
-        class="nebula-admin-subnav__drawer-backdrop"
-        @click="drawerOpen = false"
-      />
-      <aside class="nebula-admin-subnav__drawer-panel">
-        <header class="nebula-admin-subnav__drawer-head">
-          <strong>导航</strong>
-          <button type="button" @click="drawerOpen = false">关闭</button>
-        </header>
-        <RouterLink
-          v-for="item in overflowItems"
-          :key="item.key"
-          :to="item.to"
-          class="nebula-admin-subnav__drawer-link"
-          @click="drawerOpen = false"
-        >
-          {{ item.label }}
-        </RouterLink>
-      </aside>
-    </div>
+    <Transition name="nebula-admin-subnav__drawer">
+      <div v-if="drawerOpen" class="nebula-admin-subnav__drawer">
+        <div
+          class="nebula-admin-subnav__drawer-backdrop"
+          @click="closeDrawer"
+        />
+        <aside class="nebula-admin-subnav__drawer-panel">
+          <header class="nebula-admin-subnav__drawer-head">
+            <strong>导航</strong>
+            <button type="button" @click="closeDrawer">关闭</button>
+          </header>
+          <RouterLink
+            v-for="item in overflowItems"
+            :key="item.key"
+            :to="item.to"
+            class="nebula-admin-subnav__drawer-link"
+            @click="closeDrawer"
+          >
+            {{ item.label }}
+          </RouterLink>
+        </aside>
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -141,9 +148,33 @@ function isActive(to: string) {
   color: hsl(var(--foreground));
   text-decoration: none;
   border-radius: 8px;
+  transition: background 0.15s ease;
 }
 
 .nebula-admin-subnav__drawer-link:hover {
   background: hsl(var(--muted) / 60%);
+}
+
+.nebula-admin-subnav__drawer-enter-active,
+.nebula-admin-subnav__drawer-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.nebula-admin-subnav__drawer-enter-active .nebula-admin-subnav__drawer-panel,
+.nebula-admin-subnav__drawer-leave-active .nebula-admin-subnav__drawer-panel {
+  transition:
+    transform 0.25s ease,
+    opacity 0.2s ease;
+}
+
+.nebula-admin-subnav__drawer-enter-from,
+.nebula-admin-subnav__drawer-leave-to {
+  opacity: 0;
+}
+
+.nebula-admin-subnav__drawer-enter-from .nebula-admin-subnav__drawer-panel,
+.nebula-admin-subnav__drawer-leave-to .nebula-admin-subnav__drawer-panel {
+  opacity: 0;
+  transform: translateX(100%);
 }
 </style>

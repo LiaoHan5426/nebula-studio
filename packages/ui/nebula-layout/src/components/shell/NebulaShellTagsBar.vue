@@ -7,6 +7,7 @@ import type { ShellTagItem } from '../../types/layout';
 const props = defineProps<{
   tags: ShellTagItem[];
   activeKey: string;
+  contentFullscreen?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -182,11 +183,12 @@ function runAndClose(fn: () => void) {
         </svg>
       </NebulaIconButton>
       <NebulaIconButton
-        title="内容区全屏"
-        aria-label="内容区全屏"
+        :title="contentFullscreen ? '退出内容全屏' : '内容区全屏'"
+        :aria-label="contentFullscreen ? '退出内容全屏' : '内容区全屏'"
         @click="emit('fullscreen')"
       >
         <svg
+          v-if="!contentFullscreen"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -198,6 +200,20 @@ function runAndClose(fn: () => void) {
           <polyline points="9 21 3 21 3 15" />
           <polyline points="21 15 21 21 15 21" />
           <polyline points="3 9 3 3 9 3" />
+        </svg>
+        <svg
+          v-else
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          width="16"
+          height="16"
+        >
+          <polyline points="4 14 10 14 10 20" />
+          <polyline points="20 10 14 10 14 4" />
+          <polyline points="14 10 21 3" />
+          <polyline points="3 21 10 14" />
         </svg>
       </NebulaIconButton>
     </div>

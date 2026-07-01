@@ -22,6 +22,8 @@ html[data-theme='dark'] {
   --secondary-foreground: 220 30% 95%;
   --primary: 227 90% 66%;
   --primary-foreground: 0 0% 100%;
+  --primary-hover: 227 94% 62%;
+  --primary-muted: 227 90% 66%;
   --destructive: 0 74% 60%;
   --destructive-foreground: 0 0% 100%;
   --success: 146 58% 44%;
@@ -36,4 +38,8 @@ html[data-theme='dark'] {
   --main: 232 52% 10%;
   --overlay: 232 35% 8%;
   --overlay-content: 220 30% 96%;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
 }

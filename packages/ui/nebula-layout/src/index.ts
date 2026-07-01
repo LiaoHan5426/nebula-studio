@@ -11,6 +11,7 @@ export { default as NebulaPreferencesDrawer } from './components/preferences/Neb
 export { default as NebulaAdminLayout } from './components/admin/NebulaAdminLayout.vue';
 export { default as NebulaAdminContent } from './components/admin/NebulaAdminContent.vue';
 export { default as NebulaAdminSubNav } from './components/admin/NebulaAdminSubNav.vue';
+export { default as NebulaAdminVerticalNav } from './components/admin/NebulaAdminVerticalNav.vue';
 
 export { useLayoutPreferences } from './composables/useLayoutPreferences';
 export {
@@ -26,5 +27,7 @@ export type {
   AccentPreset,
   ThemePreferenceMode,
   SubNavItem,
+  NavItem,
+  NavChild,
 } from './types/layout';
 export { DEFAULT_LAYOUT_PREFERENCES, ACCENT_PRESETS } from './types/layout';

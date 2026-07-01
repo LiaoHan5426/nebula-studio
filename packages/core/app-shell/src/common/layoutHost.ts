@@ -1,4 +1,4 @@
-import { getWebShellEmbedSurface } from '../web/webAuth';
+import { getWebShellEmbedSurface, isShellIframeEmbed } from '../web/webAuth';
 
 export type LayoutHostMode = 'standalone' | 'shell-hosted';
 
@@ -31,6 +31,8 @@ export function getLayoutHostMode(
     embedSurface ??
     (typeof window !== 'undefined' ? getWebShellEmbedSurface() : null);
   if (!surface || surface === 'login') return 'standalone';
-  if (SHELL_HOSTED_SURFACES.has(surface)) return 'shell-hosted';
+  if (SHELL_HOSTED_SURFACES.has(surface) && isShellIframeEmbed()) {
+    return 'shell-hosted';
+  }
   return 'standalone';
 }

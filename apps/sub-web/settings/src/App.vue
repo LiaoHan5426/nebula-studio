@@ -16,8 +16,14 @@ import ConfirmDialog from '@/shared/components/ConfirmDialog.vue';
 html,
 body,
 #app {
-  min-height: 100%;
+  height: 100%;
+  min-height: 0;
   margin: 0;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
 }
 
 body {

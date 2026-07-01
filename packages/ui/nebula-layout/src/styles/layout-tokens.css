@@ -90,6 +90,21 @@
 }
 
 .nebula-layout-shell.is-sidebar-collapsed:not(.is-sidebar-floating)
+  .nebula-layout-sidebar-brand__text {
+  position: absolute;
+  left: -9999px;
+  flex: 0 0 0;
+  width: 0;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  pointer-events: none;
+  max-width: 0;
+  opacity: 0;
+}
+
+.nebula-layout-shell.is-sidebar-collapsed:not(.is-sidebar-floating)
   .nebula-layout-shell__sidebar-brand {
   padding-inline: 8px;
 }
@@ -171,6 +186,50 @@
 
 .nebula-layout-shell.is-content-compact .nebula-layout-shell__content {
   padding: 0;
+}
+
+/* 内容区全屏：隐藏侧栏与顶栏，保留标签栏；偏好入口改为右侧浮动按钮 */
+.nebula-layout-shell.is-content-fullscreen {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.nebula-layout-shell.is-content-fullscreen .nebula-layout-shell__sidebar {
+  display: none;
+}
+
+.nebula-layout-shell.is-content-fullscreen .nebula-layout-shell__main {
+  min-height: 100vh;
+}
+
+.nebula-layout-shell.is-content-fullscreen .nebula-layout-shell__content {
+  padding: 0;
+}
+
+.nebula-layout-shell__float-prefs {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  color: hsl(var(--primary-foreground));
+  cursor: pointer;
+  background: hsl(var(--primary));
+  border: none;
+  border-radius: 10px 0 0 10px;
+  box-shadow: -4px 0 16px hsl(var(--primary) / 28%);
+  transform: translateY(-50%);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.nebula-layout-shell__float-prefs:hover {
+  box-shadow: -6px 0 20px hsl(var(--primary) / 36%);
+  transform: translateY(-50%) translateX(-2px);
 }
 
 .nebula-layout-shell__sidebar-brand {
@@ -260,17 +319,33 @@
 
 .nebula-layout-shell.is-sidebar-collapsed:not(.is-sidebar-floating)
   .nebula-layout-nav-item {
+  gap: 0;
   justify-content: center;
   padding: 0;
 }
 
 .nebula-layout-shell.is-sidebar-collapsed:not(.is-sidebar-floating)
-  .nebula-layout-nav-item__label,
-.nebula-layout-shell.is-sidebar-collapsed:not(.is-sidebar-floating)
-  .nebula-layout-sidebar-brand__text {
+  .nebula-layout-nav-item__label {
+  flex: 0 0 0;
+  width: 0;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
   pointer-events: none;
   max-width: 0;
   opacity: 0;
+}
+
+.nebula-layout-shell.is-sidebar-collapsed:not(.is-sidebar-floating)
+  .nebula-layout-shell__sidebar-nav {
+  align-items: center;
+  padding-inline: 6px;
+}
+
+.nebula-layout-shell.is-sidebar-collapsed:not(.is-sidebar-floating)
+  .nebula-layout-nav-item__icon {
+  margin: 0 auto;
 }
 
 .nebula-layout-admin {
@@ -301,9 +376,10 @@
   display: flex;
   flex: 1;
   flex-direction: column;
+  height: 100%;
   min-height: 0;
   color: hsl(var(--foreground));
-  background: transparent;
+  background: hsl(var(--background));
 }
 
 .nebula-layout-content-only__subnav {
@@ -317,8 +393,34 @@
   overflow: auto;
 }
 
+.nebula-layout-content-only.is-compact {
+  flex-direction: row;
+}
+
 .nebula-layout-content-only.is-compact .nebula-layout-content-only__body {
   padding: 8px;
+}
+
+.nebula-layout-content-only.is-compact .nebula-layout-content-only__subnav {
+  display: flex;
+  flex-direction: column;
+  border-bottom: none;
+  border-right: 1px solid hsl(var(--border) / 75%);
+  max-width: 220px;
+}
+
+.nebula-layout-content-only.is-horizontal {
+  flex-direction: row;
+}
+
+.nebula-layout-content-only.is-horizontal .nebula-layout-content-only__subnav {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  border-bottom: none;
+  border-right: 1px solid hsl(var(--border) / 75%);
+  width: 220px;
+  max-width: 220px;
 }
 
 @media (prefers-reduced-motion: reduce) {

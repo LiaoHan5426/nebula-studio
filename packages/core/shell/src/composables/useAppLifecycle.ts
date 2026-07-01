@@ -229,6 +229,7 @@ export function useAppLifecycle(opts: UseAppLifecycleOptions) {
     usesIframeEmbed,
     shellTopPx,
     switchEmbeddedView,
+    syncSidebarSelection,
     enableEmbeddedView,
     disableEmbeddedView,
     reorderEmbeddedViews,
@@ -448,13 +449,6 @@ export function useAppLifecycle(opts: UseAppLifecycleOptions) {
     postShellEmbedReset(getEmbedIframe(viewId)?.contentWindow ?? null);
   }
 
-  function toggleShellContentFullscreen(): void {
-    const host = document.querySelector<HTMLElement>('.shell-embed-host');
-    if (!host) return;
-    if (!document.fullscreenElement) void host.requestFullscreen();
-    else void document.exitFullscreen();
-  }
-
   function onEmbedIframeLoad(viewId: string): void {
     requestAnimationFrame(() => void completeEmbedSurfaceLoading(viewId));
   }
@@ -585,7 +579,6 @@ export function useAppLifecycle(opts: UseAppLifecycleOptions) {
     closeOtherShellTags,
     closeAllShellTags,
     refreshActiveShellSurface,
-    toggleShellContentFullscreen,
     logout,
     syncShellAuthSessionStorage,
     onThemeChanged,

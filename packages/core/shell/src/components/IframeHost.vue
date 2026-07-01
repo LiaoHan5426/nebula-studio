@@ -5,40 +5,37 @@
   管理子应用 iframe 的渲染、加载过渡、空状态展示。
 -->
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import type { EmbeddedShellWindowId } from '@nebula-studio/app-shell';
 import { getShellIntegratedAppMeta } from '@nebula-studio/app-shell';
 
 const props = defineProps<{
-  /** 是否为 iframe 嵌入模式（Web），false 时为 Electron BrowserView 模式 */
   usesIframeEmbed: boolean;
-  /** 所有可用的视图 ID */
   availableViewIds: string[];
-  /** 各视图的 iframe src URL */
   embedSrc: Record<EmbeddedShellWindowId, string>;
-  /** 已创建过的 iframe ID 集合（懒加载 + v-show 保活） */
   loadedEmbedIds: Set<string>;
-  /** 已完成首次渲染的视图 ID 集合 */
   embedReadyViewIds: Set<string>;
-  /** 当前正在加载的视图 ID（null 表示无加载中的视图） */
   embedLoadingViewId: string | null;
-  /** 当前激活的视图 ID */
   activeViewId: string | null;
-  /** 集成面板是否打开（打开时隐藏空状态） */
   integrationOpen: boolean;
-  /** 解析视图标签 */
   resolveViewLabel: (viewId: string) => string;
 }>();
 
-defineEmits<{
-  /** iframe 加载完成 */
+const emit = defineEmits<{
   'embed-load': [viewId: string];
 }>();
+
+function isReady(viewId: string): boolean {
+  return (
+    props.embedReadyViewIds.has(viewId) && props.embedLoadingViewId !== viewId
+  );
+}
 
 const showTransition = computed(
   () =>
     props.embedLoadingViewId !== null &&
-    props.embedLoadingViewId === props.activeViewId,
+    props.embedLoadingViewId === props.activeViewId &&
+    !props.integrationOpen,
 );
 
 const transitionLabel = computed(() => {
@@ -52,32 +49,105 @@ const transitionIconSvg = computed(() => {
   return getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId).iconSvg;
 });
 
-function isReady(viewId: string): boolean {
-  return (
-    props.embedReadyViewIds.has(viewId) && props.embedLoadingViewId !== viewId
-  );
+const prevActiveViewId = ref<string | null>(null);
+const isSwitching = ref(false);
+const transitionReady = ref(true);
+const enterPhase = ref(false);
+
+const SWITCH_ENTER_MS = 300;
+const SWITCH_LEAVE_MS = 280;
+
+function isFrameVisible(viewId: string): boolean {
+  if (props.integrationOpen) return false;
+  if (viewId === props.activeViewId) return true;
+  return isSwitching.value && viewId === prevActiveViewId.value;
 }
+
+function frameMotionClass(viewId: string): Record<string, boolean> {
+  const isActive = viewId === props.activeViewId;
+  const isLeaving = isSwitching.value && viewId === prevActiveViewId.value;
+  const isEntering = isSwitching.value && isActive;
+
+  if (isLeaving) {
+    return { 'is-leaving': true };
+  }
+  if (isEntering) {
+    return enterPhase.value ? { 'is-entered': true } : { 'is-entering': true };
+  }
+  if (!isSwitching.value && isActive && isReady(viewId)) {
+    return { 'is-idle': true };
+  }
+  if (!isSwitching.value && isActive && !isReady(viewId)) {
+    return { 'is-entering': true };
+  }
+  return {};
+}
+
+watch(
+  () => props.activeViewId,
+  (newVal, oldVal) => {
+    if (newVal === oldVal) return;
+
+    prevActiveViewId.value = oldVal;
+    isSwitching.value = true;
+    transitionReady.value = false;
+    enterPhase.value = false;
+
+    requestAnimationFrame(() => {
+      enterPhase.value = true;
+    });
+
+    const readyTimeout = window.setTimeout(() => {
+      transitionReady.value = true;
+    }, SWITCH_ENTER_MS);
+    const cleanupTimeout = window.setTimeout(() => {
+      isSwitching.value = false;
+      prevActiveViewId.value = null;
+      enterPhase.value = false;
+    }, SWITCH_LEAVE_MS + 40);
+
+    return () => {
+      window.clearTimeout(readyTimeout);
+      window.clearTimeout(cleanupTimeout);
+    };
+  },
+);
+
+watch(
+  () => props.embedReadyViewIds,
+  (readyIds) => {
+    if (props.activeViewId && readyIds.has(props.activeViewId)) {
+      transitionReady.value = true;
+    }
+  },
+  { deep: true },
+);
 </script>
 
 <template>
   <div class="shell-embed-host">
+    <div
+      class="shell-embed-backdrop"
+      :class="{ 'is-visible': isSwitching && !transitionReady }"
+    />
+
     <div v-if="usesIframeEmbed" class="shell-embed">
       <template v-for="viewId in availableViewIds" :key="viewId">
         <iframe
           v-if="loadedEmbedIds.has(viewId)"
-          v-show="viewId === activeViewId"
+          v-show="isFrameVisible(viewId)"
           class="shell-embed-frame"
-          :class="{ 'is-surface-ready': isReady(viewId) }"
+          :class="frameMotionClass(viewId)"
           :src="embedSrc[viewId as EmbeddedShellWindowId]"
           :title="`Nebula Studio — ${viewId}`"
-          @load="$emit('embed-load', viewId)"
+          @load="emit('embed-load', viewId)"
         />
       </template>
     </div>
 
     <Transition name="shell-embed-transition">
       <div
-        v-if="showTransition"
+        v-if="showTransition && !transitionReady"
         class="shell-embed-transition"
         role="status"
         aria-live="polite"
@@ -129,6 +199,21 @@ function isReady(viewId: string): boolean {
   min-width: 0;
   min-height: 0;
   overflow: hidden;
+  background: hsl(var(--background-deep));
+}
+
+.shell-embed-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: hsl(var(--background-deep));
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.shell-embed-backdrop.is-visible {
+  opacity: 1;
 }
 
 .shell-embed {
@@ -141,22 +226,40 @@ function isReady(viewId: string): boolean {
 }
 
 .shell-embed-frame {
+  position: absolute;
+  inset: 0;
   box-sizing: border-box;
-  flex: 1;
   width: 100%;
   height: 100%;
   min-height: 0;
   margin: 0;
   pointer-events: none;
-  background: hsl(var(--background));
+  background: hsl(var(--background-deep));
   border: 0;
   opacity: 0;
-  transition: opacity 0.24s ease;
+  transform: translateY(8px);
+  transition:
+    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.shell-embed-frame.is-surface-ready {
+.shell-embed-frame.is-idle,
+.shell-embed-frame.is-entered {
   pointer-events: auto;
   opacity: 1;
+  transform: translateY(0);
+}
+
+.shell-embed-frame.is-entering {
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.shell-embed-frame.is-leaving {
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-4px);
 }
 
 .shell-embed-transition {
@@ -166,50 +269,50 @@ function isReady(viewId: string): boolean {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: hsl(var(--background-deep) / 94%);
-  backdrop-filter: blur(6px);
+  background: hsl(var(--background-deep) / 96%);
+  backdrop-filter: blur(8px);
 }
 
 .shell-embed-transition-card {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
   align-items: center;
-  min-width: 220px;
-  padding: 28px 32px;
+  min-width: 240px;
+  padding: 32px 36px;
   text-align: center;
-  background: hsl(var(--card) / 88%);
+  background: hsl(var(--card) / 92%);
   border: 1px solid hsl(var(--border) / 78%);
   border-radius: 16px;
-  box-shadow: 0 18px 40px rgb(2 4 12 / 22%);
+  box-shadow: 0 20px 48px rgb(2 4 12 / 28%);
 }
 
 .shell-embed-transition-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   color: hsl(var(--primary));
 }
 
 .shell-embed-transition-icon :deep(svg) {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
 }
 
 .shell-embed-transition-spinner {
-  width: 28px;
-  height: 28px;
-  border: 2px solid hsl(var(--border) / 70%);
+  width: 32px;
+  height: 32px;
+  border: 3px solid hsl(var(--border) / 60%);
   border-top-color: hsl(var(--primary));
   border-radius: 50%;
-  animation: shell-embed-spin 0.75s linear infinite;
+  animation: shell-embed-spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 .shell-embed-transition-title {
   margin: 0;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   color: hsl(var(--foreground));
 }
@@ -220,14 +323,26 @@ function isReady(viewId: string): boolean {
   color: hsl(var(--muted-foreground));
 }
 
-.shell-embed-transition-enter-active,
-.shell-embed-transition-leave-active {
-  transition: opacity 0.2s ease;
+.shell-embed-transition-enter-active {
+  transition:
+    opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    backdrop-filter 0.25s ease;
 }
 
-.shell-embed-transition-enter-from,
+.shell-embed-transition-leave-active {
+  transition:
+    opacity 0.3s ease-in,
+    backdrop-filter 0.3s ease;
+}
+
+.shell-embed-transition-enter-from {
+  opacity: 0;
+  backdrop-filter: blur(0);
+}
+
 .shell-embed-transition-leave-to {
   opacity: 0;
+  backdrop-filter: blur(0);
 }
 
 @keyframes shell-embed-spin {

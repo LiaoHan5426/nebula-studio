@@ -130,7 +130,7 @@ async function handleCreate() {
     dataSourceId: payload.dataSourceId,
     tableName: payload.tableName,
     subscribeType: payload.subscribeType,
-    pollingConfig: payload.pollingConfig as Record<string, unknown>,
+    pollingConfig: payload.pollingConfig as unknown as Record<string, unknown>,
     columns: payload.columns,
     eventTypes: payload.eventTypes,
   });

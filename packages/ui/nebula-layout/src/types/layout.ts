@@ -8,6 +8,19 @@ export interface SubNavItem {
   to: string;
 }
 
+export interface NavChild {
+  to: string;
+  label: string;
+}
+
+export interface NavItem {
+  key: string;
+  label: string;
+  icon?: string;
+  to?: string;
+  children?: NavChild[];
+}
+
 export interface LayoutPreferences {
   version?: number;
   collapsed: boolean;

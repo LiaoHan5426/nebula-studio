@@ -1,14 +1,27 @@
-import { LAYOUT_PREFERENCES_STORAGE_KEY } from '@nebula-studio/app-shell';
+import {
+  LAYOUT_PREFERENCES_STORAGE_KEY,
+  getLayoutHostMode,
+  isWebShellHost,
+} from '@nebula-studio/app-shell';
 import { reactive, watch } from 'vue';
 
 import { DEFAULT_LAYOUT_PREFERENCES, ACCENT_PRESETS } from '../types/layout';
 import type { LayoutPreferences } from '../types/layout';
 
+function resolveLayoutPreferencesStorageKey(): string {
+  if (typeof window === 'undefined') return LAYOUT_PREFERENCES_STORAGE_KEY;
+  if (isWebShellHost()) return LAYOUT_PREFERENCES_STORAGE_KEY;
+  if (getLayoutHostMode() === 'shell-hosted') {
+    return `${LAYOUT_PREFERENCES_STORAGE_KEY}:embed`;
+  }
+  return `${LAYOUT_PREFERENCES_STORAGE_KEY}:standalone`;
+}
+
 function readStored(): LayoutPreferences {
   if (typeof localStorage === 'undefined')
     return { ...DEFAULT_LAYOUT_PREFERENCES };
   try {
-    const raw = localStorage.getItem(LAYOUT_PREFERENCES_STORAGE_KEY);
+    const raw = localStorage.getItem(resolveLayoutPreferencesStorageKey());
     if (!raw) return { ...DEFAULT_LAYOUT_PREFERENCES };
     const parsed = {
       ...DEFAULT_LAYOUT_PREFERENCES,
@@ -47,7 +60,7 @@ export function useLayoutPreferences() {
       () => {
         try {
           localStorage.setItem(
-            LAYOUT_PREFERENCES_STORAGE_KEY,
+            resolveLayoutPreferencesStorageKey(),
             JSON.stringify({ ...state }),
           );
         } catch {

@@ -38,7 +38,7 @@ const pageTitle = computed(() => {
 </script>
 
 <template>
-  <NebulaAdminContent v-if="isShellHosted" compact>
+  <NebulaAdminContent v-if="isShellHosted" class="settings-embed-root">
     <template #subnav>
       <NebulaAdminSubNav :items="subNavItems" />
     </template>
@@ -65,6 +65,11 @@ const pageTitle = computed(() => {
 </template>
 
 <style lang="scss" scoped>
+.settings-embed-root {
+  height: 100%;
+  min-height: 0;
+}
+
 .settings-nav__item {
   display: block;
   padding: 10px 12px;

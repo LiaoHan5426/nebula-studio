@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, toRef } from 'vue';
+import { computed, ref, toRef } from 'vue';
 
 import {
   createSidebarState,
@@ -45,7 +45,7 @@ const emit = defineEmits<{
   tagsCloseOthers: [];
   tagsCloseAll: [];
   tagsRefresh: [];
-  tagsFullscreen: [];
+  contentFullscreenChange: [value: boolean];
 }>();
 
 const preferencesOpen = defineModel<boolean>('preferencesOpen', {
@@ -53,6 +53,7 @@ const preferencesOpen = defineModel<boolean>('preferencesOpen', {
 });
 
 const { preferences } = useLayoutPreferences();
+const contentFullscreen = ref(false);
 
 const sidebar = createSidebarState({
   collapsed: toRef(preferences, 'collapsed'),
@@ -79,8 +80,14 @@ const shellClass = computed(() => ({
   'is-sidebar-pinned': preferences.pinned,
   'is-sidebar-floating': isFloating.value,
   'is-content-compact': preferences.contentCompact,
+  'is-content-fullscreen': contentFullscreen.value,
   'nebula-layout-transition': true,
 }));
+
+function toggleContentFullscreen() {
+  contentFullscreen.value = !contentFullscreen.value;
+  emit('contentFullscreenChange', contentFullscreen.value);
+}
 
 function openPreferences() {
   preferencesOpen.value = true;
@@ -97,12 +104,17 @@ const resolvedShowBreadcrumb = computed(
   () => props.showBreadcrumb !== false && preferences.showBreadcrumb,
 );
 
-const shellStyle = computed(() => ({
-  '--shell-top':
-    resolvedShowTags.value && (props.tags?.length ?? 0) > 0
-      ? 'calc(var(--layout-header-height) + var(--layout-tags-height))'
-      : 'var(--layout-header-height)',
-}));
+const shellStyle = computed(() => {
+  if (contentFullscreen.value) {
+    return { '--shell-top': 'var(--layout-tags-height)' };
+  }
+  return {
+    '--shell-top':
+      resolvedShowTags.value && (props.tags?.length ?? 0) > 0
+        ? 'calc(var(--layout-header-height) + var(--layout-tags-height))'
+        : 'var(--layout-header-height)',
+  };
+});
 
 function onThemeUpdate(theme: NebulaThemeMode) {
   preferences.themeMode = theme;
@@ -128,6 +140,7 @@ function onThemeUpdate(theme: NebulaThemeMode) {
 
     <div class="nebula-layout-shell__main">
       <NebulaShellHeader
+        v-show="!contentFullscreen"
         :breadcrumbs="breadcrumbs"
         :show-breadcrumb="resolvedShowBreadcrumb"
         :theme="theme"
@@ -150,6 +163,7 @@ function onThemeUpdate(theme: NebulaThemeMode) {
           v-if="resolvedShowTags && tags.length"
           :tags="tags"
           :active-key="activeTagKey || ''"
+          :content-fullscreen="contentFullscreen"
           @activate="emit('tagActivate', $event)"
           @close="emit('tagClose', $event)"
           @close-left="emit('tagsCloseLeft')"
@@ -157,7 +171,7 @@ function onThemeUpdate(theme: NebulaThemeMode) {
           @close-others="emit('tagsCloseOthers')"
           @close-all="emit('tagsCloseAll')"
           @refresh="emit('tagsRefresh')"
-          @fullscreen="emit('tagsFullscreen')"
+          @fullscreen="toggleContentFullscreen"
         />
         <slot />
       </div>
@@ -169,5 +183,29 @@ function onThemeUpdate(theme: NebulaThemeMode) {
       @update:open="onPreferencesOpenChange"
       @update:theme="onThemeUpdate"
     />
+
+    <button
+      v-if="contentFullscreen"
+      type="button"
+      class="nebula-layout-shell__float-prefs"
+      title="偏好设置"
+      aria-label="偏好设置"
+      @click="openPreferences"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        width="18"
+        height="18"
+        aria-hidden="true"
+      >
+        <circle cx="12" cy="12" r="3" />
+        <path
+          d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"
+        />
+      </svg>
+    </button>
   </div>
 </template>
