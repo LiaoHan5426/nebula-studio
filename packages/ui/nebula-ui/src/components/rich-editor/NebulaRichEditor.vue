@@ -149,7 +149,7 @@ if (editor.value) {
   emit('ready', editor);
 }
 watch(editor, (ed) => {
-  if (ed) emit('ready', ed);
+  if (ed) emit('ready', editor);
 });
 </script>
 
