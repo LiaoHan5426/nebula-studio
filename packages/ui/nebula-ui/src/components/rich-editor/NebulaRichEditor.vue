@@ -14,7 +14,11 @@ import TextStyle from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
 import Underline from '@tiptap/extension-underline';
 import CodeBlock from '@tiptap/extension-code-block';
-import { computed, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
+
+import NebulaDialog from '../dialog/NebulaDialog.vue';
+import NebulaInput from '../input/NebulaInput.vue';
+import NebulaButton from '../button/NebulaButton.vue';
 import NebulaRichEditorToolbar from './NebulaRichEditorToolbar.vue';
 
 const props = withDefaults(
@@ -103,20 +107,41 @@ watch(
   },
 );
 
-function handleRequestLinkUrl() {
-  // eslint-disable-next-line no-alert
-  const url = window.prompt('输入链接地址:');
-  if (url) {
-    editor.value?.chain().focus().setLink({ href: url }).run();
-  }
+// Dialog state for link/image input
+const dialogOpen = ref(false);
+const dialogType = ref<'link' | 'image'>('link');
+const dialogInputValue = ref('');
+
+function openLinkDialog() {
+  dialogType.value = 'link';
+  dialogInputValue.value = '';
+  dialogOpen.value = true;
 }
 
-function handleRequestImageUrl() {
-  // eslint-disable-next-line no-alert
-  const url = window.prompt('输入图片地址:');
-  if (url) {
-    editor.value?.chain().focus().setImage({ src: url }).run();
+function openImageDialog() {
+  dialogType.value = 'image';
+  dialogInputValue.value = '';
+  dialogOpen.value = true;
+}
+
+function handleDialogConfirm() {
+  if (!dialogInputValue.value.trim()) return;
+
+  if (dialogType.value === 'link') {
+    editor.value
+      ?.chain()
+      .focus()
+      .setLink({ href: dialogInputValue.value })
+      .run();
+  } else if (dialogType.value === 'image') {
+    editor.value
+      ?.chain()
+      .focus()
+      .setImage({ src: dialogInputValue.value })
+      .run();
   }
+
+  dialogOpen.value = false;
 }
 
 // 就绪事件
@@ -137,12 +162,39 @@ watch(editor, (ed) => {
     <NebulaRichEditorToolbar
       v-if="toolbarVisible && editor"
       :editor="editor"
-      @request-link-url="handleRequestLinkUrl"
-      @request-image-url="handleRequestImageUrl"
+      @request-link-url="openLinkDialog"
+      @request-image-url="openImageDialog"
     />
     <div class="nebula-rich-editor__editor-wrap">
       <EditorContent :editor="editor" class="nebula-rich-editor__editor" />
     </div>
+
+    <!-- Link/Image Input Dialog -->
+    <NebulaDialog
+      v-model:open="dialogOpen"
+      :title="dialogType === 'link' ? '插入链接' : '插入图片'"
+      :description="dialogType === 'link' ? '输入链接地址' : '输入图片URL'"
+    >
+      <div class="flex flex-col gap-4 py-4">
+        <NebulaInput
+          v-model="dialogInputValue"
+          :placeholder="
+            dialogType === 'link'
+              ? 'https://example.com'
+              : 'https://example.com/image.png'
+          "
+          @keyup.enter="handleDialogConfirm"
+        />
+        <div class="flex justify-end gap-2">
+          <NebulaButton variant="ghost" @click="dialogOpen = false"
+            >取消</NebulaButton
+          >
+          <NebulaButton variant="primary" @click="handleDialogConfirm"
+            >确定</NebulaButton
+          >
+        </div>
+      </div>
+    </NebulaDialog>
   </div>
 </template>
 

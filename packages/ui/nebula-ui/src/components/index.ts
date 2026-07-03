@@ -8,6 +8,8 @@ export type {
   NebulaAnchorItem,
 } from './anchor/NebulaAnchor';
 export { default as NebulaButton } from './button/NebulaButton.vue';
+export { default as NebulaDialog } from './dialog/NebulaDialog.vue';
+export { default as NebulaInput } from './input/NebulaInput.vue';
 export { NebulaDrag } from './drag/NebulaDrag';
 export { NebulaPane } from './pane/NebulaPane';
 export { default as NebulaPagination } from './pagination/NebulaPagination.vue';
