@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
+import { NebulaButton } from '@nebula-studio/nebula-ui/components';
+
 const activeTab = ref<'subscriptions' | 'interfaces'>('interfaces');
 const xmlContent = ref<string>('');
 const showPreview = ref(false);
@@ -70,15 +72,16 @@ const handleSave = () => {
         <div class="section-header">
           <h3>BPMN 组合接口编辑器</h3>
           <div class="action-buttons">
-            <button
-              class="action-btn secondary"
+            <NebulaButton
+              size="sm"
+              variant="ghost"
               @click="showPreview = !showPreview"
             >
               {{ showPreview ? '编辑 XML' : '预览流程' }}
-            </button>
-            <button class="action-btn primary" @click="handleSave">
+            </NebulaButton>
+            <NebulaButton size="sm" variant="primary" @click="handleSave">
               保存流程
-            </button>
+            </NebulaButton>
           </div>
         </div>
 
@@ -122,7 +125,7 @@ const handleSave = () => {
       <div v-else class="subscription-section">
         <div class="section-header">
           <h3>库表订阅列表</h3>
-          <button class="action-btn primary">新建订阅</button>
+          <NebulaButton size="sm" variant="primary">新建订阅</NebulaButton>
         </div>
         <div class="empty-state">
           <div class="empty-icon">📋</div>
@@ -140,7 +143,7 @@ const handleSave = () => {
   height: 100%;
   background: hsl(var(--card));
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 10%);
 }
 
 .panel-header {
@@ -149,10 +152,10 @@ const handleSave = () => {
 }
 
 .panel-title {
+  margin: 0 0 12px;
   font-size: 18px;
   font-weight: 700;
   color: hsl(var(--foreground));
-  margin: 0 0 12px 0;
 }
 
 .tab-bar {
@@ -162,12 +165,12 @@ const handleSave = () => {
 
 .tab-btn {
   padding: 6px 16px;
-  border: 1px solid hsl(var(--border));
-  border-radius: 4px;
-  background: hsl(var(--card));
-  cursor: pointer;
   font-size: 14px;
   color: hsl(var(--foreground));
+  cursor: pointer;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 4px;
   transition: all 0.2s;
 }
 
@@ -176,8 +179,8 @@ const handleSave = () => {
 }
 
 .tab-btn.active {
-  background: hsl(var(--primary));
   color: hsl(var(--primary-foreground));
+  background: hsl(var(--primary));
   border-color: hsl(var(--primary));
 }
 
@@ -189,16 +192,16 @@ const handleSave = () => {
 
 .section-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 16px;
 }
 
 .section-header h3 {
+  margin: 0;
   font-size: 16px;
   font-weight: 600;
   color: hsl(var(--foreground));
-  margin: 0;
 }
 
 .action-buttons {
@@ -208,16 +211,16 @@ const handleSave = () => {
 
 .action-btn {
   padding: 6px 16px;
+  font-size: 14px;
+  cursor: pointer;
   border: none;
   border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
   transition: background 0.2s;
 }
 
 .action-btn.primary {
-  background: hsl(var(--primary));
   color: hsl(var(--primary-foreground));
+  background: hsl(var(--primary));
 }
 
 .action-btn.primary:hover {
@@ -225,8 +228,8 @@ const handleSave = () => {
 }
 
 .action-btn.secondary {
-  background: hsl(var(--secondary));
   color: hsl(var(--foreground));
+  background: hsl(var(--secondary));
   border: 1px solid hsl(var(--border));
 }
 
@@ -237,9 +240,9 @@ const handleSave = () => {
 .editor-container {
   height: calc(100% - 48px);
   min-height: 400px;
+  overflow: hidden;
   border: 1px solid hsl(var(--border));
   border-radius: 8px;
-  overflow: hidden;
 }
 
 .bpmn-placeholder {
@@ -257,21 +260,21 @@ const handleSave = () => {
 }
 
 .placeholder-icon {
-  font-size: 64px;
   margin-bottom: 16px;
+  font-size: 64px;
 }
 
 .placeholder-title {
+  margin-bottom: 8px;
   font-size: 20px;
   font-weight: 600;
   color: hsl(var(--foreground));
-  margin-bottom: 8px;
 }
 
 .placeholder-desc {
+  margin-bottom: 24px;
   font-size: 14px;
   color: hsl(var(--muted-foreground));
-  margin-bottom: 24px;
 }
 
 .placeholder-features {
@@ -284,14 +287,14 @@ const handleSave = () => {
 
 .feature-item {
   display: flex;
-  align-items: center;
   gap: 8px;
+  align-items: center;
   padding: 8px 16px;
-  background: hsl(var(--card));
-  border-radius: 8px;
-  border: 1px solid hsl(var(--border));
   font-size: 14px;
   color: hsl(var(--foreground));
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 8px;
 }
 
 .feature-icon {
@@ -300,8 +303,8 @@ const handleSave = () => {
 
 .placeholder-note {
   font-size: 12px;
-  color: hsl(var(--muted-foreground));
   font-style: italic;
+  color: hsl(var(--muted-foreground));
 }
 
 .xml-editor {
@@ -312,13 +315,13 @@ const handleSave = () => {
   width: 100%;
   height: 100%;
   padding: 16px;
-  border: none;
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-family: Monaco, Menlo, 'Ubuntu Mono', monospace;
   font-size: 13px;
   line-height: 1.5;
+  color: hsl(var(--foreground));
   resize: none;
   background: hsl(var(--background));
-  color: hsl(var(--foreground));
+  border: none;
 }
 
 .xml-textarea:focus {
@@ -335,8 +338,8 @@ const handleSave = () => {
 }
 
 .empty-icon {
-  font-size: 48px;
   margin-bottom: 12px;
+  font-size: 48px;
 }
 
 .empty-text {

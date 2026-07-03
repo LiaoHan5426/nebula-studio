@@ -7,6 +7,8 @@ import type {
 } from 'monaco-editor-vue3';
 import { CodeEditor } from 'monaco-editor-vue3';
 
+import { NebulaButton } from '@nebula-studio/nebula-ui/components';
+
 withDefaults(
   defineProps<{
     language?: string;
@@ -58,7 +60,9 @@ const handleLoading = (_loadingState: unknown) => {};
       </template>
       <template #error="{ error, retry }">
         <div>Error:{{ error.message }}</div>
-        <button @click="retry">retry</button>
+        <NebulaButton size="sm" variant="ghost" @click="retry"
+          >Retry</NebulaButton
+        >
       </template>
     </CodeEditor>
   </div>

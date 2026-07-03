@@ -1,84 +1,110 @@
 @import 'vxe-table/lib/style.css';
 
-/** wangEditor 富文本（NebulaEditor variant=richtext）— 未引入则编辑区几乎不可见 */
-@import '@wangeditor-next/editor/dist/css/style.css';
-
 /** NebulaReader Markdown / plain 代码块语法高亮（highlight.js） */
 @import 'highlight.js/styles/github.css';
 
-/**
- * wangEditor：映射到 Nebula 语义色，并提高下拉/面板层级（避免被右侧预览盖住）
- */
-.nebula-rich-editor {
-  --w-e-textarea-bg-color: hsl(var(--card));
-  --w-e-textarea-color: hsl(var(--foreground));
-  --w-e-textarea-slight-color: hsl(var(--muted-foreground));
-  --w-e-textarea-selected-border-color: hsl(var(--primary));
-  --w-e-toolbar-bg-color: hsl(var(--muted) / 42%);
-  --w-e-toolbar-color: hsl(var(--foreground));
-  --w-e-toolbar-border-color: hsl(var(--border));
-  --w-e-toolbar-active-bg-color: hsl(var(--accent) / 55%);
-  --w-e-toolbar-active-color: hsl(var(--foreground));
-  --w-e-toolbar-disabled-color: hsl(var(--muted-foreground));
-  --w-e-modal-button-bg-color: hsl(var(--secondary));
-  --w-e-modal-button-border-color: hsl(var(--border));
-  --w-e-textarea-handler-bg-color: hsl(var(--border));
-
-  position: relative;
-  z-index: 1;
-  isolation: isolate;
+/** tiptap 编辑器基础样式 */
+.tiptap {
+  box-sizing: border-box;
+  height: 100%;
+  padding: 0.85rem;
+  overflow-y: auto;
+  outline: none;
 }
 
-.nebula-rich-editor .w-e-select-list,
-.nebula-rich-editor .w-e-drop-panel,
-.nebula-rich-editor .w-e-modal,
-.nebula-rich-editor .w-e-bar-item-group .w-e-bar-item-menus-container {
-  z-index: 60;
+.tiptap p.is-editor-empty:first-child::before {
+  color: hsl(var(--muted-foreground));
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
 }
 
-.nebula-rich-editor .w-e-bar {
-  border-radius: 8px 8px 0 0;
+.tiptap > * + * {
+  margin-top: 0.5em;
 }
 
-.nebula-rich-editor .w-e-text-container {
-  border-radius: 0 0 8px 8px;
+.tiptap h1,
+.tiptap h2,
+.tiptap h3 {
+  font-weight: 700;
 }
 
-.nebula-btn {
-  display: inline-flex;
-  gap: 0.35rem;
-  align-items: center;
-  justify-content: center;
-  padding: 0.42rem 0.78rem;
-  font-size: 0.84rem;
-  font-weight: 600;
-  line-height: 1.1;
-  white-space: nowrap;
-  cursor: pointer;
+.tiptap h1 {
+  font-size: 1.5rem;
+}
+.tiptap h2 {
+  font-size: 1.25rem;
+}
+.tiptap h3 {
+  font-size: 1.1rem;
+}
+
+.tiptap ul,
+.tiptap ol {
+  padding-left: 1.5rem;
+}
+
+.tiptap ul {
+  list-style: disc;
+}
+.tiptap ol {
+  list-style: decimal;
+}
+
+.tiptap blockquote {
+  padding-left: 0.75rem;
+  margin-left: 0;
+  border-left: 3px solid hsl(var(--border));
+}
+
+.tiptap pre {
+  padding: 0.85rem;
+  overflow-x: auto;
+  font-family:
+    'Cascadia Code', 'JetBrains Mono', Consolas, 'Courier New', monospace;
+  font-size: 0.82rem;
+  line-height: 1.58;
+  background: hsl(var(--muted));
   border: 1px solid hsl(var(--border));
   border-radius: 8px;
-  transition: background-color 0.18s ease;
 }
 
-.nebula-btn:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
+.tiptap code {
+  font-family:
+    'Cascadia Code', 'JetBrains Mono', Consolas, 'Courier New', monospace;
+  font-size: 0.82rem;
 }
 
-.nebula-btn--primary {
-  color: hsl(var(--primary-foreground));
-  background: hsl(var(--primary));
-  border-color: hsl(var(--primary) / 70%);
+.tiptap hr {
+  margin: 1rem 0;
+  border: none;
+  border-top: 1px solid hsl(var(--border));
 }
 
-.nebula-btn--secondary {
-  color: hsl(var(--foreground));
-  background: hsl(var(--secondary));
+.tiptap img {
+  max-width: 100%;
+  height: auto;
 }
 
-.nebula-btn--ghost {
-  color: hsl(var(--muted-foreground));
-  background: transparent;
+.tiptap table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tiptap td,
+.tiptap th {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid hsl(var(--border));
+}
+
+.tiptap th {
+  font-weight: 600;
+  background: hsl(var(--muted) / 55%);
+}
+
+.tiptap mark {
+  background-color: hsl(var(--warning) / 30%);
 }
 
 .nebula-pane {
@@ -105,75 +131,6 @@
 
 .nebula-pane__body {
   padding: 0.75rem 0.9rem;
-}
-
-.nebula-switch {
-  display: inline-flex;
-  gap: 0.55rem;
-  align-items: center;
-  padding: 0.34rem 0.58rem;
-  color: hsl(var(--foreground));
-  cursor: pointer;
-  background: hsl(var(--secondary));
-  border: 1px solid hsl(var(--border));
-  border-radius: 999px;
-}
-
-.nebula-switch__track {
-  position: relative;
-  width: 32px;
-  height: 18px;
-  background: hsl(var(--muted-foreground) / 40%);
-  border-radius: 999px;
-}
-
-.nebula-switch__thumb {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 14px;
-  height: 14px;
-  background: hsl(var(--primary-foreground));
-  border-radius: 50%;
-  transition: transform 0.2s ease;
-}
-
-.nebula-switch--on .nebula-switch__track {
-  background: hsl(var(--primary));
-}
-
-.nebula-switch--on .nebula-switch__thumb {
-  transform: translateX(14px);
-}
-
-.nebula-tag {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.2rem 0.5rem;
-  font-size: 0.72rem;
-  line-height: 1;
-  color: hsl(var(--muted-foreground));
-  background: hsl(var(--muted) / 70%);
-  border: 1px solid hsl(var(--border));
-  border-radius: 999px;
-}
-
-.nebula-tag--info,
-.nebula-tag--default {
-  color: hsl(var(--primary));
-  background: hsl(var(--primary) / 14%);
-}
-
-.nebula-tag--success {
-  color: hsl(var(--success));
-}
-
-.nebula-tag--warning {
-  color: hsl(var(--warning));
-}
-
-.nebula-tag--danger {
-  color: hsl(var(--destructive));
 }
 
 .nebula-tree {
@@ -864,42 +821,6 @@ html[data-theme='dark']
   cursor: grab;
 }
 
-.nebula-pagination {
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-  justify-content: space-between;
-  color: hsl(var(--muted-foreground));
-}
-
-.nebula-pagination__summary {
-  font-size: 0.82rem;
-}
-
-.nebula-pagination__size-wrap {
-  display: inline-flex;
-  gap: 0.45rem;
-  align-items: center;
-}
-
-.nebula-pagination__size-label {
-  font-size: 0.8rem;
-}
-
-.nebula-pagination__size-select {
-  padding: 0.2rem 0.35rem;
-  color: hsl(var(--foreground));
-  background: hsl(var(--card));
-  border: 1px solid hsl(var(--border));
-  border-radius: 6px;
-}
-
-.nebula-pagination__actions {
-  display: inline-flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-
 /* NebulaAnchor — in-page nav + optional back-to-top */
 .nebula-anchor-root {
   position: relative;
@@ -1081,92 +1002,6 @@ html[data-theme='dark']
     margin-top: 0.35rem;
     margin-left: 0;
   }
-}
-
-/* Icon button */
-.nebula-icon-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  color: hsl(var(--foreground) / 88%);
-  cursor: pointer;
-  background: transparent;
-  border: none;
-  border-radius: 8px;
-  transition:
-    background 0.2s ease,
-    color 0.2s ease;
-}
-
-.nebula-icon-btn:hover:not(:disabled) {
-  color: hsl(var(--foreground));
-  background: hsl(var(--muted) / 70%);
-}
-
-.nebula-icon-btn--active,
-.nebula-icon-btn:active:not(:disabled) {
-  background: hsl(var(--muted) / 90%);
-}
-
-.nebula-icon-btn:disabled {
-  cursor: not-allowed;
-  opacity: 0.45;
-}
-
-/* Avatar */
-.nebula-avatar {
-  position: relative;
-  display: inline-flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  color: hsl(var(--primary-foreground));
-  background: hsl(var(--primary) / 85%);
-  border-radius: 999px;
-}
-
-.nebula-avatar--sm {
-  width: 28px;
-  height: 28px;
-  font-size: 12px;
-}
-
-.nebula-avatar--md {
-  width: 36px;
-  height: 36px;
-  font-size: 14px;
-}
-
-.nebula-avatar--lg {
-  width: 48px;
-  height: 48px;
-  font-size: 18px;
-}
-
-.nebula-avatar__img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.nebula-avatar__fallback {
-  font-weight: 600;
-  line-height: 1;
-}
-
-.nebula-avatar__status {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 9px;
-  height: 9px;
-  background: #22c55e;
-  border: 2px solid hsl(var(--card));
-  border-radius: 999px;
 }
 
 /* Dropdown */

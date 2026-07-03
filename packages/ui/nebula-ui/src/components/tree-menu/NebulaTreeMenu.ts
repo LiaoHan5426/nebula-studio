@@ -1,6 +1,6 @@
 import { defineComponent, h } from 'vue';
 import type { VNode } from 'vue';
-import { NebulaButton } from '../button/NebulaButton';
+import NebulaButton from '../button/NebulaButton.vue';
 import { NebulaPane } from '../pane/NebulaPane';
 
 export interface NebulaTreeNode {

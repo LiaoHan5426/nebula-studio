@@ -22,6 +22,8 @@
     "lint:style": "vp exec stylelint \"**/*.{css,scss,vue}\" --fix --allow-empty-input --ignore-pattern \"**/out/**\" --ignore-pattern \"**/dist/**\" --ignore-pattern \"**/dev-dist/**\"",
     "lint": "vp run lint:ox && vp run lint:style",
     "test": "vp run -r test",
+    "test:e2e": "playwright test",
+    "test:all": "vp run -r test && playwright test",
     "postinstall": "vp run -r stub --if-present",
     "prepare": "vp config",
     "update:deps": "vp dlx taze -r -w",
@@ -31,6 +33,7 @@
   },
   "devDependencies": {
     "@eslint-community/eslint-plugin-eslint-comments": "catalog:lint",
+    "@playwright/test": "^1.52.0",
     "@nebula-studio-internal/oxfmt": "workspace:^",
     "@nebula-studio-internal/oxlint": "workspace:^",
     "@nebula-studio-internal/stylelint": "workspace:^",

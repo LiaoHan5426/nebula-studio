@@ -12,7 +12,6 @@
     "./tokens/root.css": "./src/tokens/root.css",
     "./tokens/semantic-light.css": "./src/tokens/semantic-light.css",
     "./tokens/semantic-dark.css": "./src/tokens/semantic-dark.css",
-    "./foundations/scrollbar.css": "./src/foundations/scrollbar.css",
     "./foundations/theme-motion.css": "./src/foundations/theme-motion.css"
   }
 }

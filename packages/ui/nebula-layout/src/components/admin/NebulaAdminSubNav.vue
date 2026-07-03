@@ -2,6 +2,8 @@
 import { computed, ref } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 
+import { NebulaButton } from '@nebula-studio/nebula-ui/components';
+
 import type { SubNavItem } from '../../types/layout';
 
 const props = defineProps<{
@@ -60,7 +62,9 @@ function closeDrawer() {
         <aside class="nebula-admin-subnav__drawer-panel">
           <header class="nebula-admin-subnav__drawer-head">
             <strong>导航</strong>
-            <button type="button" @click="closeDrawer">关闭</button>
+            <NebulaButton size="sm" variant="ghost" @click="closeDrawer"
+              >关闭</NebulaButton
+            >
           </header>
           <RouterLink
             v-for="item in overflowItems"

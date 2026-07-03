@@ -291,9 +291,9 @@ function runAndClose(fn: () => void) {
 
 .nebula-shell-tags__actions {
   display: flex;
-  gap: 2px;
+  gap: 8px;
   align-items: center;
-  padding: 0 8px;
+  padding: 0 12px;
   border-left: 1px solid hsl(var(--border) / 70%);
 }
 

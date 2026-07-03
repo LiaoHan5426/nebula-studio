@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "monaco-editor": "catalog:",
-    "monaco-editor-vue3": "catalog:"
+    "monaco-editor-vue3": "catalog:",
+    "@nebula-studio/nebula-ui": "workspace:^"
   }
 }

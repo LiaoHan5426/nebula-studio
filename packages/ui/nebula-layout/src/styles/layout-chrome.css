@@ -31,9 +31,9 @@
 
 .nebula-header-tool-group {
   display: inline-flex;
-  gap: 2px;
+  gap: 12px;
   align-items: center;
-  padding: 2px;
+  padding: 6px;
   background: hsl(var(--muted) / 30%);
   border: 1px solid hsl(var(--border) / 55%);
   border-radius: 10px;

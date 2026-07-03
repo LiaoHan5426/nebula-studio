@@ -70,9 +70,7 @@ const emit = defineEmits<{
       </button>
 
       <div class="nebula-header-tool-group">
-        <button
-          type="button"
-          class="nebula-header-prefs-btn"
+        <NebulaIconButton
           title="偏好设置"
           aria-label="偏好设置"
           @click.stop="emit('openPreferences')"
@@ -90,7 +88,7 @@ const emit = defineEmits<{
               d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H5a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"
             />
           </svg>
-        </button>
+        </NebulaIconButton>
 
         <NebulaThemeToggle
           v-if="theme"
@@ -118,29 +116,6 @@ const emit = defineEmits<{
 </template>
 
 <style scoped>
-.nebula-header-prefs-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  color: hsl(var(--foreground) / 88%);
-  cursor: pointer;
-  background: transparent;
-  border: none;
-  border-radius: 8px;
-  -webkit-app-region: no-drag;
-  transition:
-    background 0.2s ease,
-    color 0.2s ease;
-}
-
-.nebula-header-prefs-btn:hover {
-  color: hsl(var(--foreground));
-  background: hsl(var(--muted) / 70%);
-}
-
 .nebula-header-login {
   padding: 6px 12px;
   font-size: 13px;

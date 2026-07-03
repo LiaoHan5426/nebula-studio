@@ -1,6 +1,6 @@
 import { defineComponent, h, Teleport } from 'vue';
 import { cn } from '../../utils/cn';
-import { NebulaIconButton } from '../icon-button/NebulaIconButton';
+import NebulaIconButton from '../icon-button/NebulaIconButton.vue';
 import { useBodyScrollLock } from '../../composables/useBodyScrollLock';
 import { useOverlayDismiss } from '../../composables/useOverlayDismiss';
 

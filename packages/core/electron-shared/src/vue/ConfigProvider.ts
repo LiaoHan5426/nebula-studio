@@ -1,5 +1,5 @@
-import { defineComponent, h, provide } from 'vue';
-import type { InjectionKey, Ref } from 'vue';
+import { computed, defineComponent, h, provide } from 'vue';
+import type { ComputedRef, InjectionKey, Ref } from 'vue';
 import { useRendererLocaleSync } from './useRendererLocaleSync.ts';
 import type { UseRendererLocaleSyncOptions } from './useRendererLocaleSync.ts';
 import { useRendererThemeSync } from './useRendererThemeSync.ts';
@@ -12,6 +12,8 @@ export interface RendererConfigContext {
   theme: ReturnType<typeof useRendererThemeSync>['theme'];
   appMode: ReturnType<typeof useRendererThemeSync>['appMode'];
   isDark: ReturnType<typeof useRendererThemeSync>['isDark'];
+  /** shadcn-vue 兼容的主题类名 ('dark' | '') */
+  themeClass: ComputedRef<string>;
   setTheme: (next: ThemeMode) => Promise<ThemeMode>;
   toggleTheme: () => Promise<ThemeMode>;
   refreshAppMode: () => Promise<AppMode>;
@@ -46,6 +48,7 @@ export const ConfigProvider = defineComponent({
     const state: RendererConfigContext = {
       ...themeState,
       ...localeState,
+      themeClass: computed(() => (themeState.isDark.value ? 'dark' : '')),
     };
     provide(rendererConfigKey, state);
     return () => h('div', slots.default?.() ?? []);

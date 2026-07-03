@@ -1,7 +1,21 @@
 <script setup lang="ts">
-import type { IDomEditor } from '@wangeditor-next/editor';
-import { Editor, Toolbar } from '@wangeditor-next/editor-for-vue';
-import { computed, shallowRef, watch } from 'vue';
+import { useEditor, EditorContent } from '@tiptap/vue-3';
+import StarterKit from '@tiptap/starter-kit';
+import Highlight from '@tiptap/extension-highlight';
+import Image from '@tiptap/extension-image';
+import Link from '@tiptap/extension-link';
+import Placeholder from '@tiptap/extension-placeholder';
+import Table from '@tiptap/extension-table';
+import TableRow from '@tiptap/extension-table-row';
+import TableCell from '@tiptap/extension-table-cell';
+import TableHeader from '@tiptap/extension-table-header';
+import TextAlign from '@tiptap/extension-text-align';
+import TextStyle from '@tiptap/extension-text-style';
+import Color from '@tiptap/extension-color';
+import Underline from '@tiptap/extension-underline';
+import CodeBlock from '@tiptap/extension-code-block';
+import { computed, watch } from 'vue';
+import NebulaRichEditorToolbar from './NebulaRichEditorToolbar.vue';
 
 const props = withDefaults(
   defineProps<{
@@ -9,32 +23,21 @@ const props = withDefaults(
     /** 工具栏 + 编辑区总高度 */
     height?: number | string;
     readonly?: boolean;
-    /** 显示 wangEditor 工具栏（只读时默认隐藏） */
+    /** 显示工具栏（只读时默认隐藏） */
     showToolbar?: boolean;
-    toolbarConfig?: Record<string, unknown>;
-    editorConfig?: Record<string, unknown>;
   }>(),
   {
     height: 420,
     readonly: false,
     showToolbar: undefined,
-    toolbarConfig: () => ({}),
-    editorConfig: () => ({}),
   },
 );
 
 const emit = defineEmits<{
   'update:modelValue': [value: string];
-  /** wangEditor 实例就绪（可用于高级定制） */
-  ready: [editor: IDomEditor];
+  /** tiptap 编辑器实例就绪（可用于高级定制） */
+  ready: [editor: ReturnType<typeof useEditor>];
 }>();
-
-const editorRef = shallowRef<IDomEditor | null>(null);
-
-const htmlModel = computed({
-  get: () => props.modelValue ?? '',
-  set: (v: string) => emit('update:modelValue', v),
-});
 
 const normalizedHeight = computed(() =>
   typeof props.height === 'number' ? `${props.height}px` : props.height,
@@ -45,28 +48,84 @@ const toolbarVisible = computed(() => {
   return !props.readonly;
 });
 
-const mergedEditorConfig = computed(() => ({
-  ...props.editorConfig,
-}));
+const editor = useEditor({
+  content: props.modelValue ?? '',
+  editable: !props.readonly,
+  extensions: [
+    StarterKit.configure({
+      codeBlock: false, // 使用独立的 CodeBlock 扩展
+    }),
+    Highlight,
+    Image,
+    Link.configure({
+      openOnClick: false,
+    }),
+    Placeholder.configure({
+      placeholder: '输入内容...',
+    }),
+    Table.configure({
+      resizable: true,
+    }),
+    TableRow,
+    TableCell,
+    TableHeader,
+    TextAlign.configure({
+      types: ['heading', 'paragraph'],
+    }),
+    TextStyle,
+    Color,
+    Underline,
+    CodeBlock,
+  ],
+  onUpdate({ editor: ed }) {
+    emit('update:modelValue', ed.getHTML());
+  },
+});
 
-function handleCreated(editor: IDomEditor) {
-  editorRef.value = editor;
-  applyReadonly(editor, props.readonly);
-  emit('ready', editor);
-}
+// 同步外部 modelValue 变化到编辑器
+watch(
+  () => props.modelValue,
+  (newVal) => {
+    const ed = editor.value;
+    if (!ed) return;
+    const currentHtml = ed.getHTML();
+    if (newVal !== currentHtml) {
+      ed.commands.setContent(newVal ?? '', false);
+    }
+  },
+);
 
-function applyReadonly(editor: IDomEditor, locked: boolean) {
-  const ed = editor as IDomEditor & { enable?: (enabled?: boolean) => void };
-  ed.enable?.(!locked);
-}
-
+// 同步只读状态
 watch(
   () => props.readonly,
   (locked) => {
-    const ed = editorRef.value;
-    if (ed) applyReadonly(ed, locked);
+    editor.value?.setEditable(!locked);
   },
 );
+
+function handleRequestLinkUrl() {
+  // eslint-disable-next-line no-alert
+  const url = window.prompt('输入链接地址:');
+  if (url) {
+    editor.value?.chain().focus().setLink({ href: url }).run();
+  }
+}
+
+function handleRequestImageUrl() {
+  // eslint-disable-next-line no-alert
+  const url = window.prompt('输入图片地址:');
+  if (url) {
+    editor.value?.chain().focus().setImage({ src: url }).run();
+  }
+}
+
+// 就绪事件
+if (editor.value) {
+  emit('ready', editor);
+}
+watch(editor, (ed) => {
+  if (ed) emit('ready', ed);
+});
 </script>
 
 <template>
@@ -75,26 +134,19 @@ watch(
     :class="{ 'nebula-rich-editor--readonly': readonly }"
     :style="{ height: normalizedHeight }"
   >
-    <Toolbar
-      v-if="toolbarVisible && editorRef"
-      class="nebula-rich-editor__toolbar"
-      mode="default"
-      :editor="editorRef"
-      :default-config="toolbarConfig"
+    <NebulaRichEditorToolbar
+      v-if="toolbarVisible && editor"
+      :editor="editor"
+      @request-link-url="handleRequestLinkUrl"
+      @request-image-url="handleRequestImageUrl"
     />
     <div class="nebula-rich-editor__editor-wrap">
-      <Editor
-        v-model="htmlModel"
-        mode="default"
-        class="nebula-rich-editor__editor"
-        :default-config="mergedEditorConfig"
-        @on-created="handleCreated"
-      />
+      <EditorContent :editor="editor" class="nebula-rich-editor__editor" />
     </div>
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
 .nebula-rich-editor {
   box-sizing: border-box;
   display: flex;
@@ -107,14 +159,10 @@ watch(
   border-radius: 10px;
 }
 
-.nebula-rich-editor__toolbar {
-  flex: 0 0 auto;
-  border-bottom: 1px solid hsl(var(--border));
-}
-
 .nebula-rich-editor__editor-wrap {
   flex: 1 1 auto;
   min-height: 0;
+  overflow-y: auto;
 }
 
 .nebula-rich-editor__editor {

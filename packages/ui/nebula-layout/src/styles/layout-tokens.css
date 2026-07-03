@@ -160,14 +160,12 @@
 }
 
 .nebula-layout-shell__header button,
-.nebula-layout-shell__header .nebula-icon-btn,
 .nebula-layout-shell__header .nebula-dropdown,
 .nebula-layout-shell__header .nebula-dropdown__trigger,
 .nebula-layout-shell__header .nebula-theme-toggle,
 .nebula-layout-shell__header .nebula-header-search,
 .nebula-sidebar-footer__btn.is-pin-active {
   color: hsl(var(--primary));
-  background: hsl(var(--primary) / 12%);
 }
 
 .nebula-layout-shell__header .nebula-user-menu,
