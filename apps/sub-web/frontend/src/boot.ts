@@ -24,7 +24,12 @@ export async function bootFrontend(opts?: {
   // MSW mock：仅 GitHub demo 部署时启用（构建时由 NEBULA_MSW_ENABLED 环境变量注入）
   if (__NEBULA_MSW_ENABLED__) {
     const { worker } = await import('@nebula-studio/msw/browser');
-    await worker.start({ onUnhandledRequest: 'bypass' });
+    await worker.start({
+      onUnhandledRequest: 'bypass',
+      serviceWorker: {
+        url: `${__NEBULA_MSW_BASE_PATH__ || '/'}mockServiceWorker.js`,
+      },
+    });
   }
 
   bootstrapShellIntegratedApps();

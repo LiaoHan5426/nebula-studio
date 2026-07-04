@@ -65,7 +65,12 @@ jobs:
       - name: Build web shell
         env:
           VITE_BASE_PATH: ${{ steps.vars.outputs.base_path }}
+          NEBULA_MSW_ENABLED: 'true'
+          NEBULA_MSW_BASE_PATH: ${{ steps.vars.outputs.base_path }}
         run: vp run web#build
+
+      - name: Copy MSW Service Worker
+        run: cp node_modules/msw/lib/mockServiceWorker.js apps/web/dist/mockServiceWorker.js
 
       - name: Build VitePress docs site
         env:

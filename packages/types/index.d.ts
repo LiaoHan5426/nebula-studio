@@ -8,6 +8,11 @@ declare const __NEBULA_BUILD_NODE_VERSION__: string;
  */
 declare const __NEBULA_MSW_ENABLED__: boolean;
 
+/**
+ * MSW Service Worker 基础路径：由 `nebulaMswDefine()` 在构建时注入，用于 GitHub Pages 子路径部署。
+ */
+declare const __NEBULA_MSW_BASE_PATH__: string;
+
 type NebulaRuntimeMode = 'standalone' | 'platform-embed' | 'electron';
 
 interface Window {
