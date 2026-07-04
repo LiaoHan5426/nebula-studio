@@ -73,6 +73,15 @@ export function createNebulaRendererViteConfig(
       ...nebulaMswDefine(),
       ...defineExtra,
     },
+    build: {
+      rolldownOptions: {
+        onwarn(warning, defaultHandler) {
+          // @vueuse/core 中 /* #__PURE__ */ 注解位置不符合 Rolldown 规范，不影响产物
+          if (warning.code === 'INVALID_ANNOTATION') return;
+          defaultHandler(warning);
+        },
+      },
+    },
   };
 
   const chunkPartial = nebulaRendererChunkBuildPartial(chunksOptions);

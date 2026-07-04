@@ -13,6 +13,17 @@ import AppComponent from './App.vue';
 export async function bootLogin(opts?: { mode?: RuntimeMode }): Promise<void> {
   const mode = opts?.mode ?? detectRuntimeMode();
 
+  // MSW mock：仅 GitHub demo 部署时启用（构建时由 NEBULA_MSW_ENABLED 环境变量注入）
+  if (__NEBULA_MSW_ENABLED__) {
+    const { worker } = await import('@nebula-studio/msw/browser');
+    await worker.start({
+      onUnhandledRequest: 'bypass',
+      serviceWorker: {
+        url: `${__NEBULA_MSW_BASE_PATH__ || '/'}mockServiceWorker.js`,
+      },
+    });
+  }
+
   await bootMicroApp({
     appId: 'login',
     mode,
