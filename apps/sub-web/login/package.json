@@ -19,6 +19,7 @@
     "@nebula-studio/nebula-ui": "workspace:^",
     "vue": "catalog:vue",
     "@nebula-studio/runtime": "workspace:^",
+    "@nebula-studio/msw": "workspace:^",
     "@nebula-studio-electron/electron-bridge": "workspace:^",
     "@nebula-studio/auth-provider": "workspace:^"
   },

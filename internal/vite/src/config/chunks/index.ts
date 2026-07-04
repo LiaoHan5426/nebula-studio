@@ -46,6 +46,7 @@ export function resolveNebulaManualChunks(
       const name = rule(id, m);
       if (name) return name;
     }
+    return undefined;
   };
 }
 
@@ -56,6 +57,8 @@ export function nebulaRendererChunkBuildPartial(
   if (!manualChunks) return undefined;
   return {
     build: {
+      // nebula-workspace 聚合所有 workspace 包，预期超过默认 500 kB
+      chunkSizeWarningLimit: 2000,
       rollupOptions: {
         output: {
           manualChunks,
