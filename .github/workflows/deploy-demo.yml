@@ -65,10 +65,9 @@ jobs:
         run: vp run web#build
 
       - name: Build VitePress docs site
-        working-directory: apps/sub-web/docs-site
         env:
           VITEPRESS_BASE: ${{ steps.vars.outputs.base_path }}docs/
-        run: pnpm run build
+        run: vp run --filter @nebula-studio-renderer/docs-site build
 
       - name: Merge docs site into web shell dist
         run: |
