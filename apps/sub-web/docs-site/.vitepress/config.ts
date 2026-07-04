@@ -4,6 +4,8 @@ export default defineConfig({
   title: 'Nebula Studio',
   description: 'Nebula Studio 组件库文档',
   lang: 'zh-CN',
+  // base 由命令行参数 --base 控制，适配 GitHub Pages 部署
+  base: process.env.VITEPRESS_BASE || '/',
 
   lastUpdated: true,
   cleanUrls: true,

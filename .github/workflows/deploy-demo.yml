@@ -66,9 +66,11 @@ jobs:
 
       - name: Build VitePress docs site
         working-directory: apps/sub-web/docs-site
+        env:
+          VITEPRESS_BASE: ${{ steps.vars.outputs.base_path }}docs/
         run: |
           npm install
-          npx vitepress build --base "${{ steps.vars.outputs.base_path }}docs/"
+          npx vitepress build
 
       - name: Merge docs site into web shell dist
         run: |

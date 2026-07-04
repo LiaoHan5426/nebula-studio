@@ -69,6 +69,8 @@ jobs:
 
       - name: Build VitePress docs site
         working-directory: apps/sub-web/docs-site
+        env:
+          VITEPRESS_BASE: ${{ steps.vars.outputs.base_path }}docs/
         run: |
           npm install
           npx vitepress build
