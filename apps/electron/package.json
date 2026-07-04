@@ -24,7 +24,8 @@
     "@nebula-studio-electron/electron-bridge": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
     "electron-updater": "catalog:electron",
-    "yaml": "catalog:parser"
+    "yaml": "catalog:parser",
+    "extract-zip": "catalog:electron"
   },
   "devDependencies": {
     "@nebula-studio-internal/node": "workspace:^",

@@ -64,6 +64,7 @@ catalogs:
     electron-updater: ^6.8.3
     electron-vite: ^5.0.0
     electron-fix: ^1.1.7
+    extract-zip: ^2.0.1
   editor:
     '@codemirror/commands': ^6.10.3
     '@codemirror/lang-html': ^6.4.11
