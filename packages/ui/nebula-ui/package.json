@@ -29,6 +29,9 @@
     "./env": {
       "types": "./env.d.ts",
       "default": "./env.d.ts"
+    },
+    "./styles.css": {
+      "default": "./src/styles.css"
     }
   },
   "dependencies": {
