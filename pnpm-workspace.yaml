@@ -30,7 +30,7 @@ allowBuilds:
   electron-winstaller: true
   es5-ext: false
   esbuild: true
-  msw: set this to true or false
+  msw: true
   vue-demi: true
 
 minimumReleaseAgeExclude:
