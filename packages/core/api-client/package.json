@@ -23,7 +23,7 @@
     "test": "vp test"
   },
   "dependencies": {
-    "nprogress": "catalog:"
+    "nprogress": "catalog:utils"
   },
   "devDependencies": {
     "@nebula-studio-internal/tsconfig": "workspace:^",

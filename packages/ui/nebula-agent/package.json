@@ -7,10 +7,10 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "mustache": "^4.2.0"
+    "mustache": "catalog:template"
   },
   "devDependencies": {
-    "@types/mustache": "^4.2.6",
-    "node-sql-parser": "catalog:"
+    "@types/mustache": "catalog:template",
+    "node-sql-parser": "catalog:parser"
   }
 }

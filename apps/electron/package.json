@@ -23,8 +23,8 @@
     "@electron-toolkit/utils": "catalog:electron",
     "@nebula-studio-electron/electron-bridge": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
-    "electron-updater": "^6.8.3",
-    "yaml": "^2.9.0"
+    "electron-updater": "catalog:electron",
+    "yaml": "catalog:parser"
   },
   "devDependencies": {
     "@nebula-studio-internal/node": "workspace:^",

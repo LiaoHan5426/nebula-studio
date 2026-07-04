@@ -33,26 +33,29 @@
   },
   "devDependencies": {
     "@eslint-community/eslint-plugin-eslint-comments": "catalog:lint",
-    "@playwright/test": "^1.52.0",
     "@nebula-studio-internal/oxfmt": "workspace:^",
     "@nebula-studio-internal/oxlint": "workspace:^",
     "@nebula-studio-internal/stylelint": "workspace:^",
     "@nebula-studio-internal/tsconfig": "workspace:^",
     "@nebula-studio/types": "workspace:^",
+    "@playwright/test": "catalog:test",
     "@vitejs/plugin-vue": "catalog:vite",
     "@vitejs/plugin-vue-jsx": "catalog:vite",
-    "cross-env": "catalog:",
+    "cross-env": "catalog:utils",
     "eslint-plugin-better-tailwindcss": "catalog:lint",
     "eslint-plugin-command": "catalog:lint",
-    "esno": "catalog:",
+    "esno": "catalog:utils",
     "happy-dom": "catalog:vite",
     "tailwindcss": "catalog:style",
-    "unconfig": "catalog:",
+    "unconfig": "catalog:utils",
     "vite-plus": "catalog:vite",
     "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.24"
   },
   "engines": {
     "node": ">=22.12.0"
   },
-  "packageManager": "pnpm@11.5.1"
+  "packageManager": "pnpm@11.5.1",
+  "dependencies": {
+    "@bpmn-io/cm-theme": "catalog:bpmn"
+  }
 }

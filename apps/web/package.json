@@ -17,7 +17,7 @@
     "@nebula-studio-renderer/settings": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
-    "marked": "catalog:",
+    "marked": "catalog:markdown",
     "vue": "catalog:vue",
     "@nebula-studio-electron/electron-bridge": "workspace:^",
     "@nebula-studio/auth-provider": "workspace:^"

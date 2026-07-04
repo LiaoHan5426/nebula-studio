@@ -21,8 +21,8 @@
     "@nebula-studio/nebula-agent": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
-    "marked": "catalog:",
-    "monaco-editor": "catalog:",
+    "marked": "catalog:markdown",
+    "monaco-editor": "catalog:editor",
     "vue": "catalog:vue",
     "@nebula-studio/runtime": "workspace:^"
   },

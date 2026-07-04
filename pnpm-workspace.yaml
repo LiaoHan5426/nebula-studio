@@ -47,68 +47,6 @@ peerDependencyRules:
     vite: '*'
     vitest: '*'
 
-catalog:
-  '@codemirror/commands': ^6.10.3
-  '@codemirror/lang-html': ^6.4.11
-  '@codemirror/lang-java': ^6.0.2
-  '@codemirror/lang-javascript': ^6.2.5
-  '@codemirror/lang-markdown': ^6.5.0
-  '@codemirror/lang-python': ^6.2.1
-  '@codemirror/language': ^6.12.3
-  '@codemirror/state': ^6.7.0
-  '@codemirror/theme-one-dark': ^6.1.3
-  '@codemirror/view': ^6.43.2
-
-  '@iconify/vue': ^4.3.0
-
-  '@inquirer/prompts': ^8.5.2
-  '@manypkg/get-packages': ^2.2.2
-  '@tiptap/core': ^2.12.0
-  '@tiptap/extension-code-block': ^2.12.0
-  '@tiptap/extension-color': ^2.12.0
-  '@tiptap/extension-highlight': ^2.12.0
-  '@tiptap/extension-image': ^2.12.0
-  '@tiptap/extension-link': ^2.12.0
-  '@tiptap/extension-placeholder': ^2.12.0
-  '@tiptap/extension-table': ^2.12.0
-  '@tiptap/extension-table-cell': ^2.12.0
-  '@tiptap/extension-table-header': ^2.12.0
-  '@tiptap/extension-table-row': ^2.12.0
-  '@tiptap/extension-text-align': ^2.12.0
-  '@tiptap/extension-text-style': ^2.12.0
-  '@tiptap/extension-underline': ^2.12.0
-  '@tiptap/pm': ^2.12.0
-  '@tiptap/starter-kit': ^2.12.0
-  '@tiptap/vue-3': ^2.12.0
-  '@typescript-eslint/eslint-plugin': ^8.60.1
-  '@typescript-eslint/parser': ^8.60.1
-  '@vueuse/core': ^13.3.0
-  '@vue/test-utils': ^2.4.6
-  class-variance-authority: ^0.7.1
-  clsx: ^2.1.1
-  codemirror: ^6.0.2
-  cross-env: ^10.1.0
-  electron-fix: ^1.1.7
-
-  esno: ^4.8.0
-  globals: ^17.6.0
-  highlight.js: ^11.11.1
-  lucide-vue-next: ^0.513.0
-  marked: ^18.0.4
-  monaco-editor: ^0.55.1
-  monaco-editor-vue3: ^1.0.5
-  node-sql-parser: ^5.4.0
-  nprogress: ^0.2.0
-  oxc-minify: ^0.129.0
-  reka-ui: ^2.3.1
-  tailwind-merge: ^3.3.0
-  unconfig: ^7.5.0
-
-  vuedraggable: ^2.24.3
-  vxe-table: ^4.19.6
-  xe-utils: ^4.0.8
-  yaml: ^2.9.0
-
 catalogMode: prefer
 
 catalogs:
@@ -124,6 +62,44 @@ catalogs:
     electron-builder: ^26.8.1
     electron-updater: ^6.8.3
     electron-vite: ^5.0.0
+    electron-fix: ^1.1.7
+  editor:
+    '@codemirror/commands': ^6.10.3
+    '@codemirror/lang-html': ^6.4.11
+    '@codemirror/lang-java': ^6.0.2
+    '@codemirror/lang-javascript': ^6.2.5
+    '@codemirror/lang-markdown': ^6.5.0
+    '@codemirror/lang-python': ^6.2.1
+    '@codemirror/language': ^6.12.3
+    '@codemirror/state': ^6.7.0
+    '@codemirror/theme-one-dark': ^6.1.3
+    '@codemirror/view': ^6.43.2
+    codemirror: ^6.0.2
+    monaco-editor: ^0.55.1
+    monaco-editor-vue3: ^1.0.5
+  form:
+    '@tiptap/core': ^2.12.0
+    '@tiptap/extension-code-block': ^2.12.0
+    '@tiptap/extension-color': ^2.12.0
+    '@tiptap/extension-highlight': ^2.12.0
+    '@tiptap/extension-image': ^2.12.0
+    '@tiptap/extension-link': ^2.12.0
+    '@tiptap/extension-placeholder': ^2.12.0
+    '@tiptap/extension-table': ^2.12.0
+    '@tiptap/extension-table-cell': ^2.12.0
+    '@tiptap/extension-table-header': ^2.12.0
+    '@tiptap/extension-table-row': ^2.12.0
+    '@tiptap/extension-text-align': ^2.12.0
+    '@tiptap/extension-text-style': ^2.12.0
+    '@tiptap/extension-underline': ^2.12.0
+    '@tiptap/pm': ^2.12.0
+    '@tiptap/starter-kit': ^2.12.0
+    '@tiptap/vue-3': ^2.12.0
+  bpmn:
+    '@bpmn-io/cm-theme': ^0.2.2
+    bpmn-js: ^18.0.0
+    bpmn-js-properties-panel: ^5.58.0
+    camunda-bpmn-moddle: ^7.0.1
   lint:
     vue-eslint-parser: ^10.4.1
     yaml-eslint-parser: ^2.0.0
@@ -151,37 +127,72 @@ catalogs:
     stylelint-config-standard: ^40.0.0
     stylelint-order: ^8.1.1
     stylelint-scss: ^7.1.1
+    '@typescript-eslint/eslint-plugin': ^8.60.1
+    '@typescript-eslint/parser': ^8.60.1
+  markdown:
+    marked: ^18.0.4
+    highlight.js: ^11.11.1
+  parser:
+    node-sql-parser: ^5.4.0
+    yaml: ^2.9.0
   release:
     bumpp: ^11.1.0
   style:
     '@iconify/tailwind4': ^1.2.3
-    '@tailwindcss/typography': ^0.5.19
+    '@tailwindcss/typography': ^0.5.20
     postcss: ^8.5.15
     postcss-html: ^1.8.1
     postcss-scss: ^4.0.9
     sass: ^1.100.0
     sass-embedded: ^1.100.0
-    tailwindcss: ^4.3.1
+    tailwindcss: ^4.3.2
     tw-animate-css: ^1.4.0
   types:
     '@types/node': ^24.12.4
     '@types/nprogress': ^0.2.3
-    '@typescript/native-preview': 7.0.0-dev.20260328.1
     typescript: ^6.0.3
+  ui:
+    reka-ui: ^2.3.1
+    vxe-table: ^4.19.6
+    xe-utils: ^4.0.8
+    vuedraggable: ^4.1.0
+    lucide-vue-next: ^0.513.0
+    '@iconify/vue': ^4.3.0
+  ui-utils:
+    class-variance-authority: ^0.7.1
+    clsx: ^2.1.1
+    tailwind-merge: ^3.3.0
   utils:
     '@fastify/deepmerge': ^3.2.1
     '@manypkg/get-packages': ^2.2.2
     consola: ^3.4.2
     unconfig: ^7.5.0
+    esno: ^4.8.0
+    globals: ^17.6.0
+    nprogress: ^0.2.0
+    oxc-minify: ^0.129.0
+    cross-env: ^10.1.0
   vite:
     '@vitejs/plugin-vue': ^6.0.7
     '@vitejs/plugin-vue-jsx': ^5.1.6
     happy-dom: ^20.10.6
-    #vite: npm:@voidzero-dev/vite-plus-core@latest
-    vite: 8.0.10
-    vite-plus: ^0.1.24
-    vitest: npm:@voidzero-dev/vite-plus-test@latest
+    vite: ^8.1.3
+    vite-plus: ^0.2.2
+    vitest: npm:@voidzero-dev/vite-plus-test@^0.1.24
   vue:
     vue: ^3.5.35
     vue-router: ^4.6.4
     vue-tsc: ^3.3.3
+    '@vueuse/core': ^13.3.0
+    '@vue/test-utils': ^2.4.6
+  '@inquirer':
+    '@inquirer/prompts': ^8.5.2
+  dag:
+    '@vue-flow/core': ^1.41.2
+    '@vue-flow/background': ^1.3.0
+    '@vue-flow/controls': ^1.1.2
+  test:
+    '@playwright/test': ^1.61.1
+  template:
+    mustache: ^4.2.0
+    '@types/mustache': ^4.2.6

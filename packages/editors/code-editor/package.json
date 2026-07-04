@@ -31,15 +31,14 @@
     "prepublishOnly": "vp run build"
   },
   "devDependencies": {
-    "@types/node": "^25.9.1",
-    "@typescript/native-preview": "7.0.0-dev.20260509.2",
-    "bumpp": "^11.1.0",
-    "typescript": "^6.0.3",
-    "vite-plus": "^0.1.24"
+    "@types/node": "catalog:types",
+    "bumpp": "catalog:release",
+    "typescript": "catalog:types",
+    "vite-plus": "catalog:vite"
   },
   "dependencies": {
-    "monaco-editor": "catalog:",
-    "monaco-editor-vue3": "catalog:",
+    "monaco-editor": "catalog:editor",
+    "monaco-editor-vue3": "catalog:editor",
     "@nebula-studio/nebula-ui": "workspace:^"
   }
 }
