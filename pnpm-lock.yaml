@@ -708,6 +708,9 @@ importers:
       '@nebula-studio/auth-provider':
         specifier: workspace:^
         version: link:../../../packages/core/auth-provider
+      '@nebula-studio/msw':
+        specifier: workspace:^
+        version: link:../../../packages/core/msw
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
         version: link:../../../packages/ui/nebula-ui
