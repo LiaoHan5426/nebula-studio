@@ -104,8 +104,8 @@ function iconPath(name: BreadcrumbSegment['icon']): string | null {
   overflow: hidden;
   text-overflow: ellipsis;
   color: inherit;
-  text-decoration: none;
   white-space: nowrap;
+  text-decoration: none;
 }
 
 a.nebula-breadcrumb__label:hover {

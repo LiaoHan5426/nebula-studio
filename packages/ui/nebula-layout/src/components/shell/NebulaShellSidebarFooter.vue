@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NebulaIconButton } from '@nebula-studio/nebula-ui';
+import { NebulaButton } from '@nebula-studio/nebula-ui';
 import { computed } from 'vue';
 
 import { useLayoutContext } from '../../composables/useLayoutContext';
@@ -19,7 +19,9 @@ const pinTitle = computed(() => (preferences.pinned ? '取消固定' : '固定�
 
 <template>
   <footer class="nebula-sidebar-footer">
-    <NebulaIconButton
+    <NebulaButton
+      icon
+      variant="ghost"
       class="nebula-sidebar-footer__btn"
       :title="collapseTitle"
       :aria-label="collapseTitle"
@@ -42,9 +44,11 @@ const pinTitle = computed(() => (preferences.pinned ? '取消固定' : '固定�
           <polyline points="6 17 11 12 6 7" />
         </template>
       </svg>
-    </NebulaIconButton>
+    </NebulaButton>
 
-    <NebulaIconButton
+    <NebulaButton
+      icon
+      variant="ghost"
       :class="
         preferences.pinned
           ? 'nebula-sidebar-footer__btn nebula-sidebar-footer__pin is-pin-active'
@@ -80,6 +84,6 @@ const pinTitle = computed(() => (preferences.pinned ? '取消固定' : '固定�
         <path d="M9 3h6l1 7h4l-5 8v3H9v-3L5 10h4l1-7z" />
         <line x1="4" y1="4" x2="20" y2="20" />
       </svg>
-    </NebulaIconButton>
+    </NebulaButton>
   </footer>
 </template>

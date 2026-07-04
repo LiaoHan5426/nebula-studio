@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { NebulaButton, NebulaPane } from '@nebula-studio/nebula-ui';
+import {
+  NebulaButton,
+  NebulaInput,
+  NebulaPane,
+} from '@nebula-studio/nebula-ui';
 
 import { organizationsApi, orgPolicyApi } from '@/shared/api/system';
 import type { OrganizationNode, OrgPolicy } from '@/shared/api/system';
@@ -148,19 +152,19 @@ async function savePolicy() {
       <NebulaPane title="新建组织" class="modal">
         <label class="field">
           <span>组织名称</span>
-          <input v-model="form.orgName" />
+          <NebulaInput v-model="form.orgName" />
         </label>
         <label class="field">
           <span>组织编码</span>
-          <input v-model="form.orgCode" />
+          <NebulaInput v-model="form.orgCode" />
         </label>
         <label class="field">
           <span>父级 ID</span>
-          <input v-model="form.parentId" placeholder="留空表示根组织" />
+          <NebulaInput v-model="form.parentId" placeholder="留空表示根组织" />
         </label>
         <label class="field">
           <span>描述</span>
-          <input v-model="form.description" />
+          <NebulaInput v-model="form.description" />
         </label>
         <div class="modal__actions">
           <NebulaButton variant="secondary" @click="showDialog = false">

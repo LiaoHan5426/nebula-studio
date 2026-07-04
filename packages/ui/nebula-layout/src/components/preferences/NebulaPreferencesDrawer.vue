@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { NebulaIconButton } from '@nebula-studio/nebula-ui';
-import type { NebulaThemeMode } from '@nebula-studio/nebula-ui';
+import { NebulaButton } from '@nebula-studio/nebula-ui';
+import type { NebulaThemeMode } from '../../types/layout';
 import { onMounted, onUnmounted, ref, watch } from 'vue';
 
 import AppearanceTab from './AppearanceTab.vue';
@@ -64,7 +64,9 @@ onUnmounted(() => {
             <h2 class="nebula-drawer__title">偏好设置</h2>
             <p class="nebula-drawer__subtitle">自定义偏好设置 &amp; 实时预览</p>
           </div>
-          <NebulaIconButton
+          <NebulaButton
+            icon
+            variant="ghost"
             class="nebula-drawer__close"
             title="关闭"
             aria-label="关闭"
@@ -81,7 +83,7 @@ onUnmounted(() => {
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
-          </NebulaIconButton>
+          </NebulaButton>
         </header>
 
         <div class="nebula-drawer__body">

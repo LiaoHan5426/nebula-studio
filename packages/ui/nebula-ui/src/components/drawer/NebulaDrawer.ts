@@ -1,6 +1,6 @@
 import { defineComponent, h, Teleport } from 'vue';
 import { cn } from '../../utils/cn';
-import NebulaIconButton from '../icon-button/NebulaIconButton.vue';
+import NebulaButton from '../button/NebulaButton.vue';
 import { useBodyScrollLock } from '../../composables/useBodyScrollLock';
 import { useOverlayDismiss } from '../../composables/useOverlayDismiss';
 
@@ -75,8 +75,10 @@ export const NebulaDrawer = defineComponent({
                     ]),
                   ],
                   h(
-                    NebulaIconButton,
+                    NebulaButton,
                     {
+                      icon: true,
+                      variant: 'ghost',
                       class: 'nebula-drawer__close',
                       title: '关闭',
                       ariaLabel: '关闭',

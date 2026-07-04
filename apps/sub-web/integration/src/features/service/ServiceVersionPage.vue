@@ -3,12 +3,15 @@
     <div class="page-header">
       <h2>版本管理</h2>
       <div class="header-actions">
-        <input
+        <NebulaInput
           v-model="resourceId"
-          class="input-resource"
           placeholder="输入资源 ID 查询"
+          class="input-resource"
+          @keydown.enter="loadSnapshots"
         />
-        <button class="btn-refresh" @click="loadSnapshots">查询</button>
+        <NebulaButton variant="secondary" @click="loadSnapshots"
+          >查询</NebulaButton
+        >
       </div>
     </div>
 
@@ -34,10 +37,19 @@
             <td>{{ snap.createdBy || '-' }}</td>
             <td>{{ formatTime(snap.createdAt) }}</td>
             <td>
-              <button class="btn-action" @click="viewDetail(snap)">详情</button>
-              <button class="btn-action" @click="requestRollback(snap)">
+              <NebulaButton
+                variant="secondary"
+                size="sm"
+                @click="viewDetail(snap)"
+                >详情</NebulaButton
+              >
+              <NebulaButton
+                variant="secondary"
+                size="sm"
+                @click="requestRollback(snap)"
+              >
                 回滚
-              </button>
+              </NebulaButton>
             </td>
           </tr>
           <tr v-if="snapshots.length === 0">
@@ -56,12 +68,16 @@
           <h3>确认回滚</h3>
           <p>确认回滚到版本 {{ rollbackTarget.versionId }}？</p>
           <div class="modal-actions">
-            <button class="btn-action" @click="rollbackTarget = null">
+            <NebulaButton variant="secondary" @click="rollbackTarget = null">
               取消
-            </button>
-            <button class="btn-action btn-danger" @click="confirmRollback">
+            </NebulaButton>
+            <NebulaButton
+              variant="primary"
+              class="btn-danger"
+              @click="confirmRollback"
+            >
               确认
-            </button>
+            </NebulaButton>
           </div>
         </div>
       </div>
@@ -101,9 +117,9 @@
             }}</pre>
           </div>
           <div class="modal-actions">
-            <button class="btn-action" @click="selectedSnapshot = null">
+            <NebulaButton variant="secondary" @click="selectedSnapshot = null">
               关闭
-            </button>
+            </NebulaButton>
           </div>
         </div>
       </div>
@@ -113,6 +129,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { NebulaButton, NebulaInput } from '@nebula-studio/nebula-ui';
 import { versionApi } from '@/shared/api/consoleApi';
 import type { VersionSnapshot } from '@/shared/types';
 
@@ -200,18 +217,7 @@ onMounted(() => {
 }
 
 .input-resource {
-  padding: 4px 10px;
-  font-size: 13px;
-  border: 1px solid #d9d9d9;
-  border-radius: 4px;
-}
-
-.btn-refresh {
-  padding: 4px 12px;
-  cursor: pointer;
-  background: #fff;
-  border: 1px solid #d9d9d9;
-  border-radius: 4px;
+  min-width: 220px;
 }
 
 .version-table {
@@ -223,28 +229,18 @@ onMounted(() => {
 .version-table td {
   padding: 8px 12px;
   text-align: left;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid hsl(var(--border));
 }
 
 .version-table th {
   font-weight: 600;
-  background: #fafafa;
-}
-
-.btn-action {
-  padding: 4px 12px;
-  margin-right: 4px;
-  color: #1890ff;
-  cursor: pointer;
-  background: transparent;
-  border: 1px solid #1890ff;
-  border-radius: 4px;
+  background: hsl(var(--muted));
 }
 
 .loading,
 .empty {
   padding: 24px;
-  color: #999;
+  color: hsl(var(--muted-foreground));
   text-align: center;
 }
 
@@ -261,7 +257,7 @@ onMounted(() => {
 .modal-card {
   width: min(560px, calc(100vw - 32px));
   padding: 20px 24px;
-  background: #fff;
+  background: hsl(var(--card));
   border-radius: 8px;
 }
 
@@ -280,7 +276,7 @@ onMounted(() => {
 
 .detail-label {
   width: 80px;
-  color: #666;
+  color: hsl(var(--muted-foreground));
   text-align: right;
 }
 
@@ -291,9 +287,9 @@ onMounted(() => {
   overflow: auto;
   font-size: 12px;
   line-height: 1.5;
-  color: #333;
-  background: #f5f5f5;
-  border: 1px solid #e8e8e8;
+  color: hsl(var(--foreground));
+  background: hsl(var(--muted));
+  border: 1px solid hsl(var(--border));
   border-radius: 4px;
 }
 
@@ -311,7 +307,7 @@ onMounted(() => {
 }
 
 .btn-danger {
-  color: #ff4d4f;
-  border-color: #ff4d4f;
+  color: hsl(var(--destructive-foreground));
+  background: hsl(var(--destructive));
 }
 </style>

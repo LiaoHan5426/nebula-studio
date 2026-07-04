@@ -17,15 +17,12 @@
  * - 混排多种 fence 语言时将 **主语言设为 `markdown`**，在正文里写 fenced 代码块。
  */
 import { computed, useId } from 'vue';
-import NebulaCodeEditor from '../code-editor/NebulaCodeEditor.vue';
-import NebulaRichEditor from '../rich-editor/NebulaRichEditor.vue';
-import { NebulaReader } from '../reader/NebulaReader';
+import NebulaCodeEditor from './code/NebulaCodeEditor.vue';
+import NebulaRichEditor from './rich/NebulaRichEditor.vue';
+import { NebulaReader } from './reader/NebulaReader';
 import { bindingFromNebulaEditor } from '../../utils/nebulaEditorReader';
-import type {
-  NebulaEditorCodeLanguage,
-  NebulaEditorVariant,
-} from '../editor-types/NebulaEditorTypes';
-import { NEBULA_EDITOR_CODE_LANGUAGE_OPTIONS } from '../editor-types/NebulaEditorTypes';
+import type { NebulaEditorCodeLanguage, NebulaEditorVariant } from './types';
+import { NEBULA_EDITOR_CODE_LANGUAGE_OPTIONS } from './types';
 
 const props = withDefaults(
   defineProps<{
@@ -281,7 +278,9 @@ function togglePreview(): void {
 }
 
 .nebula-editor__preview-toggle:hover {
+  color: hsl(var(--primary));
   background: hsl(var(--accent));
+  border-color: hsl(var(--primary) / 40%);
 }
 
 .nebula-editor__split {

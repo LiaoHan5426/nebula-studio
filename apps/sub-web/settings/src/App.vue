@@ -78,17 +78,6 @@ body {
   font-size: 13px;
 }
 
-.field input,
-.field select,
-.field textarea {
-  padding: 8px 10px;
-  font: inherit;
-  color: hsl(var(--foreground));
-  background: hsl(var(--background));
-  border: 1px solid hsl(var(--border));
-  border-radius: 8px;
-}
-
 .field__readonly {
   opacity: 0.85;
 }

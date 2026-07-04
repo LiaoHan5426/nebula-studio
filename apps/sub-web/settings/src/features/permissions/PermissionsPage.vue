@@ -2,7 +2,9 @@
 import { computed, onMounted, ref } from 'vue';
 import {
   NebulaButton,
+  NebulaInput,
   NebulaPane,
+  NebulaSelect,
   NebulaSwitch,
   NebulaTable,
   NebulaTableColumn,
@@ -286,27 +288,19 @@ function parentCode(row: PermissionNode): string {
       <NebulaPane :title="dialogTitle" class="modal">
         <label class="field">
           <span>权限名称</span>
-          <input v-model="form.permName" />
+          <NebulaInput v-model="form.permName" />
         </label>
         <label class="field">
           <span>权限编码</span>
-          <input v-model="form.permCode" :readonly="Boolean(editingId)" />
+          <NebulaInput v-model="form.permCode" :readonly="Boolean(editingId)" />
         </label>
         <label class="field">
           <span>类型</span>
-          <select v-model="form.permType">
-            <option
-              v-for="option in PERM_TYPE_OPTIONS"
-              :key="option.value"
-              :value="option.value"
-            >
-              {{ option.label }}
-            </option>
-          </select>
+          <NebulaSelect v-model="form.permType" :options="PERM_TYPE_OPTIONS" />
         </label>
         <label class="field">
           <span>父级 ID</span>
-          <input
+          <NebulaInput
             v-model="form.parentId"
             placeholder="留空表示根节点"
             :readonly="parentIdLocked || Boolean(editingId)"
@@ -314,11 +308,11 @@ function parentCode(row: PermissionNode): string {
         </label>
         <label class="field">
           <span>排序</span>
-          <input v-model.number="form.sortOrder" type="number" min="0" />
+          <NebulaInput v-model="form.sortOrder" type="number" />
         </label>
         <label class="field">
           <span>描述</span>
-          <input v-model="form.description" />
+          <NebulaInput v-model="form.description" />
         </label>
         <div class="modal__actions">
           <NebulaButton variant="secondary" @click="showDialog = false">

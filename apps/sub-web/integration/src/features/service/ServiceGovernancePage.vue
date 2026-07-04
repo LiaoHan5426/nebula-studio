@@ -2,6 +2,8 @@
 import { computed, onMounted, ref, watch } from 'vue';
 import {
   NebulaButton,
+  NebulaInput,
+  NebulaSelect,
   NebulaTable,
   NebulaTableColumn,
   NebulaTag,
@@ -482,12 +484,14 @@ const createButtonLabel = computed(() => {
         </p>
       </div>
       <div v-if="tenants.length" class="service-governance-page__tenant-select">
-        <label for="gov-tenant-select">治理租户</label>
-        <select id="gov-tenant-select" v-model="selectedTenantId">
-          <option v-for="t in tenants" :key="t.tenantId" :value="t.tenantId">
-            {{ t.tenantName }} ({{ t.tenantId }})
-          </option>
-        </select>
+        <label>治理租户</label>
+        <NebulaSelect
+          v-model="selectedTenantId"
+          :options="tenants"
+          label-key="tenantName"
+          value-key="tenantId"
+          class="service-governance-page__tenant-select-control"
+        />
       </div>
     </header>
 
@@ -694,109 +698,89 @@ const createButtonLabel = computed(() => {
         <div v-if="activeTab === 'rateLimit'" class="modal-form">
           <label class="modal-form__field">
             <span>规则名称</span>
-            <input v-model="rateLimitForm.ruleName" placeholder="可选" />
+            <NebulaInput v-model="rateLimitForm.ruleName" placeholder="可选" />
           </label>
           <label class="modal-form__field">
             <span>目标服务</span>
-            <select v-model="rateLimitForm.interfaceId">
-              <option
-                v-for="svc in manageableServices"
-                :key="svc.interfaceId"
-                :value="svc.interfaceId"
-              >
-                {{ svc.interfaceName }} ({{ svc.interfaceId }})
-              </option>
-            </select>
+            <NebulaSelect
+              v-model="rateLimitForm.interfaceId"
+              :options="manageableServices"
+              label-key="interfaceName"
+              value-key="interfaceId"
+            />
           </label>
           <label class="modal-form__field">
             <span>窗口内最大请求数</span>
-            <input v-model="rateLimitForm.maxRequests" type="number" min="1" />
+            <NebulaInput v-model="rateLimitForm.maxRequests" type="number" />
           </label>
           <label class="modal-form__field">
             <span>窗口（秒）</span>
-            <input
-              v-model="rateLimitForm.windowSeconds"
-              type="number"
-              min="1"
-            />
+            <NebulaInput v-model="rateLimitForm.windowSeconds" type="number" />
           </label>
         </div>
         <div v-else-if="activeTab === 'circuitBreaker'" class="modal-form">
           <label class="modal-form__field">
             <span>目标服务</span>
-            <select
+            <NebulaSelect
               v-model="circuitForm.interfaceId"
+              :options="manageableServices"
+              label-key="interfaceName"
+              value-key="interfaceId"
               :disabled="!!editingCircuit"
-            >
-              <option
-                v-for="svc in manageableServices"
-                :key="svc.interfaceId"
-                :value="svc.interfaceId"
-              >
-                {{ svc.interfaceName }} ({{ svc.interfaceId }})
-              </option>
-            </select>
+            />
           </label>
           <label class="modal-form__field">
             <span>失败率阈值 (%)</span>
-            <input
+            <NebulaInput
               v-model="circuitForm.failureRateThreshold"
               type="number"
-              min="1"
-              max="100"
             />
           </label>
           <label class="modal-form__field">
             <span>慢调用率阈值 (%)</span>
-            <input
+            <NebulaInput
               v-model="circuitForm.slowCallRateThreshold"
               type="number"
-              min="1"
-              max="100"
             />
           </label>
           <label class="modal-form__field">
             <span>慢调用时长 (秒)</span>
-            <input
+            <NebulaInput
               v-model="circuitForm.slowCallDurationSeconds"
               type="number"
-              min="1"
             />
           </label>
           <label class="modal-form__field">
             <span>最小调用次数</span>
-            <input
+            <NebulaInput
               v-model="circuitForm.minimumNumberOfCalls"
               type="number"
-              min="1"
             />
           </label>
           <label class="modal-form__field">
             <span>熔断等待 (秒)</span>
-            <input
+            <NebulaInput
               v-model="circuitForm.waitDurationSeconds"
               type="number"
-              min="1"
             />
           </label>
         </div>
         <div v-else class="modal-form">
           <label class="modal-form__field">
             <span>规则名称</span>
-            <input v-model="whitelistForm.ruleName" placeholder="可选" />
+            <NebulaInput v-model="whitelistForm.ruleName" placeholder="可选" />
           </label>
           <label class="modal-form__field">
             <span>目标服务（留空为租户级）</span>
-            <select v-model="whitelistForm.interfaceId">
-              <option value="">（租户级）</option>
-              <option
-                v-for="svc in manageableServices"
-                :key="svc.interfaceId"
-                :value="svc.interfaceId"
-              >
-                {{ svc.interfaceName }} ({{ svc.interfaceId }})
-              </option>
-            </select>
+            <NebulaSelect
+              v-model="whitelistForm.interfaceId"
+              :options="[
+                { interfaceId: '', interfaceName: '（租户级）' },
+                ...manageableServices,
+              ]"
+              label-key="interfaceName"
+              value-key="interfaceId"
+            />
           </label>
           <label class="modal-form__field">
             <span>允许 IP（每行或逗号分隔）</span>
@@ -860,13 +844,9 @@ const createButtonLabel = computed(() => {
   font-size: 13px;
 }
 
-.service-governance-page__tenant-select select {
+.service-governance-page__tenant-select select,
+.service-governance-page__tenant-select-control {
   min-width: 220px;
-  padding: 6px 10px;
-  color: hsl(var(--foreground));
-  background: hsl(var(--background));
-  border: 1px solid hsl(var(--border));
-  border-radius: 6px;
 }
 
 .service-governance-page__title {
@@ -938,8 +918,6 @@ const createButtonLabel = computed(() => {
   font-size: 13px;
 }
 
-.modal-form__field input,
-.modal-form__field select,
 .modal-form__field textarea {
   padding: 8px 10px;
   background: hsl(var(--background));

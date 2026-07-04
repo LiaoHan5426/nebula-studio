@@ -7,7 +7,6 @@ import {
   DialogPortal,
   DialogRoot,
   DialogTitle,
-  DialogTrigger,
 } from 'reka-ui';
 import { cn } from '../../utils/cn';
 

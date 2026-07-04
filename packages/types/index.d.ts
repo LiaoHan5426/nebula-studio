@@ -3,6 +3,11 @@
  */
 declare const __NEBULA_BUILD_NODE_VERSION__: string;
 
+/**
+ * MSW Mock 开关：由 `nebulaMswDefine()` 在构建时注入，仅 GitHub demo 部署为 `true`。
+ */
+declare const __NEBULA_MSW_ENABLED__: boolean;
+
 type NebulaRuntimeMode = 'standalone' | 'platform-embed' | 'electron';
 
 interface Window {

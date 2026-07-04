@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { NebulaThemeMode } from '@nebula-studio/nebula-ui';
-
+import type { NebulaThemeMode } from '../../types/layout';
 import { useLayoutPreferences } from '../../composables/useLayoutPreferences';
 import { ACCENT_PRESETS } from '../../types/layout';
 

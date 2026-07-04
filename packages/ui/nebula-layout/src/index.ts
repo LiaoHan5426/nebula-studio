@@ -25,6 +25,7 @@ export type {
   BreadcrumbSegment,
   ShellTagItem,
   AccentPreset,
+  NebulaThemeMode,
   ThemePreferenceMode,
   SubNavItem,
   NavItem,

@@ -2,6 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue';
 import {
   NebulaButton,
+  NebulaInput,
   NebulaTable,
   NebulaTableColumn,
 } from '@nebula-studio/nebula-ui';
@@ -106,10 +107,10 @@ function nextPage() {
     </div>
 
     <div class="page__actions">
-      <input
+      <NebulaInput
         v-model="keyword"
+        type="text"
         class="page__search"
-        type="search"
         :placeholder="
           activeTab === 'login'
             ? '搜索用户名'
@@ -117,7 +118,7 @@ function nextPage() {
               ? '搜索模块'
               : '搜索实体'
         "
-        @keydown.enter.prevent="search"
+        @keydown.enter="search"
       />
       <NebulaButton variant="secondary" @click="search">查询</NebulaButton>
       <NebulaButton variant="secondary" @click="loadLogs">刷新</NebulaButton>
@@ -208,10 +209,6 @@ function nextPage() {
 
 .page__search {
   min-width: 220px;
-  padding: 8px 12px;
-  font-size: 14px;
-  border: 1px solid hsl(var(--border) / 72%);
-  border-radius: 8px;
 }
 
 .page__pager {

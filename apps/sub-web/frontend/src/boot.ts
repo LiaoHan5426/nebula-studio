@@ -1,3 +1,4 @@
+import '@nebula-studio/nebula-ui';
 import '@nebula-studio-internal/tailwind/electron';
 import {
   redirectShellToWebLogin,
@@ -19,6 +20,12 @@ export async function bootFrontend(opts?: {
   mode?: RuntimeMode;
 }): Promise<void> {
   const mode = opts?.mode ?? detectRuntimeMode();
+
+  // MSW mock：仅 GitHub demo 部署时启用（构建时由 NEBULA_MSW_ENABLED 环境变量注入）
+  if (__NEBULA_MSW_ENABLED__) {
+    const { worker } = await import('@nebula-studio/msw/browser');
+    await worker.start({ onUnhandledRequest: 'bypass' });
+  }
 
   bootstrapShellIntegratedApps();
 

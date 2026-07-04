@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { Input } from '../ui/input';
 import { cn } from '../../utils/cn';
+import { withTooltipAttrs } from '../../utils/tooltip';
+import type { TooltipPlacement } from '../../utils/tooltip';
 
 const props = withDefaults(
   defineProps<{
@@ -10,6 +13,8 @@ const props = withDefaults(
     disabled?: boolean;
     readonly?: boolean;
     class?: string;
+    tooltip?: string;
+    tooltipPlacement?: TooltipPlacement;
   }>(),
   {
     modelValue: '',
@@ -18,6 +23,8 @@ const props = withDefaults(
     disabled: false,
     readonly: false,
     class: '',
+    tooltip: '',
+    tooltipPlacement: 'top',
   },
 );
 
@@ -34,18 +41,14 @@ const inputValue = computed({
 </script>
 
 <template>
-  <input
+  <Input
     v-model="inputValue"
     :type="props.type"
     :placeholder="props.placeholder"
     :disabled="props.disabled"
     :readonly="props.readonly"
-    :class="
-      cn(
-        'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
-        props.class,
-      )
-    "
+    :class="cn(props.class)"
+    v-bind="withTooltipAttrs('', '', props.tooltip, props.tooltipPlacement)"
     @input="$emit('input', $event)"
     @change="$emit('change', $event)"
   />

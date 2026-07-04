@@ -7,6 +7,7 @@ import {
   useShellHosted,
 } from '@nebula-studio/nebula-layout';
 import type { NavItem } from '@nebula-studio/nebula-layout';
+import { NebulaButton, NebulaButtonGroup } from '@nebula-studio/nebula-ui';
 
 import AppHeader from '@/app/AppHeader.vue';
 import { useAuth } from '@/shared/composables/useAuth';
@@ -168,30 +169,22 @@ function isExpanded(key: string) {
 <template>
   <div v-if="isShellHosted" class="integration-embed-layout">
     <aside class="integration-embed-sidebar">
-      <div
-        class="integration-embed-side-toggle"
-        role="tablist"
-        aria-label="端切换"
-      >
-        <button
-          type="button"
-          role="tab"
-          class="integration-embed-side-btn"
-          :class="{ active: currentSide === 'admin' }"
+      <NebulaButtonGroup class="integration-embed-side-toggle">
+        <NebulaButton
+          variant="ghost"
+          :active="currentSide === 'admin'"
           @click="currentSide = 'admin'"
         >
           管理端
-        </button>
-        <button
-          type="button"
-          role="tab"
-          class="integration-embed-side-btn"
-          :class="{ active: currentSide === 'user' }"
+        </NebulaButton>
+        <NebulaButton
+          variant="ghost"
+          :active="currentSide === 'user'"
           @click="currentSide = 'user'"
         >
           使用端
-        </button>
-      </div>
+        </NebulaButton>
+      </NebulaButtonGroup>
       <NebulaAdminVerticalNav v-model="expandedMenus" :items="activeNavItems" />
     </aside>
     <main class="integration-embed-content">
@@ -207,28 +200,22 @@ function isExpanded(key: string) {
           <p class="app-layout__subtitle">插件 · 订阅 · 服务 · 流程</p>
         </div>
 
-        <div class="app-layout__side-toggle" role="tablist" aria-label="端切换">
-          <button
-            type="button"
-            role="tab"
-            class="side-toggle-btn"
-            :class="{ active: currentSide === 'admin' }"
-            :aria-selected="currentSide === 'admin'"
+        <NebulaButtonGroup class="app-layout__side-toggle">
+          <NebulaButton
+            variant="ghost"
+            :active="currentSide === 'admin'"
             @click="currentSide = 'admin'"
           >
             管理端
-          </button>
-          <button
-            type="button"
-            role="tab"
-            class="side-toggle-btn"
-            :class="{ active: currentSide === 'user' }"
-            :aria-selected="currentSide === 'user'"
+          </NebulaButton>
+          <NebulaButton
+            variant="ghost"
+            :active="currentSide === 'user'"
             @click="currentSide = 'user'"
           >
             使用端
-          </button>
-        </div>
+          </NebulaButton>
+        </NebulaButtonGroup>
       </div>
 
       <nav v-if="currentSide === 'admin'" class="app-layout__nav">
@@ -344,36 +331,13 @@ function isExpanded(key: string) {
   display: flex;
   gap: 4px;
   padding: 3px;
-  background: hsl(var(--muted) / 60%);
-  border-radius: 8px;
 }
 
-.side-toggle-btn {
+.app-layout__side-toggle [data-button-group-item] {
   flex: 1;
   min-width: 0;
-  padding: 7px 0;
   font-size: 12px;
   font-weight: 500;
-  line-height: 1;
-  color: hsl(var(--muted-foreground));
-  cursor: pointer;
-  background: transparent;
-  border: none;
-  border-radius: 6px;
-  transition:
-    color 0.15s,
-    background 0.15s,
-    box-shadow 0.15s;
-}
-
-.side-toggle-btn:hover {
-  color: hsl(var(--foreground));
-}
-
-.side-toggle-btn.active {
-  color: hsl(var(--primary));
-  background: hsl(var(--background));
-  box-shadow: 0 1px 2px hsl(var(--foreground) / 8%);
 }
 
 .app-layout__nav {
@@ -531,30 +495,10 @@ function isExpanded(key: string) {
   border-bottom: 1px solid hsl(var(--border) / 60%);
 }
 
-.integration-embed-side-btn {
+.integration-embed-side-toggle [data-button-group-item] {
   flex: 1;
-  padding: 7px 10px;
   font-size: 12px;
   font-weight: 500;
-  cursor: pointer;
-  background: hsl(var(--muted) / 50%);
-  border: 1px solid hsl(var(--border) / 70%);
-  border-radius: 6px;
-  transition:
-    color 0.15s ease,
-    background 0.15s ease,
-    border-color 0.15s ease;
-}
-
-.integration-embed-side-btn:hover {
-  color: hsl(var(--foreground));
-  background: hsl(var(--muted) / 70%);
-}
-
-.integration-embed-side-btn.active {
-  color: hsl(var(--primary));
-  background: hsl(var(--primary) / 12%);
-  border-color: hsl(var(--primary) / 40%);
 }
 
 .integration-embed-content {

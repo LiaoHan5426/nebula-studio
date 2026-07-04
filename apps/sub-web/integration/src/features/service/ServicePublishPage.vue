@@ -6,7 +6,9 @@ import type { DagDefinition } from '@nebula-studio/nebula-dag-editor';
 import type { PluginNodeSchema } from '@nebula-studio/nebula-low-render';
 import {
   NebulaButton,
+  NebulaInput,
   NebulaPane,
+  NebulaSelect,
   NebulaTable,
   NebulaTableColumn,
   NebulaTag,
@@ -528,43 +530,43 @@ function formatTime(value?: string) {
       >
         <label class="field">
           <span>服务名称</span>
-          <input v-model="compositeForm.interfaceName" />
+          <NebulaInput v-model="compositeForm.interfaceName" />
         </label>
         <label class="field">
           <span>端点 URI</span>
-          <input v-model="compositeForm.endpointUri" />
+          <NebulaInput v-model="compositeForm.endpointUri" />
         </label>
         <label class="field">
           <span>方法</span>
-          <select v-model="compositeForm.method" class="field__select">
-            <option
-              v-for="method in Object.values(InterfaceMethod)"
-              :key="method"
-              :value="method"
-            >
-              {{ method }}
-            </option>
-          </select>
+          <NebulaSelect
+            v-model="compositeForm.method"
+            :options="
+              Object.values(InterfaceMethod).map((m) => ({
+                value: m,
+                label: m,
+              }))
+            "
+          />
         </label>
         <label class="field">
           <span>编排类型</span>
-          <select
+          <NebulaSelect
             v-model="compositeForm.orchestrationType"
-            class="field__select"
-          >
-            <option value="DAG">DAG 编排</option>
-            <option value="BPMN">BPMN 流程（兼容）</option>
-          </select>
+            :options="[
+              { value: 'DAG', label: 'DAG 编排' },
+              { value: 'BPMN', label: 'BPMN 流程（兼容）' },
+            ]"
+          />
         </label>
         <label class="field">
           <span>订阅模式</span>
-          <select
+          <NebulaSelect
             v-model="compositeForm.subscriptionMode"
-            class="field__select"
-          >
-            <option value="OPEN">开放订阅</option>
-            <option value="APPROVAL">审批订阅</option>
-          </select>
+            :options="[
+              { value: 'OPEN', label: '开放订阅' },
+              { value: 'APPROVAL', label: '审批订阅' },
+            ]"
+          />
         </label>
         <div class="modal__actions">
           <NebulaButton
@@ -627,38 +629,41 @@ function formatTime(value?: string) {
         </p>
         <label class="field">
           <span>订阅模式</span>
-          <select v-model="publishForm.subscriptionMode" class="field__select">
-            <option value="OPEN">开放订阅</option>
-            <option value="APPROVAL">审批订阅</option>
-          </select>
+          <NebulaSelect
+            v-model="publishForm.subscriptionMode"
+            :options="[
+              { value: 'OPEN', label: '开放订阅' },
+              { value: 'APPROVAL', label: '审批订阅' },
+            ]"
+          />
         </label>
         <label class="field">
           <span>编排类型</span>
-          <select
+          <NebulaSelect
             v-model="publishForm.orchestrationType"
-            class="field__select"
+            :options="[
+              { value: 'ATOMIC', label: '原子（直连）' },
+              { value: 'BPMN', label: 'BPMN 流程' },
+              { value: 'DAG', label: 'DAG 编排' },
+            ]"
             @change="onPublishOrchestrationChange"
-          >
-            <option value="ATOMIC">原子（直连）</option>
-            <option value="BPMN">BPMN 流程</option>
-            <option value="DAG">DAG 编排</option>
-          </select>
+          />
         </label>
         <label v-if="publishForm.orchestrationType === 'BPMN'" class="field">
           <span>流程定义 ID（可选）</span>
-          <input
+          <NebulaInput
             v-model="publishForm.flowDefinitionId"
             placeholder="留空则使用服务内嵌 BPMN"
           />
         </label>
         <label v-if="publishForm.orchestrationType === 'DAG'" class="field">
           <span>绑定 DAG</span>
-          <select v-model="publishForm.dagDefinitionId" class="field__select">
-            <option value="">请选择</option>
-            <option v-for="dag in dagOptions" :key="dag.id" :value="dag.id">
-              {{ dag.dagName }} ({{ dag.id }})
-            </option>
-          </select>
+          <NebulaSelect
+            v-model="publishForm.dagDefinitionId"
+            :options="[{ id: '', dagName: '请选择' }, ...dagOptions]"
+            label-key="dagName"
+            value-key="id"
+          />
         </label>
         <div class="modal__actions">
           <NebulaButton variant="secondary" @click="showPublishDialog = false"
@@ -787,15 +792,6 @@ function formatTime(value?: string) {
   gap: 6px;
   margin-bottom: 12px;
   font-size: 13px;
-}
-
-.field input,
-.field__select {
-  padding: 8px 10px;
-  color: hsl(var(--foreground));
-  background: hsl(var(--background));
-  border: 1px solid hsl(var(--border));
-  border-radius: 6px;
 }
 
 .modal__actions {

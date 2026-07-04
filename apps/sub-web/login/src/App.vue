@@ -6,11 +6,12 @@ import {
   loginWithBackendAuth,
   writeWebAuthSession,
 } from '@nebula-studio/app-shell';
-import type {
-  BackendLoginResult,
-  BackendOrgSummary,
-} from '@nebula-studio/app-shell';
-import { NebulaButton } from '@nebula-studio/nebula-ui';
+import type { BackendLoginResult } from '@nebula-studio/app-shell';
+import {
+  NebulaButton,
+  NebulaInput,
+  NebulaSelect,
+} from '@nebula-studio/nebula-ui';
 import { ref } from 'vue';
 
 const user = ref('');
@@ -103,10 +104,6 @@ async function onOrgSubmit(): Promise<void> {
     busy.value = false;
   }
 }
-
-function orgLabel(org: BackendOrgSummary): string {
-  return org.orgName || org.orgCode || org.id;
-}
 </script>
 
 <template>
@@ -120,9 +117,8 @@ function orgLabel(org: BackendOrgSummary): string {
       <template v-if="step === 'credentials'">
         <label class="login-field">
           <span class="login-label">用户名</span>
-          <input
+          <NebulaInput
             v-model="user"
-            class="login-input"
             type="text"
             autocomplete="username"
             @keydown.enter.prevent="onSubmit"
@@ -130,9 +126,8 @@ function orgLabel(org: BackendOrgSummary): string {
         </label>
         <label class="login-field">
           <span class="login-label">密码</span>
-          <input
+          <NebulaInput
             v-model="password"
-            class="login-input"
             type="password"
             autocomplete="current-password"
             @keydown.enter.prevent="onSubmit"
@@ -155,15 +150,13 @@ function orgLabel(org: BackendOrgSummary): string {
         <p class="login-hint">请选择要进入的组织</p>
         <label class="login-field">
           <span class="login-label">组织</span>
-          <select v-model="selectedOrgId" class="login-input">
-            <option
-              v-for="org in pendingLogin?.organizations ?? []"
-              :key="org.id"
-              :value="org.id"
-            >
-              {{ orgLabel(org) }}
-            </option>
-          </select>
+          <NebulaSelect
+            v-model="selectedOrgId"
+            :options="pendingLogin?.organizations ?? []"
+            label-key="orgName"
+            value-key="id"
+            placeholder="请选择组织"
+          />
         </label>
 
         <p v-if="errorMsg" class="login-error">{{ errorMsg }}</p>
@@ -240,23 +233,6 @@ function orgLabel(org: BackendOrgSummary): string {
 .login-label {
   font-size: 12px;
   color: hsl(var(--muted-foreground));
-}
-
-.login-input {
-  box-sizing: border-box;
-  width: 100%;
-  padding: 10px 12px;
-  font-size: 14px;
-  color: hsl(var(--foreground));
-  outline: none;
-  background: hsl(var(--background));
-  border: 1px solid hsl(var(--border));
-  border-radius: 10px;
-}
-
-.login-input:focus {
-  border-color: hsl(var(--primary) / 70%);
-  box-shadow: 0 0 0 2px hsl(var(--primary) / 25%);
 }
 
 .login-error {

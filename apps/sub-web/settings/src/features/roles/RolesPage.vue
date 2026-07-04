@@ -2,7 +2,9 @@
 import { onMounted, ref } from 'vue';
 import {
   NebulaButton,
+  NebulaInput,
   NebulaPane,
+  NebulaSelect,
   NebulaTable,
   NebulaTableColumn,
   NebulaTag,
@@ -120,22 +122,25 @@ async function removeRole(role: RoleRecord) {
       <NebulaPane title="新建角色" class="modal">
         <label class="field">
           <span>角色名称</span>
-          <input v-model="form.roleName" />
+          <NebulaInput v-model="form.roleName" />
         </label>
         <label class="field">
           <span>角色编码</span>
-          <input v-model="form.roleCode" />
+          <NebulaInput v-model="form.roleCode" />
         </label>
         <label class="field">
           <span>描述</span>
-          <input v-model="form.description" />
+          <NebulaInput v-model="form.description" />
         </label>
         <label class="field">
           <span>状态</span>
-          <select v-model="form.status">
-            <option value="ACTIVE">正常</option>
-            <option value="INACTIVE">禁用</option>
-          </select>
+          <NebulaSelect
+            v-model="form.status"
+            :options="[
+              { value: 'ACTIVE', label: '正常' },
+              { value: 'INACTIVE', label: '禁用' },
+            ]"
+          />
         </label>
         <div class="modal__actions">
           <NebulaButton variant="secondary" @click="showDialog = false">

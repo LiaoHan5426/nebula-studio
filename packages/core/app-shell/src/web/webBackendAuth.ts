@@ -21,6 +21,7 @@ interface BackendLoginResponse {
   };
   isSuccess?: boolean;
   code?: number;
+  error?: string; // 后端返回的错误信息
 }
 
 interface BackendModeResponse {
@@ -89,18 +90,26 @@ export async function loginWithBackendAuth(
     body: JSON.stringify({ username: trimmed, password: password ?? 'demo' }),
   });
 
-  if (!response.ok) {
-    throw new Error('登录失败，请检查用户名和密码');
+  // 先尝试解析响应体获取具体错误信息
+  let body: BackendLoginResponse | null = null;
+  try {
+    body = (await response.json()) as BackendLoginResponse;
+  } catch {
+    // 如果解析失败，使用默认错误消息
   }
 
-  const body = (await response.json()) as BackendLoginResponse;
-  const data = body.data;
-  const ok =
-    isResponseOk(body) || Boolean(data?.token) || Boolean(data?.username);
+  // 检查业务层面的成功状态（后端可能返回 HTTP 200 但业务 code 为错误）
+  if (!response.ok || !body || !isResponseOk(body)) {
+    // 优先使用后端返回的错误信息
+    const errorMessage = body?.error || '登录失败，请检查用户名和密码';
+    throw new Error(errorMessage);
+  }
 
-  if (!ok || !data?.username) {
+  // 此时业务层面成功，body 必然存在且包含 data
+  if (!body?.data) {
     throw new Error('登录响应无效');
   }
+  const data = body.data;
 
   const result: BackendLoginResult = {
     token: data.token,

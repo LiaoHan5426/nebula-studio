@@ -10,8 +10,11 @@ import NebulaShellHeader from './NebulaShellHeader.vue';
 import NebulaShellSidebarFooter from './NebulaShellSidebarFooter.vue';
 import NebulaShellTagsBar from './NebulaShellTagsBar.vue';
 import NebulaPreferencesDrawer from '../preferences/NebulaPreferencesDrawer.vue';
-import type { BreadcrumbSegment, ShellTagItem } from '../../types/layout';
-import type { NebulaThemeMode } from '@nebula-studio/nebula-ui';
+import type {
+  BreadcrumbSegment,
+  ShellTagItem,
+  NebulaThemeMode,
+} from '../../types/layout';
 
 const props = withDefaults(
   defineProps<{

@@ -213,7 +213,8 @@ onBeforeUnmount(() => {
 }
 
 .nebula-date-picker__trigger:hover {
-  border-color: hsl(var(--primary) / 50%);
+  background: hsl(var(--accent));
+  border-color: hsl(var(--primary));
 }
 
 .nebula-date-picker__trigger:focus-visible {
@@ -240,8 +241,8 @@ onBeforeUnmount(() => {
 }
 
 .nebula-date-picker__icon {
-  font-size: 14px;
   flex-shrink: 0;
+  font-size: 14px;
 }
 
 .nebula-date-picker__dropdown {
@@ -275,8 +276,8 @@ onBeforeUnmount(() => {
 
 .nebula-date-picker__range {
   display: flex;
-  align-items: flex-end;
   gap: 8px;
+  align-items: flex-end;
 }
 
 .nebula-date-picker__range-item {
@@ -285,9 +286,9 @@ onBeforeUnmount(() => {
 
 .nebula-date-picker__range-label {
   display: block;
+  margin-bottom: 4px;
   font-size: 12px;
   color: hsl(var(--muted-foreground));
-  margin-bottom: 4px;
 }
 
 .nebula-date-picker__range-separator {
@@ -297,25 +298,26 @@ onBeforeUnmount(() => {
 
 .nebula-date-picker__actions {
   display: flex;
-  justify-content: flex-end;
   gap: 8px;
-  margin-top: 12px;
+  justify-content: flex-end;
   padding-top: 12px;
+  margin-top: 12px;
   border-top: 1px solid hsl(var(--border));
 }
 
 .nebula-date-picker__btn {
   padding: 6px 12px;
   font-size: 13px;
+  cursor: pointer;
   background: transparent;
   border: 1px solid hsl(var(--border));
   border-radius: 4px;
-  cursor: pointer;
   transition: all 0.15s;
 }
 
 .nebula-date-picker__btn:hover {
-  background: hsl(var(--muted));
+  background: hsl(var(--accent));
+  border-color: hsl(var(--accent));
 }
 
 .nebula-date-picker__btn--primary {
@@ -324,7 +326,8 @@ onBeforeUnmount(() => {
 }
 
 .nebula-date-picker__btn--primary:hover {
-  background: hsl(var(--primary) / 10%);
+  background: hsl(var(--primary) / 20%);
+  border-color: hsl(var(--primary) / 60%);
 }
 
 .nebula-date-picker-pop-enter-active,

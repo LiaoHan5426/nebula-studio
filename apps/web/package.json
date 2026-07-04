@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@nebula-studio-internal/tailwind": "workspace:^",
-    "@nebula-studio-renderer/docs": "workspace:^",
     "@nebula-studio-renderer/integration": "workspace:^",
     "@nebula-studio-renderer/login": "workspace:^",
     "@nebula-studio-renderer/main": "workspace:^",

@@ -1,4 +1,4 @@
-import type { NebulaThemeMode } from '@nebula-studio/nebula-ui';
+export type NebulaThemeMode = 'light' | 'dark';
 
 export type ThemePreferenceMode = NebulaThemeMode | 'system';
 

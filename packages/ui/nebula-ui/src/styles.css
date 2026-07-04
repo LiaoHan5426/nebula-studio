@@ -156,6 +156,13 @@
 .nebula-tree__btn {
   justify-content: flex-start;
   width: 100%;
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.nebula-tree__btn:hover {
+  transform: translateX(4px);
 }
 
 .nebula-tree__children {
@@ -860,6 +867,7 @@ html[data-theme='dark']
 
 .nebula-anchor__link:hover {
   color: hsl(var(--primary));
+  background: hsl(var(--primary) / 10%);
 }
 
 .nebula-anchor__link.is-active {
@@ -881,7 +889,9 @@ html[data-theme='dark']
 }
 
 .nebula-anchor__back-top:hover {
-  background: hsl(var(--muted) / 40%);
+  background: hsl(var(--primary) / 15%);
+  border-color: hsl(var(--primary) / 40%);
+  color: hsl(var(--primary));
 }
 
 .nebula-anchor__float {
@@ -1040,7 +1050,8 @@ html[data-theme='dark']
 }
 
 .nebula-dropdown__item:hover:not(:disabled) {
-  background: hsl(var(--muted) / 70%);
+  background: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
 }
 
 .nebula-dropdown__item:disabled {

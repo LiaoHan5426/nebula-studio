@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NebulaIconButton } from '@nebula-studio/nebula-ui';
+import { NebulaButton } from '@nebula-studio/nebula-ui';
 import { computed, ref } from 'vue';
 
 import type { ShellTagItem } from '../../types/layout';
@@ -115,7 +115,9 @@ function runAndClose(fn: () => void) {
         class="nebula-shell-tags__menu-wrap"
         :class="{ 'is-open': menuOpen }"
       >
-        <NebulaIconButton
+        <NebulaButton
+          icon
+          variant="ghost"
           title="标签操作"
           aria-label="标签操作"
           @click.stop="toggleMenu"
@@ -130,7 +132,7 @@ function runAndClose(fn: () => void) {
           >
             <polyline points="6 9 12 15 18 9" />
           </svg>
-        </NebulaIconButton>
+        </NebulaButton>
         <div v-show="menuOpen" class="nebula-shell-tags__menu" role="menu">
           <button
             type="button"
@@ -162,7 +164,9 @@ function runAndClose(fn: () => void) {
           </button>
         </div>
       </div>
-      <NebulaIconButton
+      <NebulaButton
+        icon
+        variant="ghost"
         title="刷新当前页"
         aria-label="刷新当前页"
         @click="emit('refresh')"
@@ -181,8 +185,10 @@ function runAndClose(fn: () => void) {
             d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
           />
         </svg>
-      </NebulaIconButton>
-      <NebulaIconButton
+      </NebulaButton>
+      <NebulaButton
+        icon
+        variant="ghost"
         :title="contentFullscreen ? '退出内容全屏' : '内容区全屏'"
         :aria-label="contentFullscreen ? '退出内容全屏' : '内容区全屏'"
         @click="emit('fullscreen')"
@@ -215,7 +221,7 @@ function runAndClose(fn: () => void) {
           <polyline points="14 10 21 3" />
           <polyline points="3 21 10 14" />
         </svg>
-      </NebulaIconButton>
+      </NebulaButton>
     </div>
   </div>
 </template>

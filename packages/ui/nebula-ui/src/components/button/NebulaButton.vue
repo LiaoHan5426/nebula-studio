@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { Button, buttonVariants } from '../ui/button';
+import { Button } from '../ui/button';
 import type { ButtonVariants } from '../ui/button';
 import { cn } from '../../utils/cn';
 import { withTooltipAttrs } from '../../utils/tooltip';
@@ -12,18 +12,25 @@ const props = withDefaults(
   defineProps<{
     type?: string;
     variant?: NebulaVariant;
+    /** 图标按钮模式：使用 size="icon" 并自动设置紧凑尺寸 */
+    icon?: boolean;
     active?: boolean;
     disabled?: boolean;
     class?: string;
+    title?: string;
+    ariaLabel?: string;
     tooltip?: string;
     tooltipPlacement?: TooltipPlacement;
   }>(),
   {
     type: 'button',
     variant: 'secondary',
+    icon: false,
     active: false,
     disabled: false,
     class: '',
+    title: '',
+    ariaLabel: '',
     tooltip: '',
     tooltipPlacement: 'top',
   },
@@ -41,21 +48,28 @@ const shadcnVariant = computed(() => {
   };
   return map[props.variant];
 });
+
+const resolvedSize = computed(() => (props.icon ? 'icon' : 'default'));
 </script>
 
 <template>
   <Button
     :variant="shadcnVariant"
-    :class="
-      cn(
-        buttonVariants({ variant: shadcnVariant }),
-        props.active && 'bg-accent',
-        props.class,
+    :size="resolvedSize"
+    data-button-group-item
+    :class="cn(props.active && 'bg-accent', props.class)"
+    v-bind="
+      withTooltipAttrs(
+        '',
+        '',
+        props.tooltip || props.title,
+        props.tooltipPlacement,
       )
     "
-    v-bind="withTooltipAttrs('', '', props.tooltip, props.tooltipPlacement)"
     :disabled="disabled"
     :type="type"
+    :title="title || undefined"
+    :aria-label="ariaLabel || title || undefined"
     @click="$emit('click', $event)"
   >
     <slot />

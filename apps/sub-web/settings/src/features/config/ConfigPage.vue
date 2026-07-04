@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue';
-import { NebulaButton, NebulaPane, NebulaTag } from '@nebula-studio/nebula-ui';
+import {
+  NebulaButton,
+  NebulaInput,
+  NebulaPane,
+  NebulaSelect,
+  NebulaTag,
+} from '@nebula-studio/nebula-ui';
 
 import { configApi } from '@/shared/api/configApi';
 import type { ConfigItem } from '@/shared/api/configApi';
@@ -92,16 +98,17 @@ function formatValue(value: string): string {
     >
       <div class="config-page__toolbar">
         <NebulaButton @click="showCreate = true">新建配置</NebulaButton>
-        <select
+        <NebulaSelect
           v-model="selectedScope"
+          :options="[
+            { value: '', label: '全部范围' },
+            { value: 'GLOBAL', label: '全局' },
+            { value: 'TENANT', label: '租户' },
+            { value: 'APPLICATION', label: '应用' },
+          ]"
           class="config-page__filter"
           @change="loadConfigs"
-        >
-          <option value="">全部范围</option>
-          <option value="GLOBAL">全局</option>
-          <option value="TENANT">租户</option>
-          <option value="APPLICATION">应用</option>
-        </select>
+        />
         <NebulaButton variant="secondary" @click="loadConfigs"
           >刷新</NebulaButton
         >
@@ -153,7 +160,7 @@ function formatValue(value: string): string {
       <NebulaPane title="新建配置" class="modal">
         <label class="field">
           <span>配置键 (Key)</span>
-          <input v-model="form.key" placeholder="如 app.name" />
+          <NebulaInput v-model="form.key" placeholder="如 app.name" />
         </label>
         <label class="field">
           <span>配置值 (Value)</span>
@@ -165,19 +172,22 @@ function formatValue(value: string): string {
         </label>
         <label class="field">
           <span>范围</span>
-          <select v-model="form.scope" class="field__select">
-            <option value="GLOBAL">全局</option>
-            <option value="TENANT">租户</option>
-            <option value="APPLICATION">应用</option>
-          </select>
+          <NebulaSelect
+            v-model="form.scope"
+            :options="[
+              { value: 'GLOBAL', label: '全局' },
+              { value: 'TENANT', label: '租户' },
+              { value: 'APPLICATION', label: '应用' },
+            ]"
+          />
         </label>
         <label class="field">
           <span>分组</span>
-          <input v-model="form.group" placeholder="如 system、app" />
+          <NebulaInput v-model="form.group" placeholder="如 system、app" />
         </label>
         <label v-if="form.scope === 'TENANT'" class="field">
           <span>租户 ID</span>
-          <input v-model="form.tenantId" placeholder="租户 ID" />
+          <NebulaInput v-model="form.tenantId" placeholder="租户 ID" />
         </label>
         <div class="modal__actions">
           <NebulaButton variant="secondary" @click="showCreate = false">
@@ -192,25 +202,20 @@ function formatValue(value: string): string {
 
 <style scoped>
 .config-page {
-  padding: 24px;
   max-width: 1200px;
+  padding: 24px;
   margin: 0 auto;
 }
 
 .config-page__toolbar {
   display: flex;
   gap: 8px;
-  margin-bottom: 16px;
   align-items: center;
+  margin-bottom: 16px;
 }
 
 .config-page__filter {
-  padding: 6px 10px;
-  font-size: 13px;
-  color: hsl(var(--foreground));
-  background: hsl(var(--background));
-  border: 1px solid hsl(var(--border));
-  border-radius: 6px;
+  min-width: 140px;
 }
 
 .config-page__empty {
@@ -245,26 +250,26 @@ function formatValue(value: string): string {
 
 .config-page__item-head {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 8px;
 }
 
 .config-page__key {
-  font-weight: 600;
-  font-size: 13px;
   margin-right: 8px;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .config-page__value {
-  overflow: auto;
-  margin: 0;
+  max-height: 120px;
   padding: 8px;
+  margin: 0;
+  overflow: auto;
   font-size: 12px;
   line-height: 1.5;
   background: hsl(var(--muted) / 40%);
   border-radius: 4px;
-  max-height: 120px;
 }
 
 .modal-overlay {
@@ -288,16 +293,14 @@ function formatValue(value: string): string {
   font-size: 13px;
 }
 
-.field input,
-.field__select,
 .field textarea {
+  padding: 8px 10px;
   font-family: inherit;
   color: hsl(var(--foreground));
+  resize: vertical;
   background: hsl(var(--background));
   border: 1px solid hsl(var(--border));
   border-radius: 6px;
-  padding: 8px 10px;
-  resize: vertical;
 }
 
 .modal__actions {

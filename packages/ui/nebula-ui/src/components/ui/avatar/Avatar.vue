@@ -1,6 +1,6 @@
 <script lang="ts">
 import { cn } from '../../../utils/cn';
-import { AvatarRoot, AvatarImage, AvatarFallback } from 'reka-ui';
+import { AvatarRoot } from 'reka-ui';
 import type {
   AvatarRootProps,
   AvatarImageProps,

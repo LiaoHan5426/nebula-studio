@@ -1,9 +1,13 @@
 import type { UserConfig } from 'vite';
 import { mergeConfig } from 'vite';
 import { defineConfig } from 'vite-plus';
+import tailwindcss from '@tailwindcss/vite';
 import { nebulaRendererChunkBuildPartial } from './chunks/index.ts';
 import type { NebulaRendererChunksOptions } from './chunks/types.ts';
-import { nebulaBuildNodeVersionDefine } from '../env/nebulaBuildDefines.ts';
+import {
+  nebulaBuildNodeVersionDefine,
+  nebulaMswDefine,
+} from '../env/nebulaBuildDefines.ts';
 import { nebulaRendererOptimizeDeps } from './nebulaRendererOptimizeDeps.ts';
 import { resolveNebulaRendererPluginList } from './nebulaRendererPlugins.ts';
 import type { NebulaRendererPluginSelection } from './nebulaRendererPlugins.ts';
@@ -56,13 +60,17 @@ export function createNebulaRendererViteConfig(
   } = opts;
 
   let baseConfig: UserConfig = {
-    plugins: resolveNebulaRendererPluginList(pluginSelection),
+    plugins: [
+      tailwindcss(),
+      ...resolveNebulaRendererPluginList(pluginSelection),
+    ],
     base,
     root,
     resolve: nebulaRendererResolve,
     optimizeDeps: nebulaRendererOptimizeDeps,
     define: {
       ...nebulaBuildNodeVersionDefine(),
+      ...nebulaMswDefine(),
       ...defineExtra,
     },
   };

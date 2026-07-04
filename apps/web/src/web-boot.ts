@@ -5,11 +5,7 @@ void (async (): Promise<void> => {
     WEB_SHELL_EMBED_QUERY,
   );
 
-  /** 单 `index.html` + `embed`：与 settings 相同，docs 在同一 dev server 内按需挂载 */
-  if (surface === 'docs') {
-    await import('./embed/docs-entry.js');
-    return;
-  }
+  /** 单 `index.html` + `embed`：与 settings 相同，各子应用在同一 dev server 内按需挂载 */
   if (surface === 'settings') {
     await import('./embed/settings-entry.js');
     return;

@@ -43,6 +43,7 @@
     "@electron-toolkit/preload": "catalog:electron",
     "@nebula-studio-internal/tsconfig": "workspace:^",
     "@nebula-studio-internal/vite": "workspace:^",
+    "@nebula-studio/msw": "workspace:^",
     "@nebula-studio/types": "workspace:^",
     "happy-dom": "catalog:vite",
     "typescript": "catalog:types",

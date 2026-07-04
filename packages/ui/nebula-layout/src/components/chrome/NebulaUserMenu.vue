@@ -203,6 +203,7 @@ function onMenuAction(action: 'profile' | 'lockScreen' | 'logout') {
   margin: 0;
   font-size: 14px;
   font-weight: 600;
+  color: hsl(var(--foreground));
 }
 
 .nebula-user-menu__email {

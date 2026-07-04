@@ -1,2 +1,3 @@
-export { default as Badge, badgeVariants } from './Badge.vue';
-export type { BadgeVariants } from './Badge.vue';
+export { badgeVariants } from './types';
+export type { BadgeVariants } from './types';
+export { default as Badge } from './Badge.vue';
