@@ -4,6 +4,8 @@
   "private": true,
   "type": "module",
   "sideEffects": [
+    "./src/index.ts",
+    "./src/styles.css",
     "./src/styles/layout-tokens.css",
     "./src/styles/layout-transitions.css",
     "./src/styles/layout-chrome.css"
@@ -16,7 +18,10 @@
       "default": "./src/index.ts"
     },
     "./styles": {
-      "default": "./src/styles/layout-tokens.css"
+      "default": "./src/styles.css"
+    },
+    "./styles.css": {
+      "default": "./src/styles.css"
     }
   },
   "dependencies": {

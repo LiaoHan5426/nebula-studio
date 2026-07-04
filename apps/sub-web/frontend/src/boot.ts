@@ -1,4 +1,5 @@
 import '@nebula-studio/nebula-ui';
+import '@nebula-studio/nebula-layout';
 import '@nebula-studio-internal/tailwind/electron';
 import {
   redirectShellToWebLogin,

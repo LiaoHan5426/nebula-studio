@@ -1,0 +1,4 @@
+/* Shell 子应用样式入口 —— 通过 HTML <link> 引入，绕过 Rolldown tree-shaking */
+@import '@nebula-studio/styles';
+@import '@nebula-studio/nebula-ui/styles.css';
+@import '@nebula-studio/nebula-layout/styles';
