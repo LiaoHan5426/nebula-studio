@@ -1,16 +1,11 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { NebulaButton } from '@nebula-studio/nebula-ui';
 
-import { ensureAuthFromShell, useAuth } from '@/shared/composables/useAuth';
+import { useAuth } from '@/shared/composables/useAuth';
 
 const router = useRouter();
 const { username, isLoggedIn, isShellHosted, logout } = useAuth();
-
-onMounted(() => {
-  void ensureAuthFromShell();
-});
 </script>
 
 <template>

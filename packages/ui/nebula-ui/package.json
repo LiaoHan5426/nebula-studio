@@ -1,0 +1,83 @@
+{
+  "name": "@nebula-studio/nebula-ui",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": [
+    "./src/styles.css",
+    "./src/utils/highlightNebula.ts",
+    "./src/index.ts"
+  ],
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "test": "vp test"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./components": {
+      "types": "./src/components/index.ts",
+      "default": "./src/components/index.ts"
+    },
+    "./utils/highlightNebula": {
+      "types": "./src/utils/highlightNebula.ts",
+      "default": "./src/utils/highlightNebula.ts"
+    },
+    "./env": {
+      "types": "./env.d.ts",
+      "default": "./env.d.ts"
+    }
+  },
+  "dependencies": {
+    "@codemirror/commands": "catalog:editor",
+    "@codemirror/lang-html": "catalog:editor",
+    "@codemirror/lang-java": "catalog:editor",
+    "@codemirror/lang-javascript": "catalog:editor",
+    "@codemirror/lang-markdown": "catalog:editor",
+    "@codemirror/lang-python": "catalog:editor",
+    "@codemirror/language": "catalog:editor",
+    "@codemirror/state": "catalog:editor",
+    "@codemirror/theme-one-dark": "catalog:editor",
+    "@codemirror/view": "catalog:editor",
+    "@iconify/vue": "catalog:ui",
+    "@tiptap/core": "catalog:form",
+    "@tiptap/extension-code-block": "catalog:form",
+    "@tiptap/extension-color": "catalog:form",
+    "@tiptap/extension-highlight": "catalog:form",
+    "@tiptap/extension-image": "catalog:form",
+    "@tiptap/extension-link": "catalog:form",
+    "@tiptap/extension-placeholder": "catalog:form",
+    "@tiptap/extension-table": "catalog:form",
+    "@tiptap/extension-table-cell": "catalog:form",
+    "@tiptap/extension-table-header": "catalog:form",
+    "@tiptap/extension-table-row": "catalog:form",
+    "@tiptap/extension-text-align": "catalog:form",
+    "@tiptap/extension-text-style": "catalog:form",
+    "@tiptap/extension-underline": "catalog:form",
+    "@tiptap/pm": "catalog:form",
+    "@tiptap/starter-kit": "catalog:form",
+    "@tiptap/vue-3": "catalog:form",
+    "@vueuse/core": "catalog:vue",
+    "class-variance-authority": "catalog:ui-utils",
+    "clsx": "catalog:ui-utils",
+    "codemirror": "catalog:editor",
+    "highlight.js": "catalog:markdown",
+    "lucide-vue-next": "catalog:ui",
+    "marked": "catalog:markdown",
+    "reka-ui": "catalog:ui",
+    "tailwind-merge": "catalog:ui-utils",
+    "vue": "catalog:vue",
+    "vuedraggable": "catalog:ui",
+    "vxe-table": "catalog:ui",
+    "xe-utils": "catalog:ui"
+  },
+  "devDependencies": {
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "@nebula-studio/types": "workspace:^",
+    "@vue/test-utils": "catalog:vue",
+    "sass": "catalog:style"
+  }
+}

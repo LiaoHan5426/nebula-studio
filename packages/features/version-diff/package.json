@@ -1,0 +1,23 @@
+{
+  "name": "@nebula-studio/version-diff",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@nebula-studio/api-client": "workspace:^",
+    "@nebula-studio/nebula-ui": "workspace:^",
+    "vue": "catalog:vue"
+  },
+  "devDependencies": {
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "@nebula-studio/types": "workspace:^"
+  }
+}

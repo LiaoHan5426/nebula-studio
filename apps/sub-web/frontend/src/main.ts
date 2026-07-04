@@ -1,19 +1,11 @@
-import '@nebula-studio-internal/tailwind/electron';
-import { ConfigProvider } from '@nebula-studio-electron/electron-shared-vue';
 import './assets/main.css';
-import './runtime/registerIntegratedApps';
+import { bootFrontend } from './boot';
 
-import { createApp, h } from 'vue';
-import App from './App.vue';
+// Electron 由 preload/bridge 注入 window.electron；
+// Web standalone 无 window.electron，默认 standalone。
+if (!window.__NEBULA_RUNTIME_MODE__) {
+  window.__NEBULA_RUNTIME_MODE__ =
+    typeof (window as any).electron !== 'undefined' ? 'electron' : 'standalone';
+}
 
-createApp({
-  render() {
-    return h(
-      ConfigProvider,
-      { manageDom: true },
-      {
-        default: () => h(App),
-      },
-    );
-  },
-}).mount('#app');
+void bootFrontend();

@@ -12,7 +12,7 @@ import { interfaceApi } from '@/shared/api/integration';
 import { useAuth } from '@/shared/composables/useAuth';
 import type { ApiInterface, AtomicInterface } from '@/shared/types';
 import {
-  AuthType,
+  InterfaceAuthType,
   InterfaceMethod,
   InterfaceStatus,
   InterfaceType,
@@ -35,7 +35,7 @@ const form = ref<Partial<AtomicInterface>>({
   connectorId: 'http-connector',
   status: InterfaceStatus.DRAFT,
   authConfig: {
-    authType: AuthType.API_KEY,
+    authType: InterfaceAuthType.API_KEY,
     apiKeyHeader: 'X-API-Key',
     allowedTenants: ['*'],
   },
@@ -70,7 +70,7 @@ function openCreate() {
     connectorId: 'http-connector',
     status: InterfaceStatus.DRAFT,
     authConfig: {
-      authType: AuthType.API_KEY,
+      authType: InterfaceAuthType.API_KEY,
       apiKeyHeader: 'X-API-Key',
       allowedTenants: ['*'],
     },
@@ -241,7 +241,7 @@ function formatTime(value?: string) {
           <span>认证方式</span>
           <select v-model="form.authConfig!.authType" class="field__select">
             <option
-              v-for="auth in Object.values(AuthType)"
+              v-for="auth in Object.values(InterfaceAuthType)"
               :key="auth"
               :value="auth"
             >

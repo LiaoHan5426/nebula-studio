@@ -367,19 +367,21 @@
   /* Only adjust scrollbar for non-macOS */
   html:not([data-platform='macOs']) {
     ::-webkit-scrollbar {
-      @apply h-2.5 w-2.5;
+      width: 10px;
+      height: 10px;
     }
 
     ::-webkit-scrollbar-thumb {
-      @apply bg-border rounded-sm border-none;
+      background-color: hsl(var(--border));
+      border-radius: 8px;
     }
 
     ::-webkit-scrollbar-track {
-      @apply rounded-sm border-none bg-transparent shadow-none;
+      background: transparent;
     }
 
     ::-webkit-scrollbar-button {
-      @apply hidden;
+      display: none;
     }
   }
 

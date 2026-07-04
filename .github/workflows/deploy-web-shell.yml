@@ -6,7 +6,7 @@ on:
     paths:
       - 'apps/web/**'
       - 'apps/sub-web/frontend/**'
-      - 'apps/sub-web/docs/**'
+      - 'apps/sub-web/docs-site/**'
       - 'apps/sub-web/settings/**'
       - 'apps/sub-web/login/**'
       - 'packages/**'
@@ -66,6 +66,17 @@ jobs:
         env:
           VITE_BASE_PATH: ${{ steps.vars.outputs.base_path }}
         run: vp run web#build
+
+      - name: Build VitePress docs site
+        working-directory: apps/sub-web/docs-site
+        run: |
+          npm install
+          npx vitepress build
+
+      - name: Copy docs site into web shell dist
+        run: |
+          mkdir -p apps/web/dist/docs
+          cp -r apps/sub-web/docs-site/.vitepress/dist/* apps/web/dist/docs/
 
       - uses: actions/upload-pages-artifact@v4
         with:

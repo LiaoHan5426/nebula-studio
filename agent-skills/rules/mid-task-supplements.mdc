@@ -5,4 +5,4 @@ alwaysApply: true
 
 # 中途补充指令
 
-以 `.cursor/skills/mid-task-supplement/SKILL.md` 为准；需要细节时读取该文件。
+以 `agent-skills/skills/mid-task-supplement/SKILL.md` 为准；需要细节时读取该文件。

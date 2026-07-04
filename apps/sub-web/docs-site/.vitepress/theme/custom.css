@@ -1,0 +1,169 @@
+/* VitePress element-plus 风格主题定制 */
+
+:root {
+  /* 品牌色 */
+  --vp-c-brand: #409eff;
+  --vp-c-brand-light: #66b1ff;
+  --vp-c-brand-lighter: #8cc5ff;
+  --vp-c-brand-dark: #337ecc;
+  --vp-c-brand-darker: #2a62a3;
+
+  /* 布局 */
+  --vp-sidebar-width: 280px;
+  --vp-nav-height: 56px;
+
+  /* 圆角 */
+  --vp-border-radius: 6px;
+}
+
+/* 暗色模式品牌色调整 */
+.dark {
+  --vp-c-brand: #409eff;
+  --vp-c-brand-light: #66b1ff;
+  --vp-c-brand-lighter: #8cc5ff;
+  --vp-c-brand-dark: #337ecc;
+  --vp-c-brand-darker: #2a62a3;
+}
+
+/* 侧边栏样式 */
+.VPSidebar {
+  border-right: 1px solid var(--vp-c-divider) !important;
+}
+
+.VPSidebarItem.level-0 > .item .text {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--vp-c-text-1);
+}
+
+.VPSidebarItem .item .text {
+  font-size: 13.5px;
+  transition: color 0.2s;
+}
+
+.VPSidebarItem .item:hover .text {
+  color: var(--vp-c-brand);
+}
+
+.VPSidebarItem .item.active .text {
+  color: var(--vp-c-brand);
+  font-weight: 500;
+}
+
+/* 内容区样式 */
+.VPDoc {
+  padding-top: 0 !important;
+}
+
+.VPDoc .content-container {
+  max-width: 960px !important;
+}
+
+/* 标题样式 */
+.VPDoc h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.VPDoc h2 {
+  font-size: 22px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--vp-c-divider);
+  padding-bottom: 8px;
+  margin-top: 32px;
+}
+
+.VPDoc h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 24px;
+}
+
+/* API 表格样式 */
+.VPDoc table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.VPDoc table th {
+  background: var(--vp-c-bg-soft);
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 14px;
+  border: 1px solid var(--vp-c-divider);
+}
+
+.VPDoc table td {
+  padding: 10px 14px;
+  border: 1px solid var(--vp-c-divider);
+}
+
+.VPDoc table tr:hover td {
+  background: var(--vp-c-bg-soft);
+}
+
+/* 代码块样式 */
+.VPDoc .vp-code-group .tabs {
+  border-radius: var(--vp-border-radius) var(--vp-border-radius) 0 0;
+}
+
+.VPDoc div[class*='language-'] {
+  border-radius: var(--vp-border-radius);
+  margin: 16px 0;
+}
+
+/* 自定义 demo 容器 */
+.demo-container {
+  border: 1px solid var(--vp-c-divider);
+  border-radius: var(--vp-border-radius);
+  margin: 16px 0;
+  overflow: hidden;
+}
+
+.demo-container .demo-content {
+  padding: 24px;
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+.demo-container .demo-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 16px;
+  background: var(--vp-c-bg-soft);
+}
+
+.demo-container .demo-actions button {
+  font-size: 13px;
+  color: var(--vp-c-text-2);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.demo-container .demo-actions button:hover {
+  color: var(--vp-c-brand);
+}
+
+/* 导航栏 */
+.VPNav {
+  border-bottom: 1px solid var(--vp-c-divider) !important;
+}
+
+.VPNavBar .title {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+/* 上一页/下一页 */
+.doc-footer .pager-link {
+  border: 1px solid var(--vp-c-divider);
+  border-radius: var(--vp-border-radius);
+  transition: border-color 0.2s;
+}
+
+.doc-footer .pager-link:hover {
+  border-color: var(--vp-c-brand);
+}

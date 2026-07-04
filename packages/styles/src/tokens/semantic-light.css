@@ -21,6 +21,8 @@ html {
   --secondary-foreground: 233 30% 20%;
   --primary: 227 86% 62%;
   --primary-foreground: 0 0% 100%;
+  --primary-hover: 227 90% 58%;
+  --primary-muted: 227 86% 62%;
   --destructive: 0 76% 56%;
   --destructive-foreground: 0 0% 100%;
   --success: 146 62% 41%;
@@ -35,4 +37,8 @@ html {
   --main: 233 38% 18%;
   --overlay: 232 35% 12%;
   --overlay-content: 0 0% 100%;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
 }

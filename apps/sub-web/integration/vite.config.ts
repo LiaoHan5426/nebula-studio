@@ -2,7 +2,7 @@ import { fileURLToPath } from 'node:url';
 
 import { defineNebulaConfig } from '@nebula-studio-internal/vite';
 
-import { integrationApiProxy } from './vite.integrationProxy';
+import { integrationApiProxy } from './vite.integrationProxy.ts';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
 
@@ -21,7 +21,6 @@ export default defineNebulaConfig({
       },
     },
     server: {
-      port: 5174,
       proxy: integrationApiProxy(),
     },
   },

@@ -1,6 +1,8 @@
 import { defineNebulaConfig } from '@nebula-studio-internal/vite';
 import { fileURLToPath } from 'node:url';
 
+import { nebulaApiProxy } from '../integration/vite.integrationProxy.ts';
+
 const root = fileURLToPath(new URL('.', import.meta.url));
 
 export default defineNebulaConfig({
@@ -10,5 +12,10 @@ export default defineNebulaConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
+  },
+  merge: {
+    server: {
+      proxy: nebulaApiProxy(),
+    },
   },
 });

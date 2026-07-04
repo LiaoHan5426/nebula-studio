@@ -2,6 +2,8 @@
 import { onMounted, ref } from 'vue';
 import {
   NebulaButton,
+  NebulaInput,
+  NebulaSelect,
   NebulaTable,
   NebulaTableColumn,
   NebulaTag,
@@ -130,16 +132,17 @@ function formatTime(value?: string) {
         </p>
       </div>
       <div class="subscription-requests-page__actions">
-        <select
+        <NebulaSelect
           v-model="statusFilter"
+          :options="[
+            { value: 'PENDING', label: '待审批' },
+            { value: 'APPROVED', label: '已通过' },
+            { value: 'REJECTED', label: '已拒绝' },
+            { value: '', label: '全部' },
+          ]"
           class="status-filter"
           @change="loadRequests"
-        >
-          <option value="PENDING">待审批</option>
-          <option value="APPROVED">已通过</option>
-          <option value="REJECTED">已拒绝</option>
-          <option value="">全部</option>
-        </select>
+        />
         <NebulaButton variant="secondary" @click="loadRequests"
           >刷新</NebulaButton
         >
@@ -220,31 +223,25 @@ function formatTime(value?: string) {
         </label>
         <label class="approve-dialog__field">
           最大调用次数
-          <input v-model="grantForm.maxCalls" type="number" min="0" />
+          <NebulaInput v-model="grantForm.maxCalls" type="number" />
         </label>
         <label class="approve-dialog__field">
           频率上限（次/窗口）
-          <input v-model="grantForm.rateLimitMax" type="number" min="0" />
+          <NebulaInput v-model="grantForm.rateLimitMax" type="number" />
         </label>
         <label class="approve-dialog__field">
           频率窗口（秒）
-          <input
+          <NebulaInput
             v-model="grantForm.rateLimitWindowSeconds"
             type="number"
-            min="1"
           />
         </label>
         <label class="approve-dialog__field">
           服务时间
-          <select v-model="grantForm.scheduleType">
-            <option
-              v-for="option in GRANT_SCHEDULE_OPTIONS"
-              :key="option.value"
-              :value="option.value"
-            >
-              {{ option.label }}
-            </option>
-          </select>
+          <NebulaSelect
+            v-model="grantForm.scheduleType"
+            :options="GRANT_SCHEDULE_OPTIONS as any"
+          />
         </label>
         <div
           v-if="grantForm.scheduleType !== 'ALWAYS'"
@@ -277,7 +274,7 @@ function formatTime(value?: string) {
         </p>
         <label class="approve-dialog__field">
           拒绝原因
-          <input
+          <NebulaInput
             v-model="rejectReason"
             type="text"
             placeholder="请输入拒绝原因"
@@ -305,9 +302,9 @@ function formatTime(value?: string) {
 
 .subscription-requests-page__header {
   display: flex;
+  gap: 16px;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
   padding: 16px 20px;
   background: hsl(var(--card));
   border-radius: 8px;
@@ -332,10 +329,7 @@ function formatTime(value?: string) {
 }
 
 .status-filter {
-  padding: 6px 10px;
-  border: 1px solid hsl(var(--border));
-  border-radius: 6px;
-  background: hsl(var(--background));
+  min-width: 120px;
 }
 
 .subscription-requests-page__table-wrap {
@@ -386,8 +380,7 @@ function formatTime(value?: string) {
   font-size: 13px;
 }
 
-.approve-dialog__field input,
-.approve-dialog__field select {
+.approve-dialog__field input {
   padding: 8px;
   border: 1px solid hsl(var(--border));
   border-radius: 6px;

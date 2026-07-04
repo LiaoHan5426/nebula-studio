@@ -9,12 +9,17 @@ export function resolveRendererEntry(windowId: string): {
   renderer: string;
 } {
   if (windowId in appConfig.windows) {
-    return appConfig.windows[windowId as MainWindowId];
+    const entry = appConfig.windows[windowId as MainWindowId];
+    if (!entry) throw new Error(`Window config not found: ${windowId}`);
+    return entry;
   }
   if ('modalRenderers' in appConfig && windowId in appConfig.modalRenderers) {
-    return appConfig.modalRenderers[
-      windowId as keyof typeof appConfig.modalRenderers
-    ];
+    const entry =
+      appConfig.modalRenderers[
+        windowId as keyof typeof appConfig.modalRenderers
+      ];
+    if (!entry) throw new Error(`Modal renderer config not found: ${windowId}`);
+    return entry;
   }
   throw new Error(`Unknown windowId: ${windowId}`);
 }

@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { RouterLink } from 'vue-router';
 import {
   NebulaAdminContent,
-  NebulaAdminSubNav,
+  NebulaAdminVerticalNav,
   useShellHosted,
 } from '@nebula-studio/nebula-layout';
-import type { SubNavItem } from '@nebula-studio/nebula-layout';
+import type { NavItem } from '@nebula-studio/nebula-layout';
+import { NebulaButton, NebulaButtonGroup } from '@nebula-studio/nebula-ui';
 
 import AppHeader from '@/app/AppHeader.vue';
 import { useAuth } from '@/shared/composables/useAuth';
@@ -13,23 +15,8 @@ import { useAuth } from '@/shared/composables/useAuth';
 const { isShellHosted } = useShellHosted();
 const { isPlatformAdmin } = useAuth();
 
-// 当前所在端：admin=管理端, user=使用端
 const currentSide = ref<'user' | 'admin'>('admin');
 
-interface NavChild {
-  to: string;
-  label: string;
-}
-
-interface NavItem {
-  key: string;
-  label: string;
-  icon?: string;
-  to?: string;
-  children?: NavChild[];
-}
-
-/** 平台管理员：全量平台配置 */
 const platformAdminNavItems: NavItem[] = [
   {
     key: 'plugins',
@@ -72,6 +59,7 @@ const platformAdminNavItems: NavItem[] = [
       { to: '/datasources', label: '数据源' },
       { to: '/flows', label: '流程定义' },
       { to: '/dag', label: 'DAG 编排' },
+      { to: '/tasks', label: '任务调度' },
     ],
   },
   {
@@ -86,7 +74,6 @@ const platformAdminNavItems: NavItem[] = [
   },
 ];
 
-/** 普通对接用户：自行管理插件/服务（启用与发布需审批） */
 const integratorAdminNavItems: NavItem[] = [
   {
     key: 'plugins',
@@ -128,6 +115,7 @@ const integratorAdminNavItems: NavItem[] = [
       { to: '/datasources', label: '数据源' },
       { to: '/flows', label: '流程定义' },
       { to: '/dag', label: 'DAG 编排' },
+      { to: '/tasks', label: '任务调度' },
     ],
   },
   {
@@ -159,6 +147,10 @@ const activeAdminNavItems = computed(() =>
   isPlatformAdmin.value ? platformAdminNavItems : integratorAdminNavItems,
 );
 
+const activeNavItems = computed(() =>
+  currentSide.value === 'user' ? userNavItems : activeAdminNavItems.value,
+);
+
 const expandedMenus = ref<Set<string>>(new Set(['integration-core']));
 
 function toggleMenu(key: string) {
@@ -172,64 +164,33 @@ function toggleMenu(key: string) {
 function isExpanded(key: string) {
   return expandedMenus.value.has(key);
 }
-
-const embeddedSubNavItems = computed<SubNavItem[]>(() => {
-  if (currentSide.value === 'user') {
-    return userNavItems
-      .filter((item) => item.to)
-      .map((item) => ({
-        key: item.key,
-        label: item.label,
-        to: item.to,
-      }));
-  }
-  const items: SubNavItem[] = [];
-  for (const item of activeAdminNavItems.value) {
-    if (item.children) {
-      for (const child of item.children) {
-        items.push({ key: child.to, label: child.label, to: child.to });
-      }
-    } else if (item.to) {
-      items.push({ key: item.key, label: item.label, to: item.to });
-    }
-  }
-  return items;
-});
 </script>
 
 <template>
-  <NebulaAdminContent v-if="isShellHosted">
-    <template #subnav>
-      <div class="integration-embed-subnav">
-        <div
-          class="integration-embed-side-toggle"
-          role="tablist"
-          aria-label="端切换"
+  <div v-if="isShellHosted" class="integration-embed-layout">
+    <aside class="integration-embed-sidebar">
+      <NebulaButtonGroup class="integration-embed-side-toggle">
+        <NebulaButton
+          variant="ghost"
+          :active="currentSide === 'admin'"
+          @click="currentSide = 'admin'"
         >
-          <button
-            type="button"
-            role="tab"
-            class="integration-embed-side-btn"
-            :class="{ active: currentSide === 'admin' }"
-            @click="currentSide = 'admin'"
-          >
-            管理端
-          </button>
-          <button
-            type="button"
-            role="tab"
-            class="integration-embed-side-btn"
-            :class="{ active: currentSide === 'user' }"
-            @click="currentSide = 'user'"
-          >
-            使用端
-          </button>
-        </div>
-        <NebulaAdminSubNav :items="embeddedSubNavItems" :max-visible="8" />
-      </div>
-    </template>
-    <slot />
-  </NebulaAdminContent>
+          管理端
+        </NebulaButton>
+        <NebulaButton
+          variant="ghost"
+          :active="currentSide === 'user'"
+          @click="currentSide = 'user'"
+        >
+          使用端
+        </NebulaButton>
+      </NebulaButtonGroup>
+      <NebulaAdminVerticalNav v-model="expandedMenus" :items="activeNavItems" />
+    </aside>
+    <main class="integration-embed-content">
+      <slot />
+    </main>
+  </div>
 
   <div v-else class="app-layout">
     <aside class="app-layout__sidebar">
@@ -239,28 +200,22 @@ const embeddedSubNavItems = computed<SubNavItem[]>(() => {
           <p class="app-layout__subtitle">插件 · 订阅 · 服务 · 流程</p>
         </div>
 
-        <div class="app-layout__side-toggle" role="tablist" aria-label="端切换">
-          <button
-            type="button"
-            role="tab"
-            class="side-toggle-btn"
-            :class="{ active: currentSide === 'admin' }"
-            :aria-selected="currentSide === 'admin'"
+        <NebulaButtonGroup class="app-layout__side-toggle">
+          <NebulaButton
+            variant="ghost"
+            :active="currentSide === 'admin'"
             @click="currentSide = 'admin'"
           >
             管理端
-          </button>
-          <button
-            type="button"
-            role="tab"
-            class="side-toggle-btn"
-            :class="{ active: currentSide === 'user' }"
-            :aria-selected="currentSide === 'user'"
+          </NebulaButton>
+          <NebulaButton
+            variant="ghost"
+            :active="currentSide === 'user'"
             @click="currentSide = 'user'"
           >
             使用端
-          </button>
-        </div>
+          </NebulaButton>
+        </NebulaButtonGroup>
       </div>
 
       <nav v-if="currentSide === 'admin'" class="app-layout__nav">
@@ -376,36 +331,13 @@ const embeddedSubNavItems = computed<SubNavItem[]>(() => {
   display: flex;
   gap: 4px;
   padding: 3px;
-  background: hsl(var(--muted) / 60%);
-  border-radius: 8px;
 }
 
-.side-toggle-btn {
+.app-layout__side-toggle [data-button-group-item] {
   flex: 1;
   min-width: 0;
-  padding: 7px 0;
   font-size: 12px;
   font-weight: 500;
-  line-height: 1;
-  color: hsl(var(--muted-foreground));
-  cursor: pointer;
-  background: transparent;
-  border: none;
-  border-radius: 6px;
-  transition:
-    color 0.15s,
-    background 0.15s,
-    box-shadow 0.15s;
-}
-
-.side-toggle-btn:hover {
-  color: hsl(var(--foreground));
-}
-
-.side-toggle-btn.active {
-  color: hsl(var(--primary));
-  background: hsl(var(--background));
-  box-shadow: 0 1px 2px hsl(var(--foreground) / 8%);
 }
 
 .app-layout__nav {
@@ -538,30 +470,41 @@ const embeddedSubNavItems = computed<SubNavItem[]>(() => {
   overflow: auto;
 }
 
-.integration-embed-subnav {
+.integration-embed-layout {
   display: flex;
+  width: 100%;
+  min-height: 100%;
+}
+
+.integration-embed-sidebar {
+  display: flex;
+  flex-shrink: 0;
   flex-direction: column;
-  gap: 6px;
+  width: 220px;
+  min-height: 0;
+  background: hsl(var(--sidebar));
+  border-right: 1px solid hsl(var(--border) / 80%);
+  box-shadow: 2px 0 12px hsl(0deg 0% 0% / 8%);
+  transition: width 0.25s ease;
 }
 
 .integration-embed-side-toggle {
   display: flex;
-  gap: 6px;
-  padding: 8px 12px 0;
+  gap: 4px;
+  padding: 10px 12px 6px;
+  border-bottom: 1px solid hsl(var(--border) / 60%);
 }
 
-.integration-embed-side-btn {
-  padding: 6px 12px;
+.integration-embed-side-toggle [data-button-group-item] {
+  flex: 1;
   font-size: 12px;
-  cursor: pointer;
-  background: hsl(var(--muted) / 40%);
-  border: 1px solid hsl(var(--border));
-  border-radius: 8px;
+  font-weight: 500;
 }
 
-.integration-embed-side-btn.active {
-  color: hsl(var(--primary));
-  background: hsl(var(--primary) / 12%);
-  border-color: hsl(var(--primary) / 40%);
+.integration-embed-content {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  background: hsl(var(--background));
 }
 </style>

@@ -29,5 +29,8 @@ node_modules
 
 # AI agent worktrees
 .claude/worktrees/
-
+.cursor
+.rtk
+.trae
+.qoder
 

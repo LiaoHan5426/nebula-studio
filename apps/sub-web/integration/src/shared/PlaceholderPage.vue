@@ -28,8 +28,8 @@ const pageTitle = computed(() => (route.meta.title as string) || '页面');
 .placeholder-page__content {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 12px;
+  align-items: center;
   padding: 40px;
   text-align: center;
 }

@@ -16,6 +16,8 @@ export const SYSTEM_BASE = '/api/system';
 
 export const AUTH_BASE = '/api/auth';
 
+export const CONFIG_BASE = '/api/config';
+
 const apiClient = createApiClient({
   getAuthToken,
 
@@ -45,4 +47,12 @@ export function authRequest<T>(
   options: ApiRequestOptions = {},
 ): Promise<ApiResponse<T>> {
   return apiRequest<T>(AUTH_BASE, endpoint, options);
+}
+
+export function configRequest<T>(
+  endpoint: string,
+
+  options: ApiRequestOptions = {},
+): Promise<ApiResponse<T>> {
+  return apiRequest<T>(CONFIG_BASE, endpoint, options);
 }

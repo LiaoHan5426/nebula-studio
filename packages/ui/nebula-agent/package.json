@@ -1,0 +1,16 @@
+{
+  "name": "@nebula-studio/nebula-agent",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "mustache": "catalog:template"
+  },
+  "devDependencies": {
+    "@types/mustache": "catalog:template",
+    "node-sql-parser": "catalog:parser"
+  }
+}

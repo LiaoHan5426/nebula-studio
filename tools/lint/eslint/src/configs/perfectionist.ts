@@ -51,8 +51,6 @@ export async function perfectionist(): Promise<Linter.Config[]> {
               ['type-internal'],
               'value-builtin',
               'vue',
-              'vben',
-              'vben-core',
               'value-external',
               'value-internal',
               ['value-parent', 'value-sibling', 'value-index'],

@@ -1,4 +1,5 @@
 /// <reference types="vite/client" />
+/// <reference types="@nebula-studio/nebula-ui/env" />
 
 declare module '@nebula-studio/nebula-flow-editor/components/BpmnEditor.vue' {
   import type { DefineComponent } from 'vue';

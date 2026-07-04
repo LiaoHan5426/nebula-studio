@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./app": "./src/App.vue"
+    "./app": "./src/App.vue",
+    "./boot": "./src/boot.ts"
   },
   "scripts": {
     "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false",
@@ -13,11 +14,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@nebula-studio-electron/electron-shared-vue": "workspace:^",
     "@nebula-studio-internal/tailwind": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
-    "vue": "catalog:vue"
+    "vue": "catalog:vue",
+    "@nebula-studio/runtime": "workspace:^",
+    "@nebula-studio-electron/electron-bridge": "workspace:^",
+    "@nebula-studio/auth-provider": "workspace:^"
   },
   "devDependencies": {
     "@electron-toolkit/preload": "catalog:electron",

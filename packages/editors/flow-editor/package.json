@@ -1,0 +1,28 @@
+{
+  "name": "@nebula-studio/nebula-flow-editor",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./components/BpmnEditor.vue": "./src/components/BpmnEditor.vue",
+    "./components/IntegrationBpmnEditor.vue": "./src/components/IntegrationBpmnEditor.vue"
+  },
+  "dependencies": {
+    "vue": "catalog:vue",
+    "bpmn-js": "catalog:bpmn",
+    "bpmn-js-properties-panel": "catalog:bpmn",
+    "camunda-bpmn-moddle": "catalog:bpmn",
+    "@nebula-studio/nebula-ui": "workspace:^"
+  },
+  "devDependencies": {
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "@nebula-studio/types": "workspace:^",
+    "sass": "catalog:style"
+  }
+}

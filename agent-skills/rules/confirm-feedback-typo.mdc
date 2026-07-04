@@ -5,4 +5,4 @@ alwaysApply: true
 
 # 含糊 / 错别字反馈
 
-以 `.cursor/skills/confirm-feedback-typo/SKILL.md` 为准；需要细节时读取该文件。
+以 `agent-skills/skills/confirm-feedback-typo/SKILL.md` 为准；需要细节时读取该文件。

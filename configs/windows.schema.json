@@ -1,0 +1,128 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Nebula Studio Windows Configuration",
+  "description": "Centralized window/renderer configuration for Nebula Studio Electron and Web modes.",
+  "type": "object",
+  "required": ["windows"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "shell": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "topInsetPx": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Top inset for the shell window (px)."
+        }
+      }
+    },
+    "electronEmbeddedPresentation": {
+      "type": "string",
+      "enum": ["iframe", "webview"],
+      "description": "How Electron embeds sub-app renderers."
+    },
+    "windows": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "$ref": "#/definitions/WindowConfig"
+      },
+      "description": "Named window definitions. Keys are window IDs."
+    },
+    "modalRenderers": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/ModalRendererConfig"
+      },
+      "description": "Modal renderer definitions (non-window, overlay renderers)."
+    },
+    "displayOrder": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "description": "Ordered list of window IDs for display in navigation."
+    }
+  },
+  "definitions": {
+    "PreloadCapability": {
+      "type": "string",
+      "enum": ["auth", "notify", "settings", "shell"],
+      "description": "A capability that can be exposed to a window's preload script."
+    },
+    "WindowConfig": {
+      "type": "object",
+      "required": ["preload", "renderer", "label"],
+      "additionalProperties": false,
+      "properties": {
+        "preload": {
+          "type": "string",
+          "description": "Preload script ID to use (maps to unified preload virtual entry)."
+        },
+        "renderer": {
+          "type": "string",
+          "description": "Renderer package name (maps to apps/sub-web/<name>/src/main.ts)."
+        },
+        "label": {
+          "type": "string",
+          "description": "Human-readable window label."
+        },
+        "iconSvg": {
+          "type": "string",
+          "description": "Inline SVG markup for the window icon."
+        },
+        "defaultEnabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether this window is enabled by default."
+        },
+        "integratable": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether this window can be embedded inside the integration sub-app."
+        },
+        "requiresAuth": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether this window requires authentication to access."
+        },
+        "preloadCapabilities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PreloadCapability"
+          },
+          "uniqueItems": true,
+          "description": "List of capabilities to expose in this window's preload script."
+        }
+      }
+    },
+    "ModalRendererConfig": {
+      "type": "object",
+      "required": ["preload", "renderer"],
+      "additionalProperties": false,
+      "properties": {
+        "preload": {
+          "type": "string",
+          "description": "Preload script ID to use."
+        },
+        "renderer": {
+          "type": "string",
+          "description": "Renderer package name."
+        },
+        "preloadCapabilities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PreloadCapability"
+          },
+          "uniqueItems": true,
+          "description": "List of capabilities to expose in this modal's preload script."
+        }
+      }
+    }
+  }
+}

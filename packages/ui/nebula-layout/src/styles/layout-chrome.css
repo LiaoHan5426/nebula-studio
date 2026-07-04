@@ -1,0 +1,160 @@
+.nebula-header-search {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  min-width: 140px;
+  height: 34px;
+  padding: 0 12px;
+  font-size: 13px;
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  background: hsl(var(--muted) / 45%);
+  border: 1px solid hsl(var(--border) / 70%);
+  border-radius: 999px;
+  transition: background 0.18s ease;
+}
+
+.nebula-header-search:hover {
+  color: hsl(var(--foreground));
+  background: hsl(var(--muted) / 65%);
+}
+
+.nebula-header-search__kbd {
+  margin-left: auto;
+  padding: 2px 6px;
+  font-size: 11px;
+  color: hsl(var(--muted-foreground));
+  background: hsl(var(--background) / 80%);
+  border: 1px solid hsl(var(--border) / 70%);
+  border-radius: 6px;
+}
+
+.nebula-header-tool-group {
+  display: inline-flex;
+  gap: 12px;
+  align-items: center;
+  padding: 6px;
+  background: hsl(var(--muted) / 30%);
+  border: 1px solid hsl(var(--border) / 55%);
+  border-radius: 10px;
+  -webkit-app-region: no-drag;
+}
+
+.nebula-sidebar-footer {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 10px 12px;
+  margin-top: auto;
+  border-top: 1px solid hsl(var(--border) / 70%);
+}
+
+.nebula-sidebar-footer .nebula-icon-btn {
+  -webkit-app-region: no-drag;
+}
+
+.nebula-sidebar-footer__btn {
+  flex: 1;
+  height: 34px;
+  border-radius: 8px;
+}
+
+/* 窄条收起时隐藏 Pin；正式展开或 hover 浮层（is-sidebar-floating）时显示 */
+.nebula-layout-shell.is-sidebar-collapsed:not(.is-sidebar-floating)
+  .nebula-sidebar-footer__pin {
+  display: none;
+}
+
+.nebula-layout-shell.is-sidebar-collapsed:not(.is-sidebar-floating)
+  .nebula-sidebar-footer {
+  justify-content: center;
+}
+
+.nebula-layout-shell.is-sidebar-collapsed:not(.is-sidebar-floating)
+  .nebula-sidebar-footer
+  > .nebula-sidebar-footer__btn:first-child {
+  flex: 0 0 auto;
+  width: 34px;
+}
+
+.nebula-sidebar-footer--collapse-only {
+  justify-content: center;
+}
+
+.nebula-sidebar-footer--collapse-only .nebula-sidebar-footer__btn {
+  flex: 0 0 auto;
+  width: 34px;
+}
+
+.nebula-layout-sidebar-brand {
+  position: relative;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+}
+
+.nebula-layout-sidebar-brand--btn {
+  width: 100%;
+  padding: 0;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  text-align: left;
+}
+
+.nebula-layout-sidebar-brand--btn:hover .nebula-layout-sidebar-brand__title {
+  color: hsl(var(--primary));
+}
+
+.nebula-layout-sidebar-brand__logo {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-size: 14px;
+  font-weight: 700;
+  color: hsl(var(--primary-foreground));
+  background: hsl(var(--primary));
+  border-radius: 10px;
+}
+
+.nebula-layout-sidebar-brand__text {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 42px;
+  max-width: calc(100% - 42px);
+  overflow: hidden;
+  white-space: nowrap;
+  transform: translateY(-50%);
+  transition:
+    opacity var(--layout-transition-duration) var(--layout-transition-ease),
+    max-width var(--layout-transition-duration) var(--layout-transition-ease);
+}
+
+.nebula-layout-sidebar-brand__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.nebula-layout-sidebar-brand__badge {
+  display: inline-block;
+  margin-top: 2px;
+  padding: 1px 6px;
+  font-size: 10px;
+  line-height: 1.2;
+  color: hsl(var(--muted-foreground));
+  background: hsl(var(--muted) / 55%);
+  border-radius: 999px;
+  white-space: nowrap;
+}

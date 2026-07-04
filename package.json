@@ -22,10 +22,14 @@
     "lint:style": "vp exec stylelint \"**/*.{css,scss,vue}\" --fix --allow-empty-input --ignore-pattern \"**/out/**\" --ignore-pattern \"**/dist/**\" --ignore-pattern \"**/dev-dist/**\"",
     "lint": "vp run lint:ox && vp run lint:style",
     "test": "vp run -r test",
+    "test:e2e": "playwright test",
+    "test:all": "vp run -r test && playwright test",
     "postinstall": "vp run -r stub --if-present",
     "prepare": "vp config",
     "update:deps": "vp dlx taze -r -w",
-    "clean": "node ./scripts/clean.mjs"
+    "clean": "node ./scripts/clean.mjs",
+    "generate:configs": "node ./scripts/generate-window-configs.mjs",
+    "generate:manifest": "node ./scripts/generate-window-configs.mjs"
   },
   "devDependencies": {
     "@eslint-community/eslint-plugin-eslint-comments": "catalog:lint",
@@ -34,20 +38,24 @@
     "@nebula-studio-internal/stylelint": "workspace:^",
     "@nebula-studio-internal/tsconfig": "workspace:^",
     "@nebula-studio/types": "workspace:^",
+    "@playwright/test": "catalog:test",
     "@vitejs/plugin-vue": "catalog:vite",
     "@vitejs/plugin-vue-jsx": "catalog:vite",
-    "cross-env": "catalog:",
+    "cross-env": "catalog:utils",
     "eslint-plugin-better-tailwindcss": "catalog:lint",
     "eslint-plugin-command": "catalog:lint",
-    "esno": "catalog:",
+    "esno": "catalog:utils",
     "happy-dom": "catalog:vite",
     "tailwindcss": "catalog:style",
-    "unconfig": "catalog:",
+    "unconfig": "catalog:utils",
     "vite-plus": "catalog:vite",
     "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.24"
   },
   "engines": {
     "node": ">=22.12.0"
   },
-  "packageManager": "pnpm@11.5.1"
+  "packageManager": "pnpm@11.5.1",
+  "dependencies": {
+    "@bpmn-io/cm-theme": "catalog:bpmn"
+  }
 }

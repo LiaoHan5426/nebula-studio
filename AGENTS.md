@@ -122,6 +122,7 @@ agent-skills/
 ├── rules/                    # Rule configurations
 │   ├── code-fix-workflow.mdc
 │   ├── confirm-feedback-typo.mdc
+│   ├── git-commit-message.mdc
 │   ├── mid-task-supplements.mdc
 │   ├── powershell-shell-workflow.mdc
 │   └── vite-plus-workflow.mdc
@@ -129,6 +130,8 @@ agent-skills/
     ├── code-fix-workflow/
     │   └── SKILL.md
     ├── confirm-feedback-typo/
+    │   └── SKILL.md
+    ├── git-commit-message/
     │   └── SKILL.md
     ├── mid-task-supplement/
     │   └── SKILL.md
@@ -144,6 +147,7 @@ agent-skills/
 | --- | --- |
 | **Code Fix Workflow** | Prioritizes how to apply code fixes: immediate patches for simple issues, short plans when useful, and ordered execution when multiple fixes exist. |
 | **Confirm Feedback Typo** | Clarifies ambiguous or typo-prone user feedback before acting. |
+| **Git Commit Message** | Git commit message specification for the Nebula project. All commit messages must be in Chinese, following the `<type>(<scope>): <description>` format. |
 | **Mid-Task Supplement** | Handles new user messages that arrive while a multi-step problem is still in progress. |
 | **PowerShell / Windows Shell** | Chains commands with `;` (not `&&`), runs long-lived processes in background, and maps bash-only syntax to PowerShell. **Read before running terminal commands on Windows.** |
 | **Vite+ / vp Workflow** | Uses Vite+ (`vite-plus` package) and the global `vp` CLI for installs, scripts, checks, and `vite.config.ts` toolchain blocks. **Read this skill before changing deps, scripts, or running dev/build/check.** |

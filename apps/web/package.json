@@ -9,17 +9,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@nebula-studio-electron/electron-shared-vue": "workspace:^",
     "@nebula-studio-internal/tailwind": "workspace:^",
-    "@nebula-studio-renderer/docs": "workspace:^",
     "@nebula-studio-renderer/integration": "workspace:^",
     "@nebula-studio-renderer/login": "workspace:^",
     "@nebula-studio-renderer/main": "workspace:^",
     "@nebula-studio-renderer/settings": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
-    "marked": "catalog:",
-    "vue": "catalog:vue"
+    "marked": "catalog:markdown",
+    "vue": "catalog:vue",
+    "@nebula-studio-electron/electron-bridge": "workspace:^",
+    "@nebula-studio/auth-provider": "workspace:^"
   },
   "devDependencies": {
     "@nebula-studio-internal/tsconfig": "workspace:^",

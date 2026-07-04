@@ -4,6 +4,17 @@
 declare const __NEBULA_BUILD_NODE_VERSION__: string;
 
 /**
+ * MSW Mock 开关：由 `nebulaMswDefine()` 在构建时注入，仅 GitHub demo 部署为 `true`。
+ */
+declare const __NEBULA_MSW_ENABLED__: boolean;
+
+type NebulaRuntimeMode = 'standalone' | 'platform-embed' | 'electron';
+
+interface Window {
+  __NEBULA_RUNTIME_MODE__?: NebulaRuntimeMode;
+}
+
+/**
  * 工作区侧效 CSS / 工具链入口：无运行时导出，由 `compilerOptions.types` 挂到各 renderer（见 `tools/tsconfig/web.json`）。
  */
 declare module '@nebula-studio-internal/tailwind/electron';

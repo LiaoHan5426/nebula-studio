@@ -8,73 +8,36 @@ import {
   getAuthToken,
   getAuthUsername,
   hasValidAuthToken,
-  initAuthCacheFromStorage,
   setAuthSession,
 } from '@/shared/auth/session';
 import { isPlatformAdmin as checkPlatformAdmin } from '@/shared/auth/roles';
-import {
-  isIntegrationShellEmbed,
-  readParentShellAuthSession,
-} from '@/shared/composables/useShellEmbed';
+import { isSurfaceIframeEmbed } from '@nebula-studio/app-shell';
 import { useTenant } from '@/shared/composables/useTenant';
 import { isApiSuccess } from '@/shared/types';
 
-initAuthCacheFromStorage();
-
 const token = ref<string | null>(getAuthToken());
-const username = ref<string | null>(localStorage.getItem('auth_username'));
+const username = ref<string | null>(getAuthUsername());
 const roles = ref<string[]>(getAuthRoles());
 const loading = ref(false);
 const error = ref<string | null>(null);
-const shellEmbed = isIntegrationShellEmbed();
+const shellEmbed = isSurfaceIframeEmbed('integration');
 const { resetTenantSession } = useTenant();
 
 export { getAuthToken } from '@/shared/auth/session';
 
-function applyShellSession(
-  user: string,
-  authToken: string,
-  userRoles: string[] = [],
-): void {
-  setAuthSession(user, authToken, userRoles);
-  token.value = authToken;
-  username.value = user;
-  roles.value = userRoles;
-}
-
-/** Web 壳 embed 模式：从父窗口 Shell 会话同步 JWT，避免二次登录 */
+/**
+ * 同步 Shell 会话状态。
+ * AuthBootstrap 的 EmbedStrategy 已在启动时完成同步，
+ * 此函数仅用于特殊场景（如手动重新同步）。
+ */
 export async function bootstrapAuthFromShell(): Promise<void> {
-  if (!shellEmbed) return;
-
-  const session = readParentShellAuthSession();
-  if (session?.token && session.user) {
-    applyShellSession(session.user, session.token);
-    return;
-  }
-
-  try {
-    const parentApi = (
-      window.parent as typeof window & {
-        api?: {
-          auth?: {
-            getSession?: () => Promise<{
-              user?: string;
-              token?: string;
-            } | null>;
-          };
-        };
-      }
-    ).api;
-    const remote = await parentApi?.auth?.getSession?.();
-    if (remote?.token && remote.user) {
-      applyShellSession(remote.user, remote.token);
-    }
-  } catch {
-    /* ignore cross-frame access errors */
-  }
+  // AuthBootstrap 已在 boot 阶段处理，此处为空操作以保持 API 兼容
 }
 
-/** 刷新后从后端同步角色（JWT 不含 roles 字段） */
+/**
+ * 刷新后从后端同步角色（JWT 不含 roles 字段）。
+ * AuthBootstrap 已在启动时同步，此处保留供特殊场景使用。
+ */
 export async function syncAuthProfile(): Promise<void> {
   if (!hasValidAuthToken()) return;
   if (getAuthRoles().length > 0) {
@@ -99,17 +62,12 @@ export async function syncAuthProfile(): Promise<void> {
   }
 }
 
-/** 发起 API 前确保 embed 模式已同步 Shell 登录态 */
+/**
+ * 确保 embed 模式已同步 Shell 登录态。
+ * AuthBootstrap 已在启动时处理，此处保留以保持 API 兼容。
+ */
 export async function ensureAuthFromShell(): Promise<void> {
-  if (!shellEmbed) return;
-  if (getAuthToken()) {
-    token.value = getAuthToken();
-    username.value = getAuthUsername();
-    roles.value = getAuthRoles();
-    return;
-  }
-  await bootstrapAuthFromShell();
-  await syncAuthProfile();
+  // AuthBootstrap 已在 boot 阶段处理
 }
 
 export function useAuth() {
@@ -127,6 +85,7 @@ export function useAuth() {
         return false;
       }
       const userRoles = response.data.roles ?? [];
+      // 单写路径：仅通过 setAuthSession（内部委托 globalAuthProvider）
       setAuthSession(
         response.data.username,
         response.data.token,
@@ -148,6 +107,7 @@ export function useAuth() {
   async function logout() {
     resetTenantSession();
     if (shellEmbed) {
+      // 单写路径：仅通过 clearAuthSession（内部委托 globalAuthProvider）
       clearAuthSession();
       token.value = null;
       username.value = null;

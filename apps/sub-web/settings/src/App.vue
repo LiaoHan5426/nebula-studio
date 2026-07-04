@@ -16,8 +16,14 @@ import ConfirmDialog from '@/shared/components/ConfirmDialog.vue';
 html,
 body,
 #app {
-  min-height: 100%;
+  height: 100%;
+  min-height: 0;
   margin: 0;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
 }
 
 body {
@@ -70,17 +76,6 @@ body {
   gap: 6px;
   margin-top: 12px;
   font-size: 13px;
-}
-
-.field input,
-.field select,
-.field textarea {
-  padding: 8px 10px;
-  font: inherit;
-  color: hsl(var(--foreground));
-  background: hsl(var(--background));
-  border: 1px solid hsl(var(--border));
-  border-radius: 8px;
 }
 
 .field__readonly {

@@ -1,110 +1,34 @@
 import { authRequest, systemRequest } from '@/shared/api/client';
 import type { ApiResponse, PageResult } from '@/shared/types';
+import type {
+  AuthMe,
+  AuthMode,
+  OrgPolicy,
+} from '@nebula-studio/contracts/auth';
+import type {
+  LogRecord,
+  OrganizationNode,
+  PermissionNode,
+  RoleRecord,
+  ShellAppRecord,
+  UserInput,
+  UserRecord,
+} from '@nebula-studio/contracts/system';
 
-export interface UserRecord {
-  id: string;
-  username: string;
-  email?: string;
-  phone?: string;
-  realName?: string;
-  avatar?: string;
-  status?: string;
-  createdAt?: string;
-  updatedAt?: string;
-  lastLoginAt?: string;
-}
-
-export interface UserInput {
-  username: string;
-  password?: string;
-  email?: string;
-  phone?: string;
-  realName?: string;
-  status?: string;
-}
-
-export interface RoleRecord {
-  id: string;
-  roleName: string;
-  roleCode: string;
-  description?: string;
-  status?: string;
-}
-
-export interface PermissionNode {
-  id: string;
-  permName: string;
-  permCode: string;
-  permType?: string;
-  parentId?: string | null;
-  description?: string;
-  sortOrder?: number;
-  status?: string;
-  createdAt?: string;
-  children?: PermissionNode[];
-}
-
-export interface OrganizationNode {
-  id: string;
-  orgName: string;
-  orgCode: string;
-  parentId?: string | null;
-  level?: number;
-  description?: string;
-  status?: string;
-  sortOrder?: number;
-  children?: OrganizationNode[];
-}
-
-export interface OrgPolicy {
-  enabled: boolean;
-  multiOrgEnabled: boolean;
-}
-
-export interface ShellAppRecord {
-  id: string;
-  label: string;
-  iconSvg?: string;
-  renderer?: string;
-  preload?: string;
-  integratable?: number;
-  defaultEnabled?: number;
-  sortOrder?: number;
-  status?: string;
-}
-
-export interface LogRecord {
-  id?: string;
-  username?: string;
-  level?: string;
-  module?: string;
-  message?: string;
-  operationType?: string;
-  entityName?: string;
-  createdAt?: string;
-  [key: string]: unknown;
-}
-
-export interface AuthMode {
-  authType: string;
-  orgEnabled: boolean;
-  multiOrgEnabled: boolean;
-}
-
-export interface AuthMe {
-  username: string;
-  userId: string | number;
-  roles: string[];
-  currentOrgId?: string;
-  currentOrgCode?: string;
-  currentOrgName?: string;
-  organizations?: Array<{
-    id: string;
-    orgName: string;
-    orgCode: string;
-    primary?: boolean;
-  }>;
-}
+export type {
+  AuthMe,
+  AuthMode,
+  OrgPolicy,
+} from '@nebula-studio/contracts/auth';
+export type {
+  LogRecord,
+  OrganizationNode,
+  PermissionNode,
+  RoleRecord,
+  ShellAppRecord,
+  UserInput,
+  UserRecord,
+} from '@nebula-studio/contracts/system';
 
 function buildQuery(
   params: Record<string, string | number | undefined>,

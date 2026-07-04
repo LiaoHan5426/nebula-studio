@@ -1,0 +1,29 @@
+{
+  "name": "@nebula-studio/auth",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "test": "vp test"
+  },
+  "dependencies": {
+    "@nebula-studio/app-shell": "workspace:^",
+    "@nebula-studio/auth-provider": "workspace:^",
+    "@nebula-studio/contracts": "workspace:^"
+  },
+  "devDependencies": {
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "@nebula-studio/types": "workspace:^",
+    "happy-dom": "catalog:vite",
+    "typescript": "catalog:types",
+    "vitest": "catalog:vite"
+  }
+}

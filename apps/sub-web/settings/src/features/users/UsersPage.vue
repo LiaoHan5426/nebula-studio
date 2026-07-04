@@ -2,7 +2,9 @@
 import { onMounted, ref } from 'vue';
 import {
   NebulaButton,
+  NebulaInput,
   NebulaPane,
+  NebulaSelect,
   NebulaTable,
   NebulaTableColumn,
   NebulaTag,
@@ -101,11 +103,11 @@ async function removeUser(user: UserRecord) {
 <template>
   <div class="page">
     <div class="page__actions">
-      <input
+      <NebulaInput
         v-model="keyword"
-        class="search"
         placeholder="搜索用户名"
-        @keyup.enter="loadUsers"
+        class="search"
+        @keydown.enter="loadUsers"
       />
       <NebulaButton variant="primary" @click="openCreate"
         >新建用户</NebulaButton
@@ -152,26 +154,33 @@ async function removeUser(user: UserRecord) {
       <NebulaPane title="新建用户" class="modal">
         <label class="field">
           <span>用户名</span>
-          <input v-model="form.username" placeholder="admin" />
+          <NebulaInput v-model="form.username" placeholder="admin" />
         </label>
         <label class="field">
           <span>密码</span>
-          <input v-model="form.password" type="password" placeholder="••••••" />
+          <NebulaInput
+            v-model="form.password"
+            type="password"
+            placeholder="••••••"
+          />
         </label>
         <label class="field">
           <span>姓名</span>
-          <input v-model="form.realName" />
+          <NebulaInput v-model="form.realName" />
         </label>
         <label class="field">
           <span>邮箱</span>
-          <input v-model="form.email" />
+          <NebulaInput v-model="form.email" />
         </label>
         <label class="field">
           <span>状态</span>
-          <select v-model="form.status">
-            <option value="ACTIVE">正常</option>
-            <option value="INACTIVE">禁用</option>
-          </select>
+          <NebulaSelect
+            v-model="form.status"
+            :options="[
+              { value: 'ACTIVE', label: '正常' },
+              { value: 'INACTIVE', label: '禁用' },
+            ]"
+          />
         </label>
         <div class="modal__actions">
           <NebulaButton variant="secondary" @click="showDialog = false">
@@ -189,12 +198,6 @@ async function removeUser(user: UserRecord) {
 <style scoped lang="scss">
 .search {
   min-width: 200px;
-  padding: 8px 10px;
-  font: inherit;
-  color: hsl(var(--foreground));
-  background: hsl(var(--background));
-  border: 1px solid hsl(var(--border));
-  border-radius: 8px;
 }
 
 .row-actions {

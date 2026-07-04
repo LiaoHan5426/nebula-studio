@@ -6,14 +6,17 @@
 
 **Always prefix commands with `rtk`**. If RTK has a dedicated filter, it uses it. If not, it passes through unchanged. This means RTK is always safe to use.
 
-**Important**: Even in command chains with `&&`, use `rtk`:
+**Important**: Prefix every command in a chain with `rtk`. On **Windows PowerShell** (this workspace), chain with **`;`**, not `&&` — see `agent-skills/skills/powershell-shell-workflow/SKILL.md`.
 
-```bash
-# ❌ Wrong
-git add . && git commit -m "msg" && git push
+```powershell
+# ❌ Wrong — missing rtk
+git add . ; git commit -m "msg" ; git push
+
+# ❌ Wrong on PowerShell — do not use &&
+rtk git add . && rtk git commit -m "msg" && rtk git push
 
 # ✅ Correct
-rtk git add . && rtk git commit -m "msg" && rtk git push
+rtk git add . ; rtk git commit -m "msg" ; rtk git push
 ```
 
 ## RTK Commands by Workflow

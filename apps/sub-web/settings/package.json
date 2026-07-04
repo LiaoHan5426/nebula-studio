@@ -5,28 +5,35 @@
   "type": "module",
   "exports": {
     "./app": "./src/App.vue",
-    "./router": "./src/router/index.ts"
+    "./router": "./src/router/index.ts",
+    "./boot": "./src/boot.ts"
   },
   "scripts": {
     "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false",
+    "test": "vp test",
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@nebula-studio-electron/electron-shared-vue": "workspace:^",
     "@nebula-studio-internal/tailwind": "workspace:^",
     "@nebula-studio/api-client": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
+    "@nebula-studio/auth-provider": "workspace:^",
+    "@nebula-studio/contracts": "workspace:^",
     "@nebula-studio/nebula-layout": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
+    "@nebula-studio/use-confirm": "workspace:^",
     "vue": "catalog:vue",
-    "vue-router": "catalog:vue"
+    "vue-router": "catalog:vue",
+    "@nebula-studio/runtime": "workspace:^",
+    "@nebula-studio-electron/electron-bridge": "workspace:^"
   },
   "devDependencies": {
     "@electron-toolkit/preload": "catalog:electron",
     "@nebula-studio-internal/tsconfig": "workspace:^",
     "@nebula-studio-internal/vite": "workspace:^",
+    "@nebula-studio/msw": "workspace:^",
     "@nebula-studio/types": "workspace:^",
     "typescript": "catalog:types",
     "vite": "catalog:vite",

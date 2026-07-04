@@ -1,0 +1,33 @@
+{
+  "name": "@nebula-studio/nebula-dag-editor",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./components/DagEditor.vue": "./src/components/DagEditor.vue"
+  },
+  "scripts": {
+    "test": "vp test"
+  },
+  "dependencies": {
+    "vue": "catalog:vue",
+    "@vue-flow/core": "catalog:dag",
+    "@vue-flow/background": "catalog:dag",
+    "@vue-flow/controls": "catalog:dag",
+    "@nebula-studio/nebula-ui": "workspace:^",
+    "@nebula-studio/nebula-low-render": "workspace:^"
+  },
+  "devDependencies": {
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "@nebula-studio/types": "workspace:^",
+    "happy-dom": "catalog:vite",
+    "vite-plus": "catalog:vite",
+    "vitest": "catalog:vite"
+  }
+}

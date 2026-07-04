@@ -7,6 +7,7 @@ import {
   getDefaultEnabledShellIntegrableIds,
   listShellIntegrableAppIds,
 } from '@nebula-studio/app-shell/shell-integration';
+import type { EmbeddedShellWindowId } from '@nebula-studio/app-shell';
 import icon from '../../../../resources/icon.png?asset';
 import appConfig from '../../../../app.config';
 import {
@@ -22,7 +23,7 @@ type WindowId = keyof typeof appConfig.windows;
 const SHELL_TAGS_HEIGHT_PX = 40;
 
 function usesBrowserViewEmbed(): boolean {
-  return appConfig.electronEmbeddedPresentation === 'browser-view';
+  return (appConfig.electronEmbeddedPresentation as string) === 'browser-view';
 }
 
 function preloadJsPath(slug: string): string {
@@ -96,7 +97,6 @@ export class WindowManager {
   #embeddedContentVisible = true;
   #mainWindow: BrowserWindow | null = null;
   #loginWindow: BrowserWindow | null = null;
-  #authSession: { user: string; token?: string } | null = null;
 
   constructor(securityRules: AbstractSecurityRule[] = []) {
     this.#securityRules = securityRules;
@@ -175,18 +175,21 @@ export class WindowManager {
       (_event, payload: { viewId?: string }) => {
         const viewId = payload?.viewId;
         if (typeof viewId !== 'string' || !viewId) return false;
-        const wid = viewId as EmbeddedWindowId;
+        const wid = viewId as EmbeddedShellWindowId;
         if (!listShellIntegrableAppIds().includes(wid)) return false;
         if (usesBrowserViewEmbed() && !this.#embeddedViewsById.has(wid)) {
           return false;
         }
-        if (!usesBrowserViewEmbed() && !listEmbeddedWindowIds().includes(wid)) {
+        if (
+          !usesBrowserViewEmbed() &&
+          !listEmbeddedWindowIds().includes(wid as EmbeddedWindowId)
+        ) {
           return false;
         }
         if (!this.#enabledEmbeddedViewOrder.includes(wid)) {
           this.#enabledEmbeddedViewOrder.push(wid);
         }
-        return this.setActiveEmbeddedView(wid);
+        return this.setActiveEmbeddedView(wid as EmbeddedWindowId);
       },
     );
 
@@ -195,12 +198,15 @@ export class WindowManager {
       (_event, payload: { viewId?: string }) => {
         const viewId = payload?.viewId;
         if (typeof viewId !== 'string' || !viewId) return false;
-        const wid = viewId as EmbeddedWindowId;
+        const wid = viewId as EmbeddedShellWindowId;
         if (!listShellIntegrableAppIds().includes(wid)) return false;
         if (usesBrowserViewEmbed() && !this.#embeddedViewsById.has(wid)) {
           return false;
         }
-        if (!usesBrowserViewEmbed() && !listEmbeddedWindowIds().includes(wid)) {
+        if (
+          !usesBrowserViewEmbed() &&
+          !listEmbeddedWindowIds().includes(wid as EmbeddedWindowId)
+        ) {
           return false;
         }
         if (!this.#enabledEmbeddedViewOrder.includes(wid)) return true;
@@ -266,70 +272,11 @@ export class WindowManager {
         return true;
       },
     );
-
-    ipcMain.handle('shell:open-login', (event) => {
-      const win = BrowserWindow.fromWebContents(event.sender);
-      if (!win || win !== this.#mainWindow) return false;
-      this.openLoginModal();
-      return true;
-    });
-
-    ipcMain.handle(
-      'auth:login',
-      (event, payload: { user?: string; password?: string }) => {
-        const user = payload?.user?.trim();
-        if (!user) {
-          return { ok: false as const, error: '请输入用户名' };
-        }
-        if (payload?.password !== 'demo') {
-          return {
-            ok: false as const,
-            error: '演示环境请使用密码：demo',
-          };
-        }
-        this.#authSession = { user };
-        const modalWin = BrowserWindow.fromWebContents(event.sender);
-        const shellWin = modalWin?.getParentWindow();
-        shellWin?.webContents.send('auth:session-changed', this.#authSession);
-        this.broadcast('auth:session-changed', this.#authSession);
-        return { ok: true as const, user };
-      },
-    );
-
-    ipcMain.handle(
-      'auth:establish-session',
-      (event, payload: { user?: string; token?: string }): boolean => {
-        const user = payload?.user?.trim();
-        const token = payload?.token?.trim();
-        if (!user || !token) return false;
-        this.#authSession = { user, token };
-        this.#mainWindow?.webContents.send(
-          'auth:session-changed',
-          this.#authSession,
-        );
-        this.broadcast('auth:session-changed', this.#authSession);
-        const loginWin = BrowserWindow.fromWebContents(event.sender);
-        if (loginWin && loginWin !== this.#mainWindow) {
-          loginWin.close();
-        }
-        return true;
-      },
-    );
-
-    ipcMain.handle('auth:get-session', () => this.#authSession);
-
-    ipcMain.handle('auth:logout', (event) => {
-      this.#authSession = null;
-      const shellWin =
-        BrowserWindow.fromWebContents(event.sender) ?? this.#mainWindow;
-      shellWin?.webContents.send('auth:session-changed', null);
-      this.broadcast('auth:session-changed', null);
-      return true;
-    });
   }
 
   createShellWindow(): BrowserWindow {
     const cfg = appConfig.windows.main;
+    if (!cfg) throw new Error('Main window config not found');
     const win = new BrowserWindow({
       title: '',
       width: 960,
@@ -456,7 +403,7 @@ export class WindowManager {
     return true;
   }
 
-  broadcast(channel: string, payload: unknown): void {
+  broadcast(channel: string, payload: unknown = null): void {
     this.#mainWindow?.webContents.send(channel, payload);
     for (const view of this.#embeddedViewsById.values()) {
       view.webContents.send(channel, payload);
@@ -492,16 +439,10 @@ export class WindowManager {
       win.show();
     });
     win.on('closed', () => {
-      const hadValidSession = Boolean(
-        this.#authSession?.user?.trim() &&
-        this.#authSession?.token?.trim() &&
-        this.#authSession.token.length >= 20,
-      );
       this.#loginWindow = null;
-      if (!hadValidSession) {
-        this.#mainWindow?.webContents.send('auth:login-dismissed');
-        this.broadcast('auth:login-dismissed');
-      }
+      // 登录窗口关闭时通知渲染进程，由 IpcAuthModule 判断会话状态
+      this.#mainWindow?.webContents.send('auth:login-dismissed');
+      this.broadcast('auth:login-dismissed');
     });
     this.#loginWindow = win;
   }

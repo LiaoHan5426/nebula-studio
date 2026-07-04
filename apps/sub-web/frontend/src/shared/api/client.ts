@@ -6,6 +6,7 @@ import {
   handleShellAuthUnauthorized,
   readWebAuthSession,
 } from '@nebula-studio/app-shell';
+import { globalAuthProvider } from '@nebula-studio/auth-provider';
 
 import { ensureAuthMode, isSessionAuthMode } from '@/shared/auth/authMode';
 
@@ -22,7 +23,7 @@ export function setCurrentOrgId(orgId: string): void {
 }
 
 function getAuthToken(): string | null {
-  return readWebAuthSession()?.token ?? null;
+  return globalAuthProvider.getSession()?.token ?? null;
 }
 
 const apiClient = createApiClient({

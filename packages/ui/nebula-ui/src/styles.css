@@ -1,0 +1,1177 @@
+@import 'vxe-table/lib/style.css';
+
+/** NebulaReader Markdown / plain 代码块语法高亮（highlight.js） */
+@import 'highlight.js/styles/github.css';
+
+/** tiptap 编辑器基础样式 */
+.tiptap {
+  box-sizing: border-box;
+  height: 100%;
+  padding: 0.85rem;
+  overflow-y: auto;
+  outline: none;
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  color: hsl(var(--muted-foreground));
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.tiptap > * + * {
+  margin-top: 0.5em;
+}
+
+.tiptap h1,
+.tiptap h2,
+.tiptap h3 {
+  font-weight: 700;
+}
+
+.tiptap h1 {
+  font-size: 1.5rem;
+}
+.tiptap h2 {
+  font-size: 1.25rem;
+}
+.tiptap h3 {
+  font-size: 1.1rem;
+}
+
+.tiptap ul,
+.tiptap ol {
+  padding-left: 1.5rem;
+}
+
+.tiptap ul {
+  list-style: disc;
+}
+.tiptap ol {
+  list-style: decimal;
+}
+
+.tiptap blockquote {
+  padding-left: 0.75rem;
+  margin-left: 0;
+  border-left: 3px solid hsl(var(--border));
+}
+
+.tiptap pre {
+  padding: 0.85rem;
+  overflow-x: auto;
+  font-family:
+    'Cascadia Code', 'JetBrains Mono', Consolas, 'Courier New', monospace;
+  font-size: 0.82rem;
+  line-height: 1.58;
+  background: hsl(var(--muted));
+  border: 1px solid hsl(var(--border));
+  border-radius: 8px;
+}
+
+.tiptap code {
+  font-family:
+    'Cascadia Code', 'JetBrains Mono', Consolas, 'Courier New', monospace;
+  font-size: 0.82rem;
+}
+
+.tiptap hr {
+  margin: 1rem 0;
+  border: none;
+  border-top: 1px solid hsl(var(--border));
+}
+
+.tiptap img {
+  max-width: 100%;
+  height: auto;
+}
+
+.tiptap table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tiptap td,
+.tiptap th {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid hsl(var(--border));
+}
+
+.tiptap th {
+  font-weight: 600;
+  background: hsl(var(--muted) / 55%);
+}
+
+.tiptap mark {
+  background-color: hsl(var(--warning) / 30%);
+}
+
+.nebula-pane {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 12px;
+}
+
+.nebula-pane__header {
+  padding: 0.75rem 0.9rem 0;
+}
+
+.nebula-pane__title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: hsl(var(--foreground));
+}
+
+.nebula-pane__desc {
+  margin-top: 0.3rem;
+  font-size: 0.88rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.nebula-pane__body {
+  padding: 0.75rem 0.9rem;
+}
+
+.nebula-tree {
+  min-width: 260px;
+  max-width: 320px;
+}
+
+.nebula-tree__root,
+.nebula-tree__children {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.nebula-tree__group {
+  font-size: 0.85rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.nebula-tree__btn {
+  justify-content: flex-start;
+  width: 100%;
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.nebula-tree__btn:hover {
+  transform: translateX(4px);
+}
+
+.nebula-tree__children {
+  padding-left: 0.6rem;
+  margin-left: 0.8rem;
+  border-left: 1px dashed hsl(var(--border));
+}
+
+.nebula-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  cursor: pointer;
+  background: hsl(var(--muted));
+  border: 1px solid hsl(var(--border));
+  border-radius: 999px;
+}
+
+.nebula-theme-toggle__track {
+  position: relative;
+  width: 36px;
+  height: 18px;
+}
+
+.nebula-theme-toggle__thumb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+}
+
+.nebula-theme-toggle--dark .nebula-theme-toggle__thumb {
+  transform: translateX(18px);
+}
+
+.nebula-theme-toggle__icon {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.nebula-theme-toggle__icon--sun {
+  background: hsl(var(--warning));
+}
+
+.nebula-theme-toggle__icon--moon {
+  background: hsl(var(--primary));
+}
+
+.nebula-tooltip-wrap {
+  display: inline-flex;
+}
+
+.nebula-has-tooltip {
+  position: relative;
+}
+
+.nebula-floating-tooltip {
+  position: fixed;
+  z-index: 2147483646;
+  width: max-content;
+  max-width: 300px;
+  padding: 0.4rem 0.55rem;
+  font-size: 0.76rem;
+  line-height: 1.25;
+  color: hsl(var(--popover-foreground));
+  text-align: center;
+  white-space: normal;
+  pointer-events: none;
+  background: hsl(var(--popover));
+  border: 1px solid hsl(var(--border));
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgb(0 0 0 / 20%);
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+.nebula-floating-tooltip[data-open='true'] {
+  opacity: 1;
+}
+
+.nebula-floating-tooltip--pop[data-placement='top'] {
+  animation: nebula-tooltip-pop-top 150ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.nebula-floating-tooltip--pop[data-placement='bottom'] {
+  animation: nebula-tooltip-pop-bottom 150ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.nebula-floating-tooltip--pop[data-placement='left'] {
+  animation: nebula-tooltip-pop-left 150ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.nebula-floating-tooltip--pop[data-placement='right'] {
+  animation: nebula-tooltip-pop-right 150ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.nebula-floating-tooltip--closing[data-placement='top'] {
+  animation: nebula-tooltip-hide-top 110ms ease-in forwards;
+}
+
+.nebula-floating-tooltip--closing[data-placement='bottom'] {
+  animation: nebula-tooltip-hide-bottom 110ms ease-in forwards;
+}
+
+.nebula-floating-tooltip--closing[data-placement='left'] {
+  animation: nebula-tooltip-hide-left 110ms ease-in forwards;
+}
+
+.nebula-floating-tooltip--closing[data-placement='right'] {
+  animation: nebula-tooltip-hide-right 110ms ease-in forwards;
+}
+
+@keyframes nebula-tooltip-pop-top {
+  0% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.96);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes nebula-tooltip-pop-bottom {
+  0% {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.96);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes nebula-tooltip-pop-left {
+  0% {
+    opacity: 0;
+    transform: translateX(6px) scale(0.96);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes nebula-tooltip-pop-right {
+  0% {
+    opacity: 0;
+    transform: translateX(-6px) scale(0.96);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes nebula-tooltip-hide-top {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+}
+
+@keyframes nebula-tooltip-hide-bottom {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(4px) scale(0.98);
+  }
+}
+
+@keyframes nebula-tooltip-hide-left {
+  0% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(-4px) scale(0.98);
+  }
+}
+
+@keyframes nebula-tooltip-hide-right {
+  0% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(4px) scale(0.98);
+  }
+}
+
+.nebula-floating-tooltip__arrow {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  pointer-events: none;
+  background: hsl(var(--popover));
+  border: 1px solid hsl(var(--border));
+  border-top: 0;
+  border-left: 0;
+  transform: rotate(45deg);
+}
+
+.nebula-floating-tooltip[data-placement='top'] .nebula-floating-tooltip__arrow {
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.nebula-floating-tooltip[data-placement='bottom']
+  .nebula-floating-tooltip__arrow {
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%) rotate(225deg);
+}
+
+.nebula-floating-tooltip[data-placement='left']
+  .nebula-floating-tooltip__arrow {
+  top: 50%;
+  right: -5px;
+  transform: translateY(-50%) rotate(315deg);
+}
+
+.nebula-floating-tooltip[data-placement='right']
+  .nebula-floating-tooltip__arrow {
+  top: 50%;
+  left: -5px;
+  transform: translateY(-50%) rotate(135deg);
+}
+
+.nebula-drag__ghost {
+  opacity: 0.45;
+}
+
+.nebula-drag__chosen {
+  outline: 1px dashed hsl(var(--primary) / 70%);
+  outline-offset: 2px;
+}
+
+.nebula-drag__drag {
+  cursor: grabbing;
+}
+
+/** NebulaReader，`format="markdown"` 时根节点带 `.nebula-markdown` — marked 渲染 */
+.nebula-markdown {
+  padding: 0.82rem 0.9rem;
+}
+
+.nebula-markdown p {
+  margin: 0.4rem 0;
+  font-size: 0.86rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.nebula-markdown pre {
+  padding: 0.85rem;
+  margin: 0;
+  overflow-x: auto;
+  background: hsl(var(--background) / 55%);
+}
+
+/**
+ * 行内 `code` 与 fenced 块内的 `code.hljs` 必须区分：
+ * 若对 `.nebula-markdown code` 统一设 color，子节点会继承同一前景色，
+ * 盖住 highlight.js / github.css 赋予 `.hljs-keyword` 等 token 的颜色（深浅色皆如此）。
+ */
+.nebula-markdown code:not(.hljs) {
+  font-family:
+    'Cascadia Code', 'JetBrains Mono', Consolas, 'Courier New', monospace;
+  font-size: 0.82rem;
+  line-height: 1.58;
+  color: hsl(var(--foreground));
+}
+
+.nebula-markdown pre code.hljs {
+  font-family:
+    'Cascadia Code', 'JetBrains Mono', Consolas, 'Courier New', monospace;
+  font-size: 0.82rem;
+  line-height: 1.58;
+}
+
+.nebula-markdown .code-block {
+  overflow: hidden;
+  border: 1px solid hsl(var(--border));
+  border-radius: 8px;
+}
+
+.nebula-markdown .code-block pre {
+  min-height: 0;
+}
+
+/**
+ * fenced 代码块：highlight.js 已产出 `<span class="hljs-*">`，但 Tailwind / 页面级 `color`
+ * 与 `@layer` 顺序可能压过 `github.css`。以下在围栏内强制 GitHub Light 配色；
+ * 深色见下文 `html.dark` / `html[data-theme='dark']`。
+ */
+.nebula-markdown .code-block pre code.hljs {
+  color: #24292e !important;
+  background: #f6f8fa !important;
+}
+
+.nebula-markdown .code-block pre code.hljs .hljs-doctag,
+.nebula-markdown .code-block pre code.hljs .hljs-keyword,
+.nebula-markdown .code-block pre code.hljs .hljs-meta .hljs-keyword,
+.nebula-markdown .code-block pre code.hljs .hljs-template-tag,
+.nebula-markdown .code-block pre code.hljs .hljs-template-variable,
+.nebula-markdown .code-block pre code.hljs .hljs-type,
+.nebula-markdown .code-block pre code.hljs .hljs-variable.language_ {
+  color: #d73a49 !important;
+}
+
+.nebula-markdown .code-block pre code.hljs .hljs-title,
+.nebula-markdown .code-block pre code.hljs .hljs-title.class_,
+.nebula-markdown .code-block pre code.hljs .hljs-title.class_.inherited__,
+.nebula-markdown .code-block pre code.hljs .hljs-title.function_ {
+  color: #6f42c1 !important;
+}
+
+/** hljs 11+（xml/vue 内嵌脚本）：github.css 未覆盖 `.hljs-function`，否则易整块继承基底灰字 */
+.nebula-markdown .code-block pre code.hljs .hljs-function {
+  color: #6f42c1 !important;
+}
+
+.nebula-markdown .code-block pre code.hljs .hljs-attr,
+.nebula-markdown .code-block pre code.hljs .hljs-attribute,
+.nebula-markdown .code-block pre code.hljs .hljs-literal,
+.nebula-markdown .code-block pre code.hljs .hljs-meta,
+.nebula-markdown .code-block pre code.hljs .hljs-number,
+.nebula-markdown .code-block pre code.hljs .hljs-operator,
+.nebula-markdown .code-block pre code.hljs .hljs-variable,
+.nebula-markdown .code-block pre code.hljs .hljs-selector-attr,
+.nebula-markdown .code-block pre code.hljs .hljs-selector-class,
+.nebula-markdown .code-block pre code.hljs .hljs-selector-id {
+  color: #005cc5 !important;
+}
+
+.nebula-markdown .code-block pre code.hljs .hljs-regexp,
+.nebula-markdown .code-block pre code.hljs .hljs-string,
+.nebula-markdown .code-block pre code.hljs .hljs-meta .hljs-string {
+  color: #032f62 !important;
+}
+
+.nebula-markdown .code-block pre code.hljs .hljs-built_in,
+.nebula-markdown .code-block pre code.hljs .hljs-symbol {
+  color: #e36209 !important;
+}
+
+.nebula-markdown .code-block pre code.hljs .hljs-comment,
+.nebula-markdown .code-block pre code.hljs .hljs-code,
+.nebula-markdown .code-block pre code.hljs .hljs-formula {
+  color: #6a737d !important;
+}
+
+.nebula-markdown .code-block pre code.hljs .hljs-name,
+.nebula-markdown .code-block pre code.hljs .hljs-quote,
+.nebula-markdown .code-block pre code.hljs .hljs-selector-tag,
+.nebula-markdown .code-block pre code.hljs .hljs-selector-pseudo {
+  color: #22863a !important;
+}
+
+.nebula-markdown .code-block pre code.hljs .hljs-tag {
+  color: #22863a !important;
+}
+
+.nebula-markdown .code-block pre code.hljs .hljs-section {
+  font-weight: bold;
+  color: #005cc5 !important;
+}
+
+.nebula-markdown .code-block pre code.hljs span[class^='language-'] {
+  color: #24292e !important;
+}
+
+.nebula-markdown .code-block__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.4rem 0.55rem;
+  background: hsl(var(--accent) / 20%);
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.nebula-markdown .code-block__lang {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.nebula-markdown .code-block__copy {
+  padding: 0.3rem 0.42rem;
+  font-size: 0.74rem;
+  line-height: 1;
+  color: hsl(var(--foreground));
+  cursor: pointer;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 6px;
+}
+
+.nebula-markdown h1,
+.nebula-markdown h2,
+.nebula-markdown h3,
+.nebula-markdown h4 {
+  margin: 0.75rem 0 0.35rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: hsl(var(--foreground));
+}
+
+.nebula-markdown ul,
+.nebula-markdown ol {
+  padding-left: 1.25rem;
+  margin: 0.35rem 0;
+  font-size: 0.86rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.nebula-markdown a {
+  color: hsl(var(--primary));
+}
+
+.nebula-markdown blockquote {
+  padding-left: 0.75rem;
+  margin: 0.45rem 0;
+  font-size: 0.86rem;
+  color: hsl(var(--muted-foreground));
+  border-left: 3px solid hsl(var(--border));
+}
+
+/** highlight.js：深色（html.dark / data-theme）强制背景与 token（!important 压过页面 color） */
+html.dark .nebula-markdown pre code.hljs,
+html[data-theme='dark'] .nebula-markdown pre code.hljs {
+  color: hsl(var(--foreground)) !important;
+  background: hsl(var(--background) / 72%) !important;
+}
+
+html.dark .nebula-markdown .code-block pre code.hljs,
+html[data-theme='dark'] .nebula-markdown .code-block pre code.hljs {
+  color: hsl(var(--foreground)) !important;
+  background: hsl(var(--background) / 72%) !important;
+}
+
+html.dark .nebula-reader__plain code.hljs,
+html[data-theme='dark'] .nebula-reader__plain code.hljs {
+  color: hsl(var(--foreground)) !important;
+  background: hsl(var(--background) / 72%) !important;
+}
+
+html.dark .nebula-markdown pre code.hljs .hljs-doctag,
+html.dark .nebula-markdown pre code.hljs .hljs-keyword,
+html.dark .nebula-markdown pre code.hljs .hljs-meta .hljs-keyword,
+html.dark .nebula-markdown pre code.hljs .hljs-template-tag,
+html.dark .nebula-markdown pre code.hljs .hljs-template-variable,
+html.dark .nebula-markdown pre code.hljs .hljs-type,
+html.dark .nebula-markdown pre code.hljs .hljs-variable.language_,
+html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-doctag,
+html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-keyword,
+html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-meta .hljs-keyword,
+html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-template-tag,
+html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-template-variable,
+html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-type,
+html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-variable.language_,
+html.dark .nebula-reader__plain code.hljs .hljs-doctag,
+html.dark .nebula-reader__plain code.hljs .hljs-keyword,
+html[data-theme='dark'] .nebula-reader__plain code.hljs .hljs-doctag,
+html[data-theme='dark'] .nebula-reader__plain code.hljs .hljs-keyword {
+  color: #c792ea !important;
+}
+
+html.dark .nebula-markdown pre code.hljs .hljs-title,
+html.dark .nebula-markdown pre code.hljs .hljs-title.class_,
+html.dark .nebula-markdown pre code.hljs .hljs-title.function_,
+html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-title,
+html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-title.class_,
+html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-title.function_,
+html.dark .nebula-reader__plain code.hljs .hljs-title,
+html[data-theme='dark'] .nebula-reader__plain code.hljs .hljs-title {
+  color: #82aaff !important;
+}
+
+html.dark .nebula-markdown pre code.hljs .hljs-function,
+html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-function,
+html.dark .nebula-reader__plain code.hljs .hljs-function,
+html[data-theme='dark'] .nebula-reader__plain code.hljs .hljs-function {
+  color: #c792ea !important;
+}
+
+html.dark .nebula-markdown pre code.hljs .hljs-regexp,
+html.dark .nebula-markdown pre code.hljs .hljs-string,
+html.dark .nebula-markdown pre code.hljs .hljs-meta .hljs-string,
+html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-regexp,
+html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-string,
+html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-meta .hljs-string,
+html.dark .nebula-reader__plain code.hljs .hljs-string,
+html[data-theme='dark'] .nebula-reader__plain code.hljs .hljs-string {
+  color: #c3e88d !important;
+}
+
+html.dark .nebula-markdown pre code.hljs .hljs-comment,
+html.dark .nebula-markdown pre code.hljs .hljs-code,
+html.dark .nebula-markdown pre code.hljs .hljs-formula,
+html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-comment,
+html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-code,
+html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-formula,
+html.dark .nebula-reader__plain code.hljs .hljs-comment,
+html[data-theme='dark'] .nebula-reader__plain code.hljs .hljs-comment {
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+html.dark .nebula-markdown pre code.hljs .hljs-attr,
+html.dark .nebula-markdown pre code.hljs .hljs-attribute,
+html.dark .nebula-markdown pre code.hljs .hljs-literal,
+html.dark .nebula-markdown pre code.hljs .hljs-number,
+html.dark .nebula-markdown pre code.hljs .hljs-variable,
+html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-attr,
+html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-attribute,
+html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-literal,
+html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-number,
+html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-variable,
+html.dark .nebula-reader__plain code.hljs .hljs-literal,
+html.dark .nebula-reader__plain code.hljs .hljs-number,
+html[data-theme='dark'] .nebula-reader__plain code.hljs .hljs-literal,
+html[data-theme='dark'] .nebula-reader__plain code.hljs .hljs-number {
+  color: #f78c6c !important;
+}
+
+html.dark .nebula-markdown pre code.hljs .hljs-built_in,
+html.dark .nebula-markdown pre code.hljs .hljs-symbol,
+html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-built_in,
+html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-symbol,
+html.dark .nebula-reader__plain code.hljs .hljs-built_in,
+html[data-theme='dark'] .nebula-reader__plain code.hljs .hljs-built_in {
+  color: #82aaff !important;
+}
+
+html.dark .nebula-markdown pre code.hljs .hljs-name,
+html.dark .nebula-markdown pre code.hljs .hljs-selector-tag,
+html.dark .nebula-markdown pre code.hljs .hljs-tag,
+html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-name,
+html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-selector-tag,
+html[data-theme='dark'] .nebula-markdown pre code.hljs .hljs-tag {
+  color: #f07178 !important;
+}
+
+html.dark .nebula-markdown pre code.hljs span[class^='language-'],
+html[data-theme='dark']
+  .nebula-markdown
+  pre
+  code.hljs
+  span[class^='language-'] {
+  color: hsl(var(--foreground)) !important;
+}
+
+/** NebulaReader，`format="html"`（如 wangEditor） */
+.nebula-reader--html {
+  padding: 0.82rem 0.9rem;
+  font-size: 0.86rem;
+  color: hsl(var(--foreground));
+}
+
+.nebula-reader--html p {
+  margin: 0.4rem 0;
+}
+
+.nebula-reader--html img {
+  max-width: 100%;
+  height: auto;
+}
+
+/** NebulaReader，`format="plain"`（代码等非 Markdown 文本） */
+.nebula-reader__plain {
+  padding: 0.85rem;
+  margin: 0;
+  overflow-x: auto;
+  background: hsl(var(--background) / 55%);
+  border: 1px solid hsl(var(--border));
+  border-radius: 8px;
+}
+
+.nebula-reader__plain code {
+  display: block;
+  font-family:
+    'Cascadia Code', 'JetBrains Mono', Consolas, 'Courier New', monospace;
+  font-size: 0.82rem;
+  line-height: 1.58;
+  color: hsl(var(--foreground));
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+/**
+ * vxe-table 4.x 主题变量见 node_modules/vxe-table/lib/style.css（如 layout-background-color），
+ * 不再使用 --vxe-ui-body-background-color。此处统一映射到 Nebula 语义色，随 html.dark / data-theme 切换。
+ */
+.nebula-table {
+  --vxe-ui-font-color: hsl(var(--foreground));
+  --vxe-ui-font-primary-color: hsl(var(--primary));
+  --vxe-ui-layout-background-color: hsl(var(--card));
+  --vxe-ui-table-border-color: hsl(var(--border));
+  --vxe-ui-table-header-font-color: hsl(var(--foreground));
+  --vxe-ui-table-header-background-color: hsl(var(--muted) / 55%);
+  --vxe-ui-table-footer-font-color: hsl(var(--foreground));
+  --vxe-ui-table-footer-background-color: hsl(var(--card));
+  --vxe-ui-table-column-to-row-background-color: hsl(var(--muted) / 48%);
+  --vxe-ui-table-column-hover-background-color: hsl(var(--muted) / 62%);
+  --vxe-ui-table-column-current-background-color: hsl(var(--primary) / 22%);
+  --vxe-ui-table-column-hover-current-background-color: hsl(
+    var(--primary) / 28%
+  );
+  --vxe-ui-table-row-hover-background-color: hsl(var(--muted) / 42%);
+  --vxe-ui-table-row-striped-background-color: hsl(var(--muted) / 26%);
+  --vxe-ui-table-row-hover-striped-background-color: hsl(var(--muted) / 42%);
+  --vxe-ui-table-row-current-background-color: hsl(var(--primary) / 18%);
+  --vxe-ui-table-row-hover-current-background-color: hsl(var(--primary) / 26%);
+  --vxe-ui-table-row-radio-checked-background-color: hsl(var(--primary) / 24%);
+  --vxe-ui-table-row-hover-radio-checked-background-color: hsl(
+    var(--primary) / 32%
+  );
+  --vxe-ui-table-row-checkbox-checked-background-color: hsl(
+    var(--primary) / 24%
+  );
+  --vxe-ui-table-row-hover-checkbox-checked-background-color: hsl(
+    var(--primary) / 32%
+  );
+  --vxe-ui-table-fixed-scrolling-box-shadow-color: rgb(0 0 0 / 28%);
+  --vxe-ui-loading-background-color: hsl(var(--card) / 72%);
+  --vxe-ui-table-resizable-line-color: hsl(var(--border));
+  --vxe-ui-table-cell-placeholder-color: hsl(var(--muted-foreground));
+
+  color: hsl(var(--foreground));
+}
+
+.nebula-table--drag-row .vxe-body--row,
+.nebula-table--drag-both .vxe-body--row {
+  cursor: grab;
+}
+
+/* NebulaAnchor — in-page nav + optional back-to-top */
+.nebula-anchor-root {
+  position: relative;
+}
+
+.nebula-anchor {
+  position: fixed;
+  top: 170px;
+  right: 20px;
+  z-index: 40;
+  display: grid;
+  gap: 0.35rem;
+  width: 160px;
+  padding: 0.8rem;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 10px;
+}
+
+.nebula-anchor__title {
+  margin: 0 0 0.2rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: hsl(var(--muted-foreground));
+}
+
+.nebula-anchor__link {
+  padding: 0.2rem 0.32rem;
+  font-size: 0.84rem;
+  color: hsl(var(--foreground));
+  text-decoration: none;
+  border-radius: 6px;
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.nebula-anchor__link:hover {
+  color: hsl(var(--primary));
+  background: hsl(var(--primary) / 10%);
+}
+
+.nebula-anchor__link.is-active {
+  color: hsl(var(--primary));
+  background: hsl(var(--primary) / 12%);
+}
+
+.nebula-anchor__back-top {
+  padding: 0.35rem 0.45rem;
+  margin-top: 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  cursor: pointer;
+  background: hsl(var(--secondary));
+  border: 1px solid hsl(var(--border));
+  border-radius: 8px;
+  transition: background-color 0.15s ease;
+}
+
+.nebula-anchor__back-top:hover {
+  background: hsl(var(--primary) / 15%);
+  border-color: hsl(var(--primary) / 40%);
+  color: hsl(var(--primary));
+}
+
+.nebula-anchor__float {
+  position: fixed;
+  right: 24px;
+  bottom: 28px;
+  z-index: 45;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: hsl(var(--primary-foreground));
+  cursor: pointer;
+  background: hsl(var(--primary));
+  border: 1px solid hsl(var(--primary) / 70%);
+  border-radius: 999px;
+  box-shadow: 0 4px 14px rgb(8 10 18 / 28%);
+  transition:
+    transform 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.nebula-anchor__float:hover {
+  transform: translateY(-1px);
+}
+
+/**
+ * `responsive`：页内流式目录（sticky），避免 `position: fixed` 在窄内容区遮挡正文。
+ * 宽屏右侧栏式导航请配合父级 `.nebula-anchor-rail` 预留列宽。
+ */
+.nebula-anchor.nebula-anchor--responsive {
+  position: sticky;
+  top: 0.65rem;
+  right: auto;
+  left: auto;
+  z-index: 25;
+  box-sizing: border-box;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 0.35rem 0.55rem;
+  align-items: center;
+  width: 100%;
+  max-width: none;
+  padding: 0.55rem 0.72rem;
+  margin: 0 0 0.85rem;
+}
+
+.nebula-anchor.nebula-anchor--responsive .nebula-anchor__title {
+  flex: 1 0 100%;
+  margin: 0 0 0.15rem;
+}
+
+.nebula-anchor.nebula-anchor--responsive .nebula-anchor__back-top {
+  margin-top: 0;
+  margin-left: auto;
+}
+
+/**
+ * 文档页双栏：主内容 + 右侧锚点轨，锚点 sticky 且不遮挡正文。
+ */
+.nebula-anchor-rail {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.85rem;
+  align-items: start;
+}
+
+.nebula-anchor-rail > .nebula-anchor,
+.nebula-anchor-rail > .nebula-anchor-root {
+  grid-column: 1;
+  min-width: 0;
+}
+
+.nebula-anchor-rail > *:not(.nebula-anchor):not(.nebula-anchor-root) {
+  min-width: 0;
+}
+
+@media (min-width: 860px) {
+  .nebula-anchor-rail {
+    grid-template-columns: minmax(0, 1fr) 168px;
+    gap: 1rem 1.25rem;
+  }
+
+  .nebula-anchor-rail > .nebula-anchor,
+  .nebula-anchor-rail > .nebula-anchor-root {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: start;
+    justify-self: end;
+    width: 168px;
+  }
+
+  .nebula-anchor-rail > *:not(.nebula-anchor):not(.nebula-anchor-root) {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .nebula-anchor-rail .nebula-anchor.nebula-anchor--responsive {
+    display: grid;
+    flex-flow: unset;
+    gap: 0.35rem;
+    align-items: stretch;
+    width: 100%;
+    max-width: 168px;
+    padding: 0.8rem;
+    margin: 0;
+  }
+
+  .nebula-anchor-rail
+    .nebula-anchor.nebula-anchor--responsive
+    .nebula-anchor__title {
+    flex: unset;
+    margin: 0 0 0.2rem;
+  }
+
+  .nebula-anchor-rail
+    .nebula-anchor.nebula-anchor--responsive
+    .nebula-anchor__back-top {
+    margin-top: 0.35rem;
+    margin-left: 0;
+  }
+}
+
+/* Dropdown */
+.nebula-dropdown {
+  position: relative;
+  display: inline-flex;
+}
+
+.nebula-dropdown__trigger {
+  display: inline-flex;
+}
+
+.nebula-dropdown__menu {
+  min-width: 220px;
+  padding: 6px;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border) / 85%);
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgb(0 0 0 / 28%);
+}
+
+.nebula-dropdown__item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 13px;
+  color: hsl(var(--foreground));
+  text-align: left;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+}
+
+.nebula-dropdown__item:hover:not(:disabled) {
+  background: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+.nebula-dropdown__item:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.nebula-dropdown__item-main {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+}
+
+.nebula-dropdown__item-shortcut {
+  font-size: 11px;
+  color: hsl(var(--muted-foreground));
+}
+
+.nebula-dropdown__divider {
+  height: 1px;
+  margin: 6px 4px;
+  background: hsl(var(--border) / 80%);
+}
+
+/* Drawer */
+.nebula-drawer-root {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+}
+
+.nebula-drawer__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgb(0 0 0 / 45%);
+  animation: nebula-drawer-fade-in 0.22s ease;
+}
+
+.nebula-drawer {
+  position: absolute;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  max-width: 100vw;
+  height: 100%;
+  color: hsl(var(--foreground));
+  background: hsl(var(--card));
+  box-shadow: -8px 0 32px rgb(0 0 0 / 22%);
+}
+
+.nebula-drawer--right {
+  right: 0;
+  animation: nebula-drawer-slide-in-right 0.26s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.nebula-drawer--left {
+  left: 0;
+  animation: nebula-drawer-slide-in-left 0.26s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.nebula-drawer__header {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 18px 18px 12px;
+  border-bottom: 1px solid hsl(var(--border) / 75%);
+}
+
+.nebula-drawer__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.nebula-drawer__subtitle {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: hsl(var(--muted-foreground));
+}
+
+.nebula-drawer__body {
+  flex: 1;
+  min-height: 0;
+  padding: 16px 18px;
+  overflow: auto;
+}
+
+.nebula-drawer__footer {
+  padding: 12px 18px 18px;
+  border-top: 1px solid hsl(var(--border) / 75%);
+}
+
+@keyframes nebula-drawer-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes nebula-drawer-slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes nebula-drawer-slide-in-left {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}

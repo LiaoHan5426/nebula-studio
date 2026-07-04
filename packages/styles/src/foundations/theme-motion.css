@@ -1,19 +1,60 @@
 html.theme-ready {
   transition:
-    color 0.18s ease,
-    background-color 0.18s ease;
+    color 0.2s ease,
+    background-color 0.2s ease;
 }
 
 html.theme-switching #app {
-  animation: nebula-theme-fade 0.18s ease;
+  animation: nebula-theme-fade 0.2s ease;
 }
 
 @keyframes nebula-theme-fade {
   0% {
-    opacity: 0.94;
+    opacity: 0.92;
+    filter: brightness(1.02);
   }
-
   100% {
     opacity: 1;
+    filter: brightness(1);
   }
+}
+
+html {
+  --duration-fast: 0.12s;
+  --duration-normal: 0.2s;
+  --duration-slow: 0.3s;
+  --ease-fast: ease-out;
+  --ease-normal: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-slow: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+:root {
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 6%);
+  --shadow-md: 0 4px 12px rgb(0 0 0 / 8%);
+  --shadow-lg: 0 10px 24px rgb(0 0 0 / 12%);
+  --shadow-xl: 0 20px 40px rgb(0 0 0 / 16%);
+}
+
+.nebula-transition-fast {
+  transition-duration: var(--duration-fast);
+}
+
+.nebula-transition-normal {
+  transition-duration: var(--duration-normal);
+}
+
+.nebula-transition-slow {
+  transition-duration: var(--duration-slow);
+}
+
+.nebula-ease-fast {
+  transition-timing-function: var(--ease-fast);
+}
+
+.nebula-ease-normal {
+  transition-timing-function: var(--ease-normal);
+}
+
+.nebula-ease-slow {
+  transition-timing-function: var(--ease-slow);
 }

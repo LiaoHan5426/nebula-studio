@@ -1,0 +1,24 @@
+{
+  "name": "@nebula-studio/auth-provider",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./session": {
+      "types": "./src/session.ts",
+      "default": "./src/session.ts"
+    },
+    "./vue": {
+      "types": "./src/vue/index.ts",
+      "default": "./src/vue/index.ts"
+    }
+  },
+  "dependencies": {
+    "@nebula-studio/app-shell": "workspace:^",
+    "vue": "catalog:vue"
+  }
+}

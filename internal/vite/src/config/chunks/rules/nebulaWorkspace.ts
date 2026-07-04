@@ -8,8 +8,9 @@ export const nebulaChunkRuleNebulaWorkspace: NebulaManualChunkRule = (id) => {
   const n = nebulaChunkNormalizeId(id);
   if (n.includes('/@nebula-studio/')) return 'nebula-workspace';
   if (n.includes('/@nebula-studio-electron/')) return 'nebula-workspace';
-  if (n.includes('/packages/nebula-ui/')) return 'nebula-workspace';
-  if (n.includes('/packages/app-shell/')) return 'nebula-workspace';
+  if (n.includes('/packages/ui/')) return 'nebula-workspace';
+  if (n.includes('/packages/core/app-shell/')) return 'nebula-workspace';
   if (n.includes('/packages/styles/')) return 'nebula-workspace';
-  if (n.includes('/packages/electron-shared')) return 'nebula-workspace';
+  if (n.includes('/packages/core/electron-shared')) return 'nebula-workspace';
+  if (n.includes('/packages/editors/')) return 'nebula-workspace';
 };

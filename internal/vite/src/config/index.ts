@@ -6,7 +6,6 @@ export type {
 } from './nebulaRendererPlugins.ts';
 export {
   NEBULA_DEFAULT_RENDERER_BUILTIN_IDS,
-  nebulaRendererPlugins,
   resolveNebulaRendererPluginList,
 } from './nebulaRendererPlugins.ts';
 export { nebulaElectronRendererPartial } from './nebulaElectronRenderer.ts';

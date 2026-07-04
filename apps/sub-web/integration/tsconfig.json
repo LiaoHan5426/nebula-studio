@@ -5,11 +5,10 @@
     "src/env.d.ts",
     "src/**/*",
     "src/**/*.vue",
-    "../../packages/nebula-ui/env.d.ts"
+    "__tests__/**/*",
+    "vite.integrationProxy.ts"
   ],
   "compilerOptions": {
-    "baseUrl": ".",
-    "ignoreDeprecations": "6.0",
     "skipLibCheck": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,

@@ -22,8 +22,8 @@
   "dependencies": {
     "@eslint/js": "catalog:lint",
     "@nebula-studio-internal/oxlint": "workspace:^",
-    "@typescript-eslint/eslint-plugin": "catalog:",
-    "@typescript-eslint/parser": "catalog:",
+    "@typescript-eslint/eslint-plugin": "catalog:lint",
+    "@typescript-eslint/parser": "catalog:lint",
     "eslint": "catalog:lint",
     "eslint-plugin-jsonc": "catalog:lint",
     "eslint-plugin-n": "catalog:lint",
@@ -33,7 +33,7 @@
     "eslint-plugin-unused-imports": "catalog:lint",
     "eslint-plugin-vue": "catalog:lint",
     "eslint-plugin-yml": "catalog:lint",
-    "globals": "catalog:",
+    "globals": "catalog:utils",
     "vue-eslint-parser": "catalog:lint",
     "yaml-eslint-parser": "catalog:lint"
   }

@@ -39,6 +39,7 @@
     "@iconify/tailwind4": "catalog:style",
     "@nebula-studio/styles": "workspace:^",
     "@tailwindcss/typography": "catalog:style",
+    "@tailwindcss/vite": "catalog:style",
     "tailwindcss": "catalog:style",
     "tw-animate-css": "catalog:style"
   },

@@ -6,6 +6,7 @@
   "exports": {
     "./app": "./src/App.vue",
     "./router": "./src/router/index.ts",
+    "./boot": "./src/boot.ts",
     "./bootstrap-auth": "./src/shared/composables/useAuth.ts",
     "./bootstrap-runtime": "./src/bootstrap/runtime.ts",
     "./auth/session": "./src/shared/auth/session.ts"
@@ -19,24 +20,30 @@
     "test": "vp test"
   },
   "dependencies": {
-    "@nebula-studio-electron/electron-shared": "workspace:^",
-    "@nebula-studio-electron/electron-shared-vue": "workspace:^",
+    "@nebula-studio-electron/electron-bridge": "workspace:^",
     "@nebula-studio-internal/tailwind": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
     "@nebula-studio/api-client": "workspace:^",
+    "@nebula-studio/contracts": "workspace:^",
     "@nebula-studio/nebula-layout": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
     "@nebula-studio/nebula-flow-editor": "workspace:^",
     "@nebula-studio/nebula-dag-editor": "workspace:^",
     "@nebula-studio/nebula-low-render": "workspace:^",
     "@nebula-studio/nebula-integration-panel": "workspace:^",
+    "@nebula-studio-renderer/login": "workspace:^",
     "vue": "catalog:vue",
-    "vue-router": "catalog:vue"
+    "vue-router": "catalog:vue",
+    "@nebula-studio/auth-provider": "workspace:^",
+    "@nebula-studio/runtime": "workspace:^",
+    "@nebula-studio/sse-events": "workspace:^",
+    "@nebula-studio/tenant": "workspace:^"
   },
   "devDependencies": {
     "@electron-toolkit/preload": "catalog:electron",
     "@nebula-studio-internal/tsconfig": "workspace:^",
     "@nebula-studio-internal/vite": "workspace:^",
+    "@nebula-studio/msw": "workspace:^",
     "@nebula-studio/types": "workspace:^",
     "happy-dom": "catalog:vite",
     "typescript": "catalog:types",

@@ -1,33 +1,10 @@
-import '@nebula-studio-internal/tailwind/electron';
-import '@nebula-studio-renderer/integration/bootstrap-runtime';
-import { installWebPresentation } from '@nebula-studio/app-shell';
-import { ConfigProvider } from '@nebula-studio-electron/electron-shared-vue';
-import { createApp, h } from 'vue';
-import { install as installVxeTable } from 'vxe-table';
-import { install as installVxePcUi } from 'vxe-pc-ui';
-import App from './App.vue';
-import router from './router';
+import { bootIntegration } from './boot';
 
-installWebPresentation({
-  scope: 'integration-standalone',
-  processVersions: {
-    node: __NEBULA_BUILD_NODE_VERSION__,
-  },
-});
+// Electron 由 preload/bridge 注入 window.electron；
+// Web standalone 无 window.electron，默认 standalone。
+if (!window.__NEBULA_RUNTIME_MODE__) {
+  window.__NEBULA_RUNTIME_MODE__ =
+    typeof (window as any).electron !== 'undefined' ? 'electron' : 'standalone';
+}
 
-const app = createApp({
-  render() {
-    return h(
-      ConfigProvider,
-      { manageDom: true },
-      {
-        default: () => h(App),
-      },
-    );
-  },
-});
-
-installVxePcUi(app);
-installVxeTable(app);
-
-app.use(router).mount('#app');
+void bootIntegration();

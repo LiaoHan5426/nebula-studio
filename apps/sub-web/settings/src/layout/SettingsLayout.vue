@@ -20,6 +20,7 @@ const navItems = [
   { to: '/apps', label: '应用管理' },
   { to: '/logs', label: '日志管理' },
   { to: '/appearance', label: '外观设置' },
+  { to: '/config', label: '配置管理' },
 ] as const;
 
 const subNavItems = computed<SubNavItem[]>(() =>
@@ -37,7 +38,7 @@ const pageTitle = computed(() => {
 </script>
 
 <template>
-  <NebulaAdminContent v-if="isShellHosted" compact>
+  <NebulaAdminContent v-if="isShellHosted" class="settings-embed-root">
     <template #subnav>
       <NebulaAdminSubNav :items="subNavItems" />
     </template>
@@ -64,6 +65,11 @@ const pageTitle = computed(() => {
 </template>
 
 <style lang="scss" scoped>
+.settings-embed-root {
+  height: 100%;
+  min-height: 0;
+}
+
 .settings-nav__item {
   display: block;
   padding: 10px 12px;

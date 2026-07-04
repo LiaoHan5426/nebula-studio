@@ -9,7 +9,8 @@ import { hasValidAuthToken, clearAuthSession } from '@/shared/auth/session';
 import { isPlatformAdmin } from '@/shared/auth/roles';
 import { isIntegrationShellIframeEmbed } from '@/shared/composables/useShellEmbed';
 
-const LoginPage = () => import('@/features/auth/LoginPage.vue');
+// 登录页：复用 login 子应用组件（@nebula-studio-renderer/login/app）
+const LoginApp = () => import('@nebula-studio-renderer/login/app');
 
 // 插件管理页面
 const PluginsPage = () => import('@/features/plugins/PluginsPage.vue');
@@ -26,6 +27,15 @@ const SubscriptionRequestsPage = () =>
   import('@/features/service/SubscriptionRequestsPage.vue');
 const ServiceGovernancePage = () =>
   import('@/features/service/ServiceGovernancePage.vue');
+// 发布管理页面
+const ServiceReleasePage = () =>
+  import('@/features/service/ServiceReleasePage.vue');
+// 审批管理页面
+const ServiceApprovalPage = () =>
+  import('@/features/service/ServiceApprovalPage.vue');
+// 版本管理页面
+const ServiceVersionPage = () =>
+  import('@/features/service/ServiceVersionPage.vue');
 // 服务统计页面
 const LogQueryPage = () => import('@/features/statistics/LogQueryPage.vue');
 const LogStatsPage = () => import('@/features/statistics/LogStatsPage.vue');
@@ -45,7 +55,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/login',
     name: 'login',
-    component: LoginPage,
+    component: LoginApp,
     meta: { title: '登录', public: true },
   },
   // 插件管理 - 数据库适配插件
@@ -139,6 +149,27 @@ const routes: RouteRecordRaw[] = [
     component: ServiceGovernancePage,
     meta: { title: '服务治理' },
   },
+  // 服务管理 - 发布管理
+  {
+    path: '/service/releases',
+    name: 'service-releases',
+    component: ServiceReleasePage,
+    meta: { title: '发布管理' },
+  },
+  // 服务管理 - 审批管理
+  {
+    path: '/service/approvals',
+    name: 'service-approvals',
+    component: ServiceApprovalPage,
+    meta: { title: '审批管理' },
+  },
+  // 服务管理 - 版本管理
+  {
+    path: '/service/versions',
+    name: 'service-versions',
+    component: ServiceVersionPage,
+    meta: { title: '版本管理' },
+  },
   // 服务管理 - 服务测试（经 executor 网关调用已发布服务）
   {
     path: '/service/test',
@@ -186,6 +217,12 @@ const routes: RouteRecordRaw[] = [
     name: 'subscriptions',
     component: () => import('@/features/subscriptions/SubscriptionsPage.vue'),
     meta: { title: '库表订阅' },
+  },
+  {
+    path: '/tasks',
+    name: 'tasks',
+    component: () => import('@/features/tasks/TasksPage.vue'),
+    meta: { title: '任务调度' },
   },
   {
     path: '/flows',

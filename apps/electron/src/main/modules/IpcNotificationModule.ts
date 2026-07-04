@@ -8,7 +8,7 @@ import type {
   AppNotifyType,
   NotifySource,
   NotifyBridgePayload,
-} from '@nebula-studio-electron/electron-shared';
+} from '@nebula-studio-electron/electron-bridge';
 
 export class IpcNotificationModule implements MainModule {
   readonly name = 'IpcNotification';
