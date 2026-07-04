@@ -3879,6 +3879,9 @@ packages:
   '@types/node@26.1.0':
     resolution: {integrity: sha512-O0A1G3xPGy4w7AgQdAQYUlQ+BKk2Oovw8eRpofyp5KdBZULnbe+WqaOVNrm705SHphCiG4XHsACrSmPu1f+Kgw==}
 
+  '@types/nprogress@0.2.3':
+    resolution: {integrity: sha512-k7kRA033QNtC+gLc4VPlfnue58CM1iQLgn1IMAU8VPHGOj7oIHPp9UlhedEnD/Gl8evoCjwkZjlBORtZ3JByUA==}
+
   '@types/pegjs@0.10.6':
     resolution: {integrity: sha512-eLYXDbZWXh2uxf+w8sXS8d6KSoXTswfps6fvCUuVAGN8eRpfe7h9eSRydxiSJvo9Bf+GzifsDOr9TMQlmJdmkw==}
 
@@ -7324,8 +7327,8 @@ packages:
     peerDependencies:
       vue: ^3.0.1
 
-  vxe-pc-ui@4.15.21:
-    resolution: {integrity: sha512-8uCUelYE2OyhKOUMCZ9DffRQvIuTpEYm3LsiwQ/XiKNq4qOdFY8RlBEzGY8MnZnpm+kKDXvynFFS59inQT42Rg==}
+  vxe-pc-ui@4.15.23:
+    resolution: {integrity: sha512-bzmShPKgCv4FUgjHwyKaZVwdGR1cMA9WWVp/E8I/aVoG1s4rTKO+yxNZswgD2azyGs+5dp6X/kqLcnEBkqMm5g==}
 
   vxe-table@4.19.23:
     resolution: {integrity: sha512-kg6nzIkGCea4otjoxzWKVdcshUa00eswSlVZgo0cNIxpmmOMMIdmcY34IzJXl+UyYd/rvFGVjRidy/R97yaqVA==}
@@ -9371,7 +9374,7 @@ snapshots:
     dependencies:
       '@types/http-cache-semantics': 4.2.0
       '@types/keyv': 3.1.4
-      '@types/node': 26.1.0
+      '@types/node': 24.13.2
       '@types/responselike': 1.0.3
 
   '@types/chai@5.2.3':
@@ -9419,7 +9422,7 @@ snapshots:
 
   '@types/keyv@3.1.4':
     dependencies:
-      '@types/node': 26.1.0
+      '@types/node': 24.13.2
 
   '@types/linkify-it@5.0.0': {}
 
@@ -9436,7 +9439,7 @@ snapshots:
 
   '@types/minimatch@6.0.0':
     dependencies:
-      minimatch: 10.2.5
+      minimatch: 3.1.5
     optional: true
 
   '@types/ms@2.1.0': {}
@@ -9457,7 +9460,7 @@ snapshots:
 
   '@types/responselike@1.0.3':
     dependencies:
-      '@types/node': 26.1.0
+      '@types/node': 24.13.2
 
   '@types/set-cookie-parser@2.4.10':
     dependencies:
@@ -11428,7 +11431,7 @@ snapshots:
       es6-error: 4.1.1
       matcher: 3.0.0
       roarr: 2.15.3
-      semver: 7.8.5
+      semver: 7.7.4
       serialize-error: 7.0.1
     optional: true
 
@@ -12067,14 +12070,14 @@ snapshots:
 
   node-abi@4.33.0:
     dependencies:
-      semver: 7.8.5
+      semver: 7.7.4
 
   node-addon-api@7.0.0:
     optional: true
 
   node-api-version@0.2.1:
     dependencies:
-      semver: 7.8.5
+      semver: 7.7.4
 
   node-gyp@12.4.0:
     dependencies:
@@ -12083,7 +12086,7 @@ snapshots:
       graceful-fs: 4.2.11
       nopt: 9.0.0
       proc-log: 6.0.0
-      semver: 7.8.5
+      semver: 7.7.4
       tar: 7.5.19
       tinyglobby: 0.2.17
       undici: 6.27.0
@@ -13507,7 +13510,7 @@ snapshots:
       sortablejs: 1.14.0
       vue: 3.5.39(typescript@6.0.3)
 
-  vxe-pc-ui@4.15.21(vue@3.5.39(typescript@6.0.3)):
+  vxe-pc-ui@4.15.23(vue@3.5.39(typescript@6.0.3)):
     dependencies:
       '@vxe-ui/core': 4.4.15(vue@3.5.39(typescript@6.0.3))
     transitivePeerDependencies:
@@ -13515,7 +13518,7 @@ snapshots:
 
   vxe-table@4.19.23(vue@3.5.39(typescript@6.0.3)):
     dependencies:
-      vxe-pc-ui: 4.15.21(vue@3.5.39(typescript@6.0.3))
+      vxe-pc-ui: 4.15.23(vue@3.5.39(typescript@6.0.3))
     transitivePeerDependencies:
       - vue
 

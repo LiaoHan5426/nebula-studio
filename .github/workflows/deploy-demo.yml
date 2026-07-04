@@ -46,7 +46,7 @@ jobs:
           node-version: '22'
           cache: true
           run-install: |
-            - args: ['--frozen-lockfile']
+            - args: []
 
       - name: Resolve base path
         id: vars
@@ -68,9 +68,7 @@ jobs:
         working-directory: apps/sub-web/docs-site
         env:
           VITEPRESS_BASE: ${{ steps.vars.outputs.base_path }}docs/
-        run: |
-          npm install
-          npx vitepress build
+        run: pnpm run build
 
       - name: Merge docs site into web shell dist
         run: |
