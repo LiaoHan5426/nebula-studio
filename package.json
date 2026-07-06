@@ -54,8 +54,5 @@
   "engines": {
     "node": ">=22.12.0"
   },
-  "packageManager": "pnpm@11.5.1",
-  "dependencies": {
-    "@bpmn-io/cm-theme": "catalog:bpmn"
-  }
+  "packageManager": "pnpm@11.5.1"
 }

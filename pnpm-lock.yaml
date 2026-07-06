@@ -70,13 +70,13 @@ catalogs:
       specifier: ^4.0.0
       version: 4.0.0
     electron:
-      specifier: ^42.3.1
-      version: 42.5.2
+      specifier: ^43.0.0
+      version: 43.0.0
     electron-builder:
-      specifier: ^26.8.1
+      specifier: ^26.15.3
       version: 26.15.3
     electron-updater:
-      specifier: ^6.8.3
+      specifier: ^6.8.9
       version: 6.8.9
     electron-vite:
       specifier: ^5.0.0
@@ -292,9 +292,6 @@ catalogs:
     '@iconify/vue':
       specifier: ^4.3.0
       version: 4.3.0
-    lucide-vue-next:
-      specifier: ^0.513.0
-      version: 0.513.0
     reka-ui:
       specifier: ^2.3.1
       version: 2.10.1
@@ -302,11 +299,11 @@ catalogs:
       specifier: ^4.1.0
       version: 4.1.0
     vxe-table:
-      specifier: ^4.19.6
+      specifier: ^4.19.23
       version: 4.19.23
     xe-utils:
-      specifier: ^4.0.8
-      version: 4.0.10
+      specifier: ^4.0.11
+      version: 4.0.11
   ui-utils:
     class-variance-authority:
       specifier: ^0.7.1
@@ -356,7 +353,7 @@ catalogs:
       specifier: ^0.2.2
       version: 0.2.2
     vitepress:
-      specifier: ^2.0.0-alpha.10
+      specifier: ^2.0.0-alpha.17
       version: 2.0.0-alpha.17
   vue:
     '@vue/test-utils':
@@ -384,10 +381,6 @@ overrides:
 importers:
 
   .:
-    dependencies:
-      '@bpmn-io/cm-theme':
-        specifier: catalog:bpmn
-        version: 0.2.2(@codemirror/state@6.7.0)(@codemirror/view@6.43.4)
     devDependencies:
       '@eslint-community/eslint-plugin-eslint-comments':
         specifier: catalog:lint
@@ -448,10 +441,10 @@ importers:
     dependencies:
       '@electron-toolkit/preload':
         specifier: catalog:electron
-        version: 3.0.2(electron@42.5.2)
+        version: 3.0.2(electron@43.0.0)
       '@electron-toolkit/utils':
         specifier: catalog:electron
-        version: 4.0.0(electron@42.5.2)
+        version: 4.0.0(electron@43.0.0)
       '@nebula-studio-electron/electron-bridge':
         specifier: workspace:^
         version: link:../../packages/core/electron-shared
@@ -461,9 +454,6 @@ importers:
       electron-updater:
         specifier: catalog:electron
         version: 6.8.9
-      extract-zip:
-        specifier: catalog:electron
-        version: 2.0.1
       yaml:
         specifier: catalog:parser
         version: 2.9.0
@@ -491,13 +481,16 @@ importers:
         version: 24.13.2
       electron:
         specifier: catalog:electron
-        version: 42.5.2
+        version: 43.0.0
       electron-builder:
         specifier: catalog:electron
         version: 26.15.3(electron-builder-squirrel-windows@26.15.3)
       electron-vite:
         specifier: catalog:electron
         version: 5.0.0(vite@8.1.3(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(tsx@4.22.5)(yaml@2.9.0))
+      extract-zip:
+        specifier: catalog:electron
+        version: 2.0.1
       typescript:
         specifier: catalog:types
         version: 6.0.3
@@ -537,7 +530,7 @@ importers:
         version: 6.0.3
       vitepress:
         specifier: catalog:vite
-        version: 2.0.0-alpha.17(@types/node@26.1.0)(change-case@5.4.4)(esbuild@0.28.1)(jiti@2.7.0)(nprogress@0.2.0)(oxc-minify@0.129.0)(postcss@8.5.16)(sass@1.101.0)(sortablejs@1.14.0)(tsx@4.22.5)(typescript@6.0.3)(yaml@2.9.0)
+        version: 2.0.0-alpha.17(@types/node@26.1.0)(axios@1.18.1)(change-case@5.4.4)(esbuild@0.28.1)(jiti@2.7.0)(nprogress@0.2.0)(oxc-minify@0.129.0)(postcss@8.5.16)(sass@1.101.0)(sortablejs@1.14.0)(tsx@4.22.5)(typescript@6.0.3)(yaml@2.9.0)
 
   apps/sub-web/frontend:
     dependencies:
@@ -577,7 +570,7 @@ importers:
     devDependencies:
       '@electron-toolkit/preload':
         specifier: catalog:electron
-        version: 3.0.2(electron@42.5.2)
+        version: 3.0.2(electron@43.0.0)
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
         version: link:../../../tools/tsconfig
@@ -662,7 +655,7 @@ importers:
     devDependencies:
       '@electron-toolkit/preload':
         specifier: catalog:electron
-        version: 3.0.2(electron@42.5.2)
+        version: 3.0.2(electron@43.0.0)
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
         version: link:../../../tools/tsconfig
@@ -723,7 +716,7 @@ importers:
     devDependencies:
       '@electron-toolkit/preload':
         specifier: catalog:electron
-        version: 3.0.2(electron@42.5.2)
+        version: 3.0.2(electron@43.0.0)
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
         version: link:../../../tools/tsconfig
@@ -787,7 +780,7 @@ importers:
     devDependencies:
       '@electron-toolkit/preload':
         specifier: catalog:electron
-        version: 3.0.2(electron@42.5.2)
+        version: 3.0.2(electron@43.0.0)
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
         version: link:../../../tools/tsconfig
@@ -1175,6 +1168,9 @@ importers:
 
   packages/editors/flow-editor:
     dependencies:
+      '@bpmn-io/cm-theme':
+        specifier: catalog:bpmn
+        version: 0.2.2(@codemirror/state@6.7.0)(@codemirror/view@6.43.4)
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
         version: link:../../ui/nebula-ui
@@ -1471,9 +1467,6 @@ importers:
       highlight.js:
         specifier: catalog:markdown
         version: 11.11.1
-      lucide-vue-next:
-        specifier: catalog:ui
-        version: 0.513.0(vue@3.5.39(typescript@6.0.3))
       marked:
         specifier: catalog:markdown
         version: 18.0.5
@@ -1494,7 +1487,7 @@ importers:
         version: 4.19.23(vue@3.5.39(typescript@6.0.3))
       xe-utils:
         specifier: catalog:ui
-        version: 4.0.10
+        version: 4.0.11
     devDependencies:
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
@@ -4463,6 +4456,10 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
+  agent-base@6.0.0:
+    resolution: {integrity: sha512-j1Q7cSCqN+AwrmDd+pzgqc0/NpC655x2bUf5ZjRIO77DcNBFmh+OgRNzF6OKdCC9RSCb19fGd99+bhXFdkRNqw==}
+    engines: {node: '>= 6.0.0'}
+
   agent-base@7.0.2:
     resolution: {integrity: sha512-k2/tQ1+8Zf50dEUJWklUP80LcE/+Ph+OJ6cf2Ff2fD/c/TtCe6ofnCoNMz9UnyxOQYlaAALZtEWETzn+1JjfHg==}
     engines: {node: '>= 14'}
@@ -4559,6 +4556,9 @@ packages:
 
   aws4@1.13.2:
     resolution: {integrity: sha512-lHe62zvbTB5eEABUVi/AwVh0ZKY9rMMDhmm+eeyuuUQbQ3+J+fONVQOZyj+DdrvD4BY33uYniyRJ4UJIaSKAfw==}
+
+  axios@1.18.1:
+    resolution: {integrity: sha512-3nTvFlvpn9Zu/RkHUqtc7/+al4UpRW5az71ap5zccp6e8RAYEzhMTecX8Dz1wWDYrPpUoB1HAQEGEAEvUr7S9g==}
 
   balanced-match@1.0.0:
     resolution: {integrity: sha512-9Y0g0Q8rmSt+H33DfKv7FOc3v+iRI+o1lbzt8jGcIosYW37IIW/2XVYq5NPdmaD5NQ59Nk26Kl/vZbwW9Fr8vg==}
@@ -5078,8 +5078,8 @@ packages:
     resolution: {integrity: sha512-bO3y10YikuUwUuDUQRM4KfwNkKhnpVO7IPdbsrejwN9/AABJzzTQ4GeHwyzNSrVO+tEH3/Np255a3sVZpZDjvg==}
     engines: {node: '>=8.0.0'}
 
-  electron@42.5.2:
-    resolution: {integrity: sha512-nEoyciv2iC6gTvCbkQ3eP5tjAOo28wfm0adZaMYTns92MyODHeD1TlrGt4E35d4tJfDlmv+BHOuz0QIkJ63c6w==}
+  electron@43.0.0:
+    resolution: {integrity: sha512-PV60GsWU6qufhuOhw3n+Yix3WPDcqDtBqE8orbEQGQGHEkgp9o/JCPgb7L4vIL0r1HnfPdqSRtboOTqbDkcFDQ==}
     engines: {node: '>= 22.12.0'}
     hasBin: true
 
@@ -5438,6 +5438,15 @@ packages:
   focus-trap@8.2.2:
     resolution: {integrity: sha512-qV0g8hRYBqgACcFOH3f9wXc4zPKhr/0z9RI2a6ZijZ72EeBi4g8oBy8zAWuUR1TsMpOzwpUMFvjdasrC41Joug==}
 
+  follow-redirects@1.16.0:
+    resolution: {integrity: sha512-y5rN/uOsadFT/JfYwhxRS5R7Qce+g3zG97+JrtFZlC9klX/W5hD7iiLzScI4nZqUS7DNUdhPgw4xI8W2LuXlUw==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+
   foreground-child@3.1.0:
     resolution: {integrity: sha512-lXeSPRCndWPaipZbtI4CkvTZpF6OPsy19dkvf7+5AHeJD+w+iAKPc9Q78xWBmX4SdR+8xrtY9jTXs/YDv8q+Ug==}
     engines: {node: '>=14'}
@@ -5672,6 +5681,10 @@ packages:
   http2-wrapper@1.0.3:
     resolution: {integrity: sha512-V+23sDMr12Wnz7iTcDeJr3O6AIxlnvT/bmaAAAP/Xda35C90p9599p0F1eHR/N1KILWSoWVAiOMFjBBXaXSMxg==}
     engines: {node: '>=10.19.0'}
+
+  https-proxy-agent@5.0.1:
+    resolution: {integrity: sha512-dFcAjpTQFgoLMzC2VwU+C/CbS7uRL0lWmxDITmqm7C+7F0Odmj6s9l6alZc6AELXhrnggM2CeWSXHGOdX2YtwA==}
+    engines: {node: '>= 6'}
 
   https-proxy-agent@7.0.0:
     resolution: {integrity: sha512-0euwPCRyAPSgGdzD1IVN9nJYHtBhJwb6XPfbpQcYbPCwrBidX6GzxmchnaF4sfF/jPb74Ojx5g4yTg3sixlyPw==}
@@ -6001,11 +6014,6 @@ packages:
   lru-cache@6.0.0:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
     engines: {node: '>=10'}
-
-  lucide-vue-next@0.513.0:
-    resolution: {integrity: sha512-/J7DB2WBC+UPcRswOfJFXSWt8r5HTMVu0PRkR6e0+Ozx6kLJZv4m71vbT1DS9RCjj0pfuLskWIslSBeeXmg7BA==}
-    peerDependencies:
-      vue: '>=3.0.1'
 
   lz-string@1.5.0:
     resolution: {integrity: sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ==}
@@ -6608,6 +6616,10 @@ packages:
 
   proto-list@1.2.4:
     resolution: {integrity: sha512-vtK/94akxsTMhe0/cbfpR+syPuszcuwhqVjJq26CuNDgFGj682oRBXOP5MJpv2r7JtE8MsiepGIqvvOTBwn2vA==}
+
+  proxy-from-env@2.1.0:
+    resolution: {integrity: sha512-cJ+oHTW1VAEa8cJslgmUZrc+sjRKgAKl3Zyse6+PV38hZe/V6Z14TbCuXcan9F9ghlz4QrFr2c92TNF82UkYHA==}
+    engines: {node: '>=10'}
 
   pump@3.0.4:
     resolution: {integrity: sha512-VS7sjc6KR7e1ukRFhQSY5LM2uBWAUPiOPa/A3mkKmiMwSmRFUITt0xuj+/lesgnCv+dPIEYlkzrcyXgquIHMcA==}
@@ -7422,6 +7434,9 @@ packages:
   xe-utils@4.0.10:
     resolution: {integrity: sha512-HLj9r+EjCh6e0J1vfZhDKPwaTtONMl0GNK0OYR6b3KU4QHHpOXNFzEhgwe35KFy8dqsK2sm2WFRzHRafqkYgMA==}
 
+  xe-utils@4.0.11:
+    resolution: {integrity: sha512-r3v1o10AnHXKRZ5ikuAOQ+Mxw/hy1XWjFr2/Q9L+LEZYq/PRxmiZ6/J53DEH53XqklEXddsmx1vYjOaOACq8IQ==}
+
   xml-name-validator@4.0.0:
     resolution: {integrity: sha512-ICP2e+jsHvAj2E2lIHxa5tjXRlKDJo4IdvPvCXbXQGdzSfmSpNVyIKMvoZHjDY9DP0zV17iI85o90vRFXNccRw==}
     engines: {node: '>=12'}
@@ -7932,13 +7947,13 @@ snapshots:
 
   '@electron-internal/extract-zip@1.0.4': {}
 
-  '@electron-toolkit/preload@3.0.2(electron@42.5.2)':
+  '@electron-toolkit/preload@3.0.2(electron@43.0.0)':
     dependencies:
-      electron: 42.5.2
+      electron: 43.0.0
 
-  '@electron-toolkit/utils@4.0.0(electron@42.5.2)':
+  '@electron-toolkit/utils@4.0.0(electron@43.0.0)':
     dependencies:
-      electron: 42.5.2
+      electron: 43.0.0
 
   '@electron/asar@3.2.1':
     dependencies:
@@ -9423,7 +9438,7 @@ snapshots:
 
   '@types/fs-extra@9.0.13':
     dependencies:
-      '@types/node': 24.13.2
+      '@types/node': 26.1.0
 
   '@types/glob@7.2.0':
     dependencies:
@@ -10105,12 +10120,13 @@ snapshots:
       '@vueuse/shared': 14.3.0(vue@3.5.39(typescript@6.0.3))
       vue: 3.5.39(typescript@6.0.3)
 
-  '@vueuse/integrations@14.3.0(change-case@5.4.4)(focus-trap@8.2.2)(nprogress@0.2.0)(sortablejs@1.14.0)(vue@3.5.39(typescript@6.0.3))':
+  '@vueuse/integrations@14.3.0(axios@1.18.1)(change-case@5.4.4)(focus-trap@8.2.2)(nprogress@0.2.0)(sortablejs@1.14.0)(vue@3.5.39(typescript@6.0.3))':
     dependencies:
       '@vueuse/core': 14.3.0(vue@3.5.39(typescript@6.0.3))
       '@vueuse/shared': 14.3.0(vue@3.5.39(typescript@6.0.3))
       vue: 3.5.39(typescript@6.0.3)
     optionalDependencies:
+      axios: 1.18.1
       change-case: 5.4.4
       focus-trap: 8.2.2
       nprogress: 0.2.0
@@ -10156,6 +10172,13 @@ snapshots:
       acorn: 8.17.0
 
   acorn@8.17.0: {}
+
+  agent-base@6.0.0:
+    dependencies:
+      debug: 4.4.3
+    transitivePeerDependencies:
+      - supports-color
+    optional: true
 
   agent-base@7.0.2:
     dependencies:
@@ -10284,6 +10307,17 @@ snapshots:
   at-least-node@1.0.0: {}
 
   aws4@1.13.2: {}
+
+  axios@1.18.1:
+    dependencies:
+      follow-redirects: 1.16.0
+      form-data: 4.0.6
+      https-proxy-agent: 5.0.1
+      proxy-from-env: 2.1.0
+    transitivePeerDependencies:
+      - debug
+      - supports-color
+    optional: true
 
   balanced-match@1.0.0: {}
 
@@ -10492,7 +10526,7 @@ snapshots:
 
   cliui@8.0.1:
     dependencies:
-      string-width: 4.2.3
+      string-width: 4.2.0
       strip-ansi: 6.0.1
       wrap-ansi: 7.0.0
 
@@ -10876,7 +10910,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  electron@42.5.2:
+  electron@43.0.0:
     dependencies:
       '@electron-internal/extract-zip': 1.0.4
       '@electron/get': 5.0.0
@@ -11342,6 +11376,9 @@ snapshots:
     dependencies:
       tabbable: 6.5.0
 
+  follow-redirects@1.16.0:
+    optional: true
+
   foreground-child@3.1.0:
     dependencies:
       cross-spawn: 7.0.6
@@ -11481,7 +11518,7 @@ snapshots:
       es6-error: 4.1.1
       matcher: 3.0.0
       roarr: 2.15.3
-      semver: 7.7.4
+      semver: 7.8.5
       serialize-error: 7.0.1
     optional: true
 
@@ -11644,6 +11681,14 @@ snapshots:
     dependencies:
       quick-lru: 5.1.1
       resolve-alpn: 1.2.1
+
+  https-proxy-agent@5.0.1:
+    dependencies:
+      agent-base: 6.0.0
+      debug: 4.4.3
+    transitivePeerDependencies:
+      - supports-color
+    optional: true
 
   https-proxy-agent@7.0.0:
     dependencies:
@@ -11898,10 +11943,6 @@ snapshots:
     dependencies:
       yallist: 4.0.0
 
-  lucide-vue-next@0.513.0(vue@3.5.39(typescript@6.0.3)):
-    dependencies:
-      vue: 3.5.39(typescript@6.0.3)
-
   lz-string@1.5.0: {}
 
   magic-string@0.30.21:
@@ -12120,14 +12161,14 @@ snapshots:
 
   node-abi@4.33.0:
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.5
 
   node-addon-api@7.0.0:
     optional: true
 
   node-api-version@0.2.1:
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.5
 
   node-gyp@12.4.0:
     dependencies:
@@ -12136,7 +12177,7 @@ snapshots:
       graceful-fs: 4.2.11
       nopt: 9.0.0
       proc-log: 6.0.0
-      semver: 7.7.4
+      semver: 7.8.5
       tar: 7.5.19
       tinyglobby: 0.2.17
       undici: 6.27.0
@@ -12652,6 +12693,9 @@ snapshots:
       prosemirror-transform: 1.12.0
 
   proto-list@1.2.4: {}
+
+  proxy-from-env@2.1.0:
+    optional: true
 
   pump@3.0.4:
     dependencies:
@@ -13466,7 +13510,7 @@ snapshots:
       tsx: 4.22.5
       yaml: 2.9.0
 
-  vitepress@2.0.0-alpha.17(@types/node@26.1.0)(change-case@5.4.4)(esbuild@0.28.1)(jiti@2.7.0)(nprogress@0.2.0)(oxc-minify@0.129.0)(postcss@8.5.16)(sass@1.101.0)(sortablejs@1.14.0)(tsx@4.22.5)(typescript@6.0.3)(yaml@2.9.0):
+  vitepress@2.0.0-alpha.17(@types/node@26.1.0)(axios@1.18.1)(change-case@5.4.4)(esbuild@0.28.1)(jiti@2.7.0)(nprogress@0.2.0)(oxc-minify@0.129.0)(postcss@8.5.16)(sass@1.101.0)(sortablejs@1.14.0)(tsx@4.22.5)(typescript@6.0.3)(yaml@2.9.0):
     dependencies:
       '@docsearch/css': 4.6.3
       '@docsearch/js': 4.6.3
@@ -13480,7 +13524,7 @@ snapshots:
       '@vue/devtools-api': 8.1.5
       '@vue/shared': 3.5.39
       '@vueuse/core': 14.3.0(vue@3.5.39(typescript@6.0.3))
-      '@vueuse/integrations': 14.3.0(change-case@5.4.4)(focus-trap@8.2.2)(nprogress@0.2.0)(sortablejs@1.14.0)(vue@3.5.39(typescript@6.0.3))
+      '@vueuse/integrations': 14.3.0(axios@1.18.1)(change-case@5.4.4)(focus-trap@8.2.2)(nprogress@0.2.0)(sortablejs@1.14.0)(vue@3.5.39(typescript@6.0.3))
       focus-trap: 8.2.2
       mark.js: 8.11.1
       minisearch: 7.2.0
@@ -13607,7 +13651,7 @@ snapshots:
   wrap-ansi@7.0.0:
     dependencies:
       ansi-styles: 4.3.0
-      string-width: 4.2.3
+      string-width: 4.2.0
       strip-ansi: 6.0.1
 
   wrap-ansi@8.1.0:
@@ -13625,6 +13669,8 @@ snapshots:
   ws@8.21.0: {}
 
   xe-utils@4.0.10: {}
+
+  xe-utils@4.0.11: {}
 
   xml-name-validator@4.0.0: {}
 

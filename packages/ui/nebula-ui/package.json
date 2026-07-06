@@ -68,7 +68,6 @@
     "clsx": "catalog:ui-utils",
     "codemirror": "catalog:editor",
     "highlight.js": "catalog:markdown",
-    "lucide-vue-next": "catalog:ui",
     "marked": "catalog:markdown",
     "reka-ui": "catalog:ui",
     "tailwind-merge": "catalog:ui-utils",

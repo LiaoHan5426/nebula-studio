@@ -18,6 +18,7 @@
     "bpmn-js": "catalog:bpmn",
     "bpmn-js-properties-panel": "catalog:bpmn",
     "camunda-bpmn-moddle": "catalog:bpmn",
+    "@bpmn-io/cm-theme": "catalog:bpmn",
     "@nebula-studio/nebula-ui": "workspace:^"
   },
   "devDependencies": {

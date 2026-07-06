@@ -13,7 +13,7 @@ export default defineConfig({
     headless: true,
   },
   webServer: {
-    command: 'pnpm run dev',
+    command: 'vp run dev:web',
     port: 5173,
     reuseExistingServer: true,
   },
