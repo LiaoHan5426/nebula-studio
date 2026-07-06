@@ -16,12 +16,6 @@
     "console": "http://localhost:8080",
     "executor": "http://localhost:8081"
   },
-  "rendererSources": {
-    "main": "frontend",
-    "integration": "integration",
-    "settings": "settings",
-    "docs": "docs"
-  },
   "windows": {
     "main": {
       "preload": "main",

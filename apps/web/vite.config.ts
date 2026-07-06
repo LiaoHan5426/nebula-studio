@@ -1,14 +1,11 @@
 import {
   defineNebulaConfig,
   nebulaProxyDiscovery,
-  resolveRendererSources,
+  nebulaSubWebAliasPlugin,
 } from '@nebula-studio-internal/vite';
 import { fileURLToPath } from 'node:url';
 
-import { createRendererAliasPlugin } from './vite.rendererAlias';
-
 const root = fileURLToPath(new URL('.', import.meta.url));
-const rendererSources = resolveRendererSources(import.meta.url);
 
 export default defineNebulaConfig({
   platform: 'web',
@@ -23,12 +20,7 @@ export default defineNebulaConfig({
       nebulaProxyDiscovery({
         subApps: ['integration', 'frontend', 'login', 'settings', 'docs'],
       }),
-      createRendererAliasPlugin(
-        rendererSources.flatMap(({ rendererName, dirName, srcPath }) => [
-          { marker: `@nebula-studio-renderer/${rendererName}/`, src: srcPath },
-          { marker: `/sub-web/${dirName}/`, src: srcPath },
-        ]),
-      ),
+      nebulaSubWebAliasPlugin(),
     ],
     server: {
       port: 5173,
