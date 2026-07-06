@@ -13,6 +13,7 @@ import {
   getShellIntegratedAppMeta,
   hasValidShellAuthSession,
   isShellIntegrableAppId,
+  isShellStandaloneSidebarApp,
   postShellEmbedReset,
   shellPresentationConfig,
   writeWebAuthSession,
@@ -170,8 +171,8 @@ export function useAppLifecycle(opts: UseAppLifecycleOptions) {
 
   function syncSidebarSelection(viewId: string | null): void {
     if (!viewId) return;
-    if (viewId === 'settings') {
-      selectedSidebarItem.value = 'settings';
+    if (isShellStandaloneSidebarApp(viewId)) {
+      selectedSidebarItem.value = viewId;
       return;
     }
     if (isShellIntegrableAppId(viewId)) {
@@ -264,18 +265,37 @@ export function useAppLifecycle(opts: UseAppLifecycleOptions) {
 
   // ─── Tags ──────────────────────────────────────────────
   const visitedViewIds = ref<string[]>([]);
-  const sidebarLabels = {
+
+  /** 固定侧边栏标签（工作台 / 应用集成） */
+  const FIXED_SIDEBAR_LABELS = {
     workspace: '工作台',
     integration: '应用集成',
-    settings: '设置',
   } as const;
 
-  function resolveShellViewLabel(viewId: string): string {
-    if (viewId === 'settings') return sidebarLabels.settings;
-    if (isShellIntegrableAppId(viewId))
-      return getShellIntegratedAppMeta(viewId).label;
-    return viewId;
+  /**
+   * 统一解析任意 viewId / sidebar key 的显示标签。
+   * 固定项（workspace / integration）来自 `FIXED_SIDEBAR_LABELS`；
+   * 独立侧边栏应用（`integratable: false`）与集成应用均来自 `windows.json` 注册元数据。
+   */
+  function resolveSidebarLabel(key: string): string {
+    if (key in FIXED_SIDEBAR_LABELS)
+      return FIXED_SIDEBAR_LABELS[key as keyof typeof FIXED_SIDEBAR_LABELS];
+    if (isShellStandaloneSidebarApp(key) || isShellIntegrableAppId(key))
+      return getShellIntegratedAppMeta(key).label;
+    return key;
   }
+
+  /** 兼容旧字段名，供模板与面包屑中使用 */
+  const sidebarLabels = FIXED_SIDEBAR_LABELS;
+
+  function resolveShellViewLabel(viewId: string): string {
+    return resolveSidebarLabel(viewId);
+  }
+
+  /** 当前可用的独立侧边栏应用 ID 列表（由 `integratable: false` 自动推导） */
+  const standaloneSidebarAppIds = computed(() =>
+    availableViewIds.value.filter(isShellStandaloneSidebarApp),
+  );
 
   const shellTags = computed(() => {
     const tags: Array<{ key: string; label: string }> = [
@@ -306,19 +326,14 @@ export function useAppLifecycle(opts: UseAppLifecycleOptions) {
     if (integration.integrationOpen.value) {
       trail = [sidebarLabels.integration];
     } else if (activeViewId.value) {
-      if (activeViewId.value === 'settings') trail = [sidebarLabels.settings];
-      else if (isShellIntegrableAppId(activeViewId.value))
+      if (isShellIntegrableAppId(activeViewId.value))
         trail = [
           sidebarLabels.integration,
           getShellIntegratedAppMeta(activeViewId.value).label,
         ];
-      else trail = [activeViewId.value];
+      else trail = [resolveSidebarLabel(activeViewId.value)];
     } else {
-      trail = [
-        sidebarLabels[
-          selectedSidebarItem.value as keyof typeof sidebarLabels
-        ] ?? sidebarLabels.workspace,
-      ];
+      trail = [resolveSidebarLabel(selectedSidebarItem.value)];
     }
     return trail.map((label, index) => {
       let icon: BreadcrumbSegment['icon'] = 'file';
@@ -326,11 +341,10 @@ export function useAppLifecycle(opts: UseAppLifecycleOptions) {
         icon =
           label === sidebarLabels.integration
             ? 'integration'
-            : label === sidebarLabels.settings
-              ? 'settings'
-              : 'home';
+            : label === sidebarLabels.workspace
+              ? 'home'
+              : 'file';
       else if (label === sidebarLabels.integration) icon = 'integration';
-      else if (label === sidebarLabels.settings) icon = 'settings';
       return { key: `${label}-${index}`, label, icon };
     });
   });
@@ -588,6 +602,7 @@ export function useAppLifecycle(opts: UseAppLifecycleOptions) {
     usesIframeEmbed,
     shellHost,
     sidebarLabels,
+    standaloneSidebarAppIds,
     syncShellEmbeddedContentVisible: embedded.syncShellEmbeddedContentVisible,
   };
 }

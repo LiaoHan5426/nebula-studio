@@ -1,6 +1,6 @@
 // AUTO-GENERATED — do not edit manually.
 // Source: configs/windows.json
-// Generated at: 2026-06-29T10:51:28.848Z
+// Generated at: 2026-07-06T04:59:02.243Z
 
 export interface GeneratedWindowEntry {
   preload: string;
@@ -43,7 +43,7 @@ export const GENERATED_WINDOWS: Record<string, GeneratedWindowEntry> = {
     iconSvg:
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
     defaultEnabled: true,
-    integratable: true,
+    integratable: false,
     requiresAuth: false,
     preloadCapabilities: ['notify'],
   },
@@ -83,7 +83,6 @@ export const GENERATED_MODAL_RENDERERS: Record<
 } as const;
 
 export const GENERATED_DISPLAY_ORDER: readonly string[] = [
-  'docs',
   'integration',
 ] as const;
 

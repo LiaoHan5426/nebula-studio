@@ -101,3 +101,21 @@ export function embeddedViewRequiresShellAuth(viewId: string): boolean {
   if (!isShellIntegrableAppId(viewId)) return false;
   return tryGetShellIntegratedAppMeta(viewId)?.requiresAuth === true;
 }
+
+/**
+ * 判断给定 viewId 是否为独立侧边栏应用（非工作台、非应用集成网格项）。
+ *
+ * 依据 `windows.json` 中 `integratable: false` 的嵌入窗口自动推导，
+ * 新增子应用只需在 `windows.json` 中声明 `integratable: false`，
+ * 无需修改壳层代码。
+ */
+export function isShellStandaloneSidebarApp(
+  id: string,
+): id is EmbeddedShellWindowId {
+  return (
+    id !== 'main' &&
+    id in shellIntegratedAppRegistry &&
+    shellIntegratedAppRegistry[id as EmbeddedShellWindowId]?.integratable ===
+      false
+  );
+}

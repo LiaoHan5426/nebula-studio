@@ -1,31 +1,36 @@
 {
-  "name": "@nebula-studio/web",
+  "name": "@nebula-studio-renderer/docs",
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "exports": {
+    "./app": "./src/App.vue",
+    "./boot": "./src/boot.ts"
+  },
   "scripts": {
-    "dev": "vite",
+    "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false",
+    "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
     "@nebula-studio-internal/tailwind": "workspace:^",
-    "@nebula-studio-renderer/docs": "workspace:^",
-    "@nebula-studio-renderer/integration": "workspace:^",
-    "@nebula-studio-renderer/login": "workspace:^",
-    "@nebula-studio-renderer/main": "workspace:^",
-    "@nebula-studio-renderer/settings": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
-    "marked": "catalog:markdown",
+    "@nebula-studio/styles": "workspace:^",
     "vue": "catalog:vue",
+    "vue-router": "catalog:vue",
+    "@nebula-studio/runtime": "workspace:^",
     "@nebula-studio-electron/electron-bridge": "workspace:^",
-    "@nebula-studio/auth-provider": "workspace:^"
+    "markdown-it": "catalog:markdown",
+    "shiki": "catalog:markdown"
   },
   "devDependencies": {
+    "@electron-toolkit/preload": "catalog:electron",
     "@nebula-studio-internal/tsconfig": "workspace:^",
     "@nebula-studio-internal/vite": "workspace:^",
     "@nebula-studio/types": "workspace:^",
+    "@types/markdown-it": "^14.1.2",
     "typescript": "catalog:types",
     "vite": "catalog:vite",
     "vite-plus": "catalog:vite",

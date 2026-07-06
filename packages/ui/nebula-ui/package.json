@@ -46,6 +46,7 @@
     "@codemirror/theme-one-dark": "catalog:editor",
     "@codemirror/view": "catalog:editor",
     "@iconify/vue": "catalog:ui",
+    "@iconify-json/lucide": "catalog:ui",
     "@tiptap/core": "catalog:form",
     "@tiptap/extension-code-block": "catalog:form",
     "@tiptap/extension-color": "catalog:form",

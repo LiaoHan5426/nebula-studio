@@ -2,6 +2,7 @@ import { defineNebulaConfig } from '@nebula-studio-internal/vite';
 import { fileURLToPath } from 'node:url';
 
 import { integrationApiProxy } from '../sub-web/integration/vite.integrationProxy';
+import { vitePluginMarkdown } from '../sub-web/docs/src/utils/vitePluginMarkdown.ts';
 import { createRendererAliasPlugin } from './vite.rendererAlias';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
@@ -11,6 +12,7 @@ const rendererSrc = {
     new URL('../sub-web/integration/src', import.meta.url),
   ),
   settings: fileURLToPath(new URL('../sub-web/settings/src', import.meta.url)),
+  docs: fileURLToPath(new URL('../sub-web/docs/src', import.meta.url)),
 };
 
 export default defineNebulaConfig({
@@ -23,6 +25,7 @@ export default defineNebulaConfig({
   },
   merge: {
     plugins: [
+      vitePluginMarkdown(),
       createRendererAliasPlugin([
         { marker: '@nebula-studio-renderer/main/', src: rendererSrc.main },
         { marker: '/sub-web/frontend/', src: rendererSrc.main },
@@ -36,6 +39,8 @@ export default defineNebulaConfig({
           src: rendererSrc.settings,
         },
         { marker: '/sub-web/settings/', src: rendererSrc.settings },
+        { marker: '@nebula-studio-renderer/docs/', src: rendererSrc.docs },
+        { marker: '/sub-web/docs/', src: rendererSrc.docs },
       ]),
     ],
     server: {

@@ -118,7 +118,9 @@ catalogs:
     '@typescript-eslint/parser': ^8.60.1
   markdown:
     marked: ^18.0.4
+    markdown-it: ^14.3.0
     highlight.js: ^11.11.1
+    shiki: ^4.3.1
   parser:
     node-sql-parser: ^5.4.0
     yaml: ^2.9.0
@@ -145,6 +147,7 @@ catalogs:
     xe-utils: ^4.0.11
     vuedraggable: ^4.1.0
     '@iconify/vue': ^4.3.0
+    '@iconify-json/lucide': ^1.2.116
   ui-utils:
     class-variance-authority: ^0.7.1
     clsx: ^2.1.1

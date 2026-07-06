@@ -2,6 +2,11 @@
  * 内置图标快捷映射 — 字符串简写 → 完整 Iconify 名称
  * 根据项目中常用的图标名称扩展
  */
+import { addCollection } from '@iconify/vue';
+import lucideIcons from '@iconify-json/lucide/icons.json';
+
+// 将 lucide 图标数据注册到本地，避免运行时从远程 API 加载
+addCollection(lucideIcons);
 export const PRESET_ICONS: Record<string, string> = {
   // Navigation
   home: 'lucide:home',

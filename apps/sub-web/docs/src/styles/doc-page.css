@@ -1,0 +1,216 @@
+/* 文档页面共享样式 */
+
+.doc-section {
+  max-width: 800px;
+}
+
+.doc-section h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.doc-section h2 {
+  font-size: 22px;
+  font-weight: 600;
+  border-bottom: 1px solid hsl(var(--border));
+  padding-bottom: 8px;
+  margin-top: 32px;
+}
+
+.doc-section h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 24px;
+}
+
+.doc-section p {
+  font-size: 14px;
+  color: hsl(var(--muted-foreground));
+  margin-top: 8px;
+}
+
+.doc-section pre {
+  border-radius: 6px;
+  padding: 16px;
+  margin: 16px 0;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.6;
+  background: hsl(var(--muted) / 24%);
+  border: 1px solid hsl(var(--border));
+}
+
+.doc-section code {
+  font-family: 'Fira Code', 'Cascadia Code', Consolas, monospace;
+  font-size: 13px;
+}
+
+.doc-section table {
+  width: 100%;
+  font-size: 14px;
+  border-collapse: collapse;
+  margin: 16px 0;
+}
+
+.doc-section table th {
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 14px;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--muted) / 16%);
+}
+
+.doc-section table td {
+  padding: 10px 14px;
+  border: 1px solid hsl(var(--border));
+}
+
+.doc-section table tr:hover td {
+  background: hsl(var(--muted) / 8%);
+}
+
+/* 实时演示容器 */
+.doc-demo {
+  border: 1px solid hsl(var(--border));
+  border-radius: 6px;
+  padding: 20px;
+  margin: 12px 0 4px;
+  background: hsl(var(--card));
+}
+
+.doc-demo > * + * {
+  margin-top: 12px;
+}
+
+.doc-demo-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Markdown 渲染样式（Vite 插件输出） */
+.markdown-body {
+  max-width: 800px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: hsl(var(--foreground));
+}
+
+.markdown-body h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.markdown-body h2 {
+  font-size: 22px;
+  font-weight: 600;
+  border-bottom: 1px solid hsl(var(--border));
+  padding-bottom: 8px;
+  margin-top: 32px;
+  margin-bottom: 16px;
+}
+
+.markdown-body h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 24px;
+  margin-bottom: 12px;
+}
+
+.markdown-body p {
+  margin-top: 8px;
+  color: hsl(var(--foreground) / 85%);
+}
+
+.markdown-body a {
+  color: hsl(var(--primary));
+  text-decoration: none;
+}
+
+.markdown-body a:hover {
+  text-decoration: underline;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  padding-left: 24px;
+  margin-top: 8px;
+}
+
+.markdown-body li {
+  margin-top: 4px;
+}
+
+.markdown-body pre {
+  border-radius: 6px;
+  padding: 16px;
+  margin: 16px 0;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.6;
+  background: hsl(var(--muted) / 24%);
+  border: 1px solid hsl(var(--border));
+}
+
+.markdown-body pre code {
+  background: none;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  font-size: inherit;
+}
+
+.markdown-body code {
+  padding: 2px 6px;
+  font-family: 'Fira Code', 'Cascadia Code', Consolas, monospace;
+  font-size: 13px;
+  background: hsl(var(--muted) / 40%);
+  border-radius: 4px;
+}
+
+.markdown-body table {
+  width: 100%;
+  font-size: 14px;
+  border-collapse: collapse;
+  margin: 16px 0;
+}
+
+.markdown-body table th {
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 14px;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--muted) / 16%);
+}
+
+.markdown-body table td {
+  padding: 10px 14px;
+  border: 1px solid hsl(var(--border));
+}
+
+.markdown-body table tr:hover td {
+  background: hsl(var(--muted) / 8%);
+}
+
+.markdown-body blockquote {
+  padding: 8px 16px;
+  margin: 16px 0;
+  color: hsl(var(--muted-foreground));
+  border-left: 4px solid hsl(var(--primary) / 30%);
+  background: hsl(var(--muted) / 16%);
+  border-radius: 0 4px 4px 0;
+}
+
+.markdown-body hr {
+  margin: 24px 0;
+  border: none;
+  border-top: 1px solid hsl(var(--border));
+}
+
+.markdown-body img {
+  max-width: 100%;
+  border-radius: 6px;
+}

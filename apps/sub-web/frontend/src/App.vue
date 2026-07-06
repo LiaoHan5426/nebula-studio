@@ -6,6 +6,11 @@
  * 本文件负责组装 OrgSwitcher / IframeHost / AppDock 并保留生命周期与 IPC 胶水逻辑。
  */
 import {
+  getShellIntegratedAppMeta,
+  isShellIntegrableAppId,
+  isShellStandaloneSidebarApp,
+} from '@nebula-studio/app-shell';
+import {
   NebulaShellLayout,
   useLayoutPreferences,
 } from '@nebula-studio/nebula-layout';
@@ -15,7 +20,7 @@ import {
   OrgSwitcher,
   useAppLifecycle,
 } from '@nebula-studio/nebula-shell';
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 
 import { useOrganization } from '@/shared/composables/useOrganization';
 
@@ -90,6 +95,7 @@ const {
   onAuthLoginDismissed,
   syncShellEmbeddedContentVisible,
   activeViewPersistReady,
+  standaloneSidebarAppIds,
 } = useAppLifecycle({
   getAuthSession: () => authSession.value,
   setAuthSession: (s) => {
@@ -112,9 +118,8 @@ const {
 });
 
 // ── Computed helpers ────────────────────────────────────
-const settingsAvailable = computed(() =>
-  availableViewIds.value.includes('settings'),
-);
+// `standaloneSidebarAppIds` 由 useAppLifecycle 提供，
+// 自动根据 windows.json 中 `integratable: false` 推导独立侧边栏应用列表。
 
 // ─── Lifecycle hooks ─────────────────────────────────────
 onMounted(async () => {
@@ -157,10 +162,17 @@ onMounted(async () => {
   } else if (!activeViewId.value) {
     selectedSidebarItem.value = 'workspace';
   } else {
-    selectedSidebarItem.value = 'workspace';
     loadedEmbedIds.value.add(activeViewId.value);
     ensureEmbedSurfaceLoading(activeViewId.value);
     await tryCompleteEmbedFromExistingFrame(activeViewId.value);
+    // 根据当前 activeView 同步侧边栏高亮（独立侧边栏应用 / integration / workspace）
+    if (isShellStandaloneSidebarApp(activeViewId.value)) {
+      selectedSidebarItem.value = activeViewId.value;
+    } else if (isShellIntegrableAppId(activeViewId.value)) {
+      selectedSidebarItem.value = 'integration';
+    } else {
+      selectedSidebarItem.value = 'workspace';
+    }
   }
 
   // Refresh auth
@@ -302,26 +314,20 @@ async function handleLogin(): Promise<void> {
           <span class="nebula-layout-nav-item__label">应用集成</span>
         </button>
         <button
+          v-for="appId in standaloneSidebarAppIds"
+          :key="appId"
           type="button"
           class="nebula-layout-nav-item"
-          :class="{ 'is-active': selectedSidebarItem === 'settings' }"
-          :disabled="!settingsAvailable"
-          @click="selectIntegratedApp('settings')"
+          :class="{ 'is-active': selectedSidebarItem === appId }"
+          @click="selectIntegratedApp(appId)"
         >
-          <span class="nebula-layout-nav-item__icon">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <circle cx="12" cy="12" r="3" />
-              <path
-                d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"
-              />
-            </svg>
-          </span>
-          <span class="nebula-layout-nav-item__label">设置</span>
+          <span
+            class="nebula-layout-nav-item__icon"
+            v-html="getShellIntegratedAppMeta(appId).iconSvg"
+          />
+          <span class="nebula-layout-nav-item__label">{{
+            getShellIntegratedAppMeta(appId).label
+          }}</span>
         </button>
       </template>
 

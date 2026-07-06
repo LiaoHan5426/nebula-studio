@@ -25,6 +25,16 @@
       "enum": ["iframe", "webview"],
       "description": "How Electron embeds sub-app renderers."
     },
+    "apiBases": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "API base path mapping for different services."
+    },
+    "apiTargets": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "Dev proxy target URLs for API services."
+    },
     "windows": {
       "type": "object",
       "minProperties": 1,

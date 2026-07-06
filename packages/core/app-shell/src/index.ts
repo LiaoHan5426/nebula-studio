@@ -39,6 +39,7 @@ export {
   getDefaultEnabledShellIntegrableIds,
   isShellIntegrableAppId,
   isShellIntegratableAppId,
+  isShellStandaloneSidebarApp,
   listShellIntegrableAppIds,
   embeddedViewRequiresShellAuth,
 } from './common/shellIntegration';
