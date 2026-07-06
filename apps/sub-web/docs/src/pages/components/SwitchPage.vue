@@ -1,27 +1,18 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-import { NebulaSwitch } from '@nebula-studio/nebula-ui';
+﻿<script setup lang="ts">
+import Demo from '@/components/Demo.vue';
 
-const switchValue = ref(false);
-const switchValue2 = ref(true);
+// eslint-disable-next-line import/no-duplicates
+import SwitchBasicSource from '@/examples/switch/SwitchBasic.vue?raw';
+
+import SwitchBasic from '@/examples/switch/SwitchBasic.vue';
 </script>
 
 <template>
   <div class="doc-section">
     <p>开关组件，用于在两种状态之间切换。</p>
 
-    <h2>基础用法</h2>
-    <div class="doc-demo">
-      <div class="doc-demo-row">
-        <NebulaSwitch v-model="switchValue" />
-        <NebulaSwitch v-model="switchValue2" label="带标签" />
-      </div>
-      <p style="margin-top: 8px; font-size: 12px">
-        状态: {{ switchValue }}, {{ switchValue2 }}
-      </p>
-    </div>
-    <pre><code>&lt;NebulaSwitch v-model="value" /&gt;
-&lt;NebulaSwitch v-model="value" label="带标签" /&gt;</code></pre>
+    <h2 id="basic">基础用法</h2>
+    <Demo :component="SwitchBasic" :source="SwitchBasicSource" />
 
     <h2>API</h2>
     <h3>Props</h3>

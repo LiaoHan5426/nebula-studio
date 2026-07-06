@@ -1,41 +1,26 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-import { NebulaTooltip, NebulaButton } from '@nebula-studio/nebula-ui';
+﻿<script setup lang="ts">
+import Demo from '@/components/Demo.vue';
 
-const placements = ['top', 'bottom', 'left', 'right'] as const;
+// eslint-disable-next-line import/no-duplicates
+import TooltipBasicSource from '@/examples/tooltip/TooltipBasic.vue?raw';
+// eslint-disable-next-line import/no-duplicates
+import TooltipPlacementSource from '@/examples/tooltip/TooltipPlacement.vue?raw';
+
+// eslint-disable-next-line import/no-duplicates
+import TooltipBasic from '@/examples/tooltip/TooltipBasic.vue';
+// eslint-disable-next-line import/no-duplicates
+import TooltipPlacement from '@/examples/tooltip/TooltipPlacement.vue';
 </script>
 
 <template>
   <div class="doc-section">
     <p>文字提示气泡，用于展示悬停提示信息。</p>
 
-    <h2>基础用法</h2>
-    <div class="doc-demo">
-      <NebulaTooltip content="这是一段提示文字">
-        <NebulaButton>悬停显示提示</NebulaButton>
-      </NebulaTooltip>
-    </div>
-    <pre><code>&lt;NebulaTooltip content="这是一段提示文字"&gt;
-  &lt;NebulaButton&gt;悬停显示提示&lt;/NebulaButton&gt;
-&lt;/NebulaTooltip&gt;</code></pre>
+    <h2 id="basic">基础用法</h2>
+    <Demo :component="TooltipBasic" :source="TooltipBasicSource" />
 
-    <h2>不同位置</h2>
-    <div class="doc-demo">
-      <div class="doc-demo-row">
-        <NebulaTooltip
-          v-for="p in placements"
-          :key="p"
-          :content="`提示在 ${p}`"
-          :placement="p"
-        >
-          <NebulaButton>{{ p }}</NebulaButton>
-        </NebulaTooltip>
-      </div>
-    </div>
-    <pre><code>&lt;NebulaTooltip content="提示在 top" placement="top"&gt;
-  &lt;NebulaButton&gt;top&lt;/NebulaButton&gt;
-&lt;/NebulaTooltip&gt;
-&lt;!-- placement: 'top' | 'bottom' | 'left' | 'right' --&gt;</code></pre>
+    <h2 id="placement">不同位置</h2>
+    <Demo :component="TooltipPlacement" :source="TooltipPlacementSource" />
 
     <h2>API</h2>
     <h3>Props</h3>

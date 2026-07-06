@@ -1,46 +1,25 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-import { NebulaRadioGroup } from '@nebula-studio/nebula-ui';
-import type { NebulaRadioOption } from '@nebula-studio/nebula-ui';
+﻿<script setup lang="ts">
+import Demo from '@/components/Demo.vue';
 
-const selected = ref('a');
-const options: NebulaRadioOption[] = [
-  { value: 'a', label: '选项 A' },
-  { value: 'b', label: '选项 B' },
-  { value: 'c', label: '选项 C' },
-  { value: 'd', label: '禁用项', disabled: true },
-];
+// eslint-disable-next-line import/no-duplicates
+import RadioGroupBasicSource from '@/examples/radio-group/RadioGroupBasic.vue?raw';
+// eslint-disable-next-line import/no-duplicates
+import RadioGroupDisabledSource from '@/examples/radio-group/RadioGroupDisabled.vue?raw';
+
+import RadioGroupBasic from '@/examples/radio-group/RadioGroupBasic.vue';
+// eslint-disable-next-line import/no-duplicates
+import RadioGroupDisabled from '@/examples/radio-group/RadioGroupDisabled.vue';
 </script>
 
 <template>
   <div class="doc-section">
     <p>单选框组，在一组互斥选项中进行选择。</p>
 
-    <h2>基础用法</h2>
-    <div class="doc-demo">
-      <NebulaRadioGroup v-model="selected" :options="options" />
-      <p style="margin-top: 8px; font-size: 12px">当前选中: {{ selected }}</p>
-    </div>
-    <pre><code>&lt;script setup&gt;
-import { ref } from 'vue';
-import { NebulaRadioGroup } from '@nebula-studio/nebula-ui';
-import type { NebulaRadioOption } from '@nebula-studio/nebula-ui';
+    <h2 id="basic">基础用法</h2>
+    <Demo :component="RadioGroupBasic" :source="RadioGroupBasicSource" />
 
-const selected = ref('a');
-const options: NebulaRadioOption[] = [
-  { value: 'a', label: '选项 A' },
-  { value: 'b', label: '选项 B' },
-  { value: 'c', label: '选项 C' },
-];
-&lt;/script&gt;
-
-&lt;NebulaRadioGroup v-model="selected" :options="options" /&gt;</code></pre>
-
-    <h2>禁用状态</h2>
-    <div class="doc-demo">
-      <NebulaRadioGroup v-model="selected" :options="options" disabled />
-    </div>
-    <pre><code>&lt;NebulaRadioGroup v-model="selected" :options="options" disabled /&gt;</code></pre>
+    <h2 id="disabled">禁用状态</h2>
+    <Demo :component="RadioGroupDisabled" :source="RadioGroupDisabledSource" />
 
     <h2>API</h2>
     <h3>Props</h3>

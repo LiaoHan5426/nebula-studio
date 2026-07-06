@@ -1,19 +1,14 @@
-import { defineNebulaConfig } from '@nebula-studio-internal/vite';
+import {
+  defineNebulaConfig,
+  nebulaProxyDiscovery,
+  resolveRendererSources,
+} from '@nebula-studio-internal/vite';
 import { fileURLToPath } from 'node:url';
 
-import { integrationApiProxy } from '../sub-web/integration/vite.integrationProxy';
-import { vitePluginMarkdown } from '../sub-web/docs/src/utils/vitePluginMarkdown.ts';
 import { createRendererAliasPlugin } from './vite.rendererAlias';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
-const rendererSrc = {
-  main: fileURLToPath(new URL('../sub-web/frontend/src', import.meta.url)),
-  integration: fileURLToPath(
-    new URL('../sub-web/integration/src', import.meta.url),
-  ),
-  settings: fileURLToPath(new URL('../sub-web/settings/src', import.meta.url)),
-  docs: fileURLToPath(new URL('../sub-web/docs/src', import.meta.url)),
-};
+const rendererSources = resolveRendererSources(import.meta.url);
 
 export default defineNebulaConfig({
   platform: 'web',
@@ -25,27 +20,18 @@ export default defineNebulaConfig({
   },
   merge: {
     plugins: [
-      vitePluginMarkdown(),
-      createRendererAliasPlugin([
-        { marker: '@nebula-studio-renderer/main/', src: rendererSrc.main },
-        { marker: '/sub-web/frontend/', src: rendererSrc.main },
-        {
-          marker: '@nebula-studio-renderer/integration/',
-          src: rendererSrc.integration,
-        },
-        { marker: '/sub-web/integration/', src: rendererSrc.integration },
-        {
-          marker: '@nebula-studio-renderer/settings/',
-          src: rendererSrc.settings,
-        },
-        { marker: '/sub-web/settings/', src: rendererSrc.settings },
-        { marker: '@nebula-studio-renderer/docs/', src: rendererSrc.docs },
-        { marker: '/sub-web/docs/', src: rendererSrc.docs },
-      ]),
+      nebulaProxyDiscovery({
+        subApps: ['integration', 'frontend', 'login', 'settings', 'docs'],
+      }),
+      createRendererAliasPlugin(
+        rendererSources.flatMap(({ rendererName, dirName, srcPath }) => [
+          { marker: `@nebula-studio-renderer/${rendererName}/`, src: srcPath },
+          { marker: `/sub-web/${dirName}/`, src: srcPath },
+        ]),
+      ),
     ],
     server: {
       port: 5173,
-      proxy: integrationApiProxy(),
     },
   },
 });

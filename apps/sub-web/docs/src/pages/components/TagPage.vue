@@ -1,30 +1,25 @@
+﻿<script setup lang="ts">
+import Demo from '@/components/Demo.vue';
+
+// eslint-disable-next-line import/no-duplicates
+import TagBasicSource from '@/examples/tag/TagBasic.vue?raw';
+// eslint-disable-next-line import/no-duplicates
+import TagTooltipSource from '@/examples/tag/TagTooltip.vue?raw';
+
+import TagBasic from '@/examples/tag/TagBasic.vue';
+// eslint-disable-next-line import/no-duplicates
+import TagTooltip from '@/examples/tag/TagTooltip.vue';
+</script>
+
 <template>
   <div class="doc-section">
     <p>标签组件，用于标记和分类，支持多种变体。</p>
 
-    <h2>基础用法</h2>
-    <div class="doc-demo">
-      <div class="doc-demo-row">
-        <NebulaTag>默认标签</NebulaTag>
-        <NebulaTag variant="success">成功</NebulaTag>
-        <NebulaTag variant="warning">警告</NebulaTag>
-        <NebulaTag variant="danger">危险</NebulaTag>
-        <NebulaTag variant="info">信息</NebulaTag>
-      </div>
-    </div>
-    <pre><code>&lt;NebulaTag&gt;默认标签&lt;/NebulaTag&gt;
-&lt;NebulaTag variant="success"&gt;成功&lt;/NebulaTag&gt;
-&lt;NebulaTag variant="warning"&gt;警告&lt;/NebulaTag&gt;
-&lt;NebulaTag variant="danger"&gt;危险&lt;/NebulaTag&gt;
-&lt;NebulaTag variant="info"&gt;信息&lt;/NebulaTag&gt;</code></pre>
+    <h2 id="basic">基础用法</h2>
+    <Demo :component="TagBasic" :source="TagBasicSource" />
 
-    <h2>带提示</h2>
-    <div class="doc-demo">
-      <div class="doc-demo-row">
-        <NebulaTag tooltip="这是一个带提示的标签">悬停查看</NebulaTag>
-      </div>
-    </div>
-    <pre><code>&lt;NebulaTag tooltip="这是一个带提示的标签"&gt;悬停查看&lt;/NebulaTag&gt;</code></pre>
+    <h2 id="tooltip">带提示</h2>
+    <Demo :component="TagTooltip" :source="TagTooltipSource" />
 
     <h2>API</h2>
     <h3>Props</h3>
@@ -77,7 +72,3 @@
     </table>
   </div>
 </template>
-
-<script setup lang="ts">
-import { NebulaTag } from '@nebula-studio/nebula-ui';
-</script>

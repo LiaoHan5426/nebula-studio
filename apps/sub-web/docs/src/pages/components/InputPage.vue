@@ -1,50 +1,39 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { NebulaInput } from '@nebula-studio/nebula-ui';
+import Demo from '@/components/Demo.vue';
 
-const textValue = ref('');
-const passwordValue = ref('');
-const disabledValue = ref('禁用状态');
+// eslint-disable-next-line import/no-duplicates
+import InputBasicSource from '@/examples/input/InputBasic.vue?raw';
+// eslint-disable-next-line import/no-duplicates
+import InputTypesSource from '@/examples/input/InputTypes.vue?raw';
+// eslint-disable-next-line import/no-duplicates
+import InputDisabledSource from '@/examples/input/InputDisabled.vue?raw';
+// eslint-disable-next-line import/no-duplicates
+import InputTooltipSource from '@/examples/input/InputTooltip.vue?raw';
+
+import InputBasic from '@/examples/input/InputBasic.vue';
+// eslint-disable-next-line import/no-duplicates
+import InputTypes from '@/examples/input/InputTypes.vue';
+// eslint-disable-next-line import/no-duplicates
+import InputDisabled from '@/examples/input/InputDisabled.vue';
+// eslint-disable-next-line import/no-duplicates
+import InputTooltip from '@/examples/input/InputTooltip.vue';
 </script>
 
 <template>
   <div class="doc-section">
     <p>基础表单输入组件，支持多种输入类型。</p>
 
-    <h2>基础用法</h2>
-    <div class="doc-demo">
-      <NebulaInput v-model="textValue" placeholder="请输入内容" />
-      <p style="margin-top: 8px; font-size: 12px">
-        当前值: {{ textValue || '空' }}
-      </p>
-    </div>
-    <pre><code>&lt;NebulaInput v-model="value" placeholder="请输入内容" /&gt;</code></pre>
+    <h2 id="basic">基础用法</h2>
+    <Demo :component="InputBasic" :source="InputBasicSource" />
 
-    <h2>输入框类型</h2>
-    <div class="doc-demo">
-      <NebulaInput type="text" placeholder="文本输入" />
-      <NebulaInput type="password" placeholder="密码输入" />
-      <NebulaInput type="email" placeholder="邮箱输入" />
-      <NebulaInput type="number" placeholder="数字输入" />
-    </div>
-    <pre><code>&lt;NebulaInput type="text" placeholder="文本输入" /&gt;
-&lt;NebulaInput type="password" placeholder="密码输入" /&gt;
-&lt;NebulaInput type="email" placeholder="邮箱输入" /&gt;
-&lt;NebulaInput type="number" placeholder="数字输入" /&gt;</code></pre>
+    <h2 id="types">输入框类型</h2>
+    <Demo :component="InputTypes" :source="InputTypesSource" />
 
-    <h2>禁用与只读</h2>
-    <div class="doc-demo">
-      <NebulaInput v-model="disabledValue" disabled />
-      <NebulaInput readonly value="只读状态" />
-    </div>
-    <pre><code>&lt;NebulaInput disabled value="禁用状态" /&gt;
-&lt;NebulaInput readonly value="只读状态" /&gt;</code></pre>
+    <h2 id="disabled">禁用与只读</h2>
+    <Demo :component="InputDisabled" :source="InputDisabledSource" />
 
-    <h2>带提示</h2>
-    <div class="doc-demo">
-      <NebulaInput placeholder="悬停查看提示" tooltip="这是输入提示" />
-    </div>
-    <pre><code>&lt;NebulaInput placeholder="悬停查看提示" tooltip="这是输入提示" /&gt;</code></pre>
+    <h2 id="tooltip">带提示</h2>
+    <Demo :component="InputTooltip" :source="InputTooltipSource" />
 
     <h2>API</h2>
     <h3>Props</h3>

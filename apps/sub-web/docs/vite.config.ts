@@ -1,7 +1,6 @@
 import { fileURLToPath } from 'node:url';
 
 import { defineNebulaConfig } from '@nebula-studio-internal/vite';
-import { vitePluginMarkdown } from './src/utils/vitePluginMarkdown.ts';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
 
@@ -19,6 +18,5 @@ export default defineNebulaConfig({
         '@': fileURLToPath(new URL('./src', import.meta.url)),
       },
     },
-    plugins: [vitePluginMarkdown()],
   },
 });

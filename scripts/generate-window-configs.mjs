@@ -96,6 +96,15 @@ function validateConfig(config) {
     }
   }
 
+  // Validate rendererSources
+  if (config.rendererSources) {
+    for (const [name, dir] of Object.entries(config.rendererSources)) {
+      if (typeof dir !== 'string' || !dir) {
+        errors.push(`rendererSources.${name}: must be a non-empty string`);
+      }
+    }
+  }
+
   return errors;
 }
 
@@ -210,6 +219,14 @@ function generateTypeScript(config) {
   if (config.apiTargets) {
     lines.push(
       `export const GENERATED_API_TARGETS: Record<string, string> = ${JSON.stringify(config.apiTargets, null, 2)} as const;`,
+    );
+    lines.push('');
+  }
+
+  // Renderer sources (dev alias)
+  if (config.rendererSources) {
+    lines.push(
+      `export const GENERATED_RENDERER_SOURCES: Record<string, string> = ${JSON.stringify(config.rendererSources, null, 2)} as const;`,
     );
     lines.push('');
   }

@@ -1,42 +1,24 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-import { NebulaPagination } from '@nebula-studio/nebula-ui';
+﻿<script setup lang="ts">
+import Demo from '@/components/Demo.vue';
 
-const currentPage = ref(1);
-const pageSize = ref(10);
+// eslint-disable-next-line import/no-duplicates
+import PaginationBasicSource from '@/examples/pagination/PaginationBasic.vue?raw';
+// eslint-disable-next-line import/no-duplicates
+import PaginationSizesSource from '@/examples/pagination/PaginationSizes.vue?raw';
+
+import PaginationBasic from '@/examples/pagination/PaginationBasic.vue';
+import PaginationSizes from '@/examples/pagination/PaginationSizes.vue';
 </script>
 
 <template>
   <div class="doc-section">
     <p>分页导航组件，支持页码切换和每页条数设置。</p>
 
-    <h2>基础用法</h2>
-    <div class="doc-demo">
-      <NebulaPagination v-model="currentPage" :total="100" />
-      <p style="margin-top: 12px">当前页：{{ currentPage }}</p>
-    </div>
-    <pre><code>&lt;NebulaPagination v-model="currentPage" :total="100" /&gt;</code></pre>
+    <h2 id="basic">基础用法</h2>
+    <Demo :component="PaginationBasic" :source="PaginationBasicSource" />
 
-    <h2>自定义每页条数</h2>
-    <div class="doc-demo">
-      <NebulaPagination
-        v-model="currentPage"
-        v-model:page-size="pageSize"
-        :total="200"
-        :page-sizes="[5, 10, 20, 50]"
-        :show-size-changer="true"
-      />
-      <p style="margin-top: 12px">
-        当前页：{{ currentPage }}，每页 {{ pageSize }} 条
-      </p>
-    </div>
-    <pre><code>&lt;NebulaPagination
-  v-model="currentPage"
-  v-model:page-size="pageSize"
-  :total="200"
-  :page-sizes="[5, 10, 20, 50]"
-  :show-size-changer="true"
-/&gt;</code></pre>
+    <h2 id="sizes">自定义每页条数</h2>
+    <Demo :component="PaginationSizes" :source="PaginationSizesSource" />
 
     <h2>API</h2>
     <h3>Props</h3>

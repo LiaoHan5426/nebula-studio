@@ -21,19 +21,19 @@ const routes: RouteRecordRaw[] = [
           {
             path: 'intro',
             name: 'guide-intro',
-            component: () => import('@/docs/guide/intro.md'),
+            component: () => import('@/pages/guide/IntroPage.vue'),
             meta: { title: '项目介绍', sidebar: 'guide' },
           },
           {
             path: 'install',
             name: 'guide-install',
-            component: () => import('@/docs/guide/install.md'),
+            component: () => import('@/pages/guide/InstallPage.vue'),
             meta: { title: '安装指南', sidebar: 'guide' },
           },
           {
             path: 'theming',
             name: 'guide-theming',
-            component: () => import('@/docs/guide/theming.md'),
+            component: () => import('@/pages/guide/ThemingPage.vue'),
             meta: { title: '主题定制', sidebar: 'guide' },
           },
         ],

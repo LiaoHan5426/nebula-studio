@@ -1,54 +1,25 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-import { NebulaSelect } from '@nebula-studio/nebula-ui';
+﻿<script setup lang="ts">
+import Demo from '@/components/Demo.vue';
 
-const selected = ref('');
-const options = [
-  { label: '选项一', value: '1' },
-  { label: '选项二', value: '2' },
-  { label: '选项三', value: '3' },
-  { label: '禁用项', value: '4', disabled: true },
-];
+// eslint-disable-next-line import/no-duplicates
+import SelectBasicSource from '@/examples/select/SelectBasic.vue?raw';
+// eslint-disable-next-line import/no-duplicates
+import SelectDisabledSource from '@/examples/select/SelectDisabled.vue?raw';
+
+import SelectBasic from '@/examples/select/SelectBasic.vue';
+// eslint-disable-next-line import/no-duplicates
+import SelectDisabled from '@/examples/select/SelectDisabled.vue';
 </script>
 
 <template>
   <div class="doc-section">
     <p>下拉选择器，支持对象选项和自定义键名。</p>
 
-    <h2>基础用法</h2>
-    <div class="doc-demo">
-      <NebulaSelect
-        v-model="selected"
-        :options="options"
-        placeholder="请选择"
-      />
-      <p style="margin-top: 8px; font-size: 12px">
-        当前选中: {{ selected || '未选择' }}
-      </p>
-    </div>
-    <pre><code>&lt;script setup&gt;
-const selected = ref('');
-const options = [
-  { label: '选项一', value: '1' },
-  { label: '选项二', value: '2' },
-  { label: '选项三', value: '3' },
-];
-&lt;/script&gt;
+    <h2 id="basic">基础用法</h2>
+    <Demo :component="SelectBasic" :source="SelectBasicSource" />
 
-&lt;template&gt;
-  &lt;NebulaSelect v-model="selected" :options="options" placeholder="请选择" /&gt;
-&lt;/template&gt;</code></pre>
-
-    <h2>禁用状态</h2>
-    <div class="doc-demo">
-      <NebulaSelect
-        v-model="selected"
-        :options="options"
-        disabled
-        placeholder="禁用选择器"
-      />
-    </div>
-    <pre><code>&lt;NebulaSelect v-model="selected" :options="options" disabled /&gt;</code></pre>
+    <h2 id="disabled">禁用状态</h2>
+    <Demo :component="SelectDisabled" :source="SelectDisabledSource" />
 
     <h2>API</h2>
     <h3>Props</h3>

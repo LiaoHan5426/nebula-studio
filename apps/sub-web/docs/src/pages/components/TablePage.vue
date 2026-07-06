@@ -1,48 +1,25 @@
-<script setup lang="ts">
-import { NebulaTable, NebulaTableColumn } from '@nebula-studio/nebula-ui';
+﻿<script setup lang="ts">
+import Demo from '@/components/Demo.vue';
 
-const tableData = [
-  { id: 1, name: '张三', age: 28, address: '北京市朝阳区' },
-  { id: 2, name: '李四', age: 32, address: '上海市浦东新区' },
-  { id: 3, name: '王五', age: 25, address: '广州市天河区' },
-  { id: 4, name: '赵六', age: 30, address: '深圳市南山区' },
-];
+// eslint-disable-next-line import/no-duplicates
+import TableBasicSource from '@/examples/table/TableBasic.vue?raw';
+// eslint-disable-next-line import/no-duplicates
+import TableStripeSource from '@/examples/table/TableStripe.vue?raw';
+
+import TableBasic from '@/examples/table/TableBasic.vue';
+// eslint-disable-next-line import/no-duplicates
+import TableStripe from '@/examples/table/TableStripe.vue';
 </script>
 
 <template>
   <div class="doc-section">
     <p>表格组件，用于展示结构化数据。</p>
 
-    <h2>基础用法</h2>
-    <div class="doc-demo">
-      <NebulaTable :data="tableData" :border="true">
-        <NebulaTableColumn field="id" title="ID" :width="80" />
-        <NebulaTableColumn field="name" title="姓名" />
-        <NebulaTableColumn field="age" title="年龄" :width="100" />
-        <NebulaTableColumn field="address" title="地址" />
-      </NebulaTable>
-    </div>
-    <pre><code>&lt;NebulaTable :data="tableData" :border="true"&gt;
-  &lt;NebulaTableColumn field="id" title="ID" :width="80" /&gt;
-  &lt;NebulaTableColumn field="name" title="姓名" /&gt;
-  &lt;NebulaTableColumn field="age" title="年龄" :width="100" /&gt;
-  &lt;NebulaTableColumn field="address" title="地址" /&gt;
-&lt;/NebulaTable&gt;</code></pre>
+    <h2 id="basic">基础用法</h2>
+    <Demo :component="TableBasic" :source="TableBasicSource" />
 
-    <h2>斑马纹</h2>
-    <div class="doc-demo">
-      <NebulaTable :data="tableData" :stripe="true" :border="false">
-        <NebulaTableColumn field="id" title="ID" :width="80" />
-        <NebulaTableColumn field="name" title="姓名" />
-        <NebulaTableColumn field="age" title="年龄" :width="100" />
-        <NebulaTableColumn field="address" title="地址" />
-      </NebulaTable>
-    </div>
-    <pre><code>&lt;NebulaTable :data="tableData" :stripe="true" :border="false"&gt;
-  &lt;NebulaTableColumn field="id" title="ID" /&gt;
-  &lt;NebulaTableColumn field="name" title="姓名" /&gt;
-  ...
-&lt;/NebulaTable&gt;</code></pre>
+    <h2 id="stripe">斑马纹</h2>
+    <Demo :component="TableStripe" :source="TableStripeSource" />
 
     <h2>API</h2>
     <h3>NebulaTable Props</h3>

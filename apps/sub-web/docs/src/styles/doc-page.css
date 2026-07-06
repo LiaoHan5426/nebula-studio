@@ -90,7 +90,7 @@
   gap: 12px;
 }
 
-/* Markdown 渲染样式（Vite 插件输出） */
+/* Markdown 渲染样式 */
 .markdown-body {
   max-width: 800px;
   font-size: 14px;
@@ -213,4 +213,80 @@
 .markdown-body img {
   max-width: 100%;
   border-radius: 6px;
+}
+
+/* Shiki 代码高亮样式 */
+pre.shiki {
+  background-color: hsl(var(--muted) / 24%) !important;
+  border: 1px solid hsl(var(--border));
+  border-radius: 6px;
+  padding: 16px;
+  margin: 16px 0;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+pre.shiki code {
+  background: none;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  font-size: inherit;
+}
+
+/* Shiki token 颜色（适配暗色主题） */
+.shiki .token.comment,
+.shiki .token.prolog,
+.shiki .token.doctype,
+.shiki .token.cdata {
+  color: #6a9955;
+}
+
+.shiki .token.punctuation {
+  color: #d4d4d4;
+}
+
+.shiki .token.property,
+.shiki .token.tag,
+.shiki .token.boolean,
+.shiki .token.number,
+.shiki .token.constant,
+.shiki .token.symbol,
+.shiki .token.deleted {
+  color: #ce9178;
+}
+
+.shiki .token.selector,
+.shiki .token.attr-name,
+.shiki .token.string,
+.shiki .token.char,
+.shiki .token.builtin,
+.shiki .token.inserted {
+  color: #ce9178;
+}
+
+.shiki .token.operator,
+.shiki .token.entity,
+.shiki .token.url,
+.shiki .language-css .token.string,
+.shiki .style .token.string {
+  color: #d4d4d4;
+}
+
+.shiki .token.atrule,
+.shiki .token.attr-value,
+.shiki .token.keyword {
+  color: #569cd6;
+}
+
+.shiki .token.function,
+.shiki .token.class-name {
+  color: #dcdcaa;
+}
+
+.shiki .token.regex,
+.shiki .token.important,
+.shiki .token.variable {
+  color: #d16969;
 }

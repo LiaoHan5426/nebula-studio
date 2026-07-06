@@ -1,60 +1,24 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-import {
-  NebulaDropdown,
-  NebulaDropdownItem,
-  NebulaDropdownDivider,
-  NebulaButton,
-} from '@nebula-studio/nebula-ui';
+﻿<script setup lang="ts">
+import Demo from '@/components/Demo.vue';
 
-const dropdownOpen = ref(false);
+// eslint-disable-next-line import/no-duplicates
+import DropdownBasicSource from '@/examples/dropdown/DropdownBasic.vue?raw';
+// eslint-disable-next-line import/no-duplicates
+import DropdownDividerSource from '@/examples/dropdown/DropdownDivider.vue?raw';
+
+import DropdownBasic from '@/examples/dropdown/DropdownBasic.vue';
+import DropdownDivider from '@/examples/dropdown/DropdownDivider.vue';
 </script>
 
 <template>
   <div class="doc-section">
     <p>下拉菜单组件，用于展示操作菜单列表。</p>
 
-    <h2>基础用法</h2>
-    <div class="doc-demo">
-      <NebulaDropdown v-model:open="dropdownOpen">
-        <template #trigger>
-          <NebulaButton>下拉菜单 ▾</NebulaButton>
-        </template>
-        <NebulaDropdownItem>选项一</NebulaDropdownItem>
-        <NebulaDropdownItem>选项二</NebulaDropdownItem>
-        <NebulaDropdownItem>选项三</NebulaDropdownItem>
-      </NebulaDropdown>
-    </div>
-    <pre><code>&lt;NebulaDropdown&gt;
-  &lt;template #trigger&gt;
-    &lt;NebulaButton&gt;下拉菜单 ▾&lt;/NebulaButton&gt;
-  &lt;/template&gt;
-  &lt;NebulaDropdownItem&gt;选项一&lt;/NebulaDropdownItem&gt;
-  &lt;NebulaDropdownItem&gt;选项二&lt;/NebulaDropdownItem&gt;
-  &lt;NebulaDropdownItem&gt;选项三&lt;/NebulaDropdownItem&gt;
-&lt;/NebulaDropdown&gt;</code></pre>
+    <h2 id="basic">基础用法</h2>
+    <Demo :component="DropdownBasic" :source="DropdownBasicSource" />
 
-    <h2>带分割线和禁用</h2>
-    <div class="doc-demo">
-      <NebulaDropdown placement="bottom-start">
-        <template #trigger>
-          <NebulaButton variant="primary">操作菜单 ▾</NebulaButton>
-        </template>
-        <NebulaDropdownItem>编辑</NebulaDropdownItem>
-        <NebulaDropdownItem>复制</NebulaDropdownItem>
-        <NebulaDropdownDivider />
-        <NebulaDropdownItem disabled>删除</NebulaDropdownItem>
-      </NebulaDropdown>
-    </div>
-    <pre><code>&lt;NebulaDropdown placement="bottom-start"&gt;
-  &lt;template #trigger&gt;
-    &lt;NebulaButton variant="primary"&gt;操作菜单 ▾&lt;/NebulaButton&gt;
-  &lt;/template&gt;
-  &lt;NebulaDropdownItem&gt;编辑&lt;/NebulaDropdownItem&gt;
-  &lt;NebulaDropdownItem&gt;复制&lt;/NebulaDropdownItem&gt;
-  &lt;NebulaDropdownDivider /&gt;
-  &lt;NebulaDropdownItem disabled&gt;删除&lt;/NebulaDropdownItem&gt;
-&lt;/NebulaDropdown&gt;</code></pre>
+    <h2 id="divider">带分割线和禁用</h2>
+    <Demo :component="DropdownDivider" :source="DropdownDividerSource" />
 
     <h2>API</h2>
     <h3>NebulaDropdown Props</h3>

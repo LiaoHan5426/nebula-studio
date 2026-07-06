@@ -1,49 +1,24 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-import { NebulaDrawer, NebulaButton } from '@nebula-studio/nebula-ui';
+﻿<script setup lang="ts">
+import Demo from '@/components/Demo.vue';
 
-const drawerOpen = ref(false);
-const leftDrawer = ref(false);
+// eslint-disable-next-line import/no-duplicates
+import DrawerBasicSource from '@/examples/drawer/DrawerBasic.vue?raw';
+// eslint-disable-next-line import/no-duplicates
+import DrawerLeftSource from '@/examples/drawer/DrawerLeft.vue?raw';
+
+import DrawerBasic from '@/examples/drawer/DrawerBasic.vue';
+import DrawerLeft from '@/examples/drawer/DrawerLeft.vue';
 </script>
 
 <template>
   <div class="doc-section">
     <p>抽屉组件，从屏幕边缘滑出的浮层面板。</p>
 
-    <h2>基础用法</h2>
-    <div class="doc-demo">
-      <NebulaButton @click="drawerOpen = true">打开右侧抽屉</NebulaButton>
-      <NebulaDrawer
-        v-model:open="drawerOpen"
-        title="抽屉标题"
-        subtitle="副标题说明"
-      >
-        <p>这里是抽屉的内容区域。</p>
-        <p style="margin-top: 8px">可以在这里放置任意内容。</p>
-      </NebulaDrawer>
-    </div>
-    <pre><code>&lt;NebulaButton @click="drawerOpen = true"&gt;打开右侧抽屉&lt;/NebulaButton&gt;
-&lt;NebulaDrawer v-model:open="drawerOpen" title="抽屉标题" subtitle="副标题说明"&gt;
-  &lt;p&gt;这里是抽屉的内容区域。&lt;/p&gt;
-&lt;/NebulaDrawer&gt;</code></pre>
+    <h2 id="basic">基础用法</h2>
+    <Demo :component="DrawerBasic" :source="DrawerBasicSource" />
 
-    <h2>左侧抽屉</h2>
-    <div class="doc-demo">
-      <NebulaButton variant="primary" @click="leftDrawer = true"
-        >打开左侧抽屉</NebulaButton
-      >
-      <NebulaDrawer
-        v-model:open="leftDrawer"
-        title="左侧抽屉"
-        placement="left"
-        width="320px"
-      >
-        <p>从左侧滑出的抽屉面板。</p>
-      </NebulaDrawer>
-    </div>
-    <pre><code>&lt;NebulaDrawer v-model:open="open" title="左侧抽屉" placement="left" width="320px"&gt;
-  &lt;p&gt;从左侧滑出的抽屉面板。&lt;/p&gt;
-&lt;/NebulaDrawer&gt;</code></pre>
+    <h2 id="left">左侧抽屉</h2>
+    <Demo :component="DrawerLeft" :source="DrawerLeftSource" />
 
     <h2>API</h2>
     <h3>Props</h3>

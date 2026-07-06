@@ -1,46 +1,32 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-import { NebulaDatePicker } from '@nebula-studio/nebula-ui';
+﻿<script setup lang="ts">
+import Demo from '@/components/Demo.vue';
 
-const dateValue = ref<string | null>(null);
-const datetimeValue = ref<string | null>(null);
-const rangeValue = ref<[string, string] | null>(null);
+// eslint-disable-next-line import/no-duplicates
+import DatePickerBasicSource from '@/examples/date-picker/DatePickerBasic.vue?raw';
+// eslint-disable-next-line import/no-duplicates
+import DatePickerDatetimeSource from '@/examples/date-picker/DatePickerDatetime.vue?raw';
+// eslint-disable-next-line import/no-duplicates
+import DatePickerRangeSource from '@/examples/date-picker/DatePickerRange.vue?raw';
+
+import DatePickerBasic from '@/examples/date-picker/DatePickerBasic.vue';
+// eslint-disable-next-line import/no-duplicates
+import DatePickerDatetime from '@/examples/date-picker/DatePickerDatetime.vue';
+// eslint-disable-next-line import/no-duplicates
+import DatePickerRange from '@/examples/date-picker/DatePickerRange.vue';
 </script>
 
 <template>
   <div class="doc-section">
     <p>日期选择器，支持日期、日期时间和日期范围选择。</p>
 
-    <h2>基础用法</h2>
-    <div class="doc-demo">
-      <NebulaDatePicker v-model="dateValue" placeholder="选择日期" />
-      <p style="margin-top: 12px">选中值：{{ dateValue ?? '未选择' }}</p>
-    </div>
-    <pre><code>&lt;NebulaDatePicker v-model="dateValue" placeholder="选择日期" /&gt;</code></pre>
+    <h2 id="basic">基础用法</h2>
+    <Demo :component="DatePickerBasic" :source="DatePickerBasicSource" />
 
-    <h2>日期时间选择</h2>
-    <div class="doc-demo">
-      <NebulaDatePicker
-        v-model="datetimeValue"
-        type="datetime"
-        placeholder="选择日期时间"
-      />
-      <p style="margin-top: 12px">选中值：{{ datetimeValue ?? '未选择' }}</p>
-    </div>
-    <pre><code>&lt;NebulaDatePicker v-model="value" type="datetime" placeholder="选择日期时间" /&gt;</code></pre>
+    <h2 id="datetime">日期时间选择</h2>
+    <Demo :component="DatePickerDatetime" :source="DatePickerDatetimeSource" />
 
-    <h2>日期时间范围</h2>
-    <div class="doc-demo">
-      <NebulaDatePicker
-        v-model="rangeValue"
-        type="datetimerange"
-        placeholder="选择范围"
-      />
-      <p style="margin-top: 12px">
-        选中值：{{ rangeValue ? rangeValue.join(' ~ ') : '未选择' }}
-      </p>
-    </div>
-    <pre><code>&lt;NebulaDatePicker v-model="rangeValue" type="datetimerange" /&gt;</code></pre>
+    <h2 id="range">日期时间范围</h2>
+    <Demo :component="DatePickerRange" :source="DatePickerRangeSource" />
 
     <h2>API</h2>
     <h3>Props</h3>

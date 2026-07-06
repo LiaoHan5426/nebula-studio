@@ -1,55 +1,30 @@
-<script setup lang="ts">
-import { NebulaIcon, PRESET_ICONS } from '@nebula-studio/nebula-ui';
+﻿<script setup lang="ts">
+import Demo from '@/components/Demo.vue';
 
-const iconNames = Object.keys(PRESET_ICONS).slice(0, 12);
+// eslint-disable-next-line import/no-duplicates
+import IconBasicSource from '@/examples/icon/IconBasic.vue?raw';
+// eslint-disable-next-line import/no-duplicates
+import IconCustomSource from '@/examples/icon/IconCustom.vue?raw';
+// eslint-disable-next-line import/no-duplicates
+import IconPresetSource from '@/examples/icon/IconPreset.vue?raw';
+
+import IconBasic from '@/examples/icon/IconBasic.vue';
+import IconCustom from '@/examples/icon/IconCustom.vue';
+import IconPreset from '@/examples/icon/IconPreset.vue';
 </script>
 
 <template>
   <div class="doc-section">
     <p>图标组件，支持 Iconify 名称、Vue 组件、URL 和内置图标。</p>
 
-    <h2>基础用法</h2>
-    <div class="doc-demo">
-      <div class="doc-demo-row">
-        <NebulaIcon icon="lucide:home" size="24" />
-        <NebulaIcon icon="lucide:settings" size="24" />
-        <NebulaIcon icon="lucide:user" size="24" />
-        <NebulaIcon icon="lucide:search" size="24" />
-      </div>
-    </div>
-    <pre><code>&lt;NebulaIcon icon="lucide:home" size="24" /&gt;
-&lt;NebulaIcon icon="lucide:settings" size="24" /&gt;
-&lt;NebulaIcon icon="lucide:user" size="24" /&gt;
-&lt;NebulaIcon icon="lucide:search" size="24" /&gt;</code></pre>
+    <h2 id="basic">基础用法</h2>
+    <Demo :component="IconBasic" :source="IconBasicSource" />
 
-    <h2>自定义大小和颜色</h2>
-    <div class="doc-demo">
-      <div class="doc-demo-row">
-        <NebulaIcon icon="lucide:heart" size="16" color="red" />
-        <NebulaIcon icon="lucide:heart" size="24" color="green" />
-        <NebulaIcon icon="lucide:heart" size="32" color="blue" />
-        <NebulaIcon icon="lucide:heart" size="40" color="purple" />
-      </div>
-    </div>
-    <pre><code>&lt;NebulaIcon icon="lucide:heart" size="16" color="red" /&gt;
-&lt;NebulaIcon icon="lucide:heart" size="24" color="green" /&gt;
-&lt;NebulaIcon icon="lucide:heart" size="32" color="blue" /&gt;
-&lt;NebulaIcon icon="lucide:heart" size="40" color="purple" /&gt;</code></pre>
+    <h2 id="custom">自定义大小和颜色</h2>
+    <Demo :component="IconCustom" :source="IconCustomSource" />
 
-    <h2>内置图标</h2>
-    <div class="doc-demo">
-      <div class="doc-demo-row">
-        <NebulaIcon
-          v-for="name in iconNames"
-          :key="name"
-          :icon="name"
-          size="24"
-        />
-      </div>
-    </div>
-    <pre><code>import { PRESET_ICONS } from '@nebula-studio/nebula-ui';
-const iconNames = Object.keys(PRESET_ICONS);
-&lt;NebulaIcon v-for="name in iconNames" :key="name" :icon="name" size="24" /&gt;</code></pre>
+    <h2 id="preset">内置图标</h2>
+    <Demo :component="IconPreset" :source="IconPresetSource" />
 
     <h2>API</h2>
     <h3>Props</h3>

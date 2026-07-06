@@ -1,10 +1,19 @@
 <script lang="ts" setup>
+import { computed } from 'vue';
 import type { HTMLAttributes } from 'vue';
 import { ProgressRoot, ProgressIndicator } from 'reka-ui';
 import type { ProgressRootProps } from 'reka-ui';
 import { cn } from '../../../utils/cn';
 
-defineProps<ProgressRootProps & { class?: HTMLAttributes['class'] }>();
+const props = defineProps<
+  ProgressRootProps & { class?: HTMLAttributes['class'] }
+>();
+
+const percentage = computed(() => {
+  const value = props.modelValue ?? 0;
+  const max = props.max ?? 100;
+  return (value / max) * 100;
+});
 </script>
 
 <template>
@@ -17,6 +26,9 @@ defineProps<ProgressRootProps & { class?: HTMLAttributes['class'] }>();
       )
     "
   >
-    <ProgressIndicator class="h-full w-full flex-1 bg-primary transition-all" />
+    <ProgressIndicator
+      class="h-full w-full flex-1 bg-primary transition-all"
+      :style="{ transform: `translateX(-${100 - percentage}%)` }"
+    />
   </ProgressRoot>
 </template>

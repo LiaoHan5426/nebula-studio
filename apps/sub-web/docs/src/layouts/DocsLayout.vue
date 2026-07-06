@@ -257,6 +257,7 @@ body {
   flex: 1;
   max-width: 960px;
   padding: 24px 40px;
+  margin: 0 auto;
   overflow-y: auto;
 }
 </style>

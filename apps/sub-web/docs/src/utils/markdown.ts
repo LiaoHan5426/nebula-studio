@@ -4,50 +4,7 @@
  * 使用 markdown-it 解析 Markdown，Shiki 进行代码高亮。
  */
 import MarkdownIt from 'markdown-it';
-import type { Highlighter } from 'shiki';
-
-let highlighter: Highlighter | null = null;
-let highlighterPromise: Promise<Highlighter> | null = null;
-
-/**
- * 获取 Shiki 高亮器实例（懒加载单例）。
- */
-async function getHighlighter(): Promise<Highlighter> {
-  if (highlighter) return highlighter;
-  if (highlighterPromise) return highlighterPromise;
-
-  highlighterPromise = import('shiki').then((shiki) =>
-    shiki.createHighlighter({
-      themes: ['github-dark', 'github-light'],
-      langs: [
-        'typescript',
-        'javascript',
-        'vue',
-        'html',
-        'css',
-        'json',
-        'markdown',
-        'bash',
-        'shell',
-      ],
-    }),
-  );
-
-  highlighter = await highlighterPromise;
-  return highlighter;
-}
-
-/**
- * 创建 markdown-it 实例（同步，不含代码高亮）。
- * 用于 Vite 插件的构建时转换（高亮在客户端异步完成）。
- */
-export function createMarkdownRenderer(): MarkdownIt {
-  return MarkdownIt({
-    html: true,
-    linkify: true,
-    typographer: true,
-  });
-}
+import { getHighlighter } from './highlighter';
 
 /**
  * 创建带 Shiki 代码高亮的 markdown-it 实例。

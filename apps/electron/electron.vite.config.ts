@@ -1,7 +1,8 @@
-import { defineNebulaConfig } from '@nebula-studio-internal/vite';
+import {
+  defineNebulaConfig,
+  nebulaProxyDiscovery,
+} from '@nebula-studio-internal/vite';
 import { resolve } from 'node:path';
-
-import { integrationApiProxy } from '../sub-web/integration/vite.integrationProxy';
 
 const electronPreloadSrcDir = resolve(
   import.meta.dirname,
@@ -17,9 +18,11 @@ export default defineNebulaConfig({
   },
   merge: {
     renderer: {
-      server: {
-        proxy: integrationApiProxy(),
-      },
+      plugins: [
+        nebulaProxyDiscovery({
+          subApps: ['integration', 'frontend', 'login', 'settings', 'docs'],
+        }),
+      ],
     },
   },
 });

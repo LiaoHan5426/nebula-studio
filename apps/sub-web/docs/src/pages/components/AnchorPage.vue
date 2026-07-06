@@ -1,38 +1,18 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-import { NebulaAnchor } from '@nebula-studio/nebula-ui';
-import type { NebulaAnchorItem } from '@nebula-studio/nebula-ui';
+﻿<script setup lang="ts">
+import Demo from '@/components/Demo.vue';
 
-const anchorItems: NebulaAnchorItem[] = [
-  { id: 'basic', label: '基础用法' },
-  { id: 'custom', label: '自定义标题' },
-  { id: 'scroll', label: '滚动追踪' },
-  { id: 'api', label: 'API' },
-];
-const activeAnchor = ref('basic');
+// eslint-disable-next-line import/no-duplicates
+import AnchorBasicSource from '@/examples/anchor/AnchorBasic.vue?raw';
+
+import AnchorBasic from '@/examples/anchor/AnchorBasic.vue';
 </script>
 
 <template>
   <div class="doc-section">
     <p>锚点导航组件，用于页面内锚点跳转和滚动追踪。</p>
 
-    <h2>基础用法</h2>
-    <div class="doc-demo">
-      <div style="display: flex; gap: 24px">
-        <NebulaAnchor :items="anchorItems" :track-scroll="false" />
-        <div style="flex: 1">
-          <p>点击左侧导航项可跳转到对应锚点。</p>
-        </div>
-      </div>
-    </div>
-    <pre><code>&lt;NebulaAnchor :items="items" :track-scroll="false" /&gt;
-
-const items: NebulaAnchorItem[] = [
-  { id: 'basic', label: '基础用法' },
-  { id: 'custom', label: '自定义标题' },
-  { id: 'scroll', label: '滚动追踪' },
-  { id: 'api', label: 'API' },
-];</code></pre>
+    <h2 id="basic">基础用法</h2>
+    <Demo :component="AnchorBasic" :source="AnchorBasicSource" />
 
     <h2>API</h2>
     <h3>Props</h3>

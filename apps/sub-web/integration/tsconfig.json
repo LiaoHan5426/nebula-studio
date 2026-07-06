@@ -5,8 +5,7 @@
     "src/env.d.ts",
     "src/**/*",
     "src/**/*.vue",
-    "__tests__/**/*",
-    "vite.integrationProxy.ts"
+    "__tests__/**/*"
   ],
   "compilerOptions": {
     "skipLibCheck": true,

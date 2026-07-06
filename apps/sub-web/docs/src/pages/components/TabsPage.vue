@@ -1,51 +1,25 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-import { NebulaTabs } from '@nebula-studio/nebula-ui';
-import type { NebulaTabItem } from '@nebula-studio/nebula-ui';
+﻿<script setup lang="ts">
+import Demo from '@/components/Demo.vue';
 
-const activeTab = ref('tab1');
-const tabs: NebulaTabItem[] = [
-  { value: 'tab1', label: '标签一' },
-  { value: 'tab2', label: '标签二' },
-  { value: 'tab3', label: '标签三' },
-];
+// eslint-disable-next-line import/no-duplicates
+import TabsBasicSource from '@/examples/tabs/TabsBasic.vue?raw';
+// eslint-disable-next-line import/no-duplicates
+import TabsDisabledSource from '@/examples/tabs/TabsDisabled.vue?raw';
 
-const tabsWithDisabled: NebulaTabItem[] = [
-  { value: 'a', label: '可用' },
-  { value: 'b', label: '禁用', disabled: true },
-  { value: 'c', label: '其他' },
-];
-const activeTab2 = ref('a');
+import TabsBasic from '@/examples/tabs/TabsBasic.vue';
+// eslint-disable-next-line import/no-duplicates
+import TabsDisabled from '@/examples/tabs/TabsDisabled.vue';
 </script>
 
 <template>
   <div class="doc-section">
     <p>选项卡切换组件，支持禁用项。</p>
 
-    <h2>基础用法</h2>
-    <div class="doc-demo">
-      <NebulaTabs v-model="activeTab" :tabs="tabs" />
-      <p style="margin-top: 12px">当前选中标签：{{ activeTab }}</p>
-    </div>
-    <pre><code>&lt;NebulaTabs v-model="activeTab" :tabs="tabs" /&gt;
+    <h2 id="basic">基础用法</h2>
+    <Demo :component="TabsBasic" :source="TabsBasicSource" />
 
-// tabs 数据
-const tabs: NebulaTabItem[] = [
-  { value: 'tab1', label: '标签一' },
-  { value: 'tab2', label: '标签二' },
-  { value: 'tab3', label: '标签三' },
-];</code></pre>
-
-    <h2>禁用标签</h2>
-    <div class="doc-demo">
-      <NebulaTabs v-model="activeTab2" :tabs="tabsWithDisabled" />
-    </div>
-    <pre><code>const tabs: NebulaTabItem[] = [
-  { value: 'a', label: '可用' },
-  { value: 'b', label: '禁用', disabled: true },
-  { value: 'c', label: '其他' },
-];
-&lt;NebulaTabs v-model="active" :tabs="tabs" /&gt;</code></pre>
+    <h2 id="disabled">禁用标签</h2>
+    <Demo :component="TabsDisabled" :source="TabsDisabledSource" />
 
     <h2>API</h2>
     <h3>Props</h3>

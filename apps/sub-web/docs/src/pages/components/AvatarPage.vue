@@ -1,44 +1,32 @@
-<script setup lang="ts">
-import { NebulaAvatar } from '@nebula-studio/nebula-ui';
+﻿<script setup lang="ts">
+import Demo from '@/components/Demo.vue';
+
+// eslint-disable-next-line import/no-duplicates
+import AvatarBasicSource from '@/examples/avatar/AvatarBasic.vue?raw';
+// eslint-disable-next-line import/no-duplicates
+import AvatarSizeSource from '@/examples/avatar/AvatarSize.vue?raw';
+// eslint-disable-next-line import/no-duplicates
+import AvatarOnlineSource from '@/examples/avatar/AvatarOnline.vue?raw';
+
+import AvatarBasic from '@/examples/avatar/AvatarBasic.vue';
+// eslint-disable-next-line import/no-duplicates
+import AvatarSize from '@/examples/avatar/AvatarSize.vue';
+// eslint-disable-next-line import/no-duplicates
+import AvatarOnline from '@/examples/avatar/AvatarOnline.vue';
 </script>
 
 <template>
   <div class="doc-section">
     <p>头像组件，支持图片、文字和图标三种形式。</p>
 
-    <h2>基础用法</h2>
-    <div class="doc-demo">
-      <div class="doc-demo-row">
-        <NebulaAvatar text="张" />
-        <NebulaAvatar text="李" />
-        <NebulaAvatar text="王" />
-      </div>
-    </div>
-    <pre><code>&lt;NebulaAvatar text="张" /&gt;
-&lt;NebulaAvatar text="李" /&gt;
-&lt;NebulaAvatar text="王" /&gt;</code></pre>
+    <h2 id="basic">基础用法</h2>
+    <Demo :component="AvatarBasic" :source="AvatarBasicSource" />
 
-    <h2>不同尺寸</h2>
-    <div class="doc-demo">
-      <div class="doc-demo-row">
-        <NebulaAvatar text="小" size="sm" />
-        <NebulaAvatar text="中" size="md" />
-        <NebulaAvatar text="大" size="lg" />
-      </div>
-    </div>
-    <pre><code>&lt;NebulaAvatar text="小" size="sm" /&gt;
-&lt;NebulaAvatar text="中" size="md" /&gt;
-&lt;NebulaAvatar text="大" size="lg" /&gt;</code></pre>
+    <h2 id="sizes">不同尺寸</h2>
+    <Demo :component="AvatarSize" :source="AvatarSizeSource" />
 
-    <h2>在线状态</h2>
-    <div class="doc-demo">
-      <div class="doc-demo-row">
-        <NebulaAvatar text="在" :online="true" />
-        <NebulaAvatar text="离" :online="false" />
-      </div>
-    </div>
-    <pre><code>&lt;NebulaAvatar text="在" :online="true" /&gt;
-&lt;NebulaAvatar text="离" :online="false" /&gt;</code></pre>
+    <h2 id="online">在线状态</h2>
+    <Demo :component="AvatarOnline" :source="AvatarOnlineSource" />
 
     <h2>API</h2>
     <h3>Props</h3>

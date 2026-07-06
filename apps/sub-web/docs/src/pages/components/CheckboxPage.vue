@@ -1,28 +1,18 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-import { NebulaCheckbox } from '@nebula-studio/nebula-ui';
+﻿<script setup lang="ts">
+import Demo from '@/components/Demo.vue';
 
-const checked = ref(false);
-const checked2 = ref(true);
+// eslint-disable-next-line import/no-duplicates
+import CheckboxBasicSource from '@/examples/checkbox/CheckboxBasic.vue?raw';
+
+import CheckboxBasic from '@/examples/checkbox/CheckboxBasic.vue';
 </script>
 
 <template>
   <div class="doc-section">
     <p>复选框组件，用于在一组选项中进行多选。</p>
 
-    <h2>基础用法</h2>
-    <div class="doc-demo">
-      <div class="doc-demo-row">
-        <NebulaCheckbox v-model="checked">选项一</NebulaCheckbox>
-        <NebulaCheckbox v-model="checked2">选项二（已选中）</NebulaCheckbox>
-        <NebulaCheckbox disabled>禁用项</NebulaCheckbox>
-      </div>
-      <p style="margin-top: 8px; font-size: 12px">
-        状态: {{ checked }}, {{ checked2 }}
-      </p>
-    </div>
-    <pre><code>&lt;NebulaCheckbox v-model="checked"&gt;选项一&lt;/NebulaCheckbox&gt;
-&lt;NebulaCheckbox disabled&gt;禁用项&lt;/NebulaCheckbox&gt;</code></pre>
+    <h2 id="basic">基础用法</h2>
+    <Demo :component="CheckboxBasic" :source="CheckboxBasicSource" />
 
     <h2>API</h2>
     <h3>Props</h3>

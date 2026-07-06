@@ -1,38 +1,28 @@
-<script setup lang="ts">
-import { NebulaButton, NebulaButtonGroup } from '@nebula-studio/nebula-ui';
+﻿<script setup lang="ts">
+import Demo from '@/components/Demo.vue';
+
+// eslint-disable-next-line import/no-duplicates
+import ButtonGroupBasicSource from '@/examples/button-group/ButtonGroupBasic.vue?raw';
+// eslint-disable-next-line import/no-duplicates
+import ButtonGroupVerticalSource from '@/examples/button-group/ButtonGroupVertical.vue?raw';
+
+import ButtonGroupBasic from '@/examples/button-group/ButtonGroupBasic.vue';
+// eslint-disable-next-line import/no-duplicates
+import ButtonGroupVertical from '@/examples/button-group/ButtonGroupVertical.vue';
 </script>
 
 <template>
   <div class="doc-section">
     <p>按钮组组件，将多个按钮组合在一起。</p>
 
-    <h2>基础用法</h2>
-    <div class="doc-demo">
-      <NebulaButtonGroup>
-        <NebulaButton>左</NebulaButton>
-        <NebulaButton>中</NebulaButton>
-        <NebulaButton>右</NebulaButton>
-      </NebulaButtonGroup>
-    </div>
-    <pre><code>&lt;NebulaButtonGroup&gt;
-  &lt;NebulaButton&gt;左&lt;/NebulaButton&gt;
-  &lt;NebulaButton&gt;中&lt;/NebulaButton&gt;
-  &lt;NebulaButton&gt;右&lt;/NebulaButton&gt;
-&lt;/NebulaButtonGroup&gt;</code></pre>
+    <h2 id="basic">基础用法</h2>
+    <Demo :component="ButtonGroupBasic" :source="ButtonGroupBasicSource" />
 
-    <h2>垂直排列</h2>
-    <div class="doc-demo">
-      <NebulaButtonGroup orientation="vertical">
-        <NebulaButton variant="primary">操作一</NebulaButton>
-        <NebulaButton variant="primary">操作二</NebulaButton>
-        <NebulaButton variant="primary">操作三</NebulaButton>
-      </NebulaButtonGroup>
-    </div>
-    <pre><code>&lt;NebulaButtonGroup orientation="vertical"&gt;
-  &lt;NebulaButton variant="primary"&gt;操作一&lt;/NebulaButton&gt;
-  &lt;NebulaButton variant="primary"&gt;操作二&lt;/NebulaButton&gt;
-  &lt;NebulaButton variant="primary"&gt;操作三&lt;/NebulaButton&gt;
-&lt;/NebulaButtonGroup&gt;</code></pre>
+    <h2 id="vertical">垂直排列</h2>
+    <Demo
+      :component="ButtonGroupVertical"
+      :source="ButtonGroupVerticalSource"
+    />
 
     <h2>API</h2>
     <h3>Props</h3>

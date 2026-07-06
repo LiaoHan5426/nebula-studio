@@ -1,46 +1,31 @@
+﻿<script setup lang="ts">
+import Demo from '@/components/Demo.vue';
+
+// eslint-disable-next-line import/no-duplicates
+import CardBasicSource from '@/examples/card/CardBasic.vue?raw';
+// eslint-disable-next-line import/no-duplicates
+import CardSimpleSource from '@/examples/card/CardSimple.vue?raw';
+// eslint-disable-next-line import/no-duplicates
+import CardFooterSource from '@/examples/card/CardFooter.vue?raw';
+
+import CardBasic from '@/examples/card/CardBasic.vue';
+// eslint-disable-next-line import/no-duplicates
+import CardSimple from '@/examples/card/CardSimple.vue';
+// eslint-disable-next-line import/no-duplicates
+import CardFooter from '@/examples/card/CardFooter.vue';
+</script>
 <template>
   <div class="doc-section">
     <p>卡片组件，用于信息分组展示。</p>
 
-    <h2>基础用法</h2>
-    <div class="doc-demo">
-      <NebulaCard title="卡片标题" description="这是卡片描述">
-        <p>这是卡片内容区域。</p>
-      </NebulaCard>
-    </div>
-    <pre><code>&lt;NebulaCard title="卡片标题" description="这是卡片描述"&gt;
-  &lt;p&gt;这是卡片内容区域。&lt;/p&gt;
-&lt;/NebulaCard&gt;</code></pre>
+    <h2 id="basic">基础用法</h2>
+    <Demo :component="CardBasic" :source="CardBasicSource" />
 
-    <h2>仅标题</h2>
-    <div class="doc-demo">
-      <NebulaCard title="简洁卡片">
-        <p>只有标题和内容的卡片。</p>
-      </NebulaCard>
-    </div>
-    <pre><code>&lt;NebulaCard title="简洁卡片"&gt;
-  &lt;p&gt;只有标题和内容的卡片。&lt;/p&gt;
-&lt;/NebulaCard&gt;</code></pre>
+    <h2 id="simple">仅标题</h2>
+    <Demo :component="CardSimple" :source="CardSimpleSource" />
 
-    <h2>带 footer 插槽</h2>
-    <div class="doc-demo">
-      <NebulaCard title="带底部">
-        <p>卡片内容</p>
-        <template #footer>
-          <div style="display: flex; gap: 8px; justify-content: flex-end">
-            <NebulaButton>取消</NebulaButton>
-            <NebulaButton variant="primary">确认</NebulaButton>
-          </div>
-        </template>
-      </NebulaCard>
-    </div>
-    <pre><code>&lt;NebulaCard title="带底部"&gt;
-  &lt;p&gt;卡片内容&lt;/p&gt;
-  &lt;template #footer&gt;
-    &lt;NebulaButton&gt;取消&lt;/NebulaButton&gt;
-    &lt;NebulaButton variant="primary"&gt;确认&lt;/NebulaButton&gt;
-  &lt;/template&gt;
-&lt;/NebulaCard&gt;</code></pre>
+    <h2 id="footer">带 footer 插槽</h2>
+    <Demo :component="CardFooter" :source="CardFooterSource" />
 
     <h2>API</h2>
     <h3>Props</h3>
@@ -101,7 +86,3 @@
     </table>
   </div>
 </template>
-
-<script setup lang="ts">
-import { NebulaButton, NebulaCard } from '@nebula-studio/nebula-ui';
-</script>

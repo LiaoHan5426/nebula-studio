@@ -77,4 +77,4 @@
 | `/api/executor/**`            | `http://localhost:8081` | executor         |
 | `/api/**` (其余)              | `http://localhost:8080` | camel-console    |
 
-> 权威源：`configs/windows.json` → `apiBases` + `apiTargets` 实现：`apps/sub-web/integration/vite.integrationProxy.ts`
+> 权威源：`configs/windows.json` → `apiBases` + `apiTargets`；各子应用 `vite.proxy.ts` 定义代理路由

@@ -1,73 +1,24 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-import { NebulaDialog, NebulaButton } from '@nebula-studio/nebula-ui';
+﻿<script setup lang="ts">
+import Demo from '@/components/Demo.vue';
 
-const dialogOpen = ref(false);
-const confirmOpen = ref(false);
+// eslint-disable-next-line import/no-duplicates
+import DialogBasicSource from '@/examples/dialog/DialogBasic.vue?raw';
+// eslint-disable-next-line import/no-duplicates
+import DialogConfirmSource from '@/examples/dialog/DialogConfirm.vue?raw';
 
-function handleConfirm() {
-  confirmOpen.value = false;
-}
+import DialogBasic from '@/examples/dialog/DialogBasic.vue';
+import DialogConfirm from '@/examples/dialog/DialogConfirm.vue';
 </script>
 
 <template>
   <div class="doc-section">
     <p>对话框组件，用于弹出提示信息或操作确认。</p>
 
-    <h2>基础用法</h2>
-    <div class="doc-demo">
-      <NebulaButton @click="dialogOpen = true">打开对话框</NebulaButton>
-      <NebulaDialog
-        v-model:open="dialogOpen"
-        title="提示"
-        description="这是一个基础对话框"
-      >
-        <p>这里是对话框的内容区域。</p>
-        <div style="margin-top: 16px; text-align: right">
-          <NebulaButton variant="ghost" @click="dialogOpen = false"
-            >取消</NebulaButton
-          >
-          <NebulaButton
-            variant="primary"
-            style="margin-left: 8px"
-            @click="dialogOpen = false"
-            >确定</NebulaButton
-          >
-        </div>
-      </NebulaDialog>
-    </div>
-    <pre><code>&lt;NebulaButton @click="dialogOpen = true"&gt;打开对话框&lt;/NebulaButton&gt;
-&lt;NebulaDialog v-model:open="dialogOpen" title="提示" description="这是一个基础对话框"&gt;
-  &lt;p&gt;这里是对话框的内容区域。&lt;/p&gt;
-&lt;/NebulaDialog&gt;</code></pre>
+    <h2 id="basic">基础用法</h2>
+    <Demo :component="DialogBasic" :source="DialogBasicSource" />
 
-    <h2>确认对话框</h2>
-    <div class="doc-demo">
-      <NebulaButton variant="primary" @click="confirmOpen = true"
-        >删除确认</NebulaButton
-      >
-      <NebulaDialog
-        v-model:open="confirmOpen"
-        title="确认删除"
-        description="此操作不可撤销"
-      >
-        <p>确定要删除这条记录吗？</p>
-        <div style="margin-top: 16px; text-align: right">
-          <NebulaButton variant="ghost" @click="confirmOpen = false"
-            >取消</NebulaButton
-          >
-          <NebulaButton
-            variant="primary"
-            style="margin-left: 8px"
-            @click="handleConfirm"
-            >删除</NebulaButton
-          >
-        </div>
-      </NebulaDialog>
-    </div>
-    <pre><code>&lt;NebulaDialog v-model:open="open" title="确认删除" description="此操作不可撤销"&gt;
-  &lt;p&gt;确定要删除这条记录吗？&lt;/p&gt;
-&lt;/NebulaDialog&gt;</code></pre>
+    <h2 id="confirm">确认对话框</h2>
+    <Demo :component="DialogConfirm" :source="DialogConfirmSource" />
 
     <h2>API</h2>
     <h3>Props</h3>

@@ -1,48 +1,32 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { NebulaProgress } from '@nebula-studio/nebula-ui';
+import Demo from '@/components/Demo.vue';
 
-const dynamicValue = ref(30);
+// eslint-disable-next-line import/no-duplicates
+import ProgressBasicSource from '@/examples/progress/ProgressBasic.vue?raw';
+// eslint-disable-next-line import/no-duplicates
+import ProgressMultipleSource from '@/examples/progress/ProgressMultiple.vue?raw';
+// eslint-disable-next-line import/no-duplicates
+import ProgressDynamicSource from '@/examples/progress/ProgressDynamic.vue?raw';
+
+import ProgressBasic from '@/examples/progress/ProgressBasic.vue';
+// eslint-disable-next-line import/no-duplicates
+import ProgressMultiple from '@/examples/progress/ProgressMultiple.vue';
+// eslint-disable-next-line import/no-duplicates
+import ProgressDynamic from '@/examples/progress/ProgressDynamic.vue';
 </script>
 
 <template>
   <div class="doc-section">
     <p>进度条组件，用于展示操作进度。</p>
 
-    <h2>基础用法</h2>
-    <div class="doc-demo">
-      <NebulaProgress :model-value="50" />
-    </div>
-    <pre><code>&lt;NebulaProgress :model-value="50" /&gt;</code></pre>
+    <h2 id="basic">基础用法</h2>
+    <Demo :component="ProgressBasic" :source="ProgressBasicSource" />
 
-    <h2>不同进度</h2>
-    <div class="doc-demo">
-      <NebulaProgress :model-value="20" />
-      <NebulaProgress :model-value="60" />
-      <NebulaProgress :model-value="100" />
-    </div>
-    <pre><code>&lt;NebulaProgress :model-value="20" /&gt;
-&lt;NebulaProgress :model-value="60" /&gt;
-&lt;NebulaProgress :model-value="100" /&gt;</code></pre>
+    <h2 id="multiple">不同进度</h2>
+    <Demo :component="ProgressMultiple" :source="ProgressMultipleSource" />
 
-    <h2>动态进度</h2>
-    <div class="doc-demo">
-      <NebulaProgress v-model="dynamicValue" />
-      <div class="doc-demo-row" style="margin-top: 12px">
-        <NebulaButton @click="dynamicValue = Math.max(0, dynamicValue - 10)"
-          >-10</NebulaButton
-        >
-        <NebulaButton
-          variant="primary"
-          @click="dynamicValue = Math.min(100, dynamicValue + 10)"
-          >+10</NebulaButton
-        >
-        <span style="font-size: 12px">{{ dynamicValue }}%</span>
-      </div>
-    </div>
-    <pre><code>&lt;NebulaProgress v-model="value" /&gt;
-&lt;NebulaButton @click="value -= 10"&gt;-10&lt;/NebulaButton&gt;
-&lt;NebulaButton @click="value += 10"&gt;+10&lt;/NebulaButton&gt;</code></pre>
+    <h2 id="dynamic">动态进度</h2>
+    <Demo :component="ProgressDynamic" :source="ProgressDynamicSource" />
 
     <h2>API</h2>
     <h3>Props</h3>
@@ -78,3 +62,63 @@ const dynamicValue = ref(30);
     </table>
   </div>
 </template>
+
+<style scoped>
+.doc-section {
+  max-width: 800px;
+}
+
+.doc-section h2 {
+  padding-bottom: 8px;
+  margin-top: 32px;
+  font-size: 22px;
+  font-weight: 600;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.doc-section p {
+  margin-top: 8px;
+  font-size: 14px;
+  color: hsl(var(--muted-foreground));
+}
+
+.doc-section pre {
+  padding: 16px;
+  margin: 16px 0;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.6;
+  background: hsl(var(--muted) / 24%);
+  border: 1px solid hsl(var(--border));
+  border-radius: 6px;
+}
+
+.doc-section code {
+  font-family: 'Fira Code', 'Cascadia Code', Consolas, monospace;
+  font-size: 13px;
+}
+
+.doc-section table {
+  width: 100%;
+  margin: 16px 0;
+  font-size: 14px;
+  border-collapse: collapse;
+}
+
+.doc-section table th {
+  padding: 10px 14px;
+  font-weight: 600;
+  text-align: left;
+  background: hsl(var(--muted) / 16%);
+  border: 1px solid hsl(var(--border));
+}
+
+.doc-section table td {
+  padding: 10px 14px;
+  border: 1px solid hsl(var(--border));
+}
+
+.doc-section table tr:hover td {
+  background: hsl(var(--muted) / 8%);
+}
+</style>
