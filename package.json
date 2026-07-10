@@ -47,9 +47,9 @@
     "eslint-plugin-command": "catalog:lint",
     "esno": "catalog:utils",
     "happy-dom": "catalog:vite",
+    "openapi-typescript": "^7.13.0",
     "tailwindcss": "catalog:style",
     "unconfig": "catalog:utils",
-    "openapi-typescript": "^7.6.1",
     "vite-plus": "catalog:vite",
     "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.24"
   },
