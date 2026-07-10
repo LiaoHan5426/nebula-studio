@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import IntegrationBpmnEditor from '@nebula-studio/nebula-flow-editor/components/IntegrationBpmnEditor.vue';
 import { DagEditor } from '@nebula-studio/nebula-dag-editor';
 import type { DagDefinition } from '@nebula-studio/nebula-dag-editor';
@@ -16,7 +17,7 @@ import {
 
 import { loadDagNodeSchemas } from '@/features/flows/loadDagNodeSchemas';
 import { interfaceApi } from '@/shared/api/integration';
-import { dagApi } from '@/shared/api/consoleApi';
+import { approvalApi, dagApi } from '@/shared/api/consoleApi';
 import { useAuth } from '@/shared/composables/useAuth';
 import type {
   ApiInterface,
@@ -39,6 +40,7 @@ const services = ref<ApiInterface[]>([]);
 const loading = ref(false);
 const activeTab = ref<ServiceTab>('all');
 const { isPlatformAdmin } = useAuth();
+const router = useRouter();
 
 const showCompositeDialog = ref(false);
 const showFlowEditor = ref(false);
@@ -151,20 +153,44 @@ async function handlePublish(item: ApiInterface) {
 async function confirmPublish() {
   const item = publishTarget.value;
   if (!item) return;
-  const payload: Partial<ApiInterface> = {
-    status: isPlatformAdmin.value
-      ? InterfaceStatus.ACTIVE
-      : InterfaceStatus.PENDING_REVIEW,
+
+  const snapshotJson = JSON.stringify({
+    interfaceId: item.interfaceId,
+    interfaceName: item.interfaceName,
     subscriptionMode: publishForm.value.subscriptionMode,
     orchestrationType: publishForm.value.orchestrationType,
-  };
-  if (publishForm.value.flowDefinitionId) {
-    payload.flowDefinitionId = publishForm.value.flowDefinitionId;
+    flowDefinitionId: publishForm.value.flowDefinitionId || null,
+    dagDefinitionId: publishForm.value.dagDefinitionId || null,
+  });
+
+  if (isPlatformAdmin.value) {
+    const payload: Partial<ApiInterface> = {
+      status: InterfaceStatus.ACTIVE,
+      subscriptionMode: publishForm.value.subscriptionMode,
+      orchestrationType: publishForm.value.orchestrationType,
+    };
+    if (publishForm.value.flowDefinitionId) {
+      payload.flowDefinitionId = publishForm.value.flowDefinitionId;
+    }
+    if (publishForm.value.dagDefinitionId) {
+      payload.dagDefinitionId = publishForm.value.dagDefinitionId;
+    }
+    await interfaceApi.update(item.interfaceId, payload);
+  } else {
+    await approvalApi.submitRequest({
+      resourceId: item.interfaceId,
+      resourceType: 'API',
+      kind: 'PUBLISH',
+      applicantId: localStorage.getItem('user_id') || 'current-user',
+      reason: `发布服务: ${item.interfaceName}`,
+      payload: {
+        environment: 'production',
+        snapshotJson,
+      },
+    });
+    router.push('/service/approvals');
   }
-  if (publishForm.value.dagDefinitionId) {
-    payload.dagDefinitionId = publishForm.value.dagDefinitionId;
-  }
-  await interfaceApi.update(item.interfaceId, payload);
+
   showPublishDialog.value = false;
   publishTarget.value = null;
   await loadServices();

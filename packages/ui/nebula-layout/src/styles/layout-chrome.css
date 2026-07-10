@@ -20,8 +20,8 @@
 }
 
 .nebula-header-search__kbd {
-  margin-left: auto;
   padding: 2px 6px;
+  margin-left: auto;
   font-size: 11px;
   color: hsl(var(--muted-foreground));
   background: hsl(var(--background) / 80%);
@@ -100,10 +100,10 @@
 .nebula-layout-sidebar-brand--btn {
   width: 100%;
   padding: 0;
+  text-align: left;
   cursor: pointer;
   background: transparent;
   border: none;
-  text-align: left;
 }
 
 .nebula-layout-sidebar-brand--btn:hover .nebula-layout-sidebar-brand__title {
@@ -149,12 +149,12 @@
 
 .nebula-layout-sidebar-brand__badge {
   display: inline-block;
-  margin-top: 2px;
   padding: 1px 6px;
+  margin-top: 2px;
   font-size: 10px;
   line-height: 1.2;
   color: hsl(var(--muted-foreground));
+  white-space: nowrap;
   background: hsl(var(--muted) / 55%);
   border-radius: 999px;
-  white-space: nowrap;
 }

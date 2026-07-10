@@ -101,8 +101,8 @@ async function sendRequest() {
 
 <style scoped>
 .page {
-  padding: 24px;
   max-width: 900px;
+  padding: 24px;
   margin: 0 auto;
 }
 
@@ -121,11 +121,11 @@ async function sendRequest() {
 .field textarea,
 .field__select {
   padding: 8px 10px;
+  font-family: inherit;
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
   border: 1px solid hsl(var(--border));
   border-radius: 6px;
-  background: hsl(var(--background));
-  color: hsl(var(--foreground));
-  font-family: inherit;
 }
 
 .field__readonly {
@@ -139,9 +139,9 @@ async function sendRequest() {
 
 .page__response-body {
   padding: 12px;
-  font-size: 12px;
   overflow: auto;
-  border-radius: 6px;
+  font-size: 12px;
   background: hsl(var(--muted) / 40%);
+  border-radius: 6px;
 }
 </style>

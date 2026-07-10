@@ -166,8 +166,8 @@ function statusVariant(status: string) {
 
 <style scoped>
 .page {
-  padding: 24px;
   max-width: 1200px;
+  padding: 24px;
   margin: 0 auto;
 }
 
@@ -179,8 +179,8 @@ function statusVariant(status: string) {
 
 .page__empty {
   padding: 40px;
-  text-align: center;
   color: hsl(var(--muted-foreground));
+  text-align: center;
 }
 
 .page__table {

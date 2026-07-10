@@ -59,6 +59,9 @@ export interface BootMicroAppOptions {
    * 如 integration 的 `/subscriptions`。
    */
   embedDefaultRoute?: string;
+
+  /** Shell 事件总线，用于跨子应用 tenant/auth 同步 */
+  shellEventBus?: import('@nebula-studio/app-shell').ShellEventBus;
 }
 
 export { bootMicroApp } from './bootMicroApp';

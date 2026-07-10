@@ -29,7 +29,8 @@
     "update:deps": "vp dlx taze -r -w",
     "clean": "node ./scripts/clean.mjs",
     "generate:configs": "node ./scripts/generate-window-configs.mjs",
-    "generate:manifest": "node ./scripts/generate-window-configs.mjs"
+    "generate:manifest": "node ./scripts/generate-window-configs.mjs",
+    "generate:contracts": "node ./scripts/generate-contracts.mjs"
   },
   "devDependencies": {
     "@eslint-community/eslint-plugin-eslint-comments": "catalog:lint",
@@ -48,6 +49,7 @@
     "happy-dom": "catalog:vite",
     "tailwindcss": "catalog:style",
     "unconfig": "catalog:utils",
+    "openapi-typescript": "^7.6.1",
     "vite-plus": "catalog:vite",
     "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.24"
   },

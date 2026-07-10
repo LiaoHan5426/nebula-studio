@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { NebulaButton, NebulaPane, NebulaTag } from '@nebula-studio/nebula-ui';
 
 import { dataSourceApi } from '@/shared/api/integration';
@@ -54,9 +54,17 @@ const form = ref<Partial<SubscriptionConfig>>({
     intervalMs: DEFAULT_POLLING_INTERVAL_MS,
     lastModifiedColumn: 'updated_at',
   },
+  cdcConfig: {
+    debeziumConnector: 'postgres',
+    snapshotMode: 'initial',
+    debeziumEnabled: false,
+    tables: [],
+  },
 });
 
 const createPollingIntervalSec = ref(2);
+const cdcEnabled = ref(false);
+const cdcTablesInput = ref('');
 
 const pollingIntervalDrafts = ref<Record<string, number>>({});
 const savingIntervalId = ref<string | null>(null);
@@ -79,8 +87,11 @@ async function loadSubscriptions() {
   try {
     const response = await camelSubscribeApi.list();
     if (isApiSuccess(response)) {
-      subscriptions.value = response.data;
-      for (const sub of response.data) {
+      const data = response.data as
+        | TableSubscription[]
+        | { items?: TableSubscription[] };
+      subscriptions.value = Array.isArray(data) ? data : (data.items ?? []);
+      for (const sub of subscriptions.value) {
         pollingIntervalDrafts.value[sub.subscriptionId] =
           pollingIntervalSec(sub);
       }
@@ -88,6 +99,18 @@ async function loadSubscriptions() {
   } finally {
     loading.value = false;
   }
+}
+
+function cdcModeLabel(sub: TableSubscription): string {
+  if (sub.subscribeType !== SubscribeType.CDC) return '';
+  const enabled = sub.config.cdcConfig?.debeziumEnabled;
+  return enabled ? 'Debezium CDC' : '模拟 CDC';
+}
+
+function cdcTablesLabel(sub: TableSubscription): string {
+  const tables = sub.config.cdcConfig?.tables;
+  if (tables && tables.length > 0) return tables.join(', ');
+  return sub.tableName;
 }
 
 function pollingIntervalSec(sub: TableSubscription): number {
@@ -126,11 +149,24 @@ async function handleCreate() {
       intervalMs: Math.max(1, createPollingIntervalSec.value) * 1000,
     };
   }
+  if (payload.subscribeType === SubscribeType.CDC) {
+    const tables = cdcTablesInput.value
+      .split(',')
+      .map((t) => t.trim())
+      .filter(Boolean);
+    payload.cdcConfig = {
+      debeziumConnector: 'postgres',
+      snapshotMode: payload.cdcConfig?.snapshotMode ?? 'initial',
+      debeziumEnabled: cdcEnabled.value,
+      tables: tables.length > 0 ? tables : [payload.tableName ?? ''],
+    };
+  }
   const response = await camelSubscribeApi.create({
     dataSourceId: payload.dataSourceId,
     tableName: payload.tableName,
     subscribeType: payload.subscribeType,
     pollingConfig: payload.pollingConfig as unknown as Record<string, unknown>,
+    cdcConfig: payload.cdcConfig as unknown as Record<string, unknown>,
     columns: payload.columns,
     eventTypes: payload.eventTypes,
   });
@@ -179,6 +215,32 @@ function statusVariant(status: string) {
   if (status === 'SUSPENDED') return 'warning';
   return 'default';
 }
+
+const sseStatusLabel = computed(() => {
+  switch (connectionState.value) {
+    case 'connected':
+      return 'SSE 已连接';
+    case 'connecting':
+      return 'SSE 连接中';
+    case 'error':
+      return 'SSE 异常';
+    default:
+      return 'SSE 未连接';
+  }
+});
+
+const sseStatusVariant = computed(() => {
+  switch (connectionState.value) {
+    case 'connected':
+      return 'success';
+    case 'connecting':
+      return 'warning';
+    case 'error':
+      return 'danger';
+    default:
+      return 'default';
+  }
+});
 </script>
 
 <template>
@@ -208,6 +270,9 @@ function statusVariant(status: string) {
                 {{ sub.dataSourceId }} · {{ sub.subscribeType }}
                 <template v-if="sub.subscribeType === SubscribeType.POLLING">
                   · 轮询 {{ pollingIntervalLabel(sub) }}
+                </template>
+                <template v-if="sub.subscribeType === SubscribeType.CDC">
+                  · {{ cdcModeLabel(sub) }} · 表 {{ cdcTablesLabel(sub) }}
                 </template>
               </p>
             </div>
@@ -284,6 +349,12 @@ function statusVariant(status: string) {
       :description="sseDescription()"
       class="page__events"
     >
+      <div class="page__sse-status">
+        <NebulaTag :variant="sseStatusVariant">{{ sseStatusLabel }}</NebulaTag>
+        <span v-if="selectedSubId" class="page__sse-sub"
+          >订阅 {{ selectedSubId }}</span
+        >
+      </div>
       <div class="page__events-toolbar">
         <NebulaButton variant="secondary" @click="clearEvents"
           >清空</NebulaButton
@@ -360,6 +431,30 @@ function statusVariant(status: string) {
           />
           <span class="field__hint">最小 1 秒，默认 2 秒</span>
         </label>
+        <template v-if="form.subscribeType === SubscribeType.CDC">
+          <label class="field field--checkbox">
+            <input v-model="cdcEnabled" type="checkbox" />
+            <span>启用 Debezium CDC（关闭则使用模拟 CDC）</span>
+          </label>
+          <label class="field">
+            <span>监听表（逗号分隔，留空则使用上方表名）</span>
+            <input
+              v-model="cdcTablesInput"
+              placeholder="public.demo_orders, public.demo_users"
+            />
+          </label>
+          <label class="field">
+            <span>快照模式</span>
+            <select
+              v-model="form.cdcConfig!.snapshotMode"
+              class="field__select"
+            >
+              <option value="initial">initial</option>
+              <option value="never">never</option>
+              <option value="no_data">no_data</option>
+            </select>
+          </label>
+        </template>
         <div class="modal__actions">
           <NebulaButton variant="secondary" @click="showCreate = false"
             >取消</NebulaButton
@@ -461,6 +556,28 @@ function statusVariant(status: string) {
 
 .page__events {
   margin-top: 20px;
+}
+
+.page__sse-status {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.page__sse-sub {
+  font-size: 12px;
+  color: hsl(var(--muted-foreground));
+}
+
+.field--checkbox {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.field--checkbox input {
+  width: auto;
 }
 
 .page__events-toolbar {

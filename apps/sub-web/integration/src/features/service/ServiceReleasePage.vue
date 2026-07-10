@@ -110,7 +110,7 @@ async function loadReleases() {
 
 async function handleDeploy(release: ReleaseRecord) {
   try {
-    await releaseApi.approve(release.releaseId, 'admin');
+    await releaseApi.deployRelease(release.releaseId, 'admin');
     await loadReleases();
   } catch (e) {
     console.error('Deploy failed:', e);

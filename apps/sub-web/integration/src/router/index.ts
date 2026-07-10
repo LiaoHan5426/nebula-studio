@@ -36,6 +36,10 @@ const ServiceApprovalPage = () =>
 // 版本管理页面
 const ServiceVersionPage = () =>
   import('@/features/service/ServiceVersionPage.vue');
+const ExecutorRoutesPage = () =>
+  import('@/features/executor/ExecutorRoutesPage.vue');
+const PluginMarketPage = () =>
+  import('@/features/plugins/PluginMarketPage.vue');
 // 服务统计页面
 const LogQueryPage = () => import('@/features/statistics/LogQueryPage.vue');
 const LogStatsPage = () => import('@/features/statistics/LogStatsPage.vue');
@@ -170,6 +174,18 @@ const routes: RouteRecordRaw[] = [
     component: ServiceVersionPage,
     meta: { title: '版本管理' },
   },
+  {
+    path: '/executor/routes',
+    name: 'executor-routes',
+    component: ExecutorRoutesPage,
+    meta: { title: 'Executor 路由' },
+  },
+  {
+    path: '/plugins/market',
+    name: 'plugin-market',
+    component: PluginMarketPage,
+    meta: { title: '插件市场' },
+  },
   // 服务管理 - 服务测试（经 executor 网关调用已发布服务）
   {
     path: '/service/test',
@@ -223,6 +239,18 @@ const routes: RouteRecordRaw[] = [
     name: 'tasks',
     component: () => import('@/features/tasks/TasksPage.vue'),
     meta: { title: '任务调度' },
+  },
+  {
+    path: '/tasks/instances',
+    name: 'task-instances',
+    component: () => import('@/features/tasks/TaskInstancesPage.vue'),
+    meta: { title: '任务实例' },
+  },
+  {
+    path: '/cluster/nodes',
+    name: 'cluster-nodes',
+    component: () => import('@/features/cluster/ClusterNodesPage.vue'),
+    meta: { title: 'Executor 节点' },
   },
   {
     path: '/flows',

@@ -72,10 +72,10 @@ const showType = computed(
 .dag-flow-node__label {
   display: block;
   overflow: hidden;
+  text-overflow: ellipsis;
   font-size: 11px;
   font-weight: 600;
   line-height: 1.25;
-  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
@@ -83,18 +83,18 @@ const showType = computed(
   display: block;
   margin-top: 2px;
   overflow: hidden;
+  text-overflow: ellipsis;
   font-size: 10px;
   color: hsl(var(--muted-foreground));
-  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .dag-flow-node__handle {
-  opacity: 0;
-  background: transparent;
-  border: none;
   min-width: 0;
   min-height: 0;
+  background: transparent;
+  border: none;
+  opacity: 0;
 }
 
 .dag-flow-node__handle--target {

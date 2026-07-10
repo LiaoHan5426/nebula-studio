@@ -108,3 +108,13 @@ export {
   isShellEmbedSurface,
 } from './common/layoutHost';
 export type { LayoutHostMode, ShellEmbedSurface } from './common/layoutHost';
+export {
+  createEventBus,
+  resolveShellEventBus,
+  wireShellEventBus,
+} from './common/shellEventBus';
+export type {
+  ShellEventBus,
+  ShellEventMap,
+  WireShellEventBusOptions,
+} from './common/shellEventBus';

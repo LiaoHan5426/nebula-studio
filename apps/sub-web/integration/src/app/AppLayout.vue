@@ -30,6 +30,7 @@ const platformAdminNavItems: NavItem[] = [
       { to: '/plugins/aggregator', label: '聚合插件' },
       { to: '/plugins/dispatcher', label: '分发插件' },
       { to: '/plugins/transformer', label: '转换插件' },
+      { to: '/plugins/market', label: '插件市场' },
     ],
   },
   {
@@ -45,6 +46,9 @@ const platformAdminNavItems: NavItem[] = [
     children: [
       { to: '/service/register', label: '服务注册' },
       { to: '/service/publish', label: '服务发布' },
+      { to: '/service/approvals', label: '发布审批' },
+      { to: '/service/releases', label: '发布管理' },
+      { to: '/service/versions', label: '版本快照' },
       { to: '/service/authorize', label: '服务授权' },
       { to: '/service/subscription-requests', label: '订阅审批' },
       { to: '/service/governance', label: '服务治理' },
@@ -60,6 +64,7 @@ const platformAdminNavItems: NavItem[] = [
       { to: '/flows', label: '流程定义' },
       { to: '/dag', label: 'DAG 编排' },
       { to: '/tasks', label: '任务调度' },
+      { to: '/executor/routes', label: 'Executor 路由' },
     ],
   },
   {
@@ -87,6 +92,7 @@ const integratorAdminNavItems: NavItem[] = [
       { to: '/plugins/aggregator', label: '聚合插件' },
       { to: '/plugins/dispatcher', label: '分发插件' },
       { to: '/plugins/transformer', label: '转换插件' },
+      { to: '/plugins/market', label: '插件市场' },
     ],
   },
   {
@@ -102,6 +108,9 @@ const integratorAdminNavItems: NavItem[] = [
     children: [
       { to: '/service/register', label: '服务注册' },
       { to: '/service/publish', label: '服务发布' },
+      { to: '/service/approvals', label: '发布审批' },
+      { to: '/service/releases', label: '发布管理' },
+      { to: '/service/versions', label: '版本快照' },
       { to: '/service/authorize', label: '服务授权' },
       { to: '/service/governance', label: '服务治理' },
       { to: '/service/test', label: '服务测试' },
@@ -116,6 +125,7 @@ const integratorAdminNavItems: NavItem[] = [
       { to: '/flows', label: '流程定义' },
       { to: '/dag', label: 'DAG 编排' },
       { to: '/tasks', label: '任务调度' },
+      { to: '/executor/routes', label: 'Executor 路由' },
     ],
   },
   {

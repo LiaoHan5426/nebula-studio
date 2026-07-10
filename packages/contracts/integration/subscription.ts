@@ -23,8 +23,10 @@ export interface PollingConfig {
 
 export interface CdcConfig {
   debeziumConnector: string;
-  kafkaTopic: string;
+  kafkaTopic?: string;
   snapshotMode: string;
+  debeziumEnabled?: boolean;
+  tables?: string[];
 }
 
 export interface SubscriptionConfig {

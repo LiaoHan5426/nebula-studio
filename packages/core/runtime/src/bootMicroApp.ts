@@ -41,6 +41,9 @@ export async function bootMicroApp(
     App: options.rootComponent,
     router: options.router,
     beforeMount: (app) => {
+      if (options.shellEventBus) {
+        app.provide('shellEventBus', options.shellEventBus);
+      }
       options.beforeMount?.(app);
 
       // platform-embed：router 无匹配时 replace 到默认路由

@@ -277,8 +277,8 @@ async function handleTest(id: string) {
 
 <style scoped>
 .page {
-  padding: 24px;
   max-width: 1200px;
+  padding: 24px;
   margin: 0 auto;
 }
 
@@ -296,8 +296,8 @@ async function handleTest(id: string) {
 
 .page__empty {
   padding: 40px;
-  text-align: center;
   color: hsl(var(--muted-foreground));
+  text-align: center;
 }
 
 .page__list {
@@ -307,9 +307,9 @@ async function handleTest(id: string) {
 
 .page__card {
   padding: 16px;
+  background: hsl(var(--background));
   border: 1px solid hsl(var(--border));
   border-radius: 8px;
-  background: hsl(var(--background));
 }
 
 .page__card-head {
@@ -357,10 +357,10 @@ async function handleTest(id: string) {
 .field input,
 .field__select {
   padding: 8px 10px;
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
   border: 1px solid hsl(var(--border));
   border-radius: 6px;
-  background: hsl(var(--background));
-  color: hsl(var(--foreground));
 }
 
 .modal__actions {

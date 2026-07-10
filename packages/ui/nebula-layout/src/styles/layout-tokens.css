@@ -11,6 +11,7 @@
 
 .nebula-layout-shell {
   --shell-top: var(--layout-header-height);
+
   position: relative;
   display: grid;
   grid-template-columns: var(--layout-sidebar-width) minmax(0, 1fr);
@@ -70,8 +71,8 @@
 .nebula-layout-shell.is-sidebar-collapsed.is-sidebar-floating
   .nebula-layout-sidebar-brand__text {
   max-width: 160px;
-  opacity: 1;
   pointer-events: auto;
+  opacity: 1;
 }
 
 .nebula-layout-shell.is-sidebar-collapsed.is-sidebar-floating
@@ -96,11 +97,11 @@
   flex: 0 0 0;
   width: 0;
   min-width: 0;
-  margin: 0;
+  max-width: 0;
   padding: 0;
+  margin: 0;
   overflow: hidden;
   pointer-events: none;
-  max-width: 0;
   opacity: 0;
 }
 
@@ -124,6 +125,7 @@
 /* collapsed + hover：主列宽度保持 48px + 1fr */
 .nebula-layout-shell.is-sidebar-collapsed.is-sidebar-floating {
   --layout-sidebar-width: var(--layout-sidebar-width-collapsed);
+
   overflow: visible;
 }
 
@@ -177,8 +179,8 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  min-height: 0;
   min-width: 0;
+  min-height: 0;
   padding: 0 var(--layout-content-padding) var(--layout-content-padding);
 }
 
@@ -248,8 +250,7 @@
   gap: 4px;
   min-height: 0;
   padding: 10px 8px;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden auto;
 }
 
 .nebula-layout-nav-item {
@@ -327,11 +328,11 @@
   flex: 0 0 0;
   width: 0;
   min-width: 0;
-  margin: 0;
+  max-width: 0;
   padding: 0;
+  margin: 0;
   overflow: hidden;
   pointer-events: none;
-  max-width: 0;
   opacity: 0;
 }
 
@@ -402,9 +403,9 @@
 .nebula-layout-content-only.is-compact .nebula-layout-content-only__subnav {
   display: flex;
   flex-direction: column;
-  border-bottom: none;
-  border-right: 1px solid hsl(var(--border) / 75%);
   max-width: 220px;
+  border-right: 1px solid hsl(var(--border) / 75%);
+  border-bottom: none;
 }
 
 .nebula-layout-content-only.is-horizontal {
@@ -413,12 +414,12 @@
 
 .nebula-layout-content-only.is-horizontal .nebula-layout-content-only__subnav {
   display: flex;
-  flex-direction: column;
   flex-shrink: 0;
-  border-bottom: none;
-  border-right: 1px solid hsl(var(--border) / 75%);
+  flex-direction: column;
   width: 220px;
   max-width: 220px;
+  border-right: 1px solid hsl(var(--border) / 75%);
+  border-bottom: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

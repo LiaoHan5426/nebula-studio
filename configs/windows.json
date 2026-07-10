@@ -9,7 +9,10 @@
     "executor": "/api/executor",
     "platform": "/api/platform",
     "system": "/api/system",
-    "auth": "/api/auth"
+    "auth": "/api/auth",
+    "governance": "/api/security/governance",
+    "version": "/api/version",
+    "release": "/api/release"
   },
   "apiTargets": {
     "platform": "http://localhost:8090",

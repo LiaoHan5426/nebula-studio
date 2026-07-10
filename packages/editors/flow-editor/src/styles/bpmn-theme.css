@@ -4,17 +4,18 @@
  */
 
 .bpmn-editor-wrapper {
-  color: hsl(var(--foreground));
   --bpmn-surface: hsl(var(--card));
   --bpmn-surface-elevated: hsl(var(--popover, var(--card)));
   --bpmn-surface-text: hsl(var(--popover-foreground, var(--foreground)));
   --bpmn-border: hsl(var(--border));
   --bpmn-muted: hsl(var(--muted));
-  --bpmn-line: hsl(var(--foreground) / 0.78);
-  --bpmn-line-strong: hsl(var(--foreground) / 0.95);
+  --bpmn-line: hsl(var(--foreground) / 78%);
+  --bpmn-line-strong: hsl(var(--foreground) / 95%);
   --bpmn-shape-fill: hsl(var(--muted));
-  --bpmn-shape-stroke: hsl(var(--foreground) / 0.62);
-  --bpmn-shape-stroke-strong: hsl(var(--foreground) / 0.88);
+  --bpmn-shape-stroke: hsl(var(--foreground) / 62%);
+  --bpmn-shape-stroke-strong: hsl(var(--foreground) / 88%);
+
+  color: hsl(var(--foreground));
 }
 
 .bpmn-editor-wrapper .djs-container,
@@ -144,8 +145,8 @@
   box-sizing: border-box;
   width: 46px;
   height: 46px;
-  margin: 0;
   padding: 0;
+  margin: 0;
   line-height: 46px;
   color: var(--bpmn-surface-text) !important;
   background: transparent !important;
@@ -167,8 +168,8 @@
 .bpmn-editor-wrapper .djs-palette .separator {
   box-sizing: border-box;
   width: calc(100% - 12px);
-  margin: 4px 6px;
   padding-top: 4px;
+  margin: 4px 6px;
   border-bottom-color: var(--bpmn-border) !important;
 }
 
@@ -205,7 +206,6 @@
 .djs-popup .djs-popup-body,
 .djs-popup .djs-popup-search {
   background: transparent !important;
-  background-color: transparent !important;
 }
 
 .djs-popup .djs-popup-header,
@@ -226,7 +226,6 @@
 /* Default entry bg is white in diagram-js — causes flash on open */
 .djs-popup .entry {
   background: transparent !important;
-  background-color: transparent !important;
 }
 
 .djs-popup .entry[class*='bpmn-icon']::before {
@@ -242,7 +241,6 @@
 .djs-popup-body .entry:hover,
 .djs-popup-body .entry.highlighted {
   background: hsl(var(--muted)) !important;
-  background-color: hsl(var(--muted)) !important;
 }
 
 .djs-popup .djs-popup-search {
@@ -256,24 +254,24 @@
 
 .djs-popup .djs-popup-search-icon {
   position: absolute;
-  left: 18px;
   top: 50%;
+  left: 18px;
   z-index: 1;
   width: 14px;
   height: 14px;
-  pointer-events: none;
   color: hsl(var(--muted-foreground));
+  pointer-events: none;
   transform: translateY(-50%);
 }
 
 .djs-popup .djs-popup-search-icon path {
-  fill: currentColor !important;
+  fill: currentcolor !important;
 }
 
 .djs-popup .djs-popup-search input,
 .djs-popup input[type='text'] {
-  width: 100%;
   box-sizing: border-box;
+  width: 100%;
   padding: 8px 10px 8px 34px !important;
   line-height: 1.25 !important;
   color: hsl(var(--foreground)) !important;
@@ -283,9 +281,9 @@
 }
 
 .djs-popup .djs-popup-search input:focus {
+  outline: none;
   background: hsl(var(--background)) !important;
   border-color: hsl(var(--primary)) !important;
-  outline: none;
   box-shadow: 0 0 0 1px hsl(var(--primary) / 35%);
 }
 
@@ -305,13 +303,11 @@
 .djs-popup .entry[style*='background: rgb(255'],
 .djs-popup .entry[style*='background:#fff'] {
   background: transparent !important;
-  background-color: transparent !important;
 }
 
 .djs-popup .entry.highlighted[style*='background'],
 .djs-popup .entry:hover[style*='background'] {
   background: hsl(var(--muted)) !important;
-  background-color: hsl(var(--muted)) !important;
 }
 
 /* Inline rename */
@@ -332,7 +328,7 @@
 
 /* Alignment snap lines */
 .bpmn-editor-wrapper .djs-snap-line {
-  stroke: hsl(var(--primary) / 0.55) !important;
+  stroke: hsl(var(--primary) / 55%) !important;
 }
 
 /* Watermark */

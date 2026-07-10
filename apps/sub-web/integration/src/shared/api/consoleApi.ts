@@ -717,6 +717,16 @@ export const versionApi = {
 // ==================== Release API ====================
 
 export const releaseApi = {
+  deployRelease(
+    releaseId: string,
+    operatorId?: string,
+  ): Promise<ApiResponse<ReleaseRecord>> {
+    const query = operatorId ? `?operatorId=${operatorId}` : '';
+    return apiRequest('/api/release', `/${releaseId}/deploy${query}`, {
+      method: 'POST',
+    });
+  },
+
   deploy(requestId: string): Promise<ApiResponse<ReleaseRecord>> {
     return governanceRequest('/release/deploy', {
       method: 'POST',

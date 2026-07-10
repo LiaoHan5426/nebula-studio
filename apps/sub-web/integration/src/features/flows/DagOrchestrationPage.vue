@@ -217,8 +217,8 @@ function statusVariant(status?: string) {
 }
 
 .dag-orchestration-page__error {
-  margin: 0;
   padding: 0 20px;
+  margin: 0;
   font-size: 13px;
   color: hsl(var(--destructive));
 }
@@ -250,9 +250,9 @@ function statusVariant(status?: string) {
 }
 
 .modal-overlay--full {
-  padding: 16px;
   align-items: stretch;
   justify-content: center;
+  padding: 16px;
 }
 
 .modal {

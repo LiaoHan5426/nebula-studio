@@ -1,6 +1,6 @@
 // AUTO-GENERATED — do not edit manually.
 // Source: configs/windows.json
-// Generated at: 2026-07-06T04:59:02.243Z
+// Generated at: 2026-07-10T06:25:51.055Z
 
 export interface GeneratedWindowEntry {
   preload: string;
@@ -92,6 +92,9 @@ export const GENERATED_API_BASES: Record<string, string> = {
   platform: '/api/platform',
   system: '/api/system',
   auth: '/api/auth',
+  governance: '/api/security/governance',
+  version: '/api/version',
+  release: '/api/release',
 } as const;
 
 export const GENERATED_API_TARGETS: Record<string, string> = {

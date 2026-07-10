@@ -283,9 +283,9 @@ function resolveTypeLabel(connector: Connector): string {
 
 .connector-section__empty {
   padding: 24px;
-  text-align: center;
   font-size: 13px;
   color: hsl(var(--muted-foreground));
+  text-align: center;
 }
 
 .connector-section__list {
@@ -363,24 +363,24 @@ function resolveTypeLabel(connector: Connector): string {
 
 .field input {
   padding: 8px 10px;
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
   border: 1px solid hsl(var(--border));
   border-radius: 6px;
-  background: hsl(var(--background));
-  color: hsl(var(--foreground));
 }
 
 .test-result {
-  margin: 12px 0;
   padding: 10px;
+  margin: 12px 0;
   font-size: 13px;
-  border-radius: 6px;
-  background: hsl(var(--destructive) / 12%);
   color: hsl(var(--destructive));
+  background: hsl(var(--destructive) / 12%);
+  border-radius: 6px;
 }
 
 .test-result--ok {
-  background: hsl(var(--success) / 12%);
   color: hsl(var(--success));
+  background: hsl(var(--success) / 12%);
 }
 
 .modal__actions {

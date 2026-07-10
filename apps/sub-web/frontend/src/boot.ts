@@ -3,6 +3,7 @@ import '@nebula-studio/nebula-layout';
 import '@nebula-studio-internal/tailwind/electron';
 import {
   redirectShellToWebLogin,
+  resolveShellEventBus,
   shouldRedirectUnauthenticatedWebShell,
 } from '@nebula-studio/app-shell';
 import { bootMicroApp, detectRuntimeMode } from '@nebula-studio/runtime';
@@ -35,6 +36,8 @@ export async function bootFrontend(opts?: {
 
   bootstrapShellIntegratedApps();
 
+  const shellEventBus = resolveShellEventBus();
+
   // standalone 模式下未登录时重定向到登录页
   if (mode === 'standalone' && shouldRedirectUnauthenticatedWebShell()) {
     redirectShellToWebLogin(window.location.href);
@@ -54,6 +57,7 @@ export async function bootFrontend(opts?: {
             processVersions: { node: __NEBULA_BUILD_NODE_VERSION__ },
           },
     auth: { enabled: true },
+    shellEventBus,
     beforeMountAsync: async () => {
       // 动态导入 registerIntegratedApps（保持原有副作用）
       await import('./runtime/registerIntegratedApps');

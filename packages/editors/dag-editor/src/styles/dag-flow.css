@@ -17,11 +17,11 @@
 .dag-editor .vue-flow__node {
   width: auto;
   padding: 0;
+  font-size: 12px;
   background: transparent;
   border: none;
   border-radius: 0;
   box-shadow: none;
-  font-size: 12px;
 }
 
 .modal--dag.nebula-pane {
@@ -29,8 +29,8 @@
   flex-direction: column;
   width: min(98vw, 1440px) !important;
   height: calc(94vh - 32px);
-  max-height: calc(94vh - 32px);
   min-height: 0;
+  max-height: calc(94vh - 32px);
   overflow: hidden;
 }
 
@@ -65,8 +65,8 @@
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
-  min-height: 0;
   height: 100%;
+  min-height: 0;
   overflow: hidden;
 }
 
@@ -77,11 +77,11 @@
 .modal--dag .dag-editor__main {
   display: grid;
   flex: 1 1 auto;
-  grid-template-columns: 168px minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr);
+  grid-template-columns: 168px minmax(0, 1fr);
+  align-items: stretch;
   min-height: 0;
   overflow: hidden;
-  align-items: stretch;
 }
 
 .modal--dag .dag-editor__main--with-panel {
@@ -91,8 +91,8 @@
 .modal--dag .dag-editor__palette,
 .modal--dag .dag-editor__canvas-wrap,
 .modal--dag .dag-editor__panel {
-  min-height: 0;
   height: 100%;
+  min-height: 0;
 }
 
 .modal--dag .dag-editor__canvas-wrap .vue-flow {
@@ -111,8 +111,8 @@
 }
 
 .modal--dag .dag-node-palette {
-  min-height: 0;
   height: 100%;
+  min-height: 0;
   overflow: auto;
 }
 

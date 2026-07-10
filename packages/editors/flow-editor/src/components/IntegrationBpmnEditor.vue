@@ -81,8 +81,8 @@ const hints = computed(() => [
 }
 
 .integration-bpmn-editor__aside {
-  width: 280px;
   flex-shrink: 0;
+  width: 280px;
   padding: 12px;
   overflow: auto;
   background: hsl(var(--muted) / 35%);
@@ -101,8 +101,8 @@ const hints = computed(() => [
 }
 
 .aside-section__list {
-  margin: 0;
   padding-left: 18px;
+  margin: 0;
   font-size: 12px;
   line-height: 1.5;
   color: hsl(var(--muted-foreground));
@@ -115,8 +115,8 @@ const hints = computed(() => [
 }
 
 .interface-list {
-  margin: 0;
   padding: 0;
+  margin: 0;
   list-style: none;
 }
 

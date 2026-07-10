@@ -1,4 +1,28 @@
-import { executorFetch } from '@/shared/api/client';
+import { apiRequest, executorFetch } from '@/shared/api/client';
+import type { ApiResponse } from '@nebula-studio/contracts/integration';
+
+export interface ExecutorRouteView {
+  routeId: string;
+  endpoint: string;
+  status: string;
+  callCount: number;
+  errorRate: number;
+  avgLatencyMs: number;
+  description?: string;
+}
+
+export const executorRoutesApi = {
+  list(): Promise<ApiResponse<ExecutorRouteView[]>> {
+    return apiRequest<ExecutorRouteView[]>('/api/executor', '/routes');
+  },
+
+  get(routeId: string): Promise<ApiResponse<ExecutorRouteView>> {
+    return apiRequest<ExecutorRouteView>(
+      '/api/executor',
+      `/routes/${encodeURIComponent(routeId)}`,
+    );
+  },
+};
 
 export async function gatewayRequest(
   tenantId: string,

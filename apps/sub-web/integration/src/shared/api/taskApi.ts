@@ -1,8 +1,11 @@
-import { taskRequest } from '@/shared/api/client';
+import { taskRequest, taskInstanceRequest } from '@/shared/api/client';
 import type {
   ApiResponse,
   TaskCreateRequest,
   TaskDefinition,
+  TaskInstance,
+  TaskLog,
+  TaskResult,
   TaskUpdateRequest,
 } from '@nebula-studio/contracts/integration';
 
@@ -60,5 +63,30 @@ export const taskApi = {
     return taskRequest<TaskDefinition[]>(
       `/by-trigger?triggerType=${encodeURIComponent(triggerType)}`,
     );
+  },
+
+  listInstances(
+    definitionId?: string,
+    tenantId?: string,
+  ): Promise<ApiResponse<TaskInstance[]>> {
+    const params = new URLSearchParams();
+    if (definitionId) params.set('definitionId', definitionId);
+    if (tenantId) params.set('tenantId', tenantId);
+    const query = params.toString() ? `?${params.toString()}` : '';
+    return taskInstanceRequest<TaskInstance[]>(query);
+  },
+
+  getInstance(instanceId: string): Promise<ApiResponse<TaskInstance>> {
+    return taskInstanceRequest<TaskInstance>(`/${instanceId}`);
+  },
+
+  getInstanceLogs(instanceId: string): Promise<ApiResponse<TaskLog[]>> {
+    return taskInstanceRequest<TaskLog[]>(`/${instanceId}/logs`);
+  },
+
+  retryInstance(instanceId: string): Promise<ApiResponse<TaskResult>> {
+    return taskInstanceRequest<TaskResult>(`/${instanceId}/retry`, {
+      method: 'POST',
+    });
   },
 };

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { NebulaButton, NebulaPane, NebulaTag } from '@nebula-studio/nebula-ui';
 
 import { taskApi } from '@/shared/api/taskApi';
@@ -16,6 +17,7 @@ import {
 } from '@nebula-studio/contracts/integration';
 
 const { currentTenantId } = useTenant();
+const router = useRouter();
 
 const tasks = ref<TaskDefinition[]>([]);
 const loading = ref(false);
@@ -135,6 +137,18 @@ function taskTypeLabel(type: string) {
       <div class="page__toolbar">
         <NebulaButton @click="showCreate = true">新建任务</NebulaButton>
         <NebulaButton variant="secondary" @click="loadTasks">刷新</NebulaButton>
+        <NebulaButton
+          variant="secondary"
+          @click="router.push('/tasks/instances')"
+        >
+          任务实例
+        </NebulaButton>
+        <NebulaButton
+          variant="secondary"
+          @click="router.push('/cluster/nodes')"
+        >
+          Executor 节点
+        </NebulaButton>
       </div>
 
       <div v-if="loading" class="page__empty">加载中…</div>

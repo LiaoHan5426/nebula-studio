@@ -159,6 +159,7 @@ export {
 export { gatewayRequest } from '@/shared/api/executorApi';
 
 export { taskApi } from '@/shared/api/taskApi';
+export { clusterApi } from '@/shared/api/clusterApi';
 export { camelSubscribeApi } from '@/shared/api/subscribeApi';
 export { camelTopologyApi } from '@/shared/api/topologyApi';
 

@@ -529,8 +529,8 @@ function onFileSelected(event: Event) {
 }
 
 .status-badge.pending {
-  color: hsl(38 92% 40%);
-  background: hsl(45 100% 50% / 18%);
+  color: hsl(38deg 92% 40%);
+  background: hsl(45deg 100% 50% / 18%);
 }
 
 .status-badge__hint {
