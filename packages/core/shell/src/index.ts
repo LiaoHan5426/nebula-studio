@@ -13,6 +13,9 @@ export { default as IframeHost } from './components/IframeHost.vue';
 
 export { default as AppDock } from './components/AppDock.vue';
 
+export { default as NotificationCenter } from './components/NotificationCenter.vue';
+export type { ShellNotification } from './components/NotificationCenter.vue';
+
 // Composables
 export { useShellAuthWaiter } from './composables/useShellAuthWaiter.js';
 export type { ShellAuthWaiterOptions } from './composables/useShellAuthWaiter.js';

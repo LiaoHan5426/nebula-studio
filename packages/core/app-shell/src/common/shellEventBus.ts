@@ -5,6 +5,7 @@ export type ShellEventMap = {
   'tenant:changed': { tenantId: string };
   'auth:logout': { reason?: string };
   'theme:changed': { theme: string };
+  'notification:received': { id?: string; title?: string; content?: string };
 };
 
 type Handler<T> = (payload: T) => void;

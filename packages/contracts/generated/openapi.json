@@ -1,0 +1,67 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Nebula Platform Console API",
+    "version": "0.0.1-SNAPSHOT"
+  },
+  "paths": {
+    "/api/platform/index": {
+      "get": {
+        "operationId": "platformIndex",
+        "responses": {
+          "200": {
+            "description": "Platform module index and health"
+          }
+        }
+      }
+    },
+    "/api/resource": {
+      "get": {
+        "operationId": "listResources",
+        "responses": {
+          "200": {
+            "description": "Resource list"
+          }
+        }
+      },
+      "post": {
+        "operationId": "registerResource",
+        "responses": {
+          "200": {
+            "description": "Registered resource"
+          }
+        }
+      }
+    },
+    "/api/security/governance/approval/request": {
+      "post": {
+        "operationId": "submitApprovalRequest",
+        "responses": {
+          "200": {
+            "description": "Governance request"
+          }
+        }
+      }
+    },
+    "/api/release": {
+      "post": {
+        "operationId": "createRelease",
+        "responses": {
+          "200": {
+            "description": "Release record"
+          }
+        }
+      }
+    },
+    "/api/version": {
+      "get": {
+        "operationId": "listVersions",
+        "responses": {
+          "200": {
+            "description": "Version snapshots"
+          }
+        }
+      }
+    }
+  }
+}

@@ -11,10 +11,8 @@ export function simpleProxy(target: string): ProxyOptions {
 
 /**
  * 标准 API 代理配置：
- * - `/api/system/**` → platform（默认 :8090）
- * - `/api/**`        → console（默认 :8080）
- *
- * 适用于 frontend / login / settings / docs 等非集成平台子应用。
+ * - platform 治理/版本/发布/系统 → :8090（默认 platform-console）
+ * - 其余 `/api/**` → :8080（demo-camel-console）
  */
 export function standardApiProxy(
   platformTarget = 'http://localhost:8090',
@@ -22,6 +20,13 @@ export function standardApiProxy(
 ): Record<string, ProxyOptions> {
   return {
     '/api/system': simpleProxy(platformTarget),
+    '/api/platform': simpleProxy(platformTarget),
+    '/api/security/governance': simpleProxy(platformTarget),
+    '/api/version': simpleProxy(platformTarget),
+    '/api/release': simpleProxy(platformTarget),
+    '/api/releases': simpleProxy(platformTarget),
+    '/api/config': simpleProxy(platformTarget),
+    '/api/task': simpleProxy(platformTarget),
     '/api': simpleProxy(consoleTarget),
   };
 }

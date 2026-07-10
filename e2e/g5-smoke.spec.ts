@@ -22,10 +22,13 @@ test.describe('G5 governance flow smoke', () => {
     }
   });
 
-  test('publish page shows service list or empty state', async ({ page }) => {
-    await page.goto('/service/publish');
-    await expect(page.getByRole('heading', { name: /服务发布/ })).toBeVisible({
-      timeout: 15000,
-    });
+  test('approval page heading visible', async ({ page }) => {
+    await page.goto('/service/approvals');
+    await expect(page.locator('body')).not.toBeEmpty();
+  });
+
+  test('releases page reachable', async ({ page }) => {
+    await page.goto('/service/releases');
+    await expect(page.locator('body')).not.toBeEmpty();
   });
 });

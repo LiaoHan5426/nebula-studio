@@ -1,24 +1,20 @@
-# @nebula-studio-renderer/settings
+# Settings 子应用独立启动
 
-**设置**子应用（Vue）。Electron 内嵌窗口或 Web embed；与 `@nebula-studio-preload/settings` 配对。
+路径：`J:/Code/nebula-workspace/nebula-studio/apps/sub-web/settings`
 
-## 入口
+## 前置
 
-| 路径              | 说明            |
-| ----------------- | --------------- |
-| `src/main.ts`     | 生产入口        |
-| `src/dev/main.ts` | 独立 `vite dev` |
-| `vite.config.ts`  | 独立调试配置    |
+仅需 platform-console `:8090`（组织/用户/配置/任务 API）。
 
-## 脚本
+## 启动
 
-见 [package.json](./package.json)。
+```powershell
+cd J:/Code/nebula-workspace/nebula-studio
+vp run --filter @nebula-studio-renderer/settings dev
+```
 
-## 改名 / 迁目录必查
+`vite.proxy.ts` 使用 `standardApiProxy()`：system/governance/version/release → `:8090`。
 
-- `app.config.ts` 中对应窗口的 `preload` / `renderer` 字段与 **preload 包** `apps/electron-preload/settings` 一致。
-- `boot.ts` 与 `apps/sub-web/settings/src/main.ts` 存在性。
+## 验收
 
-## 相关
-
-- [Monorepo 索引](../../../docs/monorepo.md) · [preload settings](../../electron-preload/settings/README.md)
+组织树 CRUD、用户管理、任务列表在仅启动 platform-console 时可完成全流程。

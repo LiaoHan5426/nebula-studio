@@ -15,8 +15,29 @@ declare const __NEBULA_MSW_BASE_PATH__: string;
 
 type NebulaRuntimeMode = 'standalone' | 'platform-embed' | 'electron';
 
+/** Electron preload 暴露的桥接 API（主窗口） */
+interface NebulaElectronBridge {
+  shell?: {
+    openLogin?: () => void;
+  };
+  auth?: {
+    login?: (credentials: unknown) => Promise<unknown>;
+    getSession?: () => Promise<unknown>;
+    logout?: () => Promise<void>;
+  };
+  notify?: {
+    app?: (payload: unknown) => void;
+    system?: (payload: unknown) => void;
+  };
+}
+
 interface Window {
   __NEBULA_RUNTIME_MODE__?: NebulaRuntimeMode;
+  __NEBULA_SHELL_EVENT_BUS__?: {
+    on: (event: string, handler: (payload: unknown) => void) => () => void;
+    emit: (event: string, payload: unknown) => void;
+  };
+  electron?: NebulaElectronBridge;
 }
 
 /**
