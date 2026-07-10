@@ -10,7 +10,3 @@ export {
   nebulaProxyDiscovery,
   type NebulaProxyDiscoveryOptions,
 } from './nebulaProxyDiscovery.ts';
-export {
-  resolveRendererSources,
-  type RendererSource,
-} from './rendererSources.ts';
