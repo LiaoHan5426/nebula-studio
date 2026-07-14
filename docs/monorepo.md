@@ -1,57 +1,71 @@
-# Monorepo 目录说明
+# Monorepo 目录与包索引
 
-本文件是 **恢复仓库结构时的索引**：表格内链接指向各包 `README.md`（含更细的职责、入口文件与脚本）。
+Nebula Studio 使用 pnpm workspace 组织代码，日常命令统一通过 Vite+ CLI `vp` 执行。工作区 glob 和依赖版本 catalog 以根目录 `pnpm-workspace.yaml` 为准。
 
-## 包索引
+## 顶层目录
 
-| 区域 | 路径 | 说明 |
+| 目录                    | 职责                                              |
+| ----------------------- | ------------------------------------------------- |
+| `apps/electron`         | Electron 主进程、窗口生命周期和 renderer 引导     |
+| `apps/electron-preload` | 各窗口 preload，实现受控的 Electron 能力桥接      |
+| `apps/sub-web`          | 可独立运行、也可嵌入 Web/Electron 壳的 Vue 子应用 |
+| `apps/web`              | Web 宿主和 embed 入口，开发端口 `5173`            |
+| `configs`               | 窗口、展示方式及 API target 等单源配置            |
+| `packages/core`         | 认证、API、运行时、壳、租户等基础能力             |
+| `packages/editors`      | 代码、BPMN、DAG 和低代码编辑器                    |
+| `packages/features`     | 可复用业务功能                                    |
+| `packages/ui`           | UI 组件、布局和 Agent 界面能力                    |
+| `internal`              | 仓库内部 Vite 与 Node 工具，不作为产品公共 API    |
+| `tools`                 | 代码质量、TypeScript 和 Tailwind 配置             |
+| `e2e`                   | Playwright 端到端及冒烟测试                       |
+| `docs`                  | 仓库级开发文档                                    |
+
+## 应用索引
+
+| 路径 | 包名 | 说明 |
 | --- | --- | --- |
-| 根 | [README.md](../README.md) | 架构速览、约定、常用命令 |
-| 应用 | [apps/electron](../apps/electron/README.md) | Electron 主进程 / preload 构建 / renderer boot |
-|  | [apps/web](../apps/web/README.md) | Web 壳与 embed |
-| 子应用 | [apps/sub-web/docs](../apps/sub-web/docs/README.md) | 文档站 renderer |
-|  | [apps/sub-web/frontend](../apps/sub-web/frontend/README.md) | 主窗口 renderer（包名 `main`，目录名 `frontend`） |
-|  | [apps/sub-web/login](../apps/sub-web/login/README.md) | 登录 renderer |
-|  | [apps/sub-web/settings](../apps/sub-web/settings/README.md) | 设置 renderer |
-| Preload | [apps/electron-preload/main](../apps/electron-preload/main/README.md) | 主 preload |
-|  | [apps/electron-preload/docs](../apps/electron-preload/docs/README.md) | 文档 preload |
-|  | [apps/electron-preload/settings](../apps/electron-preload/settings/README.md) | 设置 preload |
-| 公共包 | [packages/app-shell](../packages/app-shell/README.md) | Electron / Web 壳配置与集成 |
-|  | [packages/nebula-ui](../packages/nebula-ui/README.md) | UI 组件库 |
-|  | [packages/styles](../packages/styles/README.md) | 全局语义色等（无 Tailwind 主题层） |
-|  | [packages/types](../packages/types/README.md) | 全局 ambient 类型 |
-|  | [packages/electron-shared](../packages/electron-shared/README.md) | 主进程 / preload 共享 |
-|  | [packages/electron-shared-vue](../packages/electron-shared-vue/README.md) | 渲染进程 Vue 共享 |
-| 内部 | [internal/vite](../internal/vite/README.md) | 共享 Vite / electron-vite 配置 |
-|  | [internal/node](../internal/node/README.md) | monorepo 解析等 Node 工具 |
-| 工具链 | [tools/tailwindcss](../tools/tailwindcss/README.md) | Tailwind v4 + `electron` 样式入口 |
-|  | [tools/tsconfig](../tools/tsconfig/README.md) | 共享 tsconfig |
-|  | [tools/lint/oxlint](../tools/lint/oxlint/README.md) | Oxlint 配置（打包） |
-|  | [tools/lint/oxfmt](../tools/lint/oxfmt/README.md) | Oxfmt 配置（打包） |
-|  | [tools/lint/stylelint](../tools/lint/stylelint/README.md) | Stylelint 入口 |
+| [`apps/electron`](../apps/electron/README.md) | `@nebula-studio/electron` | Electron 桌面宿主 |
+| [`apps/web`](../apps/web/README.md) | `@nebula-studio/web` | Web 宿主 |
+| `apps/sub-web/docs` | `@nebula-studio-renderer/docs` | UI 组件文档子应用 |
+| [`apps/sub-web/frontend`](../apps/sub-web/frontend/README.md) | `@nebula-studio-renderer/main` | 主工作台 renderer；目录名与包名不同 |
+| [`apps/sub-web/integration`](../apps/sub-web/integration/README.md) | `@nebula-studio-renderer/integration` | 企业接口集成平台 |
+| [`apps/sub-web/login`](../apps/sub-web/login/README.md) | `@nebula-studio-renderer/login` | 登录子应用 |
+| [`apps/sub-web/settings`](../apps/sub-web/settings/README.md) | `@nebula-studio-renderer/settings` | 设置子应用 |
 
-工作区成员列表与 glob：**[pnpm-workspace.yaml](../pnpm-workspace.yaml)**。
+preload 包位于 `apps/electron-preload/<slug>`，其 npm 包名遵循 `@nebula-studio-preload/<slug>`。
 
----
+## 核心与契约包
 
-## 改名 / 迁目录后核对清单（避免静默损坏）
+| 路径 | 包名 | 职责 |
+| --- | --- | --- |
+| [`packages/contracts`](../packages/contracts/README.md) | `@nebula-studio/contracts` | auth、system、integration 及生成契约 |
+| `packages/core/api-client` | `@nebula-studio/api-client` | 请求头、响应解析、401 和进度处理 |
+| [`packages/core/app-shell`](../packages/core/app-shell/README.md) | `@nebula-studio/app-shell` | Web/Electron 壳配置和桥接 |
+| `packages/core/auth` | `@nebula-studio/auth` | 按运行模式编排认证策略 |
+| `packages/core/auth-provider` | `@nebula-studio/auth-provider` | 全局认证会话及 Vue 注入 |
+| [`packages/core/electron-shared`](../packages/core/electron-shared/README.md) | `@nebula-studio-electron/electron-bridge` | Electron/preload/renderer 桥接类型与实现 |
+| `packages/core/msw` | `@nebula-studio/msw` | 本地 Mock Service Worker handlers |
+| `packages/core/runtime` | `@nebula-studio/runtime` | 子应用启动和运行模式抽象 |
+| `packages/core/shell` | `@nebula-studio/nebula-shell` | 壳层 Vue 状态与生命周期 |
+| `packages/core/sse-events` | `@nebula-studio/sse-events` | 订阅事件 SSE 连接管理 |
+| `packages/core/tenant` | `@nebula-studio/tenant` | 租户列表、选择和持久化 |
 
-以下项 **没有单一魔法配置** 自动全盘更新，搬迁目录或重命名包后请逐项核对。
+## UI、编辑器与功能包
 
-| 主题 | 要检查的文件/位置 |
+| 分组 | 工作区成员 |
 | --- | --- |
-| 新增或移动 **sub-web renderer** | `apps/electron/app.config.ts`（`windows` / `modalRenderers` / `renderers`）与 **`apps/electron/src/renderer/boot.ts`** 内 `import.meta.glob('../../../sub-web/*/src/main.ts')` 路径段必须一致；缺 `main.ts` 会在启动时抛错。 |
-| **preload 包名** | `app.config.ts` 里 `preload: 'main' \| 'docs' \| …` 对应 `apps/electron-preload/<slug>` 与 npm 名 `@nebula-studio-preload/<slug>`。 |
-| **文档站静态拷贝** | `apps/electron/scripts/copy-docs-site.mjs` 使用 `getPackageSync('@nebula-studio-renderer/docs', …)`；若改包名需同步脚本与 `package.json` 的 `name`。 |
-| **全局样式链** | `tools/tailwindcss/src/electron.ts`（`theme.css` → `@nebula-studio/styles`）；各 embed 仍 `import '@nebula-studio-internal/tailwind/electron'`。 |
-| **Tailwind `@source`** | `tools/tailwindcss/src/theme.css` 内为相对路径，迁仓库子路径时需手改。 |
-| **手动分包规则** | `internal/vite/src/config/chunks/rules/nebulaWorkspace.ts` 等若写死 `packages/<名>/`。 |
-| **Oxlint Tailwind 入口** | `tools/lint/oxlint/src/configs/tailwindcss.ts` 通过 `getPackageSync('@nebula-studio-internal/tailwind', …)` 解析主题 CSS。 |
-| **Ambient 类型** | 侧效模块、`__NEBULA_BUILD_NODE_VERSION__`、第三方补洞集中在 **`packages/types`**；子应用 `env.d.ts` 只保留 **Window / preload 形态** 等与包相关的声明。 |
-| **本文档表格链接** | 若移动某包 `README.md`，更新上表相对路径。 |
+| UI | `@nebula-studio/nebula-ui`、`@nebula-studio/nebula-layout`、`@nebula-studio/nebula-agent` |
+| 编辑器 | `nebula-editor`、`@nebula-studio/nebula-flow-editor`、`@nebula-studio/nebula-dag-editor`、`@nebula-studio/nebula-low-render`、`@nebula-studio/nebula-integration-panel` |
+| 功能 | `@nebula-studio/plugin-installer`、`@nebula-studio/route-designer`、`@nebula-studio/subscription-manager`、`@nebula-studio/use-confirm`、`@nebula-studio/version-diff` |
+| 基础样式/类型 | `@nebula-studio/styles`、`@nebula-studio/types` |
 
----
+## 新增、移动或改名检查清单
 
-## 主进程模块（补充）
-
-Electron 主进程模块化说明（IPC、日志目录、watch 等）见 **[apps/electron/src/main/README.md](../apps/electron/src/main/README.md)**（与上层应用 README 互补，不重复粘贴长列表时可链到该文件）。
+1. 更新 `pnpm-workspace.yaml` 的工作区 glob（若现有 glob 未覆盖）。
+2. 更新所有 workspace 依赖、源码导入和 README 链接。
+3. 子应用变更需更新 `configs/windows.json`，再执行 `vp run generate:configs`。
+4. 检查 `apps/electron/src/renderer/boot.ts` 对 `apps/sub-web/*/src/main.ts` 的动态发现。
+5. 检查 `apps/web` 的 embed 入口和子应用别名发现配置。
+6. preload 变更需保证窗口配置中的 `preload` 与目录/包名一致。
+7. 共享契约应放入 `packages/contracts`，共享 ambient 类型应放入 `packages/types`。
+8. 运行对应包的 typecheck/test，并在提交前执行 [测试与质量](./testing.md) 中的检查。
