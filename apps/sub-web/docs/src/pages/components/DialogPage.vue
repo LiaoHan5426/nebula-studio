@@ -1,13 +1,8 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
 
-// eslint-disable-next-line import/no-duplicates
-import DialogBasicSource from '@/examples/dialog/DialogBasic.vue?raw';
-// eslint-disable-next-line import/no-duplicates
-import DialogConfirmSource from '@/examples/dialog/DialogConfirm.vue?raw';
-
-import DialogBasic from '@/examples/dialog/DialogBasic.vue';
-import DialogConfirm from '@/examples/dialog/DialogConfirm.vue';
+import dialogBasicDemo from '@/examples/dialog/DialogBasic.vue?demo';
+import dialogConfirmDemo from '@/examples/dialog/DialogConfirm.vue?demo';
 </script>
 
 <template>
@@ -15,10 +10,16 @@ import DialogConfirm from '@/examples/dialog/DialogConfirm.vue';
     <p>对话框组件，用于弹出提示信息或操作确认。</p>
 
     <h2 id="basic">基础用法</h2>
-    <Demo :component="DialogBasic" :source="DialogBasicSource" />
+    <Demo
+      :component="dialogBasicDemo.component"
+      :source="dialogBasicDemo.source"
+    />
 
     <h2 id="confirm">确认对话框</h2>
-    <Demo :component="DialogConfirm" :source="DialogConfirmSource" />
+    <Demo
+      :component="dialogConfirmDemo.component"
+      :source="dialogConfirmDemo.source"
+    />
 
     <h2>API</h2>
     <h3>Props</h3>

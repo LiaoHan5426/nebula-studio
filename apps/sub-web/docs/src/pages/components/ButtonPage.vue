@@ -1,22 +1,10 @@
 <script setup lang="ts">
 import Demo from '@/components/Demo.vue';
 
-// eslint-disable-next-line import/no-duplicates
-import ButtonBasicSource from '@/examples/button/ButtonBasic.vue?raw';
-// eslint-disable-next-line import/no-duplicates
-import ButtonDisabledSource from '@/examples/button/ButtonDisabled.vue?raw';
-// eslint-disable-next-line import/no-duplicates
-import ButtonIconSource from '@/examples/button/ButtonIcon.vue?raw';
-// eslint-disable-next-line import/no-duplicates
-import ButtonTooltipSource from '@/examples/button/ButtonTooltip.vue?raw';
-
-import ButtonBasic from '@/examples/button/ButtonBasic.vue';
-// eslint-disable-next-line import/no-duplicates
-import ButtonDisabled from '@/examples/button/ButtonDisabled.vue';
-// eslint-disable-next-line import/no-duplicates
-import ButtonIcon from '@/examples/button/ButtonIcon.vue';
-// eslint-disable-next-line import/no-duplicates
-import ButtonTooltip from '@/examples/button/ButtonTooltip.vue';
+import buttonBasicDemo from '@/examples/button/ButtonBasic.vue?demo';
+import buttonDisabledDemo from '@/examples/button/ButtonDisabled.vue?demo';
+import buttonIconDemo from '@/examples/button/ButtonIcon.vue?demo';
+import buttonTooltipDemo from '@/examples/button/ButtonTooltip.vue?demo';
 </script>
 
 <template>
@@ -24,16 +12,28 @@ import ButtonTooltip from '@/examples/button/ButtonTooltip.vue';
     <p>操作按钮，支持多种变体、图标和提示模式。</p>
 
     <h2 id="basic">基础用法</h2>
-    <Demo :component="ButtonBasic" :source="ButtonBasicSource" />
+    <Demo
+      :component="buttonBasicDemo.component"
+      :source="buttonBasicDemo.source"
+    />
 
     <h2 id="disabled">禁用状态</h2>
-    <Demo :component="ButtonDisabled" :source="ButtonDisabledSource" />
+    <Demo
+      :component="buttonDisabledDemo.component"
+      :source="buttonDisabledDemo.source"
+    />
 
     <h2 id="icon">图标按钮</h2>
-    <Demo :component="ButtonIcon" :source="ButtonIconSource" />
+    <Demo
+      :component="buttonIconDemo.component"
+      :source="buttonIconDemo.source"
+    />
 
     <h2 id="tooltip">带提示</h2>
-    <Demo :component="ButtonTooltip" :source="ButtonTooltipSource" />
+    <Demo
+      :component="buttonTooltipDemo.component"
+      :source="buttonTooltipDemo.source"
+    />
 
     <h2>API</h2>
     <h3>Props</h3>

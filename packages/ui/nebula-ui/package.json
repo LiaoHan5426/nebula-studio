@@ -11,7 +11,7 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "scripts": {
-    "test": "vp test"
+    "test": "vp test run"
   },
   "exports": {
     ".": {
@@ -35,6 +35,7 @@
     }
   },
   "dependencies": {
+    "@nebula-studio/code-editor": "workspace:^",
     "@codemirror/commands": "catalog:editor",
     "@codemirror/lang-html": "catalog:editor",
     "@codemirror/lang-java": "catalog:editor",

@@ -6,7 +6,7 @@ import { cn } from '../../utils/cn';
 import { withTooltipAttrs } from '../../utils/tooltip';
 import type { TooltipPlacement } from '../../utils/tooltip';
 
-type NebulaVariant = 'primary' | 'secondary' | 'ghost';
+type NebulaVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
 
 const props = withDefaults(
   defineProps<{
@@ -44,6 +44,7 @@ const shadcnVariant = computed(() => {
   const map: Record<NebulaVariant, ButtonVariants['variant']> = {
     primary: 'default',
     secondary: 'secondary',
+    outline: 'outline',
     ghost: 'ghost',
   };
   return map[props.variant];

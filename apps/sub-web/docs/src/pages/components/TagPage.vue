@@ -1,14 +1,8 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
 
-// eslint-disable-next-line import/no-duplicates
-import TagBasicSource from '@/examples/tag/TagBasic.vue?raw';
-// eslint-disable-next-line import/no-duplicates
-import TagTooltipSource from '@/examples/tag/TagTooltip.vue?raw';
-
-import TagBasic from '@/examples/tag/TagBasic.vue';
-// eslint-disable-next-line import/no-duplicates
-import TagTooltip from '@/examples/tag/TagTooltip.vue';
+import tagBasicDemo from '@/examples/tag/TagBasic.vue?demo';
+import tagTooltipDemo from '@/examples/tag/TagTooltip.vue?demo';
 </script>
 
 <template>
@@ -16,10 +10,13 @@ import TagTooltip from '@/examples/tag/TagTooltip.vue';
     <p>标签组件，用于标记和分类，支持多种变体。</p>
 
     <h2 id="basic">基础用法</h2>
-    <Demo :component="TagBasic" :source="TagBasicSource" />
+    <Demo :component="tagBasicDemo.component" :source="tagBasicDemo.source" />
 
     <h2 id="tooltip">带提示</h2>
-    <Demo :component="TagTooltip" :source="TagTooltipSource" />
+    <Demo
+      :component="tagTooltipDemo.component"
+      :source="tagTooltipDemo.source"
+    />
 
     <h2>API</h2>
     <h3>Props</h3>

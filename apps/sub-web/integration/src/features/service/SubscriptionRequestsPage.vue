@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue';
 import {
   NebulaButton,
   NebulaInput,
+  NebulaPane,
   NebulaSelect,
   NebulaTable,
   NebulaTableColumn,
@@ -104,10 +105,6 @@ async function submitReject() {
   await loadRequests();
 }
 
-async function handleReject(row: SubscriptionRequestRecord) {
-  openReject(row);
-}
-
 function statusVariant(status: string) {
   const normalized = status?.toLowerCase();
   if (normalized === 'pending') return 'warning';
@@ -123,15 +120,12 @@ function formatTime(value?: string) {
 </script>
 
 <template>
-  <div class="subscription-requests-page">
-    <header class="subscription-requests-page__header">
-      <div>
-        <h2 class="subscription-requests-page__title">订阅审批</h2>
-        <p class="subscription-requests-page__desc">
-          审批服务订阅与库表订阅申请；服务订阅通过时可预填授权配额
-        </p>
-      </div>
-      <div class="subscription-requests-page__actions">
+  <div class="page">
+    <NebulaPane
+      title="订阅审批"
+      description="审批服务订阅与库表订阅申请；服务订阅通过时可预填授权配额"
+    >
+      <div class="page__toolbar">
         <NebulaSelect
           v-model="statusFilter"
           :options="[
@@ -143,101 +137,103 @@ function formatTime(value?: string) {
           class="status-filter"
           @change="loadRequests"
         />
-        <NebulaButton variant="secondary" @click="loadRequests"
+        <NebulaButton variant="outline" @click="loadRequests"
           >刷新</NebulaButton
         >
       </div>
-    </header>
 
-    <div class="subscription-requests-page__table-wrap">
-      <NebulaTable
-        :data="requests"
-        :loading="loading"
-        :scroll-x="{ enabled: false }"
-        row-key="requestId"
-        class="subscription-requests-page__table"
-      >
-        <NebulaTableColumn
-          field="requestId"
-          title="申请 ID"
-          min-width="160"
-          show-overflow="tooltip"
-        />
-        <NebulaTableColumn
-          field="tenantId"
-          title="租户 ID"
-          width="120"
-          show-overflow="tooltip"
-        />
-        <NebulaTableColumn
-          field="interfaceId"
-          title="服务 ID"
-          min-width="140"
-          show-overflow="tooltip"
-        />
-        <NebulaTableColumn field="requestType" title="类型" width="100" />
-        <NebulaTableColumn field="status" title="状态" width="100">
-          <template #default="{ row }">
-            <NebulaTag :variant="statusVariant(row.status)">
-              {{ row.status }}
-            </NebulaTag>
-          </template>
-        </NebulaTableColumn>
-        <NebulaTableColumn
-          field="reason"
-          title="申请原因"
-          min-width="140"
-          show-overflow="tooltip"
-        />
-        <NebulaTableColumn field="createdAt" title="申请时间" width="150">
-          <template #default="{ row }">
-            {{ formatTime(row.createdAt) }}
-          </template>
-        </NebulaTableColumn>
-        <NebulaTableColumn title="操作" width="160">
-          <template #default="{ row }">
-            <div v-if="row.status === 'PENDING'" class="action-btns">
-              <NebulaButton variant="secondary" @click="openApprove(row)">
-                通过
-              </NebulaButton>
-              <NebulaButton variant="secondary" @click="handleReject(row)">
-                拒绝
-              </NebulaButton>
-            </div>
-            <span v-else class="muted">—</span>
-          </template>
-        </NebulaTableColumn>
-      </NebulaTable>
-    </div>
+      <div class="page__table-wrap">
+        <NebulaTable
+          :data="requests"
+          :loading="loading"
+          :scroll-x="{ enabled: false }"
+          row-key="requestId"
+        >
+          <NebulaTableColumn
+            field="requestId"
+            title="申请 ID"
+            min-width="160"
+            show-overflow="tooltip"
+          />
+          <NebulaTableColumn
+            field="tenantId"
+            title="租户 ID"
+            width="120"
+            show-overflow="tooltip"
+          />
+          <NebulaTableColumn
+            field="interfaceId"
+            title="服务 ID"
+            min-width="140"
+            show-overflow="tooltip"
+          />
+          <NebulaTableColumn field="requestType" title="类型" width="100" />
+          <NebulaTableColumn field="status" title="状态" width="100">
+            <template #default="{ row }">
+              <NebulaTag :variant="statusVariant(row.status)">
+                {{ row.status }}
+              </NebulaTag>
+            </template>
+          </NebulaTableColumn>
+          <NebulaTableColumn
+            field="reason"
+            title="申请原因"
+            min-width="140"
+            show-overflow="tooltip"
+          />
+          <NebulaTableColumn field="createdAt" title="申请时间" width="150">
+            <template #default="{ row }">
+              {{ formatTime(row.createdAt) }}
+            </template>
+          </NebulaTableColumn>
+          <NebulaTableColumn title="操作" width="160">
+            <template #default="{ row }">
+              <div v-if="row.status === 'PENDING'" class="row-actions">
+                <NebulaButton variant="outline" @click="openApprove(row)">
+                  通过
+                </NebulaButton>
+                <NebulaButton variant="outline" @click="openReject(row)">
+                  拒绝
+                </NebulaButton>
+              </div>
+              <span v-else class="muted">—</span>
+            </template>
+          </NebulaTableColumn>
+        </NebulaTable>
+      </div>
+    </NebulaPane>
 
-    <div v-if="approveTarget" class="approve-dialog">
-      <div class="approve-dialog__panel">
-        <h3>审批通过并授权</h3>
-        <p class="approve-dialog__meta">
+    <div
+      v-if="approveTarget"
+      class="modal-overlay"
+      @click.self="approveTarget = null"
+    >
+      <NebulaPane title="审批通过并授权" class="modal">
+        <p class="field-hint">
           租户 {{ approveTarget.tenantId }} · 服务
           {{ approveTarget.interfaceId }}
         </p>
-        <label class="approve-dialog__field">
-          授权到期
+        <label class="field">
+          <span>授权到期</span>
           <input v-model="grantForm.expiresAt" type="datetime-local" />
         </label>
-        <label class="approve-dialog__field">
-          最大调用次数
+        <label class="field">
+          <span>最大调用次数</span>
           <NebulaInput v-model="grantForm.maxCalls" type="number" />
         </label>
-        <label class="approve-dialog__field">
-          频率上限（次/窗口）
+        <label class="field">
+          <span>频率上限（次/窗口）</span>
           <NebulaInput v-model="grantForm.rateLimitMax" type="number" />
         </label>
-        <label class="approve-dialog__field">
-          频率窗口（秒）
+        <label class="field">
+          <span>频率窗口（秒）</span>
           <NebulaInput
             v-model="grantForm.rateLimitWindowSeconds"
             type="number"
           />
         </label>
-        <label class="approve-dialog__field">
-          服务时间
+        <label class="field">
+          <span>服务时间</span>
           <NebulaSelect
             v-model="grantForm.scheduleType"
             :options="GRANT_SCHEDULE_OPTIONS as any"
@@ -247,155 +243,74 @@ function formatTime(value?: string) {
           v-if="grantForm.scheduleType !== 'ALWAYS'"
           class="approve-dialog__row"
         >
-          <label class="approve-dialog__field">
-            开始
+          <label class="field">
+            <span>开始</span>
             <input v-model="grantForm.scheduleStartTime" type="time" />
           </label>
-          <label class="approve-dialog__field">
-            结束
+          <label class="field">
+            <span>结束</span>
             <input v-model="grantForm.scheduleEndTime" type="time" />
           </label>
         </div>
-        <div class="approve-dialog__actions">
-          <NebulaButton variant="secondary" @click="approveTarget = null"
-            >取消</NebulaButton
-          >
-          <NebulaButton variant="primary" @click="submitApprove"
-            >确认通过</NebulaButton
-          >
+        <div class="modal__actions">
+          <NebulaButton variant="outline" @click="approveTarget = null">
+            取消
+          </NebulaButton>
+          <NebulaButton variant="primary" @click="submitApprove">
+            确认通过
+          </NebulaButton>
         </div>
-      </div>
+      </NebulaPane>
     </div>
-    <div v-if="rejectTarget" class="approve-dialog">
-      <div class="approve-dialog__panel">
-        <h3>拒绝订阅申请</h3>
-        <p class="approve-dialog__meta">
+
+    <div
+      v-if="rejectTarget"
+      class="modal-overlay"
+      @click.self="rejectTarget = null"
+    >
+      <NebulaPane title="拒绝订阅申请" class="modal">
+        <p class="field-hint">
           租户 {{ rejectTarget.tenantId }} · 服务 {{ rejectTarget.interfaceId }}
         </p>
-        <label class="approve-dialog__field">
-          拒绝原因
+        <label class="field">
+          <span>拒绝原因</span>
           <NebulaInput
             v-model="rejectReason"
             type="text"
             placeholder="请输入拒绝原因"
           />
         </label>
-        <div class="approve-dialog__actions">
-          <NebulaButton variant="secondary" @click="rejectTarget = null"
-            >取消</NebulaButton
-          >
-          <NebulaButton variant="primary" @click="submitReject"
-            >确认拒绝</NebulaButton
-          >
+        <div class="modal__actions">
+          <NebulaButton variant="outline" @click="rejectTarget = null">
+            取消
+          </NebulaButton>
+          <NebulaButton variant="primary" @click="submitReject">
+            确认拒绝
+          </NebulaButton>
         </div>
-      </div>
+      </NebulaPane>
     </div>
   </div>
 </template>
 
 <style scoped>
-.subscription-requests-page {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.subscription-requests-page__header {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding: 16px 20px;
-  background: hsl(var(--card));
-  border-radius: 8px;
-}
-
-.subscription-requests-page__title {
-  margin: 0 0 4px;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.subscription-requests-page__desc {
-  margin: 0;
-  font-size: 13px;
-  color: hsl(var(--muted-foreground));
-}
-
-.subscription-requests-page__actions {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
 .status-filter {
   min-width: 120px;
-}
-
-.subscription-requests-page__table-wrap {
-  padding: 12px 16px;
-  background: hsl(var(--card));
-  border-radius: 8px;
-}
-
-.action-btns {
-  display: inline-flex;
-  gap: 6px;
 }
 
 .muted {
   color: hsl(var(--muted-foreground));
 }
 
-.approve-dialog {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgb(0 0 0 / 40%);
-}
-
-.approve-dialog__panel {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: min(480px, 92vw);
-  padding: 20px;
-  background: hsl(var(--card));
-  border-radius: 8px;
-}
-
-.approve-dialog__meta {
-  margin: 0;
+.field-hint {
+  margin: 0 0 12px;
   font-size: 13px;
   color: hsl(var(--muted-foreground));
-}
-
-.approve-dialog__field {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 13px;
-}
-
-.approve-dialog__field input {
-  padding: 8px;
-  border: 1px solid hsl(var(--border));
-  border-radius: 6px;
 }
 
 .approve-dialog__row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
-}
-
-.approve-dialog__actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-  margin-top: 8px;
 }
 </style>

@@ -1,4 +1,7 @@
-import type { InstallWebPresentationOptions } from '@nebula-studio/app-shell';
+import type {
+  InstallWebPresentationOptions,
+  WireShellEventBusOptions,
+} from '@nebula-studio/app-shell';
 import type { Component } from 'vue';
 import type { Router } from 'vue-router';
 
@@ -62,6 +65,10 @@ export interface BootMicroAppOptions {
 
   /** Shell 事件总线，用于跨子应用 tenant/auth 同步 */
   shellEventBus?: import('@nebula-studio/app-shell').ShellEventBus;
+
+  /** shellEventBus 标准事件处理器；由 bootMicroApp 注册并在 dispose 时释放 */
+  shellEventBusHandlers?: WireShellEventBusOptions;
 }
 
+export type { MicroAppHandle } from './bootMicroApp';
 export { bootMicroApp } from './bootMicroApp';

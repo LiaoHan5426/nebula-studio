@@ -7,10 +7,6 @@
  * 3. 若仍无 session 且 allowShellLogin，请求父窗口打开登录弹窗
  * 4. 监听 `auth:session-changed` 事件同步 session 变更
  * 5. 监听 SHELL_AUTH_UNAUTHORIZED_EVENT 处理 401
- *
- * 迁移来源：
- * - integration/src/shared/composables/useAuth.ts → bootstrapAuthFromShell / ensureAuthFromShell
- * - integration/src/App.vue → requestShellLoginIfNeeded / onShellAuthUnauthorized
  */
 import {
   readParentShellAuthSession,
@@ -27,20 +23,19 @@ import type { AuthBootstrapOptions, AuthStrategy } from '../types';
 
 export class EmbedStrategy implements AuthStrategy {
   private _allowShellLogin = true;
+  private _surfaceId: string | null = null;
   private _disposeListeners: Array<() => void> = [];
 
   async bootstrap(options?: AuthBootstrapOptions): Promise<boolean> {
     this._allowShellLogin = options?.allowShellLogin ?? true;
+    this._surfaceId = options?.surfaceId ?? options?.appId ?? null;
 
-    // 1. 从父窗口同步 session
     await this.bootstrapAuthFromShell();
 
-    // 2. 若仍无 session，请求父 Shell 打开登录
     if (!hasValidAuthToken() && this._allowShellLogin) {
       await this.requestShellLoginIfNeeded();
     }
 
-    // 3. 注册 session 变更监听
     this.registerSessionChangeListeners();
 
     return hasValidAuthToken();
@@ -57,21 +52,19 @@ export class EmbedStrategy implements AuthStrategy {
     this._disposeListeners = [];
   }
 
-  /**
-   * 从父窗口 Shell 同步 JWT，避免二次登录。
-   * 迁移自 `integration/src/shared/composables/useAuth.ts` → `bootstrapAuthFromShell`
-   */
-  private async bootstrapAuthFromShell(): Promise<void> {
-    if (!isSurfaceEmbed('integration')) return;
+  private isCurrentSurfaceEmbed(): boolean {
+    return this._surfaceId !== null && isSurfaceEmbed(this._surfaceId);
+  }
 
-    // 尝试从 sessionStorage（父窗口写入）读取
+  private async bootstrapAuthFromShell(): Promise<void> {
+    if (!this.isCurrentSurfaceEmbed()) return;
+
     const session = readParentShellAuthSession();
     if (session?.token && session.user) {
       this.applyShellSession(session.user, session.token);
       return;
     }
 
-    // 尝试通过 parentApi 远程获取
     try {
       const parentApi = (
         window.parent as typeof window & {
@@ -94,10 +87,6 @@ export class EmbedStrategy implements AuthStrategy {
     }
   }
 
-  /**
-   * 请求父 Shell 打开登录弹窗。
-   * 迁移自 `integration/src/App.vue` → `requestShellLoginIfNeeded`
-   */
   private async requestShellLoginIfNeeded(): Promise<void> {
     await this.ensureAuthFromShell();
     if (hasValidAuthToken()) return;
@@ -114,12 +103,8 @@ export class EmbedStrategy implements AuthStrategy {
     }
   }
 
-  /**
-   * 确保 embed 模式已同步 Shell 登录态。
-   * 迁移自 `integration/src/shared/composables/useAuth.ts` → `ensureAuthFromShell`
-   */
   private async ensureAuthFromShell(): Promise<void> {
-    if (!isSurfaceEmbed('integration')) return;
+    if (!this.isCurrentSurfaceEmbed()) return;
     if (getAuthToken()) return;
     await this.bootstrapAuthFromShell();
   }
@@ -133,14 +118,8 @@ export class EmbedStrategy implements AuthStrategy {
     globalAuthProvider.setSession({ user, token: authToken, roles: userRoles });
   }
 
-  /**
-   * 注册 session 变更和 401 事件监听。
-   * 迁移自 `integration/src/App.vue` onMounted 中的事件监听。
-   */
   private registerSessionChangeListeners(): void {
-    // 401 未授权事件
     const onUnauthorized = (): void => {
-      // 由调用方（App.vue）处理路由跳转
       window.dispatchEvent(new CustomEvent('nebula:auth:unauthorized'));
     };
     window.addEventListener(SHELL_AUTH_UNAUTHORIZED_EVENT, onUnauthorized);
@@ -148,7 +127,6 @@ export class EmbedStrategy implements AuthStrategy {
       window.removeEventListener(SHELL_AUTH_UNAUTHORIZED_EVENT, onUnauthorized);
     });
 
-    // Electron IPC session 变更（embed 模式下通过 iframe 继承）
     const electronWindow = window as unknown as Window & {
       electron?: {
         ipcRenderer: {
@@ -158,7 +136,7 @@ export class EmbedStrategy implements AuthStrategy {
       };
     };
     if (
-      isSurfaceEmbed('integration') &&
+      this.isCurrentSurfaceEmbed() &&
       window.parent !== window &&
       electronWindow.electron?.ipcRenderer
     ) {

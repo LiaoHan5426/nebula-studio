@@ -87,61 +87,18 @@ async function sendRequest() {
           <span>请求体 JSON</span>
           <textarea v-model="body" rows="4" />
         </label>
-        <NebulaButton :disabled="loading" @click="sendRequest">
+        <NebulaButton
+          variant="primary"
+          :disabled="loading"
+          @click="sendRequest"
+        >
           {{ loading ? '请求中…' : '发送请求' }}
         </NebulaButton>
       </div>
     </NebulaPane>
 
-    <NebulaPane v-if="responseText" title="响应" class="page__response">
+    <NebulaPane v-if="responseText" title="响应">
       <pre class="page__response-body">{{ responseText }}</pre>
     </NebulaPane>
   </div>
 </template>
-
-<style scoped>
-.page {
-  max-width: 900px;
-  padding: 24px;
-  margin: 0 auto;
-}
-
-.page__form {
-  display: grid;
-  gap: 12px;
-}
-
-.field {
-  display: grid;
-  gap: 6px;
-  font-size: 13px;
-}
-
-.field input,
-.field textarea,
-.field__select {
-  padding: 8px 10px;
-  font-family: inherit;
-  color: hsl(var(--foreground));
-  background: hsl(var(--background));
-  border: 1px solid hsl(var(--border));
-  border-radius: 6px;
-}
-
-.field__readonly {
-  color: hsl(var(--muted-foreground));
-  background: hsl(var(--muted) / 30%);
-}
-
-.page__response {
-  margin-top: 20px;
-}
-
-.page__response-body {
-  padding: 12px;
-  overflow: auto;
-  font-size: 12px;
-  background: hsl(var(--muted) / 40%);
-  border-radius: 6px;
-}
-</style>

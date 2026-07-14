@@ -11,11 +11,16 @@
       "default": "./src/index.ts"
     }
   },
+  "scripts": {
+    "test": "vp test run"
+  },
   "dependencies": {
     "vue": "catalog:vue"
   },
   "devDependencies": {
     "@nebula-studio-internal/tsconfig": "workspace:^",
-    "@nebula-studio/types": "workspace:^"
+    "@nebula-studio/types": "workspace:^",
+    "happy-dom": "catalog:vite",
+    "vitest": "catalog:vite"
   }
 }

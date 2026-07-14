@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, master]
+  push:
+    branches: [main, master]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: voidzero-dev/setup-vp@v1
+        with:
+          node-version: '22'
+          cache: true
+          run-install: |
+            - args: ['--frozen-lockfile']
+
+      - name: Check formatting, lint, and types
+        run: vp check
+
+      - name: Run unit tests
+        run: vp run test
+
+      - name: Build web shell
+        run: vp run build:web
+
+      - name: Verify generated configs are up to date
+        run: |
+          vp run generate:configs
+          git diff --exit-code
+
+  electron:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: voidzero-dev/setup-vp@v1
+        with:
+          node-version: '22'
+          cache: true
+          run-install: |
+            - args: ['--frozen-lockfile']
+
+      - name: Detect Electron-related changes
+        id: changes
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE="${{ github.event.pull_request.base.sha }}"
+            HEAD="${{ github.event.pull_request.head.sha }}"
+          else
+            BASE="${{ github.event.before }}"
+            HEAD="${{ github.sha }}"
+          fi
+          if git diff --name-only "$BASE" "$HEAD" | grep -Eq \
+            '^apps/electron/|^apps/electron-preload/|^configs/|^packages/core/app-shell/'; then
+            echo "needed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "needed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build Electron app
+        if: steps.changes.outputs.needed == 'true'
+        run: vp run --filter @nebula-studio/electron build

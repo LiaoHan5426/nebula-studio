@@ -16,13 +16,14 @@
       "types": "./integration/index.ts",
       "default": "./integration/index.ts"
     },
+    "./common": {
+      "types": "./common/index.ts",
+      "default": "./common/index.ts"
+    },
     "./generated": {
       "types": "./generated/index.ts",
       "default": "./generated/index.ts"
     }
-  },
-  "dependencies": {
-    "@nebula-studio/api-client": "workspace:^"
   },
   "devDependencies": {
     "@nebula-studio-internal/tsconfig": "workspace:^",

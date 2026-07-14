@@ -1,9 +1,9 @@
-import { createApiClient } from '@nebula-studio/api-client';
+import { createStudioApiClient } from '@nebula-studio/api-client';
 import type { ApiRequestOptions, ApiResponse } from '@nebula-studio/api-client';
 import { handleShellAuthUnauthorized } from '@nebula-studio/app-shell';
 import { getAuthToken, clearAuthSession } from '@/shared/auth/session';
 
-export type { ApiRequestOptions };
+export type { ApiRequestOptions, ApiResponse };
 
 /** Console process (demo-camel-console :8080) */
 export const CONSOLE_BASE = '/api/console';
@@ -23,9 +23,11 @@ export const CAMEL_TOPOLOGY_BASE = '/api/camel/topology';
 /** Executor process (demo-camel-executor :8081) — proxied in dev */
 export const EXECUTOR_INTEGRATION_BASE = '/api/integration';
 
-const apiClient = createApiClient({
-  getAuthToken,
-  getTenantId: () => localStorage.getItem('tenant_id'),
+const apiClient = createStudioApiClient({
+  authProvider: { getToken: getAuthToken },
+  tenantProvider: {
+    getTenantId: () => localStorage.getItem('tenant_id'),
+  },
   onUnauthorized: () => {
     clearAuthSession();
     return handleShellAuthUnauthorized();

@@ -1,18 +1,9 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
 
-// eslint-disable-next-line import/no-duplicates
-import AvatarBasicSource from '@/examples/avatar/AvatarBasic.vue?raw';
-// eslint-disable-next-line import/no-duplicates
-import AvatarSizeSource from '@/examples/avatar/AvatarSize.vue?raw';
-// eslint-disable-next-line import/no-duplicates
-import AvatarOnlineSource from '@/examples/avatar/AvatarOnline.vue?raw';
-
-import AvatarBasic from '@/examples/avatar/AvatarBasic.vue';
-// eslint-disable-next-line import/no-duplicates
-import AvatarSize from '@/examples/avatar/AvatarSize.vue';
-// eslint-disable-next-line import/no-duplicates
-import AvatarOnline from '@/examples/avatar/AvatarOnline.vue';
+import avatarBasicDemo from '@/examples/avatar/AvatarBasic.vue?demo';
+import avatarSizeDemo from '@/examples/avatar/AvatarSize.vue?demo';
+import avatarOnlineDemo from '@/examples/avatar/AvatarOnline.vue?demo';
 </script>
 
 <template>
@@ -20,13 +11,22 @@ import AvatarOnline from '@/examples/avatar/AvatarOnline.vue';
     <p>头像组件，支持图片、文字和图标三种形式。</p>
 
     <h2 id="basic">基础用法</h2>
-    <Demo :component="AvatarBasic" :source="AvatarBasicSource" />
+    <Demo
+      :component="avatarBasicDemo.component"
+      :source="avatarBasicDemo.source"
+    />
 
     <h2 id="sizes">不同尺寸</h2>
-    <Demo :component="AvatarSize" :source="AvatarSizeSource" />
+    <Demo
+      :component="avatarSizeDemo.component"
+      :source="avatarSizeDemo.source"
+    />
 
     <h2 id="online">在线状态</h2>
-    <Demo :component="AvatarOnline" :source="AvatarOnlineSource" />
+    <Demo
+      :component="avatarOnlineDemo.component"
+      :source="avatarOnlineDemo.source"
+    />
 
     <h2>API</h2>
     <h3>Props</h3>

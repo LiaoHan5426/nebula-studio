@@ -1,9 +1,10 @@
 import '@nebula-studio-internal/tailwind/electron';
+import '@nebula-studio/nebula-layout';
+import '@nebula-studio/nebula-ui';
 import '@nebula-studio-renderer/integration/bootstrap-runtime';
 import {
   clearWebAuthSession,
   resolveShellEventBus,
-  wireShellEventBus,
 } from '@nebula-studio/app-shell';
 import type { ShellEventBus } from '@nebula-studio/app-shell';
 import { bootMicroApp, detectRuntimeMode } from '@nebula-studio/runtime';
@@ -27,15 +28,6 @@ export async function bootIntegration(opts?: {
 }): Promise<void> {
   const mode = opts?.mode ?? detectRuntimeMode();
   const shellEventBus = resolveShellEventBus(opts?.shellEventBus);
-  wireShellEventBus(shellEventBus, {
-    onTenantChanged: () => {
-      window.location.reload();
-    },
-    onAuthLogout: () => {
-      clearWebAuthSession();
-      window.location.reload();
-    },
-  });
 
   // MSW mock：仅 GitHub demo 部署时启用（构建时由 NEBULA_MSW_ENABLED 环境变量注入）
   if (__NEBULA_MSW_ENABLED__) {
@@ -66,6 +58,15 @@ export async function bootIntegration(opts?: {
     // 统一认证：由 AuthBootstrap 按 mode 自动选择策略
     auth: { enabled: true },
     shellEventBus,
+    shellEventBusHandlers: {
+      onTenantChanged: () => {
+        window.location.reload();
+      },
+      onAuthLogout: () => {
+        clearWebAuthSession();
+        window.location.reload();
+      },
+    },
     embedDefaultRoute: mode === 'platform-embed' ? '/subscriptions' : undefined,
     beforeMount(app) {
       installVxePcUi(app);

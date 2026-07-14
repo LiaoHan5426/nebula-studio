@@ -20,7 +20,7 @@ Electron **应用根包**：主进程、preload 与各 **Vue renderer** 的 **el
    - `windows.*.renderer` / `modalRenderers.*.renderer` 的值必须是 **`apps/sub-web/<该目录>/src/main.ts` 存在的包目录名**。
 
 2. **构建管线**
-   - `package.json` → `build`：先全量 typecheck，再 `electron-vite build`，再构建文档包，最后 **`node ./scripts/copy-docs-site.mjs`** 把 `@nebula-studio-renderer/docs` 的 `dist` 拷到 `out/renderer/docs`。改文档包包名须同步脚本。
+   - `package.json` → `build`：先全量 typecheck，再 `electron-vite build`。文档子应用 `@nebula-studio-renderer/docs` 通过 renderer 动态入口加载（`?renderer=docs`），无需单独复制静态站点。
 
 3. **Vite 配置**
    - `electron.vite.config.ts` → `@nebula-studio-internal/vite` 的 `defineNebulaConfig({ platform: 'electron' })`；preload 输入默认来自各 `@nebula-studio-preload/*` 包。
@@ -30,7 +30,7 @@ Electron **应用根包**：主进程、preload 与各 **Vue renderer** 的 **el
 | 脚本 | 作用 |
 | --- | --- |
 | `dev` / `start` | electron-vite 开发 / 预览 |
-| `build` | typecheck + electron-vite build + docs build + copy-docs-site |
+| `build` | typecheck + electron-vite build |
 | `typecheck` | 主进程 tsc + renderer vue-tsc + `vp run --filter "@nebula-studio-renderer/*" typecheck` |
 | `pack:*` | electron-builder 各平台 |
 

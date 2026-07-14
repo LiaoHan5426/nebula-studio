@@ -13,7 +13,7 @@ const { username, isLoggedIn, isShellHosted, logout } = useAuth();
     <div v-if="!isShellHosted" class="app-header__right">
       <template v-if="isLoggedIn">
         <span class="app-header__user">{{ username }}</span>
-        <NebulaButton variant="secondary" @click="logout">退出</NebulaButton>
+        <NebulaButton variant="outline" @click="logout">退出</NebulaButton>
       </template>
       <NebulaButton v-else @click="router.push('/login')">登录</NebulaButton>
     </div>

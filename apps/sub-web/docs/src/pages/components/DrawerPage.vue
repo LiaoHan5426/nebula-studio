@@ -1,13 +1,8 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
 
-// eslint-disable-next-line import/no-duplicates
-import DrawerBasicSource from '@/examples/drawer/DrawerBasic.vue?raw';
-// eslint-disable-next-line import/no-duplicates
-import DrawerLeftSource from '@/examples/drawer/DrawerLeft.vue?raw';
-
-import DrawerBasic from '@/examples/drawer/DrawerBasic.vue';
-import DrawerLeft from '@/examples/drawer/DrawerLeft.vue';
+import drawerBasicDemo from '@/examples/drawer/DrawerBasic.vue?demo';
+import drawerLeftDemo from '@/examples/drawer/DrawerLeft.vue?demo';
 </script>
 
 <template>
@@ -15,10 +10,16 @@ import DrawerLeft from '@/examples/drawer/DrawerLeft.vue';
     <p>抽屉组件，从屏幕边缘滑出的浮层面板。</p>
 
     <h2 id="basic">基础用法</h2>
-    <Demo :component="DrawerBasic" :source="DrawerBasicSource" />
+    <Demo
+      :component="drawerBasicDemo.component"
+      :source="drawerBasicDemo.source"
+    />
 
     <h2 id="left">左侧抽屉</h2>
-    <Demo :component="DrawerLeft" :source="DrawerLeftSource" />
+    <Demo
+      :component="drawerLeftDemo.component"
+      :source="drawerLeftDemo.source"
+    />
 
     <h2>API</h2>
     <h3>Props</h3>

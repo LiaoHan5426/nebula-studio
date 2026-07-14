@@ -6,6 +6,14 @@ import type {
 } from './types.ts';
 import { nebulaChunkRuleCodemirror } from './rules/codemirror.ts';
 import { nebulaChunkRuleMarkdown } from './rules/markdown.ts';
+import {
+  nebulaChunkRuleEditorCode,
+  nebulaChunkRuleEditorFlow,
+  nebulaChunkRuleIntegrationDomain,
+  nebulaChunkRuleShellCore,
+  nebulaChunkRuleUiCore,
+  nebulaChunkRuleElectronShared,
+} from './rules/domainChunks.ts';
 import { nebulaChunkRuleNebulaWorkspace } from './rules/nebulaWorkspace.ts';
 import { nebulaChunkRuleVendorMisc } from './rules/vendorMisc.ts';
 import { nebulaChunkRuleVueEcosystem } from './rules/vueEcosystem.ts';
@@ -19,9 +27,15 @@ import { nebulaChunkRuleWangeditor } from './rules/wangeditor.ts';
 export const NEBULA_DEFAULT_MANUAL_CHUNK_RULES: readonly NebulaManualChunkRule[] =
   [
     nebulaChunkRuleWangeditor,
+    nebulaChunkRuleEditorCode,
     nebulaChunkRuleCodemirror,
+    nebulaChunkRuleEditorFlow,
     nebulaChunkRuleVxe,
     nebulaChunkRuleMarkdown,
+    nebulaChunkRuleIntegrationDomain,
+    nebulaChunkRuleShellCore,
+    nebulaChunkRuleElectronShared,
+    nebulaChunkRuleUiCore,
     nebulaChunkRuleVueEcosystem,
     nebulaChunkRuleNebulaWorkspace,
     nebulaChunkRuleVendorMisc,
@@ -58,7 +72,7 @@ export function nebulaRendererChunkBuildPartial(
   return {
     build: {
       // nebula-workspace 聚合所有 workspace 包，预期超过默认 500 kB
-      chunkSizeWarningLimit: 2000,
+      chunkSizeWarningLimit: 600,
       rollupOptions: {
         output: {
           manualChunks,

@@ -1,13 +1,8 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
 
-// eslint-disable-next-line import/no-duplicates
-import PaginationBasicSource from '@/examples/pagination/PaginationBasic.vue?raw';
-// eslint-disable-next-line import/no-duplicates
-import PaginationSizesSource from '@/examples/pagination/PaginationSizes.vue?raw';
-
-import PaginationBasic from '@/examples/pagination/PaginationBasic.vue';
-import PaginationSizes from '@/examples/pagination/PaginationSizes.vue';
+import paginationBasicDemo from '@/examples/pagination/PaginationBasic.vue?demo';
+import paginationSizesDemo from '@/examples/pagination/PaginationSizes.vue?demo';
 </script>
 
 <template>
@@ -15,10 +10,16 @@ import PaginationSizes from '@/examples/pagination/PaginationSizes.vue';
     <p>分页导航组件，支持页码切换和每页条数设置。</p>
 
     <h2 id="basic">基础用法</h2>
-    <Demo :component="PaginationBasic" :source="PaginationBasicSource" />
+    <Demo
+      :component="paginationBasicDemo.component"
+      :source="paginationBasicDemo.source"
+    />
 
     <h2 id="sizes">自定义每页条数</h2>
-    <Demo :component="PaginationSizes" :source="PaginationSizesSource" />
+    <Demo
+      :component="paginationSizesDemo.component"
+      :source="paginationSizesDemo.source"
+    />
 
     <h2>API</h2>
     <h3>Props</h3>

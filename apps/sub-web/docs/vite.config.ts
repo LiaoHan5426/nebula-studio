@@ -1,22 +1,12 @@
-import { fileURLToPath } from 'node:url';
+import {
+  defineNebulaSubAppConfig,
+  nebulaVueDemoPlugin,
+} from '@nebula-studio-internal/vite';
 
-import { defineNebulaConfig } from '@nebula-studio-internal/vite';
-
-const root = fileURLToPath(new URL('.', import.meta.url));
-
-export default defineNebulaConfig({
-  platform: 'web',
-  root,
-  base: process.env.VITE_BASE_PATH ?? '/',
-  build: {
-    outDir: 'dist',
-    emptyOutDir: true,
-  },
-  merge: {
-    resolve: {
-      alias: {
-        '@': fileURLToPath(new URL('./src', import.meta.url)),
-      },
-    },
-  },
+export default defineNebulaSubAppConfig({
+  configModuleUrl: import.meta.url,
+  appId: 'docs',
+  proxyPreset: false,
+  devPort: 5176,
+  plugins: [nebulaVueDemoPlugin()],
 });

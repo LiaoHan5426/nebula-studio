@@ -1,10 +1,7 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
 
-// eslint-disable-next-line import/no-duplicates
-import TreeMenuBasicSource from '@/examples/tree-menu/TreeMenuBasic.vue?raw';
-
-import TreeMenuBasic from '@/examples/tree-menu/TreeMenuBasic.vue';
+import treeMenuBasicDemo from '@/examples/tree-menu/TreeMenuBasic.vue?demo';
 </script>
 
 <template>
@@ -12,7 +9,10 @@ import TreeMenuBasic from '@/examples/tree-menu/TreeMenuBasic.vue';
     <p>树形菜单组件，用于展示层级结构的导航菜单。</p>
 
     <h2 id="basic">基础用法</h2>
-    <Demo :component="TreeMenuBasic" :source="TreeMenuBasicSource" />
+    <Demo
+      :component="treeMenuBasicDemo.component"
+      :source="treeMenuBasicDemo.source"
+    />
 
     <h2>API</h2>
     <h3>Props</h3>

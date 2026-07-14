@@ -75,6 +75,53 @@ const overrides: OxlintConfig = {
       },
     },
     {
+      files: ['packages/core/auth/src/strategies/**/*'],
+      rules: {
+        // Legacy private fields (_foo) on auth strategy classes; prefer #foo in new code.
+        'no-underscore-dangle': [
+          'warn',
+          {
+            allowAfterThis: true,
+            enforceInClassFields: false,
+          },
+        ],
+      },
+    },
+    {
+      files: ['packages/core/auth/src/AuthBootstrap.ts'],
+      rules: {
+        'no-underscore-dangle': [
+          'warn',
+          {
+            allow: ['_exhaustive'],
+          },
+        ],
+        'typescript/no-extraneous-class': 'off',
+      },
+    },
+    {
+      files: ['apps/sub-web/frontend/src/platform/integratedApps.ts'],
+      rules: {
+        'no-underscore-dangle': [
+          'warn',
+          {
+            allow: ['_embeddedIds', '_catalog'],
+          },
+        ],
+      },
+    },
+    {
+      files: ['packages/core/runtime/src/bootMicroApp.ts'],
+      rules: {
+        'no-underscore-dangle': [
+          'warn',
+          {
+            allow: ['__resetActiveMicroAppHandleForTests'],
+          },
+        ],
+      },
+    },
+    {
       files: ['apps/electron/**/*'],
       rules: {
         'no-console': 'off',

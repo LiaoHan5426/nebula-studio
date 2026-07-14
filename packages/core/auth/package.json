@@ -12,7 +12,7 @@
     }
   },
   "scripts": {
-    "test": "vp test"
+    "test": "vp test run"
   },
   "dependencies": {
     "@nebula-studio/app-shell": "workspace:^",

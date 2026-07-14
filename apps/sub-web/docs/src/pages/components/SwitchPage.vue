@@ -1,10 +1,7 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
 
-// eslint-disable-next-line import/no-duplicates
-import SwitchBasicSource from '@/examples/switch/SwitchBasic.vue?raw';
-
-import SwitchBasic from '@/examples/switch/SwitchBasic.vue';
+import switchBasicDemo from '@/examples/switch/SwitchBasic.vue?demo';
 </script>
 
 <template>
@@ -12,7 +9,10 @@ import SwitchBasic from '@/examples/switch/SwitchBasic.vue';
     <p>开关组件，用于在两种状态之间切换。</p>
 
     <h2 id="basic">基础用法</h2>
-    <Demo :component="SwitchBasic" :source="SwitchBasicSource" />
+    <Demo
+      :component="switchBasicDemo.component"
+      :source="switchBasicDemo.source"
+    />
 
     <h2>API</h2>
     <h3>Props</h3>

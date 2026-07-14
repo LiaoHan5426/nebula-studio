@@ -150,205 +150,173 @@ function getNodeColor(type: TopologyNode['type']): string {
 </script>
 
 <template>
-  <div class="topology-page">
-    <header class="topology-page__header">
-      <div>
-        <h2 class="topology-page__title">服务拓扑</h2>
-        <p class="topology-page__desc">
-          以拓扑图形式展示服务的调用链路，包括租户、服务、插件、数据源之间的调用关系。
-        </p>
-      </div>
-      <div class="topology-page__actions">
+  <div class="page topology-page">
+    <NebulaPane
+      title="服务拓扑"
+      description="以拓扑图形式展示服务的调用链路，包括租户、服务、插件、数据源之间的调用关系。"
+    >
+      <div class="page__toolbar">
         <input
           v-model="routeInput"
           class="topology-page__route-input"
           placeholder="输入 Route ID 查看追踪"
           @keydown.enter="handleLoadRoute"
         />
-        <NebulaButton variant="secondary" @click="handleLoadRoute">
+        <NebulaButton variant="primary" @click="handleLoadRoute">
           查询路由
         </NebulaButton>
-        <NebulaButton variant="secondary" @click="handleRefresh">
-          刷新
-        </NebulaButton>
-      </div>
-    </header>
-
-    <div class="topology-page__content">
-      <!-- Tab 切换 -->
-      <div class="topology-tabs">
-        <button
-          class="topology-tab"
-          :class="{ 'topology-tab--active': activeTab === 'topology' }"
-          @click="activeTab = 'topology'"
+        <NebulaButton variant="outline" @click="handleRefresh"
+          >刷新</NebulaButton
         >
-          拓扑图
-        </button>
-        <button
-          v-if="routeId"
-          class="topology-tab"
-          :class="{ 'topology-tab--active': activeTab === 'traces' }"
-          @click="activeTab = 'traces'"
-        >
-          调用链 ({{ traces.length }})
-        </button>
-        <button
-          v-if="routeId"
-          class="topology-tab"
-          :class="{ 'topology-tab--active': activeTab === 'errors' }"
-          @click="activeTab = 'errors'"
-        >
-          异常 ({{ errors.length }})
-        </button>
       </div>
 
-      <!-- 拓扑图 -->
-      <div v-if="activeTab === 'topology'" class="topology-graph-wrapper">
-        <div class="topology-legend">
-          <div class="legend-item">
-            <span class="legend-icon">🏢</span>
-            <span>租户</span>
-          </div>
-          <div class="legend-item">
-            <span class="legend-icon">⚙️</span>
-            <span>服务</span>
-          </div>
-          <div class="legend-item">
-            <span class="legend-icon">🔌</span>
-            <span>插件</span>
-          </div>
-          <div class="legend-item">
-            <span class="legend-icon">🗄️</span>
-            <span>数据源</span>
-          </div>
-        </div>
-
-        <!-- 简化的拓扑图展示 -->
-        <div class="topology-graph" :class="{ loading }">
-          <div
-            v-for="node in nodes"
-            :key="node.id"
-            class="topology-node"
-            :style="{
-              left: node.x + 'px',
-              top: node.y + 'px',
-              borderColor: getNodeColor(node.type),
-            }"
+      <div class="topology-page__content">
+        <!-- Tab 切换 -->
+        <div class="topology-tabs">
+          <button
+            class="topology-tab"
+            :class="{ 'topology-tab--active': activeTab === 'topology' }"
+            @click="activeTab = 'topology'"
           >
-            <span class="node-icon">{{ getNodeIcon(node.type) }}</span>
-            <span class="node-name">{{ node.name }}</span>
-          </div>
-
-          <svg class="topology-links">
-            <line
-              v-for="(link, index) in links"
-              :key="index"
-              :x1="nodes.find((n) => n.id === link.source)?.x ?? 0"
-              :y1="nodes.find((n) => n.id === link.source)?.y ?? 0"
-              :x2="nodes.find((n) => n.id === link.target)?.x ?? 0"
-              :y2="nodes.find((n) => n.id === link.target)?.y ?? 0"
-              class="topology-link"
-            />
-          </svg>
-        </div>
-      </div>
-
-      <!-- 调用链追踪 -->
-      <div v-if="activeTab === 'traces'" class="topology-detail">
-        <div class="topology-detail__toolbar">
-          <NebulaButton variant="secondary" @click="loadRouteDetails">
-            刷新
-          </NebulaButton>
-          <NebulaButton variant="secondary" @click="handleClearTraces">
-            清除追踪
-          </NebulaButton>
-        </div>
-        <div v-if="tracesLoading" class="topology-detail__empty">加载中…</div>
-        <div v-else-if="traces.length === 0" class="topology-detail__empty">
-          暂无追踪记录
-        </div>
-        <div v-else class="topology-detail__list">
-          <div
-            v-for="trace in traces"
-            :key="trace.id"
-            class="topology-detail__item"
+            拓扑图
+          </button>
+          <button
+            v-if="routeId"
+            class="topology-tab"
+            :class="{ 'topology-tab--active': activeTab === 'traces' }"
+            @click="activeTab = 'traces'"
           >
-            <div class="topology-detail__item-head">
-              <NebulaTag :variant="traceStatusVariant(trace.status)">
-                {{ trace.status }}
-              </NebulaTag>
-              <span class="topology-detail__time">{{ trace.timestamp }}</span>
+            调用链 ({{ traces.length }})
+          </button>
+          <button
+            v-if="routeId"
+            class="topology-tab"
+            :class="{ 'topology-tab--active': activeTab === 'errors' }"
+            @click="activeTab = 'errors'"
+          >
+            异常 ({{ errors.length }})
+          </button>
+        </div>
+
+        <!-- 拓扑图 -->
+        <div v-if="activeTab === 'topology'" class="topology-graph-wrapper">
+          <div class="topology-legend">
+            <div class="legend-item">
+              <span class="legend-icon">🏢</span>
+              <span>租户</span>
             </div>
-            <p class="topology-detail__meta">
-              耗时: {{ trace.duration }}ms · Route: {{ trace.routeId }}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <!-- 异常记录 -->
-      <div v-if="activeTab === 'errors'" class="topology-detail">
-        <div class="topology-detail__toolbar">
-          <NebulaButton variant="secondary" @click="loadRouteDetails">
-            刷新
-          </NebulaButton>
-        </div>
-        <div v-if="errors.length === 0" class="topology-detail__empty">
-          暂无异常记录
-        </div>
-        <div v-else class="topology-detail__list">
-          <div
-            v-for="err in errors"
-            :key="err.id"
-            class="topology-detail__item topology-detail__item--error"
-          >
-            <div class="topology-detail__item-head">
-              <NebulaTag variant="danger">ERROR</NebulaTag>
-              <span class="topology-detail__time">{{ err.timestamp }}</span>
+            <div class="legend-item">
+              <span class="legend-icon">⚙️</span>
+              <span>服务</span>
             </div>
-            <p class="topology-detail__message">{{ err.message }}</p>
-            <pre v-if="err.stackTrace" class="topology-detail__stack">{{
-              err.stackTrace
-            }}</pre>
+            <div class="legend-item">
+              <span class="legend-icon">🔌</span>
+              <span>插件</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-icon">🗄️</span>
+              <span>数据源</span>
+            </div>
+          </div>
+
+          <!-- 简化的拓扑图展示 -->
+          <div class="topology-graph" :class="{ loading }">
+            <div
+              v-for="node in nodes"
+              :key="node.id"
+              class="topology-node"
+              :style="{
+                left: node.x + 'px',
+                top: node.y + 'px',
+                borderColor: getNodeColor(node.type),
+              }"
+            >
+              <span class="node-icon">{{ getNodeIcon(node.type) }}</span>
+              <span class="node-name">{{ node.name }}</span>
+            </div>
+
+            <svg class="topology-links">
+              <line
+                v-for="(link, index) in links"
+                :key="index"
+                :x1="nodes.find((n) => n.id === link.source)?.x ?? 0"
+                :y1="nodes.find((n) => n.id === link.source)?.y ?? 0"
+                :x2="nodes.find((n) => n.id === link.target)?.x ?? 0"
+                :y2="nodes.find((n) => n.id === link.target)?.y ?? 0"
+                class="topology-link"
+              />
+            </svg>
+          </div>
+        </div>
+
+        <!-- 调用链追踪 -->
+        <div v-if="activeTab === 'traces'" class="topology-detail">
+          <div class="topology-detail__toolbar">
+            <NebulaButton variant="outline" @click="loadRouteDetails">
+              刷新
+            </NebulaButton>
+            <NebulaButton variant="outline" @click="handleClearTraces">
+              清除追踪
+            </NebulaButton>
+          </div>
+          <div v-if="tracesLoading" class="topology-detail__empty">加载中…</div>
+          <div v-else-if="traces.length === 0" class="topology-detail__empty">
+            暂无追踪记录
+          </div>
+          <div v-else class="topology-detail__list">
+            <div
+              v-for="trace in traces"
+              :key="trace.id"
+              class="topology-detail__item"
+            >
+              <div class="topology-detail__item-head">
+                <NebulaTag :variant="traceStatusVariant(trace.status)">
+                  {{ trace.status }}
+                </NebulaTag>
+                <span class="topology-detail__time">{{ trace.timestamp }}</span>
+              </div>
+              <p class="topology-detail__meta">
+                耗时: {{ trace.duration }}ms · Route: {{ trace.routeId }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 异常记录 -->
+        <div v-if="activeTab === 'errors'" class="topology-detail">
+          <div class="topology-detail__toolbar">
+            <NebulaButton variant="outline" @click="loadRouteDetails">
+              刷新
+            </NebulaButton>
+          </div>
+          <div v-if="errors.length === 0" class="topology-detail__empty">
+            暂无异常记录
+          </div>
+          <div v-else class="topology-detail__list">
+            <div
+              v-for="err in errors"
+              :key="err.id"
+              class="topology-detail__item topology-detail__item--error"
+            >
+              <div class="topology-detail__item-head">
+                <NebulaTag variant="danger">ERROR</NebulaTag>
+                <span class="topology-detail__time">{{ err.timestamp }}</span>
+              </div>
+              <p class="topology-detail__message">{{ err.message }}</p>
+              <pre v-if="err.stackTrace" class="topology-detail__stack">{{
+                err.stackTrace
+              }}</pre>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </NebulaPane>
   </div>
 </template>
 
 <style scoped>
 .topology-page {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
   height: 100%;
-}
-
-.topology-page__header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding: 16px 20px;
-  background: hsl(var(--card));
-  border-radius: 8px;
-}
-
-.topology-page__title {
-  margin: 0 0 4px;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.topology-page__desc {
-  margin: 0;
-  font-size: 13px;
-  color: hsl(var(--muted-foreground));
-}
-
-.topology-page__actions {
-  display: flex;
-  gap: 8px;
 }
 
 .topology-page__content {

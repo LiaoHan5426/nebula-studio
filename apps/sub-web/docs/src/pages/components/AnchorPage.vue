@@ -1,10 +1,7 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
 
-// eslint-disable-next-line import/no-duplicates
-import AnchorBasicSource from '@/examples/anchor/AnchorBasic.vue?raw';
-
-import AnchorBasic from '@/examples/anchor/AnchorBasic.vue';
+import anchorBasicDemo from '@/examples/anchor/AnchorBasic.vue?demo';
 </script>
 
 <template>
@@ -12,7 +9,10 @@ import AnchorBasic from '@/examples/anchor/AnchorBasic.vue';
     <p>锚点导航组件，用于页面内锚点跳转和滚动追踪。</p>
 
     <h2 id="basic">基础用法</h2>
-    <Demo :component="AnchorBasic" :source="AnchorBasicSource" />
+    <Demo
+      :component="anchorBasicDemo.component"
+      :source="anchorBasicDemo.source"
+    />
 
     <h2>API</h2>
     <h3>Props</h3>

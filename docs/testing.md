@@ -20,7 +20,7 @@ vp run --filter @nebula-studio-renderer/integration test
 
 ## 单元测试
 
-根 `vitest.config.ts` 使用 `happy-dom`，并排除 `e2e`、构建输出和工具配置文件。测试文件主要覆盖：
+根 `vitest.config.ts` 使用 `happy-dom`，并排除 `e2e`、构建输出和工具配置文件。单测文件统一放在 `__tests__` 目录（例如 `src/__tests__/`、`src/utils/__tests__/` 或包根 `__tests__/`，与源码目录结构对应），命名 `*.test.ts`。主要覆盖：
 
 - API client 的请求头、401 和响应解析；
 - auth/runtime/app-shell 的模式与状态行为；
@@ -50,7 +50,7 @@ vp run build:web
 vp run build
 ```
 
-`build:web` 适合纯 Web/子应用变更的快速验证。全量 `build` 会递归构建工作区；Electron 构建还会构建并复制 docs site，因此修改组件文档、窗口配置、preload 或 Electron 集成时应跑全量构建。
+`build:web` 适合纯 Web/子应用变更的快速验证。全量 `build` 会递归构建工作区；修改组件文档（`apps/sub-web/docs`）、窗口配置、preload 或 Electron 集成时应跑全量构建。
 
 ## 按改动选择验证
 

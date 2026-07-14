@@ -17,7 +17,7 @@
     "build": "vite build --base=/integration/",
     "preview": "vite preview",
     "build:web": "vite build",
-    "test": "vp test"
+    "test": "vp test run"
   },
   "dependencies": {
     "@nebula-studio-electron/electron-bridge": "workspace:^",

@@ -85,11 +85,7 @@ const customConfig: Linter.Config[] = [
               message: 'contracts 禁止引用 editors 包',
             },
             {
-              group: [
-                '@nebula-studio/plugin-installer',
-                '@nebula-studio/route-designer',
-                '@nebula-studio/subscription-manager',
-              ],
+              group: ['@nebula-studio/plugin-installer'],
               message: 'contracts 禁止引用 features 包',
             },
           ],

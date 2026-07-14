@@ -52,7 +52,7 @@ const specFile = join(outDir, 'openapi.json');
 writeFileSync(specFile, JSON.stringify(spec, null, 2));
 
 console.log('Running openapi-typescript ...');
-execSync(`npx openapi-typescript "${specFile}" -o "${outFile}"`, {
+execSync(`vp exec openapi-typescript "${specFile}" -o "${outFile}"`, {
   cwd: root,
   stdio: 'inherit',
 });

@@ -3,8 +3,11 @@ import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import {
   NebulaButton,
+  NebulaInput,
+  NebulaPane,
   NebulaTable,
   NebulaTableColumn,
+  NebulaTag,
 } from '@nebula-studio/nebula-ui';
 
 import { pluginApi } from '@/shared/api/consoleApi';
@@ -267,175 +270,166 @@ function onFileSelected(event: Event) {
   const input = event.target as HTMLInputElement;
   uploadFile.value = input.files?.[0] ?? null;
 }
+
+function statusVariant(row: PluginRow) {
+  if (row.isActive) return 'success';
+  if (row.isPendingReview) return 'warning';
+  return 'default';
+}
+
+const pluginDescription = computed(() => {
+  const base = pluginInfo.value.desc;
+  if (isPlatformAdmin.value) {
+    return `${base}上传后可安装测试；审批普通用户提交的启用申请。`;
+  }
+  return `${base}仅管理本人上传的插件；平台内置插件请在下方连接器区域查看与测试。启用前需提交审批。`;
+});
 </script>
 
 <template>
-  <div class="plugin-page">
-    <header class="plugin-page__header">
-      <div class="plugin-page__title-row">
-        <span class="plugin-page__icon">{{ pluginInfo.icon }}</span>
-        <h2 class="plugin-page__title">{{ pluginInfo.label }}</h2>
+  <div class="page">
+    <NebulaPane :title="pluginInfo.label" :description="pluginDescription">
+      <div class="page__toolbar">
+        <NebulaButton variant="primary" @click="showUploadDialog = true">
+          新增插件
+        </NebulaButton>
+        <NebulaButton variant="outline" @click="loadPlugins">
+          刷新
+        </NebulaButton>
       </div>
-      <p class="plugin-page__desc">
-        {{ pluginInfo.desc }}
-        <template v-if="isPlatformAdmin">
-          上传后可安装测试；审批普通用户提交的启用申请。
-        </template>
-        <template v-else>
-          仅管理本人上传的插件；平台内置插件请在下方连接器区域查看与测试。启用前需提交审批。
-        </template>
-      </p>
-    </header>
 
-    <div class="plugin-page__actions">
-      <NebulaButton variant="primary" @click="showUploadDialog = true">
-        新增插件
-      </NebulaButton>
-      <NebulaButton variant="secondary" @click="loadPlugins">
-        刷新
-      </NebulaButton>
-    </div>
+      <div class="page__table-wrap">
+        <NebulaTable
+          :data="plugins"
+          :loading="loading"
+          :scroll-x="{ enabled: false }"
+          row-key="id"
+        >
+          <NebulaTableColumn
+            field="name"
+            title="插件名称"
+            min-width="120"
+            show-overflow="tooltip"
+          />
+          <NebulaTableColumn field="version" title="版本" width="96">
+            <template #default="{ row }">
+              <NebulaTag variant="info">v{{ row.version }}</NebulaTag>
+            </template>
+          </NebulaTableColumn>
+          <NebulaTableColumn
+            field="connectorId"
+            title="连接器 ID"
+            min-width="120"
+            show-overflow="tooltip"
+          />
+          <NebulaTableColumn field="statusLabel" title="状态" width="112">
+            <template #default="{ row }">
+              <NebulaTag :variant="statusVariant(row)">
+                {{ row.statusLabel }}
+                <template v-if="row.transitioning"> · 过渡中</template>
+              </NebulaTag>
+            </template>
+          </NebulaTableColumn>
+          <NebulaTableColumn
+            field="activatedAt"
+            title="激活时间"
+            width="148"
+            show-overflow="tooltip"
+          />
+          <NebulaTableColumn
+            field="description"
+            title="描述"
+            show-overflow="tooltip"
+          />
+          <NebulaTableColumn title="操作" width="280">
+            <template #default="{ row }">
+              <div class="row-actions">
+                <NebulaButton
+                  v-if="row.status === 'UPLOADED'"
+                  variant="outline"
+                  @click="handleInstall(row)"
+                >
+                  安装测试
+                </NebulaButton>
+                <NebulaButton variant="outline" @click="handleEdit(row)">
+                  编辑
+                </NebulaButton>
+                <NebulaButton
+                  v-if="isPlatformAdmin && row.isPendingReview"
+                  variant="outline"
+                  @click="handleApprove(row)"
+                >
+                  通过
+                </NebulaButton>
+                <NebulaButton
+                  v-if="isPlatformAdmin && row.isPendingReview"
+                  variant="outline"
+                  @click="handleReject(row)"
+                >
+                  驳回
+                </NebulaButton>
+                <NebulaButton
+                  v-if="!isPlatformAdmin && row.canRequestActivation"
+                  variant="outline"
+                  @click="handleEnable(row)"
+                >
+                  提交启用
+                </NebulaButton>
+                <NebulaButton
+                  v-if="isPlatformAdmin && row.canRequestActivation"
+                  variant="outline"
+                  @click="handleEnable(row)"
+                >
+                  激活
+                </NebulaButton>
+                <NebulaButton
+                  v-if="row.isActive"
+                  variant="outline"
+                  @click="handleEnable(row)"
+                >
+                  停用
+                </NebulaButton>
+                <NebulaButton variant="outline" @click="handleDelete(row)">
+                  删除
+                </NebulaButton>
+              </div>
+            </template>
+          </NebulaTableColumn>
+        </NebulaTable>
+      </div>
+    </NebulaPane>
 
-    <div class="plugin-page__table-wrap">
-      <NebulaTable
-        :data="plugins"
-        :loading="loading"
-        :scroll-x="{ enabled: false }"
-        row-key="id"
-        class="plugin-page__table"
-      >
-        <NebulaTableColumn
-          field="name"
-          title="插件名称"
-          min-width="120"
-          show-overflow="tooltip"
-        />
-        <NebulaTableColumn field="version" title="版本" width="80">
-          <template #default="{ row }">
-            <span class="version-tag">v{{ row.version }}</span>
-          </template>
-        </NebulaTableColumn>
-        <NebulaTableColumn
-          field="connectorId"
-          title="连接器 ID"
-          min-width="120"
-          show-overflow="tooltip"
-        />
-        <NebulaTableColumn field="statusLabel" title="状态" width="88">
-          <template #default="{ row }">
-            <span
-              :class="[
-                'status-badge',
-                row.isActive
-                  ? 'active'
-                  : row.isPendingReview
-                    ? 'pending'
-                    : 'inactive',
-              ]"
-            >
-              {{ row.statusLabel }}
-              <span v-if="row.transitioning" class="status-badge__hint"
-                >过渡中</span
-              >
-            </span>
-          </template>
-        </NebulaTableColumn>
-        <NebulaTableColumn
-          field="activatedAt"
-          title="激活时间"
-          width="148"
-          show-overflow="tooltip"
-        />
-        <NebulaTableColumn
-          field="description"
-          title="描述"
-          show-overflow="tooltip"
-        />
-        <NebulaTableColumn title="操作" width="280">
-          <template #default="{ row }">
-            <div class="action-btns">
-              <NebulaButton
-                v-if="row.status === 'UPLOADED'"
-                variant="secondary"
-                @click="handleInstall(row)"
-              >
-                安装测试
-              </NebulaButton>
-              <NebulaButton variant="secondary" @click="handleEdit(row)">
-                编辑
-              </NebulaButton>
-              <NebulaButton
-                v-if="isPlatformAdmin && row.isPendingReview"
-                variant="secondary"
-                @click="handleApprove(row)"
-              >
-                通过
-              </NebulaButton>
-              <NebulaButton
-                v-if="isPlatformAdmin && row.isPendingReview"
-                variant="secondary"
-                @click="handleReject(row)"
-              >
-                驳回
-              </NebulaButton>
-              <NebulaButton
-                v-if="!isPlatformAdmin && row.canRequestActivation"
-                variant="secondary"
-                @click="handleEnable(row)"
-              >
-                提交启用
-              </NebulaButton>
-              <NebulaButton
-                v-if="isPlatformAdmin && row.canRequestActivation"
-                variant="secondary"
-                @click="handleEnable(row)"
-              >
-                激活
-              </NebulaButton>
-              <NebulaButton
-                v-if="row.isActive"
-                variant="secondary"
-                @click="handleEnable(row)"
-              >
-                停用
-              </NebulaButton>
-              <NebulaButton variant="secondary" @click="handleDelete(row)">
-                删除
-              </NebulaButton>
-            </div>
-          </template>
-        </NebulaTableColumn>
-      </NebulaTable>
-    </div>
-
-    <div v-if="showUploadDialog" class="upload-dialog">
-      <div class="upload-dialog__panel">
-        <h3>上传插件 JAR</h3>
-        <label class="upload-dialog__field">
-          插件名称
-          <input v-model="uploadForm.pluginName" type="text" />
+    <div
+      v-if="showUploadDialog"
+      class="modal-overlay"
+      @click.self="showUploadDialog = false"
+    >
+      <NebulaPane title="上传插件 JAR" class="modal">
+        <label class="field">
+          <span>插件名称</span>
+          <NebulaInput v-model="uploadForm.pluginName" />
         </label>
-        <label class="upload-dialog__field">
-          版本
-          <input v-model="uploadForm.pluginVersion" type="text" />
+        <label class="field">
+          <span>版本</span>
+          <NebulaInput v-model="uploadForm.pluginVersion" />
         </label>
-        <label class="upload-dialog__field">
-          描述
-          <input v-model="uploadForm.description" type="text" />
+        <label class="field">
+          <span>描述</span>
+          <NebulaInput v-model="uploadForm.description" />
         </label>
-        <label class="upload-dialog__field">
-          JAR 文件
+        <label class="field">
+          <span>JAR 文件</span>
           <input type="file" accept=".jar" @change="onFileSelected" />
         </label>
-        <div class="upload-dialog__actions">
-          <NebulaButton variant="secondary" @click="showUploadDialog = false"
-            >取消</NebulaButton
-          >
+        <div class="modal__actions">
+          <NebulaButton variant="outline" @click="showUploadDialog = false">
+            取消
+          </NebulaButton>
           <NebulaButton variant="primary" @click="handleUpload"
             >上传</NebulaButton
           >
         </div>
-      </div>
+      </NebulaPane>
     </div>
 
     <PluginConnectorSection
@@ -445,142 +439,3 @@ function onFileSelected(event: Event) {
     />
   </div>
 </template>
-
-<style scoped>
-.plugin-page {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding-bottom: 8px;
-}
-
-.plugin-page__header {
-  padding: 16px 20px;
-  background: hsl(var(--card));
-  border-radius: 8px;
-}
-
-.plugin-page__title-row {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  margin-bottom: 4px;
-}
-
-.plugin-page__icon {
-  font-size: 20px;
-}
-
-.plugin-page__title {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.plugin-page__desc {
-  margin: 0;
-  font-size: 13px;
-  color: hsl(var(--muted-foreground));
-}
-
-.plugin-page__actions {
-  display: flex;
-  gap: 8px;
-}
-
-.plugin-page__table-wrap {
-  padding: 12px 16px;
-  background: hsl(var(--card));
-  border-radius: 8px;
-}
-
-.plugin-page__table {
-  width: 100%;
-}
-
-.version-tag {
-  display: inline-block;
-  padding: 2px 8px;
-  font-family: ui-monospace, monospace;
-  font-size: 12px;
-  font-weight: 600;
-  color: hsl(var(--primary));
-  background: hsl(var(--primary) / 10%);
-  border-radius: 4px;
-}
-
-.status-badge {
-  display: inline-flex;
-  gap: 4px;
-  align-items: center;
-  padding: 2px 8px;
-  font-size: 12px;
-  border-radius: 4px;
-}
-
-.status-badge.active {
-  color: hsl(var(--primary));
-  background: hsl(var(--primary) / 12%);
-}
-
-.status-badge.inactive {
-  color: hsl(var(--muted-foreground));
-  background: hsl(var(--muted));
-}
-
-.status-badge.pending {
-  color: hsl(38deg 92% 40%);
-  background: hsl(45deg 100% 50% / 18%);
-}
-
-.status-badge__hint {
-  font-size: 11px;
-  opacity: 0.85;
-}
-
-.action-btns {
-  display: inline-flex;
-  flex-wrap: nowrap;
-  gap: 6px;
-  align-items: center;
-}
-
-.upload-dialog {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgb(0 0 0 / 40%);
-}
-
-.upload-dialog__panel {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: min(420px, 92vw);
-  padding: 20px;
-  background: hsl(var(--card));
-  border-radius: 8px;
-}
-
-.upload-dialog__field {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 13px;
-}
-
-.upload-dialog__field input {
-  padding: 8px;
-  border: 1px solid hsl(var(--border));
-  border-radius: 6px;
-}
-
-.upload-dialog__actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-}
-</style>

@@ -1,14 +1,8 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
 
-// eslint-disable-next-line import/no-duplicates
-import RadioGroupBasicSource from '@/examples/radio-group/RadioGroupBasic.vue?raw';
-// eslint-disable-next-line import/no-duplicates
-import RadioGroupDisabledSource from '@/examples/radio-group/RadioGroupDisabled.vue?raw';
-
-import RadioGroupBasic from '@/examples/radio-group/RadioGroupBasic.vue';
-// eslint-disable-next-line import/no-duplicates
-import RadioGroupDisabled from '@/examples/radio-group/RadioGroupDisabled.vue';
+import radioGroupBasicDemo from '@/examples/radio-group/RadioGroupBasic.vue?demo';
+import radioGroupDisabledDemo from '@/examples/radio-group/RadioGroupDisabled.vue?demo';
 </script>
 
 <template>
@@ -16,10 +10,16 @@ import RadioGroupDisabled from '@/examples/radio-group/RadioGroupDisabled.vue';
     <p>单选框组，在一组互斥选项中进行选择。</p>
 
     <h2 id="basic">基础用法</h2>
-    <Demo :component="RadioGroupBasic" :source="RadioGroupBasicSource" />
+    <Demo
+      :component="radioGroupBasicDemo.component"
+      :source="radioGroupBasicDemo.source"
+    />
 
     <h2 id="disabled">禁用状态</h2>
-    <Demo :component="RadioGroupDisabled" :source="RadioGroupDisabledSource" />
+    <Demo
+      :component="radioGroupDisabledDemo.component"
+      :source="radioGroupDisabledDemo.source"
+    />
 
     <h2>API</h2>
     <h3>Props</h3>

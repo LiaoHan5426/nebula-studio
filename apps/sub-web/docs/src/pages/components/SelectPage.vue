@@ -1,14 +1,8 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
 
-// eslint-disable-next-line import/no-duplicates
-import SelectBasicSource from '@/examples/select/SelectBasic.vue?raw';
-// eslint-disable-next-line import/no-duplicates
-import SelectDisabledSource from '@/examples/select/SelectDisabled.vue?raw';
-
-import SelectBasic from '@/examples/select/SelectBasic.vue';
-// eslint-disable-next-line import/no-duplicates
-import SelectDisabled from '@/examples/select/SelectDisabled.vue';
+import selectBasicDemo from '@/examples/select/SelectBasic.vue?demo';
+import selectDisabledDemo from '@/examples/select/SelectDisabled.vue?demo';
 </script>
 
 <template>
@@ -16,10 +10,16 @@ import SelectDisabled from '@/examples/select/SelectDisabled.vue';
     <p>下拉选择器，支持对象选项和自定义键名。</p>
 
     <h2 id="basic">基础用法</h2>
-    <Demo :component="SelectBasic" :source="SelectBasicSource" />
+    <Demo
+      :component="selectBasicDemo.component"
+      :source="selectBasicDemo.source"
+    />
 
     <h2 id="disabled">禁用状态</h2>
-    <Demo :component="SelectDisabled" :source="SelectDisabledSource" />
+    <Demo
+      :component="selectDisabledDemo.component"
+      :source="selectDisabledDemo.source"
+    />
 
     <h2>API</h2>
     <h3>Props</h3>

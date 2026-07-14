@@ -13,7 +13,7 @@
     "./components/DagEditor.vue": "./src/components/DagEditor.vue"
   },
   "scripts": {
-    "test": "vp test"
+    "test": "vp test run"
   },
   "dependencies": {
     "vue": "catalog:vue",

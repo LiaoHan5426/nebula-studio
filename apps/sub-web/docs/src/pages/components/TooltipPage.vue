@@ -1,15 +1,8 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
 
-// eslint-disable-next-line import/no-duplicates
-import TooltipBasicSource from '@/examples/tooltip/TooltipBasic.vue?raw';
-// eslint-disable-next-line import/no-duplicates
-import TooltipPlacementSource from '@/examples/tooltip/TooltipPlacement.vue?raw';
-
-// eslint-disable-next-line import/no-duplicates
-import TooltipBasic from '@/examples/tooltip/TooltipBasic.vue';
-// eslint-disable-next-line import/no-duplicates
-import TooltipPlacement from '@/examples/tooltip/TooltipPlacement.vue';
+import tooltipBasicDemo from '@/examples/tooltip/TooltipBasic.vue?demo';
+import tooltipPlacementDemo from '@/examples/tooltip/TooltipPlacement.vue?demo';
 </script>
 
 <template>
@@ -17,10 +10,16 @@ import TooltipPlacement from '@/examples/tooltip/TooltipPlacement.vue';
     <p>文字提示气泡，用于展示悬停提示信息。</p>
 
     <h2 id="basic">基础用法</h2>
-    <Demo :component="TooltipBasic" :source="TooltipBasicSource" />
+    <Demo
+      :component="tooltipBasicDemo.component"
+      :source="tooltipBasicDemo.source"
+    />
 
     <h2 id="placement">不同位置</h2>
-    <Demo :component="TooltipPlacement" :source="TooltipPlacementSource" />
+    <Demo
+      :component="tooltipPlacementDemo.component"
+      :source="tooltipPlacementDemo.source"
+    />
 
     <h2>API</h2>
     <h3>Props</h3>

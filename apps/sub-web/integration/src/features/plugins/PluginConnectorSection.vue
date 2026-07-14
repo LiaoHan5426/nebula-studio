@@ -129,16 +129,15 @@ function resolveTypeLabel(connector: Connector): string {
 </script>
 
 <template>
-  <section class="connector-section">
-    <div class="connector-section__head">
-      <h3 class="connector-section__title">{{ sectionTitle }}</h3>
-      <NebulaButton variant="secondary" size="small" @click="loadConnectors">
-        刷新
-      </NebulaButton>
+  <NebulaPane
+    :title="sectionTitle"
+    description="插件激活后由 PF4J 注册为运行时连接器，供数据源与接口编排选用。"
+  >
+    <div class="connector-section__toolbar">
+      <NebulaButton variant="outline" @click="loadConnectors"
+        >刷新</NebulaButton
+      >
     </div>
-    <p class="connector-section__desc">
-      插件激活后由 PF4J 注册为运行时连接器，供数据源与接口编排选用。
-    </p>
 
     <div v-if="loading" class="connector-section__empty">加载中…</div>
     <div
@@ -169,18 +168,14 @@ function resolveTypeLabel(connector: Connector): string {
             </template>
           </span>
         </div>
-        <NebulaTag variant="default" class="connector-section__type">
+        <NebulaTag variant="info">
           {{ resolveTypeLabel(connector) }}
         </NebulaTag>
         <div class="connector-section__row-actions">
           <NebulaTag :variant="statusVariant(connector.status)">
             {{ connector.status }}
           </NebulaTag>
-          <NebulaButton
-            variant="secondary"
-            size="small"
-            @click="openTest(connector)"
-          >
+          <NebulaButton variant="outline" @click="openTest(connector)">
             测试连接
           </NebulaButton>
         </div>
@@ -243,42 +238,24 @@ function resolveTypeLabel(connector: Connector): string {
         </div>
 
         <div class="modal__actions">
-          <NebulaButton variant="secondary" @click="showTestDialog = false">
+          <NebulaButton variant="outline" @click="showTestDialog = false">
             关闭
           </NebulaButton>
-          <NebulaButton :disabled="testing" @click="runTest">
+          <NebulaButton variant="primary" :disabled="testing" @click="runTest">
             {{ testing ? '测试中…' : '测试' }}
           </NebulaButton>
         </div>
       </NebulaPane>
     </div>
-  </section>
+  </NebulaPane>
 </template>
 
 <style scoped>
-.connector-section {
-  padding: 16px 20px;
-  background: hsl(var(--card));
-  border-radius: 8px;
-}
-
-.connector-section__head {
+.connector-section__toolbar {
   display: flex;
+  gap: 8px;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 4px;
-}
-
-.connector-section__title {
-  margin: 0;
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.connector-section__desc {
-  margin: 0 0 12px;
-  font-size: 12px;
-  color: hsl(var(--muted-foreground));
+  margin-bottom: 12px;
 }
 
 .connector-section__empty {
@@ -299,9 +276,9 @@ function resolveTypeLabel(connector: Connector): string {
   gap: 12px;
   align-items: center;
   padding: 12px 16px;
-  background: hsl(var(--background));
-  border: 1px solid hsl(var(--border));
-  border-radius: 8px;
+  background: hsl(var(--muted) / 18%);
+  border: 1px solid hsl(var(--border) / 72%);
+  border-radius: 10px;
 }
 
 .connector-section__row-main {
@@ -328,45 +305,12 @@ function resolveTypeLabel(connector: Connector): string {
   white-space: nowrap;
 }
 
-.connector-section__type {
-  flex-shrink: 0;
-}
-
 .connector-section__row-actions {
   display: flex;
   flex-shrink: 0;
   gap: 8px;
   align-items: center;
   margin-left: auto;
-}
-
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 900;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgb(0 0 0 / 45%);
-}
-
-.modal {
-  width: min(480px, 92vw);
-}
-
-.field {
-  display: grid;
-  gap: 6px;
-  margin-bottom: 12px;
-  font-size: 13px;
-}
-
-.field input {
-  padding: 8px 10px;
-  color: hsl(var(--foreground));
-  background: hsl(var(--background));
-  border: 1px solid hsl(var(--border));
-  border-radius: 6px;
 }
 
 .test-result {
@@ -381,12 +325,5 @@ function resolveTypeLabel(connector: Connector): string {
 .test-result--ok {
   color: hsl(var(--success));
   background: hsl(var(--success) / 12%);
-}
-
-.modal__actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-  margin-top: 8px;
 }
 </style>

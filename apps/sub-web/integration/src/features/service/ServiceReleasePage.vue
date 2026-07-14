@@ -1,89 +1,38 @@
-<template>
-  <div class="service-release-page">
-    <div class="page-header">
-      <h2>发布管理</h2>
-      <button class="btn-refresh" @click="loadReleases">刷新</button>
-    </div>
-
-    <div v-if="loading" class="loading">加载中...</div>
-
-    <table v-else class="release-table">
-      <thead>
-        <tr>
-          <th>发布 ID</th>
-          <th>资源 ID</th>
-          <th>版本 ID</th>
-          <th>状态</th>
-          <th>创建者</th>
-          <th>创建时间</th>
-          <th>部署时间</th>
-          <th>操作</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="release in releases" :key="release.releaseId">
-          <td>{{ release.releaseId }}</td>
-          <td>{{ release.resourceId }}</td>
-          <td>{{ release.versionId || '-' }}</td>
-          <td>
-            <span
-              :class="[
-                'status-badge',
-                `status-${release.status.toLowerCase().replace('_', '-')}`,
-              ]"
-            >
-              {{ statusLabel(release.status) }}
-            </span>
-          </td>
-          <td>{{ release.createdBy || '-' }}</td>
-          <td>{{ formatTime(release.createdAt) }}</td>
-          <td>
-            {{ release.deployedAt ? formatTime(release.deployedAt) : '-' }}
-          </td>
-          <td>
-            <button
-              v-if="release.status === 'APPROVED'"
-              class="btn-action"
-              @click="handleDeploy(release)"
-            >
-              部署
-            </button>
-            <button
-              v-if="release.status === 'DEPLOYED'"
-              class="btn-action btn-danger"
-              @click="handleRollback(release)"
-            >
-              回滚
-            </button>
-            <span v-if="!canOperate(release)" class="text-muted">-</span>
-          </td>
-        </tr>
-        <tr v-if="releases.length === 0">
-          <td colspan="8" class="empty">暂无发布记录</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
+import {
+  NebulaButton,
+  NebulaPane,
+  NebulaTable,
+  NebulaTableColumn,
+  NebulaTag,
+} from '@nebula-studio/nebula-ui';
+
 import { releaseApi } from '@/shared/api/consoleApi';
 import type { ReleaseRecord } from '@/shared/types';
 
 const releases = ref<ReleaseRecord[]>([]);
 const loading = ref(false);
 
+const STATUS_LABELS: Record<string, string> = {
+  DRAFT: '草稿',
+  VERSIONED: '已版本化',
+  APPROVED: '已审批',
+  DEPLOYING: '部署中',
+  DEPLOYED: '已部署',
+  ROLLED_BACK: '已回滚',
+};
+
 function statusLabel(status: string): string {
-  const map: Record<string, string> = {
-    DRAFT: '草稿',
-    VERSIONED: '已版本化',
-    APPROVED: '已审批',
-    DEPLOYING: '部署中',
-    DEPLOYED: '已部署',
-    ROLLED_BACK: '已回滚',
-  };
-  return map[status] || status;
+  return STATUS_LABELS[status] ?? status;
+}
+
+function statusVariant(status: string) {
+  if (status === 'DEPLOYED') return 'success';
+  if (status === 'APPROVED') return 'info';
+  if (status === 'ROLLED_BACK') return 'warning';
+  if (status === 'DEPLOYING') return 'warning';
+  return 'default';
 }
 
 function formatTime(iso: string): string {
@@ -129,103 +78,84 @@ async function handleRollback(release: ReleaseRecord) {
 onMounted(loadReleases);
 </script>
 
-<style scoped>
-.service-release-page {
-  padding: 16px;
-}
+<template>
+  <div class="page">
+    <NebulaPane title="发布管理" description="查看服务发布记录并执行部署或回滚">
+      <div class="page__toolbar">
+        <NebulaButton variant="outline" @click="loadReleases"
+          >刷新</NebulaButton
+        >
+      </div>
 
-.page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-
-.page-header h2 {
-  margin: 0;
-  font-size: 18px;
-}
-
-.release-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.release-table th,
-.release-table td {
-  padding: 8px 12px;
-  text-align: left;
-  border-bottom: 1px solid #eee;
-}
-
-.release-table th {
-  font-weight: 600;
-  background: #fafafa;
-}
-
-.status-badge {
-  padding: 2px 8px;
-  font-size: 12px;
-  border-radius: 4px;
-}
-
-.status-draft {
-  background: #f0f0f0;
-}
-
-.status-versioned {
-  background: #e6f7ff;
-}
-
-.status-approved {
-  background: #f6ffed;
-}
-
-.status-deploying {
-  background: #fff7e6;
-}
-
-.status-deployed {
-  color: #155724;
-  background: #d4edda;
-}
-
-.status-rolled-back {
-  color: #721c24;
-  background: #f8d7da;
-}
-
-.btn-action {
-  padding: 4px 12px;
-  margin-right: 4px;
-  color: #1890ff;
-  cursor: pointer;
-  background: transparent;
-  border: 1px solid #1890ff;
-  border-radius: 4px;
-}
-
-.btn-danger {
-  color: #ff4d4f;
-  border-color: #ff4d4f;
-}
-
-.btn-refresh {
-  padding: 4px 12px;
-  cursor: pointer;
-  background: #fff;
-  border: 1px solid #d9d9d9;
-  border-radius: 4px;
-}
-
-.loading,
-.empty {
-  padding: 24px;
-  color: #999;
-  text-align: center;
-}
-
-.text-muted {
-  color: #999;
-}
-</style>
+      <div class="page__table-wrap">
+        <NebulaTable
+          :data="releases"
+          :loading="loading"
+          row-key="releaseId"
+          :scroll-x="{ enabled: true }"
+        >
+          <NebulaTableColumn
+            field="releaseId"
+            title="发布 ID"
+            min-width="120"
+            show-overflow="tooltip"
+          />
+          <NebulaTableColumn
+            field="resourceId"
+            title="资源 ID"
+            min-width="120"
+            show-overflow="tooltip"
+          />
+          <NebulaTableColumn field="versionId" title="版本 ID" min-width="100">
+            <template #default="{ row }">
+              {{ row.versionId || '-' }}
+            </template>
+          </NebulaTableColumn>
+          <NebulaTableColumn field="status" title="状态" width="108">
+            <template #default="{ row }">
+              <NebulaTag :variant="statusVariant(row.status)">
+                {{ statusLabel(row.status) }}
+              </NebulaTag>
+            </template>
+          </NebulaTableColumn>
+          <NebulaTableColumn field="createdBy" title="创建者" width="96">
+            <template #default="{ row }">
+              {{ row.createdBy || '-' }}
+            </template>
+          </NebulaTableColumn>
+          <NebulaTableColumn field="createdAt" title="创建时间" width="160">
+            <template #default="{ row }">
+              {{ formatTime(row.createdAt) }}
+            </template>
+          </NebulaTableColumn>
+          <NebulaTableColumn field="deployedAt" title="部署时间" width="160">
+            <template #default="{ row }">
+              {{ row.deployedAt ? formatTime(row.deployedAt) : '-' }}
+            </template>
+          </NebulaTableColumn>
+          <NebulaTableColumn title="操作" width="160">
+            <template #default="{ row }">
+              <div v-if="canOperate(row)" class="row-actions">
+                <NebulaButton
+                  v-if="row.status === 'APPROVED'"
+                  variant="outline"
+                  @click="handleDeploy(row)"
+                >
+                  部署
+                </NebulaButton>
+                <NebulaButton
+                  v-if="row.status === 'DEPLOYED'"
+                  variant="outline"
+                  @click="handleRollback(row)"
+                >
+                  回滚
+                </NebulaButton>
+              </div>
+              <span v-else class="page__meta">-</span>
+            </template>
+          </NebulaTableColumn>
+        </NebulaTable>
+      </div>
+    </NebulaPane>
+  </div>
+</template>

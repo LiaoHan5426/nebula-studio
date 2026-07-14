@@ -30,7 +30,9 @@ export interface BootSubAppOptions {
  * bootSubApp({ App, router });
  * ```
  */
-export function bootSubApp(options: BootSubAppOptions): void {
+export function bootSubApp(
+  options: BootSubAppOptions,
+): ReturnType<typeof createApp> {
   const { App, router, beforeMount } = options;
 
   const app = createApp({
@@ -54,4 +56,5 @@ export function bootSubApp(options: BootSubAppOptions): void {
   }
 
   app.mount('#app');
+  return app;
 }

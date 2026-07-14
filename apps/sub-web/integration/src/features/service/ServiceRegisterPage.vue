@@ -127,82 +127,76 @@ function formatTime(value?: string) {
 </script>
 
 <template>
-  <div class="service-register-page">
-    <header class="service-register-page__header">
-      <div>
-        <h2 class="service-register-page__title">服务注册</h2>
-        <p class="service-register-page__desc">
-          <template v-if="isPlatformAdmin">
-            注册原子服务：配置端点、连接器与认证信息。发布请前往「服务发布」。
-          </template>
-          <template v-else>
-            仅管理本人注册的原子服务。发布请前往「服务发布」并提交审批。
-          </template>
-        </p>
+  <div class="page">
+    <NebulaPane
+      title="服务注册"
+      :description="
+        isPlatformAdmin
+          ? '注册原子服务：配置端点、连接器与认证信息。发布请前往「服务发布」。'
+          : '仅管理本人注册的原子服务。发布请前往「服务发布」并提交审批。'
+      "
+    >
+      <div class="page__toolbar">
+        <NebulaButton variant="primary" @click="openCreate">
+          注册原子服务
+        </NebulaButton>
+        <NebulaButton variant="outline" @click="loadServices"
+          >刷新</NebulaButton
+        >
       </div>
-    </header>
 
-    <div class="service-register-page__actions">
-      <NebulaButton variant="primary" @click="openCreate">
-        注册原子服务
-      </NebulaButton>
-      <NebulaButton variant="secondary" @click="loadServices">
-        刷新
-      </NebulaButton>
-    </div>
-
-    <div class="service-register-page__table-wrap">
-      <NebulaTable
-        :data="atomicServices"
-        :loading="loading"
-        :scroll-x="{ enabled: false }"
-        row-key="interfaceId"
-        class="service-register-page__table"
-      >
-        <NebulaTableColumn
-          field="interfaceName"
-          title="服务名称"
-          min-width="140"
-          show-overflow="tooltip"
-        />
-        <NebulaTableColumn
-          field="endpointUri"
-          title="端点"
-          min-width="160"
-          show-overflow="tooltip"
-        />
-        <NebulaTableColumn field="method" title="方法" width="80" />
-        <NebulaTableColumn field="connectorId" title="连接器" width="120">
-          <template #default="{ row }">
-            {{ connectorLabel(row.connectorId) }}
-          </template>
-        </NebulaTableColumn>
-        <NebulaTableColumn field="status" title="状态" width="100">
-          <template #default="{ row }">
-            <NebulaTag :variant="statusVariant(row.status)">
-              {{ row.status }}
-            </NebulaTag>
-          </template>
-        </NebulaTableColumn>
-        <NebulaTableColumn field="createdAt" title="注册时间" width="150">
-          <template #default="{ row }">
-            {{ formatTime(row.createdAt) }}
-          </template>
-        </NebulaTableColumn>
-        <NebulaTableColumn title="操作" width="160">
-          <template #default="{ row }">
-            <div class="action-btns">
-              <NebulaButton variant="secondary" @click="openEdit(row)">
-                编辑
-              </NebulaButton>
-              <NebulaButton variant="secondary" @click="handleDelete(row)">
-                删除
-              </NebulaButton>
-            </div>
-          </template>
-        </NebulaTableColumn>
-      </NebulaTable>
-    </div>
+      <div class="page__table-wrap">
+        <NebulaTable
+          :data="atomicServices"
+          :loading="loading"
+          :scroll-x="{ enabled: false }"
+          row-key="interfaceId"
+        >
+          <NebulaTableColumn
+            field="interfaceName"
+            title="服务名称"
+            min-width="140"
+            show-overflow="tooltip"
+          />
+          <NebulaTableColumn
+            field="endpointUri"
+            title="端点"
+            min-width="160"
+            show-overflow="tooltip"
+          />
+          <NebulaTableColumn field="method" title="方法" width="80" />
+          <NebulaTableColumn field="connectorId" title="连接器" width="120">
+            <template #default="{ row }">
+              {{ connectorLabel(row.connectorId) }}
+            </template>
+          </NebulaTableColumn>
+          <NebulaTableColumn field="status" title="状态" width="100">
+            <template #default="{ row }">
+              <NebulaTag :variant="statusVariant(row.status)">
+                {{ row.status }}
+              </NebulaTag>
+            </template>
+          </NebulaTableColumn>
+          <NebulaTableColumn field="createdAt" title="注册时间" width="150">
+            <template #default="{ row }">
+              {{ formatTime(row.createdAt) }}
+            </template>
+          </NebulaTableColumn>
+          <NebulaTableColumn title="操作" width="160">
+            <template #default="{ row }">
+              <div class="row-actions">
+                <NebulaButton variant="outline" @click="openEdit(row)">
+                  编辑
+                </NebulaButton>
+                <NebulaButton variant="outline" @click="handleDelete(row)">
+                  删除
+                </NebulaButton>
+              </div>
+            </template>
+          </NebulaTableColumn>
+        </NebulaTable>
+      </div>
+    </NebulaPane>
 
     <div
       v-if="showDialog"
@@ -250,97 +244,14 @@ function formatTime(value?: string) {
           </select>
         </label>
         <div class="modal__actions">
-          <NebulaButton variant="secondary" @click="showDialog = false">
+          <NebulaButton variant="outline" @click="showDialog = false">
             取消
           </NebulaButton>
-          <NebulaButton @click="saveService">保存</NebulaButton>
+          <NebulaButton variant="primary" @click="saveService"
+            >保存</NebulaButton
+          >
         </div>
       </NebulaPane>
     </div>
   </div>
 </template>
-
-<style scoped>
-.service-register-page {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding-bottom: 8px;
-}
-
-.service-register-page__header {
-  padding: 16px 20px;
-  background: hsl(var(--card));
-  border-radius: 8px;
-}
-
-.service-register-page__title {
-  margin: 0 0 4px;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.service-register-page__desc {
-  margin: 0;
-  font-size: 13px;
-  color: hsl(var(--muted-foreground));
-}
-
-.service-register-page__actions {
-  display: flex;
-  gap: 8px;
-}
-
-.service-register-page__table-wrap {
-  padding: 12px 16px;
-  background: hsl(var(--card));
-  border-radius: 8px;
-}
-
-.service-register-page__table {
-  width: 100%;
-}
-
-.action-btns {
-  display: inline-flex;
-  gap: 6px;
-  align-items: center;
-}
-
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 900;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgb(0 0 0 / 45%);
-}
-
-.modal {
-  width: min(520px, 92vw);
-}
-
-.field {
-  display: grid;
-  gap: 6px;
-  margin-bottom: 12px;
-  font-size: 13px;
-}
-
-.field input,
-.field__select {
-  padding: 8px 10px;
-  color: hsl(var(--foreground));
-  background: hsl(var(--background));
-  border: 1px solid hsl(var(--border));
-  border-radius: 6px;
-}
-
-.modal__actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-  margin-top: 8px;
-}
-</style>

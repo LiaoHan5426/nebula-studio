@@ -6,7 +6,7 @@ on:
     paths:
       - 'apps/web/**'
       - 'apps/sub-web/frontend/**'
-      - 'apps/sub-web/docs-site/**'
+      - 'apps/sub-web/docs/**'
       - 'apps/sub-web/settings/**'
       - 'apps/sub-web/login/**'
       - 'packages/**'
@@ -71,16 +71,6 @@ jobs:
 
       - name: Copy MSW Service Worker
         run: cp node_modules/msw/lib/mockServiceWorker.js apps/web/dist/mockServiceWorker.js
-
-      - name: Build VitePress docs site
-        env:
-          VITEPRESS_BASE: ${{ steps.vars.outputs.base_path }}docs/
-        run: vp run --filter @nebula-studio-renderer/docs-site build
-
-      - name: Copy docs site into web shell dist
-        run: |
-          mkdir -p apps/web/dist/docs
-          cp -r apps/sub-web/docs-site/.vitepress/dist/* apps/web/dist/docs/
 
       - uses: actions/upload-pages-artifact@v5
         with:

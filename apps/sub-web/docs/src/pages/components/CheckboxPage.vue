@@ -1,10 +1,7 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
 
-// eslint-disable-next-line import/no-duplicates
-import CheckboxBasicSource from '@/examples/checkbox/CheckboxBasic.vue?raw';
-
-import CheckboxBasic from '@/examples/checkbox/CheckboxBasic.vue';
+import checkboxBasicDemo from '@/examples/checkbox/CheckboxBasic.vue?demo';
 </script>
 
 <template>
@@ -12,7 +9,10 @@ import CheckboxBasic from '@/examples/checkbox/CheckboxBasic.vue';
     <p>复选框组件，用于在一组选项中进行多选。</p>
 
     <h2 id="basic">基础用法</h2>
-    <Demo :component="CheckboxBasic" :source="CheckboxBasicSource" />
+    <Demo
+      :component="checkboxBasicDemo.component"
+      :source="checkboxBasicDemo.source"
+    />
 
     <h2>API</h2>
     <h3>Props</h3>

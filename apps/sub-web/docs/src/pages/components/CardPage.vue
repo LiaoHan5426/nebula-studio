@@ -1,31 +1,28 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
 
-// eslint-disable-next-line import/no-duplicates
-import CardBasicSource from '@/examples/card/CardBasic.vue?raw';
-// eslint-disable-next-line import/no-duplicates
-import CardSimpleSource from '@/examples/card/CardSimple.vue?raw';
-// eslint-disable-next-line import/no-duplicates
-import CardFooterSource from '@/examples/card/CardFooter.vue?raw';
-
-import CardBasic from '@/examples/card/CardBasic.vue';
-// eslint-disable-next-line import/no-duplicates
-import CardSimple from '@/examples/card/CardSimple.vue';
-// eslint-disable-next-line import/no-duplicates
-import CardFooter from '@/examples/card/CardFooter.vue';
+import cardBasicDemo from '@/examples/card/CardBasic.vue?demo';
+import cardSimpleDemo from '@/examples/card/CardSimple.vue?demo';
+import cardFooterDemo from '@/examples/card/CardFooter.vue?demo';
 </script>
 <template>
   <div class="doc-section">
     <p>卡片组件，用于信息分组展示。</p>
 
     <h2 id="basic">基础用法</h2>
-    <Demo :component="CardBasic" :source="CardBasicSource" />
+    <Demo :component="cardBasicDemo.component" :source="cardBasicDemo.source" />
 
     <h2 id="simple">仅标题</h2>
-    <Demo :component="CardSimple" :source="CardSimpleSource" />
+    <Demo
+      :component="cardSimpleDemo.component"
+      :source="cardSimpleDemo.source"
+    />
 
     <h2 id="footer">带 footer 插槽</h2>
-    <Demo :component="CardFooter" :source="CardFooterSource" />
+    <Demo
+      :component="cardFooterDemo.component"
+      :source="cardFooterDemo.source"
+    />
 
     <h2>API</h2>
     <h3>Props</h3>

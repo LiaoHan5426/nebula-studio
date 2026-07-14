@@ -69,6 +69,16 @@ const previewTenantId = computed(() => {
   return userId ? `${userId}_${slug}` : `tenant-${slug}`;
 });
 
+const pageTitle = computed(() =>
+  isPlatformAdmin.value ? '租户管理' : '我的租户',
+);
+
+const pageDescription = computed(() =>
+  isPlatformAdmin.value
+    ? '平台管理员维护全部对接租户。租户 ID 规则：绑定用户时生成 {userId}_{slug}，未绑定时为 tenant-{slug}。'
+    : `管理当前账号（${username.value}）下的对接租户，可新增租户、编辑配置、为租户授权服务。新租户将自动绑定到当前账号，ID 格式为 {userId}_{slug}。`,
+);
+
 onMounted(() => {
   void loadTenants();
 });
@@ -195,104 +205,82 @@ async function confirmDelete() {
 </script>
 
 <template>
-  <div class="tenant-page">
-    <header class="tenant-page__header">
-      <div>
-        <h2 class="tenant-page__title">
-          {{ isPlatformAdmin ? '租户管理' : '我的租户' }}
-        </h2>
-        <p class="tenant-page__desc">
-          <template v-if="isPlatformAdmin">
-            平台管理员维护全部对接租户。租户 ID 规则：绑定用户时生成
-            <code>{userId}_{slug}</code>，未绑定时为
-            <code>tenant-{slug}</code>。
-          </template>
-          <template v-else>
-            管理当前账号（{{
-              username
-            }}）下的对接租户，可新增租户、编辑配置、为租户授权服务。
-            新租户将自动绑定到当前账号，ID 格式为 <code>{userId}_{slug}</code>。
-          </template>
-        </p>
+  <div class="page">
+    <NebulaPane :title="pageTitle" :description="pageDescription">
+      <div class="page__toolbar">
+        <NebulaButton variant="primary" @click="openCreate"
+          >新增租户</NebulaButton
+        >
+        <NebulaButton variant="outline" @click="loadTenants">刷新</NebulaButton>
       </div>
-    </header>
 
-    <div class="tenant-page__actions">
-      <NebulaButton variant="primary" @click="openCreate">
-        新增租户
-      </NebulaButton>
-      <NebulaButton variant="secondary" @click="loadTenants">
-        刷新
-      </NebulaButton>
-    </div>
-
-    <div class="tenant-page__table-wrap">
-      <NebulaTable
-        :data="tenants"
-        :loading="loading"
-        :scroll-x="{ enabled: false }"
-        row-key="tenantId"
-        class="tenant-page__table"
-      >
-        <NebulaTableColumn
-          field="tenantId"
-          title="租户 ID"
-          min-width="120"
-          show-overflow="tooltip"
-        />
-        <NebulaTableColumn
-          field="slug"
-          title="Slug"
-          width="88"
-          show-overflow="tooltip"
-        />
-        <NebulaTableColumn
-          field="tenantName"
-          title="租户名称"
-          min-width="120"
-          show-overflow="tooltip"
-        />
-        <NebulaTableColumn title="验证方式" width="100">
-          <template #default="{ row }">
-            {{
-              (row.authConfig as { authType?: string } | undefined)?.authType ??
-              '-'
-            }}
-          </template>
-        </NebulaTableColumn>
-        <NebulaTableColumn field="status" title="状态" width="88">
-          <template #default="{ row }">
-            <NebulaTag :variant="statusVariant(row.status)">
-              {{ row.status === 'ACTIVE' ? '正常' : '禁用' }}
-            </NebulaTag>
-          </template>
-        </NebulaTableColumn>
-        <NebulaTableColumn field="createdAt" title="创建时间" width="150">
-          <template #default="{ row }">
-            {{ formatTime(row.createdAt) }}
-          </template>
-        </NebulaTableColumn>
-        <NebulaTableColumn title="操作" width="220">
-          <template #default="{ row }">
-            <div class="action-btns">
-              <NebulaButton variant="secondary" @click="handleAuthorize(row)">
-                授权
-              </NebulaButton>
-              <NebulaButton variant="secondary" @click="openEdit(row)">
-                编辑
-              </NebulaButton>
-              <NebulaButton
-                v-if="isPlatformAdmin"
-                variant="secondary"
-                @click="handleDelete(row)"
-              >
-                删除
-              </NebulaButton>
-            </div>
-          </template>
-        </NebulaTableColumn>
-      </NebulaTable>
-    </div>
+      <div class="page__table-wrap">
+        <NebulaTable
+          :data="tenants"
+          :loading="loading"
+          :scroll-x="{ enabled: false }"
+          row-key="tenantId"
+        >
+          <NebulaTableColumn
+            field="tenantId"
+            title="租户 ID"
+            min-width="120"
+            show-overflow="tooltip"
+          />
+          <NebulaTableColumn
+            field="slug"
+            title="Slug"
+            width="88"
+            show-overflow="tooltip"
+          />
+          <NebulaTableColumn
+            field="tenantName"
+            title="租户名称"
+            min-width="120"
+            show-overflow="tooltip"
+          />
+          <NebulaTableColumn title="验证方式" width="100">
+            <template #default="{ row }">
+              {{
+                (row.authConfig as { authType?: string } | undefined)
+                  ?.authType ?? '-'
+              }}
+            </template>
+          </NebulaTableColumn>
+          <NebulaTableColumn field="status" title="状态" width="88">
+            <template #default="{ row }">
+              <NebulaTag :variant="statusVariant(row.status)">
+                {{ row.status === 'ACTIVE' ? '正常' : '禁用' }}
+              </NebulaTag>
+            </template>
+          </NebulaTableColumn>
+          <NebulaTableColumn field="createdAt" title="创建时间" width="150">
+            <template #default="{ row }">
+              {{ formatTime(row.createdAt) }}
+            </template>
+          </NebulaTableColumn>
+          <NebulaTableColumn title="操作" width="220">
+            <template #default="{ row }">
+              <div class="row-actions">
+                <NebulaButton variant="outline" @click="handleAuthorize(row)">
+                  授权
+                </NebulaButton>
+                <NebulaButton variant="outline" @click="openEdit(row)">
+                  编辑
+                </NebulaButton>
+                <NebulaButton
+                  v-if="isPlatformAdmin"
+                  variant="outline"
+                  @click="handleDelete(row)"
+                >
+                  删除
+                </NebulaButton>
+              </div>
+            </template>
+          </NebulaTableColumn>
+        </NebulaTable>
+      </div>
+    </NebulaPane>
 
     <div
       v-if="showFormDialog"
@@ -368,10 +356,14 @@ async function confirmDelete() {
           </select>
         </label>
         <div class="modal__actions">
-          <NebulaButton variant="secondary" @click="showFormDialog = false">
+          <NebulaButton variant="outline" @click="showFormDialog = false">
             取消
           </NebulaButton>
-          <NebulaButton :disabled="saving" @click="saveTenant">
+          <NebulaButton
+            variant="primary"
+            :disabled="saving"
+            @click="saveTenant"
+          >
             {{ saving ? '保存中…' : '保存' }}
           </NebulaButton>
         </div>
@@ -380,169 +372,35 @@ async function confirmDelete() {
 
     <div
       v-if="pendingDeleteTenant"
-      class="tenant-page__confirm-backdrop"
+      class="modal-overlay"
       role="dialog"
       aria-modal="true"
       aria-labelledby="tenant-delete-title"
+      @click.self="cancelDelete"
     >
-      <div class="tenant-page__confirm">
-        <h3 id="tenant-delete-title" class="tenant-page__confirm-title">
-          确认删除租户
-        </h3>
-        <p class="tenant-page__confirm-desc">
+      <NebulaPane title="确认删除租户" class="modal">
+        <p class="field-hint">
           确定删除租户「{{
             pendingDeleteTenant.tenantName || pendingDeleteTenant.tenantId
           }}」吗？此操作不可恢复。
         </p>
-        <div class="tenant-page__confirm-actions">
-          <NebulaButton variant="secondary" @click="cancelDelete">
-            取消
-          </NebulaButton>
-          <NebulaButton variant="primary" @click="confirmDelete">
-            删除
-          </NebulaButton>
+        <div class="modal__actions">
+          <NebulaButton variant="outline" @click="cancelDelete"
+            >取消</NebulaButton
+          >
+          <NebulaButton variant="primary" @click="confirmDelete"
+            >删除</NebulaButton
+          >
         </div>
-      </div>
+      </NebulaPane>
     </div>
   </div>
 </template>
 
 <style scoped>
-.tenant-page {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding-bottom: 8px;
-}
-
-.tenant-page__header {
-  padding: 16px 20px;
-  background: hsl(var(--card));
-  border-radius: 8px;
-}
-
-.tenant-page__title {
-  margin: 0 0 4px;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.tenant-page__desc {
-  margin: 0;
-  font-size: 13px;
-  color: hsl(var(--muted-foreground));
-}
-
-.tenant-page__desc code {
-  padding: 1px 4px;
-  font-family: ui-monospace, monospace;
-  font-size: 12px;
-  background: hsl(var(--muted) / 50%);
-  border-radius: 4px;
-}
-
-.tenant-page__actions {
-  display: flex;
-  gap: 8px;
-}
-
-.tenant-page__table-wrap {
-  padding: 12px 16px;
-  background: hsl(var(--card));
-  border-radius: 8px;
-}
-
-.tenant-page__table {
-  width: 100%;
-}
-
-.action-btns {
-  display: inline-flex;
-  gap: 6px;
-  align-items: center;
-}
-
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 900;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgb(0 0 0 / 45%);
-}
-
-.modal {
-  width: min(520px, 92vw);
-}
-
 .field-hint {
   margin: 0 0 12px;
   font-size: 13px;
   color: hsl(var(--muted-foreground));
-}
-
-.field {
-  display: grid;
-  gap: 6px;
-  margin-bottom: 12px;
-  font-size: 13px;
-}
-
-.field input,
-.field__select {
-  padding: 8px 10px;
-  color: hsl(var(--foreground));
-  background: hsl(var(--background));
-  border: 1px solid hsl(var(--border));
-  border-radius: 6px;
-}
-
-.field__readonly {
-  color: hsl(var(--muted-foreground));
-  background: hsl(var(--muted) / 30%);
-}
-
-.modal__actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-  margin-top: 8px;
-}
-
-.tenant-page__confirm-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgb(0 0 0 / 45%);
-}
-
-.tenant-page__confirm {
-  width: min(420px, calc(100vw - 32px));
-  padding: 20px;
-  background: hsl(var(--card));
-  border-radius: 8px;
-  box-shadow: 0 8px 24px rgb(0 0 0 / 18%);
-}
-
-.tenant-page__confirm-title {
-  margin: 0 0 8px;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.tenant-page__confirm-desc {
-  margin: 0 0 16px;
-  font-size: 14px;
-  color: hsl(var(--muted-foreground));
-}
-
-.tenant-page__confirm-actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
 }
 </style>

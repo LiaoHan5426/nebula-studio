@@ -12,7 +12,7 @@
     "typecheck": "vp run typecheck:node && vp run typecheck:web && vp run typecheck:renderers",
     "start": "vp exec electron-vite preview",
     "dev": "vp exec electron-vite dev",
-    "build": "vp run typecheck && vp exec electron-vite build && vp run --filter @nebula-studio-renderer/docs-site build && node ./scripts/copy-docs-site.mjs",
+    "build": "vp run typecheck && vp exec electron-vite build",
     "build:unpack": "vp run build && vp exec electron-builder --dir",
     "postinstall": "cross-env ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/ node ./scripts/ensure-electron.mjs && electron-builder install-app-deps",
     "pack:win": "vp run build && vp exec electron-builder --win",

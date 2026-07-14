@@ -1,14 +1,8 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
 
-// eslint-disable-next-line import/no-duplicates
-import TableBasicSource from '@/examples/table/TableBasic.vue?raw';
-// eslint-disable-next-line import/no-duplicates
-import TableStripeSource from '@/examples/table/TableStripe.vue?raw';
-
-import TableBasic from '@/examples/table/TableBasic.vue';
-// eslint-disable-next-line import/no-duplicates
-import TableStripe from '@/examples/table/TableStripe.vue';
+import tableBasicDemo from '@/examples/table/TableBasic.vue?demo';
+import tableStripeDemo from '@/examples/table/TableStripe.vue?demo';
 </script>
 
 <template>
@@ -16,10 +10,16 @@ import TableStripe from '@/examples/table/TableStripe.vue';
     <p>表格组件，用于展示结构化数据。</p>
 
     <h2 id="basic">基础用法</h2>
-    <Demo :component="TableBasic" :source="TableBasicSource" />
+    <Demo
+      :component="tableBasicDemo.component"
+      :source="tableBasicDemo.source"
+    />
 
     <h2 id="stripe">斑马纹</h2>
-    <Demo :component="TableStripe" :source="TableStripeSource" />
+    <Demo
+      :component="tableStripeDemo.component"
+      :source="tableStripeDemo.source"
+    />
 
     <h2>API</h2>
     <h3>NebulaTable Props</h3>

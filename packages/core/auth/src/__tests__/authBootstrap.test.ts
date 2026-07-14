@@ -32,19 +32,21 @@ describe('authBootstrap', () => {
 
   describe('register()', () => {
     it('standalone: returns a dispose function', async () => {
-      const dispose = await AuthBootstrap.register('standalone');
+      const { dispose } = await AuthBootstrap.register('standalone');
       expect(typeof dispose).toBe('function');
-      dispose(); // should not throw
+      dispose();
     });
 
     it('platform-embed: returns a dispose function', async () => {
-      const dispose = await AuthBootstrap.register('platform-embed');
+      const { dispose } = await AuthBootstrap.register('platform-embed', {
+        appId: 'integration',
+      });
       expect(typeof dispose).toBe('function');
       dispose();
     });
 
     it('electron: returns a dispose function', async () => {
-      const dispose = await AuthBootstrap.register('electron');
+      const { dispose } = await AuthBootstrap.register('electron');
       expect(typeof dispose).toBe('function');
       dispose();
     });
@@ -53,8 +55,12 @@ describe('authBootstrap', () => {
       mockHasValidAuthToken.mockReturnValue(false);
       const onAuthFailed = vi.fn();
 
-      await AuthBootstrap.register('platform-embed', { onAuthFailed });
+      const { ok } = await AuthBootstrap.register('platform-embed', {
+        appId: 'integration',
+        onAuthFailed,
+      });
 
+      expect(ok).toBe(false);
       expect(onAuthFailed).toHaveBeenCalled();
     });
 
@@ -131,7 +137,7 @@ describe('embedStrategy', () => {
 
     const { EmbedStrategy } = await import('../strategies/embed');
     const strategy = new EmbedStrategy();
-    await strategy.bootstrap();
+    await strategy.bootstrap({ appId: 'integration' });
 
     // dispose should remove listeners
     strategy.dispose();

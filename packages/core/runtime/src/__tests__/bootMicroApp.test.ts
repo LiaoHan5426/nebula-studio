@@ -1,5 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { bootMicroApp } from '../bootMicroApp';
+import { assert, describe, it, expect, vi, beforeEach } from 'vitest';
+import {
+  bootMicroApp,
+  __resetActiveMicroAppHandleForTests,
+} from '../bootMicroApp';
 import { detectRuntimeMode } from '../detectMode';
 import { installWebPresentation } from '@nebula-studio/app-shell';
 import { bootSubApp } from '@nebula-studio-electron/electron-bridge/vue';
@@ -10,7 +13,9 @@ vi.mock('@nebula-studio/app-shell', () => ({
 }));
 
 vi.mock('@nebula-studio-electron/electron-bridge/vue', () => ({
-  bootSubApp: vi.fn(),
+  bootSubApp: vi.fn(() => ({
+    unmount: vi.fn(),
+  })),
 }));
 
 const mockInstallWebPresentation = vi.mocked(installWebPresentation);
@@ -47,6 +52,7 @@ describe('detectRuntimeMode', () => {
 describe('bootMicroApp', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    __resetActiveMicroAppHandleForTests();
     delete (window as any).__NEBULA_RUNTIME_MODE__;
     delete (window as any).__NEBULA_PRESENTATION_HOST__;
     Reflect.deleteProperty(window, 'electron');
@@ -102,7 +108,7 @@ describe('bootMicroApp', () => {
   it('auth.bootstrap returns false: does not mount, calls onAuthFailed', async () => {
     const onAuthFailed = vi.fn();
 
-    await bootMicroApp({
+    const handle = await bootMicroApp({
       appId: 'test-app',
       mode: 'standalone',
       rootComponent: dummyComponent,
@@ -111,7 +117,25 @@ describe('bootMicroApp', () => {
       onAuthFailed,
     });
 
+    expect(handle).toBeUndefined();
     expect(mockBootSubApp).not.toHaveBeenCalled();
     expect(onAuthFailed).toHaveBeenCalled();
+  });
+
+  it('returns MicroAppHandle with dispose that unmounts app', async () => {
+    const unmount = vi.fn();
+    mockBootSubApp.mockReturnValue({ unmount } as never);
+
+    const handle = await bootMicroApp({
+      appId: 'test-app',
+      mode: 'standalone',
+      rootComponent: dummyComponent,
+      webPresentation: { scope: 'test' },
+    });
+
+    expect(handle).toBeDefined();
+    assert(handle);
+    handle.dispose();
+    expect(unmount).toHaveBeenCalled();
   });
 });

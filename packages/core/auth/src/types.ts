@@ -12,6 +12,12 @@ import type { AuthProfile } from '@nebula-studio/contracts/auth';
  * 各策略按需读取；不需要的字段可留空。
  */
 export interface AuthBootstrapOptions {
+  /** 当前子应用 ID（如 integration、settings） */
+  appId?: string;
+
+  /** embed surface ID；默认与 appId 相同 */
+  surfaceId?: string;
+
   /** 登录成功后的回调（如同步 tenant / profile） */
   onAuthenticated?: (profile: AuthProfile) => void | Promise<void>;
 

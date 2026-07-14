@@ -1,22 +1,10 @@
 <script setup lang="ts">
 import Demo from '@/components/Demo.vue';
 
-// eslint-disable-next-line import/no-duplicates
-import InputBasicSource from '@/examples/input/InputBasic.vue?raw';
-// eslint-disable-next-line import/no-duplicates
-import InputTypesSource from '@/examples/input/InputTypes.vue?raw';
-// eslint-disable-next-line import/no-duplicates
-import InputDisabledSource from '@/examples/input/InputDisabled.vue?raw';
-// eslint-disable-next-line import/no-duplicates
-import InputTooltipSource from '@/examples/input/InputTooltip.vue?raw';
-
-import InputBasic from '@/examples/input/InputBasic.vue';
-// eslint-disable-next-line import/no-duplicates
-import InputTypes from '@/examples/input/InputTypes.vue';
-// eslint-disable-next-line import/no-duplicates
-import InputDisabled from '@/examples/input/InputDisabled.vue';
-// eslint-disable-next-line import/no-duplicates
-import InputTooltip from '@/examples/input/InputTooltip.vue';
+import inputBasicDemo from '@/examples/input/InputBasic.vue?demo';
+import inputTypesDemo from '@/examples/input/InputTypes.vue?demo';
+import inputDisabledDemo from '@/examples/input/InputDisabled.vue?demo';
+import inputTooltipDemo from '@/examples/input/InputTooltip.vue?demo';
 </script>
 
 <template>
@@ -24,16 +12,28 @@ import InputTooltip from '@/examples/input/InputTooltip.vue';
     <p>基础表单输入组件，支持多种输入类型。</p>
 
     <h2 id="basic">基础用法</h2>
-    <Demo :component="InputBasic" :source="InputBasicSource" />
+    <Demo
+      :component="inputBasicDemo.component"
+      :source="inputBasicDemo.source"
+    />
 
     <h2 id="types">输入框类型</h2>
-    <Demo :component="InputTypes" :source="InputTypesSource" />
+    <Demo
+      :component="inputTypesDemo.component"
+      :source="inputTypesDemo.source"
+    />
 
     <h2 id="disabled">禁用与只读</h2>
-    <Demo :component="InputDisabled" :source="InputDisabledSource" />
+    <Demo
+      :component="inputDisabledDemo.component"
+      :source="inputDisabledDemo.source"
+    />
 
     <h2 id="tooltip">带提示</h2>
-    <Demo :component="InputTooltip" :source="InputTooltipSource" />
+    <Demo
+      :component="inputTooltipDemo.component"
+      :source="inputTooltipDemo.source"
+    />
 
     <h2>API</h2>
     <h3>Props</h3>

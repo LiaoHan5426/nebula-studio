@@ -1,18 +1,9 @@
 <script setup lang="ts">
 import Demo from '@/components/Demo.vue';
 
-// eslint-disable-next-line import/no-duplicates
-import ProgressBasicSource from '@/examples/progress/ProgressBasic.vue?raw';
-// eslint-disable-next-line import/no-duplicates
-import ProgressMultipleSource from '@/examples/progress/ProgressMultiple.vue?raw';
-// eslint-disable-next-line import/no-duplicates
-import ProgressDynamicSource from '@/examples/progress/ProgressDynamic.vue?raw';
-
-import ProgressBasic from '@/examples/progress/ProgressBasic.vue';
-// eslint-disable-next-line import/no-duplicates
-import ProgressMultiple from '@/examples/progress/ProgressMultiple.vue';
-// eslint-disable-next-line import/no-duplicates
-import ProgressDynamic from '@/examples/progress/ProgressDynamic.vue';
+import progressBasicDemo from '@/examples/progress/ProgressBasic.vue?demo';
+import progressMultipleDemo from '@/examples/progress/ProgressMultiple.vue?demo';
+import progressDynamicDemo from '@/examples/progress/ProgressDynamic.vue?demo';
 </script>
 
 <template>
@@ -20,13 +11,22 @@ import ProgressDynamic from '@/examples/progress/ProgressDynamic.vue';
     <p>进度条组件，用于展示操作进度。</p>
 
     <h2 id="basic">基础用法</h2>
-    <Demo :component="ProgressBasic" :source="ProgressBasicSource" />
+    <Demo
+      :component="progressBasicDemo.component"
+      :source="progressBasicDemo.source"
+    />
 
     <h2 id="multiple">不同进度</h2>
-    <Demo :component="ProgressMultiple" :source="ProgressMultipleSource" />
+    <Demo
+      :component="progressMultipleDemo.component"
+      :source="progressMultipleDemo.source"
+    />
 
     <h2 id="dynamic">动态进度</h2>
-    <Demo :component="ProgressDynamic" :source="ProgressDynamicSource" />
+    <Demo
+      :component="progressDynamicDemo.component"
+      :source="progressDynamicDemo.source"
+    />
 
     <h2>API</h2>
     <h3>Props</h3>

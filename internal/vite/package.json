@@ -25,6 +25,9 @@
       "default": "./src/electron/index.ts"
     }
   },
+  "scripts": {
+    "test": "vp test run"
+  },
   "peerDependencies": {
     "electron-vite": "catalog:electron"
   },
@@ -45,6 +48,7 @@
     "@nebula-studio-internal/tsconfig": "workspace:^",
     "@nebula-studio/types": "workspace:^",
     "electron-vite": "catalog:electron",
-    "typescript": "catalog:types"
+    "typescript": "catalog:types",
+    "vitest": "catalog:vite"
   }
 }

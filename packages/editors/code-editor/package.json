@@ -1,44 +1,34 @@
 {
-  "name": "nebula-editor",
+  "name": "@nebula-studio/code-editor",
   "version": "0.0.0",
-  "description": "A starter for creating a TypeScript package.",
-  "homepage": "https://github.com/author/library#readme",
-  "bugs": {
-    "url": "https://github.com/author/library/issues"
-  },
-  "license": "MIT",
-  "author": "Author Name <author.name@mail.com>",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/author/library.git"
-  },
-  "files": [
-    "dist"
-  ],
+  "private": true,
   "type": "module",
   "exports": {
-    ".": "./dist/index.mjs",
-    "./package.json": "./package.json"
-  },
-  "publishConfig": {
-    "access": "public"
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
   },
   "scripts": {
-    "build": "vp pack",
-    "dev": "vp pack --watch",
-    "test": "vp test",
-    "check": "vp check",
-    "prepublishOnly": "vp run build"
-  },
-  "devDependencies": {
-    "@types/node": "catalog:types",
-    "bumpp": "catalog:release",
-    "typescript": "catalog:types",
-    "vite-plus": "catalog:vite"
+    "test": "vp test run --passWithNoTests"
   },
   "dependencies": {
-    "monaco-editor": "catalog:editor",
-    "monaco-editor-vue3": "catalog:editor",
-    "@nebula-studio/nebula-ui": "workspace:^"
+    "@codemirror/commands": "catalog:editor",
+    "@codemirror/lang-html": "catalog:editor",
+    "@codemirror/lang-java": "catalog:editor",
+    "@codemirror/lang-javascript": "catalog:editor",
+    "@codemirror/lang-markdown": "catalog:editor",
+    "@codemirror/lang-python": "catalog:editor",
+    "@codemirror/language": "catalog:editor",
+    "@codemirror/state": "catalog:editor",
+    "@codemirror/theme-one-dark": "catalog:editor",
+    "@codemirror/view": "catalog:editor",
+    "codemirror": "catalog:editor",
+    "vue": "catalog:vue"
+  },
+  "devDependencies": {
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "typescript": "catalog:types",
+    "vitest": "catalog:vite"
   }
 }

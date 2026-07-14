@@ -5,16 +5,13 @@ import { NebulaButton, NebulaPane, NebulaTag } from '@nebula-studio/nebula-ui';
 
 import { taskApi } from '@/shared/api/taskApi';
 import { useTenant } from '@/shared/composables/useTenant';
+import { isApiSuccess } from '@nebula-studio/api-client';
 import type {
   TaskCreateRequest,
   TaskDefinition,
   TaskUpdateRequest,
 } from '@nebula-studio/contracts/integration';
-import {
-  TaskStatus,
-  TaskType,
-  isApiSuccess,
-} from '@nebula-studio/contracts/integration';
+import { TaskStatus, TaskType } from '@nebula-studio/contracts/integration';
 
 const { currentTenantId } = useTenant();
 const router = useRouter();
@@ -135,18 +132,17 @@ function taskTypeLabel(type: string) {
   <div class="page">
     <NebulaPane title="任务调度" description="创建定时任务并管理执行状态">
       <div class="page__toolbar">
-        <NebulaButton @click="showCreate = true">新建任务</NebulaButton>
-        <NebulaButton variant="secondary" @click="loadTasks">刷新</NebulaButton>
+        <NebulaButton variant="primary" @click="showCreate = true"
+          >新建任务</NebulaButton
+        >
+        <NebulaButton variant="outline" @click="loadTasks">刷新</NebulaButton>
         <NebulaButton
-          variant="secondary"
+          variant="outline"
           @click="router.push('/tasks/instances')"
         >
           任务实例
         </NebulaButton>
-        <NebulaButton
-          variant="secondary"
-          @click="router.push('/cluster/nodes')"
-        >
+        <NebulaButton variant="outline" @click="router.push('/cluster/nodes')">
           Executor 节点
         </NebulaButton>
       </div>
@@ -176,25 +172,25 @@ function taskTypeLabel(type: string) {
           <div class="page__actions">
             <NebulaButton
               v-if="task.status !== TaskStatus.ACTIVE"
-              variant="secondary"
+              variant="outline"
               @click="handleChangeStatus(task.id, TaskStatus.ACTIVE)"
             >
               启用
             </NebulaButton>
             <NebulaButton
               v-if="task.status === TaskStatus.ACTIVE"
-              variant="secondary"
+              variant="outline"
               @click="handleChangeStatus(task.id, TaskStatus.PAUSED)"
             >
               暂停
             </NebulaButton>
-            <NebulaButton variant="secondary" @click="handleTrigger(task.id)">
+            <NebulaButton variant="outline" @click="handleTrigger(task.id)">
               手动触发
             </NebulaButton>
-            <NebulaButton variant="secondary" @click="openEdit(task)">
+            <NebulaButton variant="outline" @click="openEdit(task)">
               编辑
             </NebulaButton>
-            <NebulaButton variant="secondary" @click="handleDelete(task.id)">
+            <NebulaButton variant="outline" @click="handleDelete(task.id)">
               删除
             </NebulaButton>
           </div>
@@ -247,10 +243,12 @@ function taskTypeLabel(type: string) {
           />
         </label>
         <div class="modal__actions">
-          <NebulaButton variant="secondary" @click="showCreate = false"
+          <NebulaButton variant="outline" @click="showCreate = false"
             >取消</NebulaButton
           >
-          <NebulaButton @click="handleCreate">创建</NebulaButton>
+          <NebulaButton variant="primary" @click="handleCreate"
+            >创建</NebulaButton
+          >
         </div>
       </NebulaPane>
     </div>
@@ -271,10 +269,12 @@ function taskTypeLabel(type: string) {
           <textarea v-model="editForm.payload" rows="3" />
         </label>
         <div class="modal__actions">
-          <NebulaButton variant="secondary" @click="showEdit = false"
+          <NebulaButton variant="outline" @click="showEdit = false"
             >取消</NebulaButton
           >
-          <NebulaButton @click="handleEdit">保存</NebulaButton>
+          <NebulaButton variant="primary" @click="handleEdit"
+            >保存</NebulaButton
+          >
         </div>
       </NebulaPane>
     </div>
@@ -282,52 +282,6 @@ function taskTypeLabel(type: string) {
 </template>
 
 <style scoped>
-.page {
-  max-width: 1200px;
-  padding: 24px;
-  margin: 0 auto;
-}
-
-.page__toolbar {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.page__empty {
-  padding: 24px;
-  color: hsl(var(--muted-foreground));
-  text-align: center;
-}
-
-.page__list {
-  display: grid;
-  gap: 12px;
-}
-
-.page__card {
-  padding: 16px;
-  background: hsl(var(--background));
-  border: 1px solid hsl(var(--border));
-  border-radius: 8px;
-}
-
-.page__card-head {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-.page__card-head h3 {
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.page__meta {
-  font-size: 12px;
-  color: hsl(var(--muted-foreground));
-}
-
 .page__payload {
   padding: 8px;
   margin-bottom: 12px;
@@ -339,45 +293,6 @@ function taskTypeLabel(type: string) {
 
 .page__payload code {
   font-family: monospace;
-}
-
-.page__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 900;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgb(0 0 0 / 45%);
-}
-
-.modal {
-  width: min(480px, 92vw);
-}
-
-.field {
-  display: grid;
-  gap: 6px;
-  margin-bottom: 12px;
-  font-size: 13px;
-}
-
-.field input,
-.field__select,
-.field textarea {
-  padding: 8px 10px;
-  font-family: inherit;
-  color: hsl(var(--foreground));
-  resize: vertical;
-  background: hsl(var(--background));
-  border: 1px solid hsl(var(--border));
-  border-radius: 6px;
 }
 
 .field__presets {
@@ -398,11 +313,5 @@ function taskTypeLabel(type: string) {
 
 .field__preset:hover {
   background: hsl(var(--muted));
-}
-
-.modal__actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
 }
 </style>

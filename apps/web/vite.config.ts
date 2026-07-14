@@ -1,7 +1,9 @@
 import {
+  createNebulaApiProxy,
   defineNebulaConfig,
-  nebulaProxyDiscovery,
   nebulaSubWebAliasPlugin,
+  nebulaVueDemoPlugin,
+  nebulaWorkspaceManifestPlugin,
 } from '@nebula-studio-internal/vite';
 import { fileURLToPath } from 'node:url';
 
@@ -17,13 +19,13 @@ export default defineNebulaConfig({
   },
   merge: {
     plugins: [
-      nebulaProxyDiscovery({
-        subApps: ['integration', 'frontend', 'login', 'settings', 'docs'],
-      }),
+      nebulaWorkspaceManifestPlugin(),
       nebulaSubWebAliasPlugin(),
+      nebulaVueDemoPlugin(),
     ],
     server: {
       port: 5173,
+      proxy: createNebulaApiProxy({ preset: 'integration' }),
     },
   },
 });

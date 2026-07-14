@@ -1,7 +1,19 @@
-import { installWebPresentation } from '@nebula-studio/app-shell';
+import {
+  installWebPresentation,
+  wireShellEventBus,
+} from '@nebula-studio/app-shell';
 import { bootSubApp } from '@nebula-studio-electron/electron-bridge/vue';
+import type { App } from 'vue';
 import { detectRuntimeMode } from './detectMode';
 import type { BootMicroAppOptions } from './index';
+
+export interface MicroAppHandle {
+  app: App;
+  unmount(): void;
+  dispose(): void;
+}
+
+let activeHandle: MicroAppHandle | null = null;
 
 /**
  * 统一微应用启动入口。
@@ -11,13 +23,17 @@ import type { BootMicroAppOptions } from './index';
  * 2. auth（AuthBootstrap）
  * 3. beforeMountAsync（可选，异步）
  * 4. 委托 bootSubApp（ConfigProvider + mount）
+ *
+ * 返回 MicroAppHandle，调用 dispose() 可释放 auth 监听、event bus 订阅与 Vue 实例。
  */
 export async function bootMicroApp(
   options: BootMicroAppOptions,
-): Promise<void> {
-  const mode = options.mode ?? detectRuntimeMode();
+): Promise<MicroAppHandle | undefined> {
+  activeHandle?.dispose();
 
-  // 1. Bridge 注入：Web 模式需要 installWebPresentation
+  const mode = options.mode ?? detectRuntimeMode();
+  const disposers: Array<() => void> = [];
+
   if (mode !== 'electron' && options.webPresentation) {
     installWebPresentation({
       scope: options.webPresentation.scope,
@@ -26,27 +42,36 @@ export async function bootMicroApp(
     });
   }
 
-  // 2. Auth：优先使用 auth 配置（AuthBootstrap）
-  const authOk = await runAuth(options, mode);
-  if (!authOk) {
-    options.onAuthFailed?.();
-    return;
+  if (options.shellEventBus && options.shellEventBusHandlers) {
+    disposers.push(
+      wireShellEventBus(options.shellEventBus, options.shellEventBusHandlers),
+    );
   }
 
-  // 3. 异步 before-mount（如 bootstrapAuthFromShell）
+  const authOk = await runAuth(options, mode, disposers);
+  if (!authOk) {
+    for (const dispose of disposers) {
+      try {
+        dispose();
+      } catch {
+        /* ignore */
+      }
+    }
+    options.onAuthFailed?.();
+    return undefined;
+  }
+
   await options.beforeMountAsync?.();
 
-  // 4. 委托 bootSubApp（ConfigProvider + mount）
-  bootSubApp({
+  const app = bootSubApp({
     App: options.rootComponent,
     router: options.router,
-    beforeMount: (app) => {
+    beforeMount: (vueApp) => {
       if (options.shellEventBus) {
-        app.provide('shellEventBus', options.shellEventBus);
+        vueApp.provide('shellEventBus', options.shellEventBus);
       }
-      options.beforeMount?.(app);
+      options.beforeMount?.(vueApp);
 
-      // platform-embed：router 无匹配时 replace 到默认路由
       if (
         options.router &&
         options.embedDefaultRoute &&
@@ -59,38 +84,71 @@ export async function bootMicroApp(
       }
     },
   });
+
+  const handle: MicroAppHandle = {
+    app,
+    unmount() {
+      app.unmount();
+    },
+    dispose() {
+      app.unmount();
+      for (const dispose of disposers) {
+        try {
+          dispose();
+        } catch {
+          /* ignore */
+        }
+      }
+      disposers.length = 0;
+      if (activeHandle === handle) {
+        activeHandle = null;
+      }
+    },
+  };
+
+  activeHandle = handle;
+  return handle;
 }
 
-/**
- * 执行认证流程。
- *
- * 优先级：
- * 1. `auth.bootstrap` — 自定义 bootstrap 函数
- * 2. `auth.enabled` — 委托 AuthBootstrap.register()
- * 3. 无认证配置 → 直接返回 true
- */
 async function runAuth(
   options: BootMicroAppOptions,
   mode: string,
+  disposers: Array<() => void>,
 ): Promise<boolean> {
-  // 1. 自定义 bootstrap
   if (options.auth?.bootstrap) {
     return options.auth.bootstrap();
   }
 
-  // 2. AuthBootstrap 自动策略
   if (options.auth?.enabled) {
     try {
-      // 动态导入避免循环依赖：runtime → auth → runtime
       const { AuthBootstrap } = await import('@nebula-studio/auth');
-      await AuthBootstrap.register(mode as import('./detectMode').RuntimeMode);
-      return true;
+      const { ok, dispose } = await AuthBootstrap.register(
+        mode as import('./detectMode').RuntimeMode,
+        {
+          appId: options.appId,
+          surfaceId: options.appId,
+          onAuthFailed: options.onAuthFailed,
+        },
+      );
+      disposers.push(dispose);
+      return ok;
     } catch (error) {
       console.error('[bootMicroApp] AuthBootstrap failed:', error);
       return false;
     }
   }
 
-  // 3. 无认证配置
   return true;
+}
+
+/** @internal Test-only reset for active handle between cases. */
+export function __resetActiveMicroAppHandleForTests(): void {
+  if (activeHandle) {
+    try {
+      activeHandle.app?.unmount?.();
+    } catch {
+      /* ignore */
+    }
+    activeHandle = null;
+  }
 }

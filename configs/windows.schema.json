@@ -22,7 +22,7 @@
     },
     "electronEmbeddedPresentation": {
       "type": "string",
-      "enum": ["iframe", "webview"],
+      "enum": ["iframe", "browser-view"],
       "description": "How Electron embeds sub-app renderers."
     },
     "apiBases": {

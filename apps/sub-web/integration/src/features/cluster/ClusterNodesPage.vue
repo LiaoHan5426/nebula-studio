@@ -4,7 +4,7 @@ import { NebulaButton, NebulaPane, NebulaTag } from '@nebula-studio/nebula-ui';
 
 import { clusterApi } from '@/shared/api/clusterApi';
 import type { ClusterNode } from '@nebula-studio/contracts/integration';
-import { isApiSuccess } from '@nebula-studio/contracts/integration';
+import { isApiSuccess } from '@nebula-studio/api-client';
 
 const nodes = ref<ClusterNode[]>([]);
 const loading = ref(false);
@@ -41,7 +41,7 @@ function formatLoad(load?: number) {
   <div class="page">
     <NebulaPane title="Executor 节点" description="集群节点注册与心跳状态">
       <div class="page__toolbar">
-        <NebulaButton variant="secondary" @click="loadNodes">刷新</NebulaButton>
+        <NebulaButton variant="outline" @click="loadNodes">刷新</NebulaButton>
       </div>
 
       <div v-if="loading" class="page__empty">加载中…</div>
@@ -78,69 +78,3 @@ function formatLoad(load?: number) {
     </NebulaPane>
   </div>
 </template>
-
-<style scoped>
-.page {
-  max-width: 1200px;
-  padding: 24px;
-  margin: 0 auto;
-}
-
-.page__toolbar {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.page__empty {
-  padding: 24px;
-  color: hsl(var(--muted-foreground));
-  text-align: center;
-}
-
-.page__list {
-  display: grid;
-  gap: 12px;
-}
-
-.page__card {
-  padding: 16px;
-  background: hsl(var(--background));
-  border: 1px solid hsl(var(--border));
-  border-radius: 8px;
-}
-
-.page__card-head {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-.page__card-head h3 {
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.page__meta {
-  font-size: 12px;
-  color: hsl(var(--muted-foreground));
-}
-
-.page__stats {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin: 0;
-}
-
-.page__stats dt {
-  font-size: 11px;
-  color: hsl(var(--muted-foreground));
-}
-
-.page__stats dd {
-  margin: 4px 0 0;
-  font-size: 13px;
-  font-weight: 500;
-}
-</style>

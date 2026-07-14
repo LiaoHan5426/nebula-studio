@@ -134,8 +134,10 @@ async function handleTest(id: string) {
   <div class="page">
     <NebulaPane title="数据源管理" description="基于连接器创建与管理数据源">
       <div class="page__toolbar">
-        <NebulaButton @click="openCreate">新建数据源</NebulaButton>
-        <NebulaButton variant="secondary" @click="loadDataSources"
+        <NebulaButton variant="primary" @click="openCreate"
+          >新建数据源</NebulaButton
+        >
+        <NebulaButton variant="outline" @click="loadDataSources"
           >刷新</NebulaButton
         >
       </div>
@@ -165,16 +167,14 @@ async function handleTest(id: string) {
             </NebulaTag>
           </div>
           <div class="page__actions">
-            <NebulaButton variant="secondary" @click="openEdit(ds)"
+            <NebulaButton variant="outline" @click="openEdit(ds)"
               >编辑</NebulaButton
             >
-            <NebulaButton
-              variant="secondary"
-              @click="handleTest(ds.dataSourceId)"
+            <NebulaButton variant="outline" @click="handleTest(ds.dataSourceId)"
               >测试</NebulaButton
             >
             <NebulaButton
-              variant="secondary"
+              variant="outline"
               @click="handleDelete(ds.dataSourceId)"
               >删除</NebulaButton
             >
@@ -227,10 +227,12 @@ async function handleTest(id: string) {
           ><span>端点 URI</span><input v-model="form.endpointUri"
         /></label>
         <div class="modal__actions">
-          <NebulaButton variant="secondary" @click="showCreate = false"
+          <NebulaButton variant="outline" @click="showCreate = false"
             >取消</NebulaButton
           >
-          <NebulaButton @click="handleCreate">创建</NebulaButton>
+          <NebulaButton variant="primary" @click="handleCreate"
+            >创建</NebulaButton
+          >
         </div>
       </NebulaPane>
     </div>
@@ -265,107 +267,14 @@ async function handleTest(id: string) {
           ><input v-model="(editing.config as ProtocolConfig).endpointUri"
         /></label>
         <div class="modal__actions">
-          <NebulaButton variant="secondary" @click="showEdit = false"
+          <NebulaButton variant="outline" @click="showEdit = false"
             >取消</NebulaButton
           >
-          <NebulaButton @click="handleUpdate">保存</NebulaButton>
+          <NebulaButton variant="primary" @click="handleUpdate"
+            >保存</NebulaButton
+          >
         </div>
       </NebulaPane>
     </div>
   </div>
 </template>
-
-<style scoped>
-.page {
-  max-width: 1200px;
-  padding: 24px;
-  margin: 0 auto;
-}
-
-.page__toolbar {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.page__notice {
-  margin: 0 0 12px;
-  font-size: 13px;
-  color: hsl(var(--muted-foreground));
-}
-
-.page__empty {
-  padding: 40px;
-  color: hsl(var(--muted-foreground));
-  text-align: center;
-}
-
-.page__list {
-  display: grid;
-  gap: 12px;
-}
-
-.page__card {
-  padding: 16px;
-  background: hsl(var(--background));
-  border: 1px solid hsl(var(--border));
-  border-radius: 8px;
-}
-
-.page__card-head {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-.page__card-head h3 {
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.page__meta {
-  font-size: 12px;
-  color: hsl(var(--muted-foreground));
-}
-
-.page__actions {
-  display: flex;
-  gap: 8px;
-}
-
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 900;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgb(0 0 0 / 45%);
-}
-
-.modal {
-  width: min(480px, 92vw);
-}
-
-.field {
-  display: grid;
-  gap: 6px;
-  margin-bottom: 12px;
-  font-size: 13px;
-}
-
-.field input,
-.field__select {
-  padding: 8px 10px;
-  color: hsl(var(--foreground));
-  background: hsl(var(--background));
-  border: 1px solid hsl(var(--border));
-  border-radius: 6px;
-}
-
-.modal__actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-}
-</style>

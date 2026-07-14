@@ -53,7 +53,7 @@
   overflow: hidden;
 }
 
-.modal--dag .modal--dag__content {
+.modal--dag .modal__content--dag {
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;

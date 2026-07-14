@@ -1,19 +1,12 @@
-import { createApiClient } from '@nebula-studio/api-client';
-
+import { createStudioApiClient } from '@nebula-studio/api-client';
 import type { ApiRequestOptions, ApiResponse } from '@nebula-studio/api-client';
-
-import {
-  handleShellAuthUnauthorized,
-  readWebAuthSession,
-} from '@nebula-studio/app-shell';
+import { handleShellAuthUnauthorized } from '@nebula-studio/app-shell';
 import { globalAuthProvider } from '@nebula-studio/auth-provider';
-
 import { ensureAuthMode, isSessionAuthMode } from '@/shared/auth/authMode';
 
 export type { ApiRequestOptions, ApiResponse };
 
 export const AUTH_BASE = '/api/auth';
-
 export const SYSTEM_BASE = '/api/system';
 
 let currentOrgId = '';
@@ -22,25 +15,12 @@ export function setCurrentOrgId(orgId: string): void {
   currentOrgId = orgId;
 }
 
-function getAuthToken(): string | null {
-  return globalAuthProvider.getSession()?.token ?? null;
-}
-
-const apiClient = createApiClient({
-  getAuthToken,
-
-  getOrgId: () => currentOrgId || null,
-
-  getCredentials: () => {
-    const session = readWebAuthSession();
-
-    if (session?.user && !session.token) {
-      return 'include';
-    }
-
-    return 'include';
+const apiClient = createStudioApiClient({
+  authProvider: {
+    getToken: () => globalAuthProvider.getSession()?.token ?? null,
   },
-
+  organizationProvider: { getOrgId: () => currentOrgId || null },
+  credentials: 'include',
   onUnauthorized: () => handleShellAuthUnauthorized(),
 });
 

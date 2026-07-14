@@ -1,18 +1,9 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
 
-// eslint-disable-next-line import/no-duplicates
-import DatePickerBasicSource from '@/examples/date-picker/DatePickerBasic.vue?raw';
-// eslint-disable-next-line import/no-duplicates
-import DatePickerDatetimeSource from '@/examples/date-picker/DatePickerDatetime.vue?raw';
-// eslint-disable-next-line import/no-duplicates
-import DatePickerRangeSource from '@/examples/date-picker/DatePickerRange.vue?raw';
-
-import DatePickerBasic from '@/examples/date-picker/DatePickerBasic.vue';
-// eslint-disable-next-line import/no-duplicates
-import DatePickerDatetime from '@/examples/date-picker/DatePickerDatetime.vue';
-// eslint-disable-next-line import/no-duplicates
-import DatePickerRange from '@/examples/date-picker/DatePickerRange.vue';
+import datePickerBasicDemo from '@/examples/date-picker/DatePickerBasic.vue?demo';
+import datePickerDatetimeDemo from '@/examples/date-picker/DatePickerDatetime.vue?demo';
+import datePickerRangeDemo from '@/examples/date-picker/DatePickerRange.vue?demo';
 </script>
 
 <template>
@@ -20,13 +11,22 @@ import DatePickerRange from '@/examples/date-picker/DatePickerRange.vue';
     <p>日期选择器，支持日期、日期时间和日期范围选择。</p>
 
     <h2 id="basic">基础用法</h2>
-    <Demo :component="DatePickerBasic" :source="DatePickerBasicSource" />
+    <Demo
+      :component="datePickerBasicDemo.component"
+      :source="datePickerBasicDemo.source"
+    />
 
     <h2 id="datetime">日期时间选择</h2>
-    <Demo :component="DatePickerDatetime" :source="DatePickerDatetimeSource" />
+    <Demo
+      :component="datePickerDatetimeDemo.component"
+      :source="datePickerDatetimeDemo.source"
+    />
 
     <h2 id="range">日期时间范围</h2>
-    <Demo :component="DatePickerRange" :source="DatePickerRangeSource" />
+    <Demo
+      :component="datePickerRangeDemo.component"
+      :source="datePickerRangeDemo.source"
+    />
 
     <h2>API</h2>
     <h3>Props</h3>

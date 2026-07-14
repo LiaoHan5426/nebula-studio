@@ -15,11 +15,10 @@ export * from './task.js';
 export * from './cluster.js';
 export * from './topology.js';
 
-// api-client 传输类型 re-export
-export type { ApiResponse } from '@nebula-studio/api-client';
-export { isApiSuccess } from '@nebula-studio/api-client';
+// Transport types live in contracts/common (pure types, no api-client dependency).
 export type {
+  ApiResponse,
   PageResponse,
   MybatisPage,
   PageResult,
-} from '@nebula-studio/api-client';
+} from '../common/index.ts';

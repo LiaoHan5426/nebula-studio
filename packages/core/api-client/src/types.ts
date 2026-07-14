@@ -1,11 +1,11 @@
-/** nebula-core ApiResponse */
-export interface ApiResponse<T = unknown> {
-  code?: number;
-  isSuccess?: boolean;
-  data: T;
-  message?: string;
-  error?: string;
-}
+import type { ApiResponse } from '@nebula-studio/contracts/common';
+
+export type {
+  ApiResponse,
+  PageResponse,
+  MybatisPage,
+  PageResult,
+} from '@nebula-studio/contracts/common';
 
 export function isApiSuccess<T>(response: ApiResponse<T>): boolean {
   if (typeof response.isSuccess === 'boolean') {
@@ -38,34 +38,4 @@ export interface RequestProgressOptions {
   minimum?: number;
   trickleSpeed?: number;
   showSpinner?: boolean;
-}
-
-// ---------------------------------------------------------------------------
-// Pagination — shared across all sub-web apps
-// ---------------------------------------------------------------------------
-
-/** MyBatis-Plus standard page response (backend `IPage<T>`). */
-export interface MybatisPage<T> {
-  records: T[];
-  total: number;
-  size: number;
-  current: number;
-  pages: number;
-}
-
-/** Generic page result for frontend consumption. */
-export interface PageResult<T> {
-  records: T[];
-  total: number;
-  page: number;
-  size: number;
-}
-
-/** Page response with extra `totalPages` and `pageSize` fields. */
-export interface PageResponse<T> {
-  items: T[];
-  total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
 }

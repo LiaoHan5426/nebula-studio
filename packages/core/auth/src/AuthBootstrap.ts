@@ -45,12 +45,15 @@ export class AuthBootstrap {
   static async register(
     mode: RuntimeMode,
     options?: AuthBootstrapOptions,
-  ): Promise<() => void> {
+  ): Promise<{ ok: boolean; dispose: () => void }> {
     const strategy = resolveStrategy(mode);
     const ok = await strategy.bootstrap(options);
     if (!ok) {
       options?.onAuthFailed?.();
     }
-    return () => strategy.dispose();
+    return {
+      ok,
+      dispose: () => strategy.dispose(),
+    };
   }
 }

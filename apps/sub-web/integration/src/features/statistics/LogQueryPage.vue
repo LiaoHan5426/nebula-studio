@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue';
 import {
   NebulaButton,
   NebulaDatePicker,
+  NebulaPane,
   NebulaTable,
   NebulaTableColumn,
   NebulaTag,
@@ -59,117 +60,65 @@ function formatTime(value: unknown) {
 </script>
 
 <template>
-  <div class="log-query-page">
-    <header class="log-query-page__header">
-      <div>
-        <h2 class="log-query-page__title">日志查询</h2>
-        <p class="log-query-page__desc">查询服务调用日志与错误信息</p>
-      </div>
-      <div class="log-query-page__actions">
+  <div class="page">
+    <NebulaPane title="日志查询" description="查询服务调用日志与错误信息">
+      <div class="page__toolbar">
         <NebulaDatePicker v-model="dateRange" type="datetimerange" />
-        <NebulaButton variant="secondary" @click="loadLogs">查询</NebulaButton>
+        <NebulaButton variant="primary" @click="loadLogs">查询</NebulaButton>
       </div>
-    </header>
 
-    <div class="log-query-page__table-wrap">
-      <NebulaTable
-        :data="logs"
-        :loading="loading"
-        :scroll-x="{ enabled: false }"
-        row-key="logId"
-        class="log-query-page__table"
-      >
-        <NebulaTableColumn
-          field="logId"
-          title="日志 ID"
-          min-width="160"
-          show-overflow="tooltip"
-        />
-        <NebulaTableColumn
-          field="tenantId"
-          title="租户 ID"
-          width="120"
-          show-overflow="tooltip"
-        />
-        <NebulaTableColumn
-          field="interfaceId"
-          title="服务 ID"
-          min-width="140"
-          show-overflow="tooltip"
-        />
-        <NebulaTableColumn
-          field="interfaceName"
-          title="服务名称"
-          min-width="120"
-          show-overflow="tooltip"
-        />
-        <NebulaTableColumn field="durationMs" title="耗时(ms)" width="100" />
-        <NebulaTableColumn field="status" title="状态" width="100">
-          <template #default="{ row }">
-            <NebulaTag :variant="statusVariant(row.status)">
-              {{ row.status }}
-            </NebulaTag>
-          </template>
-        </NebulaTableColumn>
-        <NebulaTableColumn
-          field="errorMessage"
-          title="错误信息"
-          min-width="140"
-          show-overflow="tooltip"
-        />
-        <NebulaTableColumn field="createdAt" title="执行时间" width="150">
-          <template #default="{ row }">
-            {{ formatTime(row.createdAt) }}
-          </template>
-        </NebulaTableColumn>
-      </NebulaTable>
-    </div>
+      <div class="page__table-wrap">
+        <NebulaTable
+          :data="logs"
+          :loading="loading"
+          :scroll-x="{ enabled: false }"
+          row-key="logId"
+        >
+          <NebulaTableColumn
+            field="logId"
+            title="日志 ID"
+            min-width="160"
+            show-overflow="tooltip"
+          />
+          <NebulaTableColumn
+            field="tenantId"
+            title="租户 ID"
+            width="120"
+            show-overflow="tooltip"
+          />
+          <NebulaTableColumn
+            field="interfaceId"
+            title="服务 ID"
+            min-width="140"
+            show-overflow="tooltip"
+          />
+          <NebulaTableColumn
+            field="interfaceName"
+            title="服务名称"
+            min-width="120"
+            show-overflow="tooltip"
+          />
+          <NebulaTableColumn field="durationMs" title="耗时(ms)" width="100" />
+          <NebulaTableColumn field="status" title="状态" width="100">
+            <template #default="{ row }">
+              <NebulaTag :variant="statusVariant(row.status)">
+                {{ row.status }}
+              </NebulaTag>
+            </template>
+          </NebulaTableColumn>
+          <NebulaTableColumn
+            field="errorMessage"
+            title="错误信息"
+            min-width="140"
+            show-overflow="tooltip"
+          />
+          <NebulaTableColumn field="createdAt" title="执行时间" width="150">
+            <template #default="{ row }">
+              {{ formatTime(row.createdAt) }}
+            </template>
+          </NebulaTableColumn>
+        </NebulaTable>
+      </div>
+    </NebulaPane>
   </div>
 </template>
-
-<style scoped>
-.log-query-page {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding-bottom: 8px;
-}
-
-.log-query-page__header {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding: 16px 20px;
-  background: hsl(var(--card));
-  border-radius: 8px;
-}
-
-.log-query-page__title {
-  margin: 0 0 4px;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.log-query-page__desc {
-  margin: 0;
-  font-size: 13px;
-  color: hsl(var(--muted-foreground));
-}
-
-.log-query-page__actions {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.log-query-page__table-wrap {
-  padding: 12px 16px;
-  background: hsl(var(--card));
-  border-radius: 8px;
-}
-
-.log-query-page__table {
-  width: 100%;
-}
-</style>

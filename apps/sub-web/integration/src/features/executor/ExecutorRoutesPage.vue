@@ -1,74 +1,12 @@
-<template>
-  <div class="executor-routes-page">
-    <div class="page-header">
-      <h2>Executor 路由</h2>
-      <button class="btn-refresh" @click="loadRoutes">刷新</button>
-    </div>
-    <div v-if="loading" class="page__empty">加载中...</div>
-    <div v-else class="page__layout">
-      <table class="routes-table">
-        <thead>
-          <tr>
-            <th>路由 ID</th>
-            <th>端点</th>
-            <th>状态</th>
-            <th>调用量</th>
-            <th>错误率</th>
-            <th>延迟(ms)</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="route in routes"
-            :key="route.routeId"
-            :class="{ selected: selectedRoute?.routeId === route.routeId }"
-          >
-            <td>{{ route.routeId }}</td>
-            <td>{{ route.endpoint }}</td>
-            <td>{{ route.status }}</td>
-            <td>{{ route.callCount }}</td>
-            <td>{{ formatRate(route.errorRate) }}</td>
-            <td>{{ formatLatency(route.avgLatencyMs) }}</td>
-            <td>
-              <button class="btn-link" @click="loadRouteDetail(route.routeId)">
-                详情
-              </button>
-            </td>
-          </tr>
-          <tr v-if="routes.length === 0">
-            <td colspan="7">暂无路由</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <aside v-if="selectedRoute" class="route-detail">
-        <h3>路由详情</h3>
-        <dl>
-          <dt>路由 ID</dt>
-          <dd>{{ selectedRoute.routeId }}</dd>
-          <dt>端点</dt>
-          <dd>{{ selectedRoute.endpoint }}</dd>
-          <dt>状态</dt>
-          <dd>{{ selectedRoute.status }}</dd>
-          <dt>调用量</dt>
-          <dd>{{ selectedRoute.callCount }}</dd>
-          <dt>错误率</dt>
-          <dd>{{ formatRate(selectedRoute.errorRate) }}</dd>
-          <dt>平均延迟</dt>
-          <dd>{{ formatLatency(selectedRoute.avgLatencyMs) }} ms</dd>
-          <dt v-if="selectedRoute.description">描述</dt>
-          <dd v-if="selectedRoute.description">
-            {{ selectedRoute.description }}
-          </dd>
-        </dl>
-      </aside>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import {
+  NebulaButton,
+  NebulaPane,
+  NebulaTable,
+  NebulaTableColumn,
+  NebulaTag,
+} from '@nebula-studio/nebula-ui';
 
 import { executorRoutesApi } from '@/shared/api/executorApi';
 import type { ExecutorRouteView } from '@/shared/api/executorApi';
@@ -84,6 +22,10 @@ function formatRate(rate: number): string {
 
 function formatLatency(ms: number): string {
   return ms.toFixed(1);
+}
+
+function statusVariant(status: string) {
+  return status === 'ACTIVE' ? 'success' : 'default';
 }
 
 async function loadRoutes() {
@@ -116,68 +58,100 @@ async function loadRouteDetail(routeId: string) {
 onMounted(loadRoutes);
 </script>
 
+<template>
+  <div class="page">
+    <NebulaPane
+      title="Executor 路由"
+      description="查看 Executor 路由注册、调用量与健康状态"
+    >
+      <div class="page__toolbar">
+        <NebulaButton variant="outline" @click="loadRoutes">刷新</NebulaButton>
+      </div>
+
+      <div
+        class="page__layout"
+        :class="{ 'page__layout--split': selectedRoute }"
+      >
+        <div class="page__table-wrap">
+          <NebulaTable
+            :data="routes"
+            :loading="loading"
+            row-key="routeId"
+            :scroll-x="{ enabled: false }"
+          >
+            <NebulaTableColumn
+              field="routeId"
+              title="路由 ID"
+              min-width="120"
+              show-overflow="tooltip"
+            />
+            <NebulaTableColumn
+              field="endpoint"
+              title="端点"
+              min-width="140"
+              show-overflow="tooltip"
+            />
+            <NebulaTableColumn field="status" title="状态" width="96">
+              <template #default="{ row }">
+                <NebulaTag :variant="statusVariant(row.status)">
+                  {{ row.status }}
+                </NebulaTag>
+              </template>
+            </NebulaTableColumn>
+            <NebulaTableColumn field="callCount" title="调用量" width="88" />
+            <NebulaTableColumn field="errorRate" title="错误率" width="88">
+              <template #default="{ row }">
+                {{ formatRate(row.errorRate) }}
+              </template>
+            </NebulaTableColumn>
+            <NebulaTableColumn field="avgLatencyMs" title="延迟(ms)" width="96">
+              <template #default="{ row }">
+                {{ formatLatency(row.avgLatencyMs) }}
+              </template>
+            </NebulaTableColumn>
+            <NebulaTableColumn title="操作" width="88">
+              <template #default="{ row }">
+                <NebulaButton
+                  variant="outline"
+                  @click.stop="loadRouteDetail(row.routeId)"
+                >
+                  详情
+                </NebulaButton>
+              </template>
+            </NebulaTableColumn>
+          </NebulaTable>
+        </div>
+
+        <aside v-if="selectedRoute" class="page__detail">
+          <h3 class="page__detail-title">路由详情</h3>
+          <dl>
+            <dt>路由 ID</dt>
+            <dd>{{ selectedRoute.routeId }}</dd>
+            <dt>端点</dt>
+            <dd>{{ selectedRoute.endpoint }}</dd>
+            <dt>状态</dt>
+            <dd>{{ selectedRoute.status }}</dd>
+            <dt>调用量</dt>
+            <dd>{{ selectedRoute.callCount }}</dd>
+            <dt>错误率</dt>
+            <dd>{{ formatRate(selectedRoute.errorRate) }}</dd>
+            <dt>平均延迟</dt>
+            <dd>{{ formatLatency(selectedRoute.avgLatencyMs) }} ms</dd>
+            <template v-if="selectedRoute.description">
+              <dt>描述</dt>
+              <dd>{{ selectedRoute.description }}</dd>
+            </template>
+          </dl>
+        </aside>
+      </div>
+    </NebulaPane>
+  </div>
+</template>
+
 <style scoped>
-.executor-routes-page {
-  padding: 16px;
-}
-
-.page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-.page__layout {
-  display: grid;
-  grid-template-columns: 1fr 280px;
-  gap: 16px;
-}
-
-.routes-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.routes-table th,
-.routes-table td {
-  padding: 8px;
-  text-align: left;
-  border: 1px solid var(--border-color, #e5e7eb);
-}
-
-.routes-table tr.selected {
-  background: hsl(var(--muted) / 30%);
-}
-
-.route-detail {
-  padding: 12px;
-  border: 1px solid var(--border-color, #e5e7eb);
-  border-radius: 8px;
-}
-
-.route-detail dl {
-  display: grid;
-  grid-template-columns: 88px 1fr;
-  gap: 8px;
-  margin: 0;
-  font-size: 13px;
-}
-
-.route-detail dt {
-  color: hsl(var(--muted-foreground));
-}
-
-.btn-link {
-  padding: 0;
-  color: hsl(var(--primary));
-  cursor: pointer;
-  background: none;
-  border: none;
-}
-
-.page__empty {
-  padding: 24px;
-  color: hsl(var(--muted-foreground));
+.page__detail-title {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 600;
 }
 </style>

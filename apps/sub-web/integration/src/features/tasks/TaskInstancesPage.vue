@@ -8,7 +8,7 @@ import type {
   TaskInstance,
   TaskLog,
 } from '@nebula-studio/contracts/integration';
-import { isApiSuccess } from '@nebula-studio/contracts/integration';
+import { isApiSuccess } from '@nebula-studio/api-client';
 
 const { currentTenantId } = useTenant();
 
@@ -71,7 +71,7 @@ function statusVariant(status: string) {
   <div class="page">
     <NebulaPane title="任务实例" description="查看执行状态、日志与重试失败任务">
       <div class="page__toolbar">
-        <NebulaButton variant="secondary" @click="loadInstances"
+        <NebulaButton variant="outline" @click="loadInstances"
           >刷新</NebulaButton
         >
       </div>
@@ -85,7 +85,7 @@ function statusVariant(status: string) {
           <article
             v-for="instance in instances"
             :key="instance.instanceId"
-            class="page__card"
+            class="page__card page__card--clickable"
             :class="{
               'page__card--active':
                 selectedInstance?.instanceId === instance.instanceId,
@@ -109,7 +109,7 @@ function statusVariant(status: string) {
                 v-if="
                   instance.status === 'FAILED' || instance.status === 'TIMEOUT'
                 "
-                variant="secondary"
+                variant="outline"
                 @click.stop="retryInstance(instance.instanceId)"
               >
                 重试
@@ -118,7 +118,11 @@ function statusVariant(status: string) {
           </article>
         </div>
 
-        <NebulaPane v-if="selectedInstance" title="执行日志" class="page__logs">
+        <NebulaPane
+          v-if="selectedInstance"
+          title="执行日志"
+          class="page__detail"
+        >
           <p class="page__meta">实例 {{ selectedInstance.instanceId }}</p>
           <div v-if="logsLoading" class="page__empty">加载日志…</div>
           <div v-else-if="logs.length === 0" class="page__empty">暂无日志</div>
@@ -134,98 +138,3 @@ function statusVariant(status: string) {
     </NebulaPane>
   </div>
 </template>
-
-<style scoped>
-.page {
-  max-width: 1200px;
-  padding: 24px;
-  margin: 0 auto;
-}
-
-.page__toolbar {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.page__empty {
-  padding: 24px;
-  color: hsl(var(--muted-foreground));
-  text-align: center;
-}
-
-.page__layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-.page__list {
-  display: grid;
-  gap: 12px;
-}
-
-.page__card {
-  padding: 16px;
-  cursor: pointer;
-  background: hsl(var(--background));
-  border: 1px solid hsl(var(--border));
-  border-radius: 8px;
-}
-
-.page__card--active {
-  border-color: hsl(var(--primary));
-}
-
-.page__card-head {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-.page__card-head h3 {
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.page__meta {
-  font-size: 12px;
-  color: hsl(var(--muted-foreground));
-}
-
-.page__actions {
-  display: flex;
-  gap: 8px;
-}
-
-.page__logs {
-  min-height: 320px;
-}
-
-.page__log-list {
-  display: grid;
-  gap: 8px;
-  padding: 0;
-  margin: 12px 0 0;
-  list-style: none;
-}
-
-.page__log-item {
-  display: grid;
-  gap: 4px;
-  padding: 8px;
-  font-size: 12px;
-  background: hsl(var(--muted) / 30%);
-  border-radius: 6px;
-}
-
-.page__log-level {
-  font-weight: 600;
-}
-
-@media (max-width: 900px) {
-  .page__layout {
-    grid-template-columns: 1fr;
-  }
-}
-</style>

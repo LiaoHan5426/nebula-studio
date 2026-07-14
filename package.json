@@ -17,7 +17,7 @@
     "dev:web": "vp run web#dev",
     "build:web": "vp run web#build",
     "cap": "vp run mobile#cap",
-    "check": "vp check --fix --threads=2",
+    "check": "vp check --fix",
     "lint:ox": "vp lint --fix --threads=2",
     "lint:style": "vp exec stylelint \"**/*.{css,scss,vue}\" --fix --allow-empty-input --ignore-pattern \"**/out/**\" --ignore-pattern \"**/dist/**\" --ignore-pattern \"**/dev-dist/**\"",
     "lint": "vp run lint:ox && vp run lint:style",
@@ -42,6 +42,7 @@
     "@playwright/test": "catalog:test",
     "@vitejs/plugin-vue": "catalog:vite",
     "@vitejs/plugin-vue-jsx": "catalog:vite",
+    "ajv": "catalog:",
     "cross-env": "catalog:utils",
     "eslint-plugin-better-tailwindcss": "catalog:lint",
     "eslint-plugin-command": "catalog:lint",
@@ -51,7 +52,7 @@
     "tailwindcss": "catalog:style",
     "unconfig": "catalog:utils",
     "vite-plus": "catalog:vite",
-    "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.24"
+    "vitest": "catalog:vite"
   },
   "engines": {
     "node": ">=22.12.0"

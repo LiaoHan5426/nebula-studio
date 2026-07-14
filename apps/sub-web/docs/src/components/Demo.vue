@@ -3,11 +3,16 @@ import { onMounted, ref } from 'vue';
 import type { Component } from 'vue';
 import { getHighlighter } from '@/utils/highlighter';
 
-const props = defineProps<{
-  component: Component;
-  source: string;
-  id?: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    component: Component;
+    source?: string;
+    id?: string;
+  }>(),
+  {
+    source: '',
+  },
+);
 
 const highlightedCode = ref('');
 
@@ -15,6 +20,9 @@ const highlightedCode = ref('');
  * 对源代码进行高亮处理。
  */
 async function highlightSource() {
+  if (!props.source) {
+    return;
+  }
   try {
     const h = await getHighlighter();
     highlightedCode.value = h.codeToHtml(props.source, {
@@ -31,8 +39,8 @@ async function highlightSource() {
 /**
  * 转义 HTML 特殊字符。
  */
-function escapeHtml(text: string): string {
-  return text
+function escapeHtml(text: string | undefined): string {
+  return (text ?? '')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')

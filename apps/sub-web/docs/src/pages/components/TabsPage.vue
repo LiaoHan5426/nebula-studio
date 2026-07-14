@@ -1,14 +1,8 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
 
-// eslint-disable-next-line import/no-duplicates
-import TabsBasicSource from '@/examples/tabs/TabsBasic.vue?raw';
-// eslint-disable-next-line import/no-duplicates
-import TabsDisabledSource from '@/examples/tabs/TabsDisabled.vue?raw';
-
-import TabsBasic from '@/examples/tabs/TabsBasic.vue';
-// eslint-disable-next-line import/no-duplicates
-import TabsDisabled from '@/examples/tabs/TabsDisabled.vue';
+import tabsBasicDemo from '@/examples/tabs/TabsBasic.vue?demo';
+import tabsDisabledDemo from '@/examples/tabs/TabsDisabled.vue?demo';
 </script>
 
 <template>
@@ -16,10 +10,13 @@ import TabsDisabled from '@/examples/tabs/TabsDisabled.vue';
     <p>选项卡切换组件，支持禁用项。</p>
 
     <h2 id="basic">基础用法</h2>
-    <Demo :component="TabsBasic" :source="TabsBasicSource" />
+    <Demo :component="tabsBasicDemo.component" :source="tabsBasicDemo.source" />
 
     <h2 id="disabled">禁用标签</h2>
-    <Demo :component="TabsDisabled" :source="TabsDisabledSource" />
+    <Demo
+      :component="tabsDisabledDemo.component"
+      :source="tabsDisabledDemo.source"
+    />
 
     <h2>API</h2>
     <h3>Props</h3>

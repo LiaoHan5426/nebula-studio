@@ -12,7 +12,6 @@
 
 ## 仓库内典型用法
 
-- `apps/electron/scripts/copy-docs-site.mjs`：`getPackageSync('@nebula-studio-renderer/docs', scriptDir)` 定位文档 `dist`。
 - `tools/lint/oxlint/src/configs/tailwindcss.ts`：`getPackageSync('@nebula-studio-internal/tailwind', configDir)` 定位 `theme.css`。
 
 ## 设计注意

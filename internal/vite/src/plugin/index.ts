@@ -10,3 +10,10 @@ export {
   nebulaProxyDiscovery,
   type NebulaProxyDiscoveryOptions,
 } from './nebulaProxyDiscovery.ts';
+export {
+  nebulaWorkspaceManifestPlugin,
+  getNebulaAppManifest,
+  NEBULA_APP_MANIFEST_VIRTUAL_ID,
+  type NebulaWorkspaceManifestPluginOptions,
+} from './nebulaWorkspaceManifestPlugin.ts';
+export { nebulaVueDemoPlugin } from './nebulaVueDemoPlugin.ts';

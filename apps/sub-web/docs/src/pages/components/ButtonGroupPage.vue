@@ -1,14 +1,8 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
 
-// eslint-disable-next-line import/no-duplicates
-import ButtonGroupBasicSource from '@/examples/button-group/ButtonGroupBasic.vue?raw';
-// eslint-disable-next-line import/no-duplicates
-import ButtonGroupVerticalSource from '@/examples/button-group/ButtonGroupVertical.vue?raw';
-
-import ButtonGroupBasic from '@/examples/button-group/ButtonGroupBasic.vue';
-// eslint-disable-next-line import/no-duplicates
-import ButtonGroupVertical from '@/examples/button-group/ButtonGroupVertical.vue';
+import buttonGroupBasicDemo from '@/examples/button-group/ButtonGroupBasic.vue?demo';
+import buttonGroupVerticalDemo from '@/examples/button-group/ButtonGroupVertical.vue?demo';
 </script>
 
 <template>
@@ -16,12 +10,15 @@ import ButtonGroupVertical from '@/examples/button-group/ButtonGroupVertical.vue
     <p>按钮组组件，将多个按钮组合在一起。</p>
 
     <h2 id="basic">基础用法</h2>
-    <Demo :component="ButtonGroupBasic" :source="ButtonGroupBasicSource" />
+    <Demo
+      :component="buttonGroupBasicDemo.component"
+      :source="buttonGroupBasicDemo.source"
+    />
 
     <h2 id="vertical">垂直排列</h2>
     <Demo
-      :component="ButtonGroupVertical"
-      :source="ButtonGroupVerticalSource"
+      :component="buttonGroupVerticalDemo.component"
+      :source="buttonGroupVerticalDemo.source"
     />
 
     <h2>API</h2>

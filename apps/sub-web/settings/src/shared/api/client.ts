@@ -1,9 +1,6 @@
-import { createApiClient } from '@nebula-studio/api-client';
-
+import { createStudioApiClient } from '@nebula-studio/api-client';
 import type { ApiRequestOptions, ApiResponse } from '@nebula-studio/api-client';
-
 import { handleShellAuthUnauthorized } from '@nebula-studio/app-shell';
-
 import {
   clearAuthSession,
   getAuthToken,
@@ -13,18 +10,13 @@ import {
 export type { ApiRequestOptions, ApiResponse };
 
 export const SYSTEM_BASE = '/api/system';
-
 export const AUTH_BASE = '/api/auth';
-
 export const CONFIG_BASE = '/api/config';
 
-const apiClient = createApiClient({
-  getAuthToken,
-
-  getOrgId: () => getCurrentOrgId() || null,
-
+const apiClient = createStudioApiClient({
+  authProvider: { getToken: getAuthToken },
+  organizationProvider: { getOrgId: () => getCurrentOrgId() || null },
   credentials: 'include',
-
   onUnauthorized: () => {
     clearAuthSession();
     return handleShellAuthUnauthorized();

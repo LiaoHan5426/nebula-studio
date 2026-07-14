@@ -1,27 +1,7 @@
-import { fileURLToPath } from 'node:url';
+import { defineNebulaSubAppConfig } from '@nebula-studio-internal/vite';
 
-import { defineNebulaConfig } from '@nebula-studio-internal/vite';
-
-import { proxy } from './vite.proxy.ts';
-
-const root = fileURLToPath(new URL('.', import.meta.url));
-
-export default defineNebulaConfig({
-  platform: 'web',
-  root,
-  base: process.env.VITE_BASE_PATH ?? '/',
-  build: {
-    outDir: 'dist',
-    emptyOutDir: true,
-  },
-  merge: {
-    resolve: {
-      alias: {
-        '@': fileURLToPath(new URL('./src', import.meta.url)),
-      },
-    },
-    server: {
-      proxy,
-    },
-  },
+export default defineNebulaSubAppConfig({
+  configModuleUrl: import.meta.url,
+  appId: 'settings',
+  proxyPreset: 'standard',
 });

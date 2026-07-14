@@ -1,85 +1,44 @@
-<template>
-  <div class="service-approval-page">
-    <div class="page-header">
-      <h2>审批管理</h2>
-      <button class="btn-refresh" @click="loadRequests">刷新</button>
-    </div>
-
-    <div v-if="loading" class="loading">加载中...</div>
-
-    <table v-else class="approval-table">
-      <thead>
-        <tr>
-          <th>申请 ID</th>
-          <th>资源 ID</th>
-          <th>类型</th>
-          <th>操作</th>
-          <th>申请人</th>
-          <th>状态</th>
-          <th>原因</th>
-          <th>提交时间</th>
-          <th>审批操作</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="req in requests" :key="req.requestId">
-          <td>{{ req.requestId }}</td>
-          <td>{{ req.resourceId }}</td>
-          <td>{{ req.resourceType }}</td>
-          <td>{{ req.kind }}</td>
-          <td>{{ req.applicantId }}</td>
-          <td>
-            <span
-              :class="['status-badge', `status-${req.status.toLowerCase()}`]"
-            >
-              {{ statusLabel(req.status) }}
-            </span>
-          </td>
-          <td>{{ req.reason || '-' }}</td>
-          <td>{{ formatTime(req.createdAt) }}</td>
-          <td>
-            <template
-              v-if="req.status === 'PENDING' || req.status === 'REVIEWING'"
-            >
-              <button class="btn-action" @click="handleApprove(req)">
-                通过
-              </button>
-              <button class="btn-action btn-danger" @click="handleReject(req)">
-                驳回
-              </button>
-            </template>
-            <span v-else class="text-muted">-</span>
-          </td>
-        </tr>
-        <tr v-if="requests.length === 0">
-          <td colspan="9" class="empty">暂无审批请求</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
+import {
+  NebulaButton,
+  NebulaPane,
+  NebulaTable,
+  NebulaTableColumn,
+  NebulaTag,
+} from '@nebula-studio/nebula-ui';
+
 import { approvalApi } from '@/shared/api/consoleApi';
 import type { GovernanceRequest } from '@/shared/types';
 
 const requests = ref<GovernanceRequest[]>([]);
 const loading = ref(false);
 
+const STATUS_LABELS: Record<string, string> = {
+  PENDING: '待审批',
+  REVIEWING: '审核中',
+  APPROVED: '已通过',
+  REJECTED: '已驳回',
+};
+
 function statusLabel(status: string): string {
-  const map: Record<string, string> = {
-    PENDING: '待审批',
-    REVIEWING: '审核中',
-    APPROVED: '已通过',
-    REJECTED: '已驳回',
-  };
-  return map[status] || status;
+  return STATUS_LABELS[status] ?? status;
+}
+
+function statusVariant(status: string) {
+  if (status === 'APPROVED') return 'success';
+  if (status === 'REJECTED') return 'warning';
+  if (status === 'PENDING' || status === 'REVIEWING') return 'info';
+  return 'default';
 }
 
 function formatTime(iso: string): string {
   if (!iso) return '-';
   return new Date(iso).toLocaleString('zh-CN');
+}
+
+function canDecide(req: GovernanceRequest): boolean {
+  return req.status === 'PENDING' || req.status === 'REVIEWING';
 }
 
 async function loadRequests() {
@@ -126,95 +85,74 @@ async function handleReject(req: GovernanceRequest) {
 onMounted(loadRequests);
 </script>
 
-<style scoped>
-.service-approval-page {
-  padding: 16px;
-}
+<template>
+  <div class="page">
+    <NebulaPane title="审批管理" description="处理服务发布与治理相关的审批请求">
+      <div class="page__toolbar">
+        <NebulaButton variant="outline" @click="loadRequests"
+          >刷新</NebulaButton
+        >
+      </div>
 
-.page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-
-.page-header h2 {
-  margin: 0;
-  font-size: 18px;
-}
-
-.approval-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.approval-table th,
-.approval-table td {
-  padding: 8px 12px;
-  text-align: left;
-  border-bottom: 1px solid #eee;
-}
-
-.approval-table th {
-  font-weight: 600;
-  background: #fafafa;
-}
-
-.status-badge {
-  padding: 2px 8px;
-  font-size: 12px;
-  border-radius: 4px;
-}
-
-.status-pending {
-  background: #fff7e6;
-}
-
-.status-reviewing {
-  background: #e6f7ff;
-}
-
-.status-approved {
-  color: #155724;
-  background: #d4edda;
-}
-
-.status-rejected {
-  color: #721c24;
-  background: #f8d7da;
-}
-
-.btn-action {
-  padding: 4px 12px;
-  margin-right: 4px;
-  color: #1890ff;
-  cursor: pointer;
-  background: transparent;
-  border: 1px solid #1890ff;
-  border-radius: 4px;
-}
-
-.btn-danger {
-  color: #ff4d4f;
-  border-color: #ff4d4f;
-}
-
-.btn-refresh {
-  padding: 4px 12px;
-  cursor: pointer;
-  background: #fff;
-  border: 1px solid #d9d9d9;
-  border-radius: 4px;
-}
-
-.loading,
-.empty {
-  padding: 24px;
-  color: #999;
-  text-align: center;
-}
-
-.text-muted {
-  color: #999;
-}
-</style>
+      <div class="page__table-wrap">
+        <NebulaTable
+          :data="requests"
+          :loading="loading"
+          row-key="requestId"
+          :scroll-x="{ enabled: true }"
+        >
+          <NebulaTableColumn
+            field="requestId"
+            title="申请 ID"
+            min-width="120"
+            show-overflow="tooltip"
+          />
+          <NebulaTableColumn
+            field="resourceId"
+            title="资源 ID"
+            min-width="120"
+            show-overflow="tooltip"
+          />
+          <NebulaTableColumn field="resourceType" title="类型" width="96" />
+          <NebulaTableColumn field="kind" title="操作" width="96" />
+          <NebulaTableColumn field="applicantId" title="申请人" width="96" />
+          <NebulaTableColumn field="status" title="状态" width="96">
+            <template #default="{ row }">
+              <NebulaTag :variant="statusVariant(row.status)">
+                {{ statusLabel(row.status) }}
+              </NebulaTag>
+            </template>
+          </NebulaTableColumn>
+          <NebulaTableColumn
+            field="reason"
+            title="原因"
+            min-width="120"
+            show-overflow="tooltip"
+          >
+            <template #default="{ row }">
+              {{ row.reason || '-' }}
+            </template>
+          </NebulaTableColumn>
+          <NebulaTableColumn field="createdAt" title="提交时间" width="160">
+            <template #default="{ row }">
+              {{ formatTime(row.createdAt) }}
+            </template>
+          </NebulaTableColumn>
+          <NebulaTableColumn title="审批操作" width="160">
+            <template #default="{ row }">
+              <div v-if="canDecide(row)" class="row-actions">
+                <NebulaButton variant="outline" @click="handleApprove(row)">
+                  通过
+                </NebulaButton>
+                <NebulaButton variant="outline" @click="handleReject(row)">
+                  驳回
+                </NebulaButton>
+              </div>
+              <span v-else class="page__meta">-</span>
+            </template>
+          </NebulaTableColumn>
+        </NebulaTable>
+      </div>
+    </NebulaPane>
+  </div>
+</template>

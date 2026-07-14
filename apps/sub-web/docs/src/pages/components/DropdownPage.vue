@@ -1,13 +1,8 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
 
-// eslint-disable-next-line import/no-duplicates
-import DropdownBasicSource from '@/examples/dropdown/DropdownBasic.vue?raw';
-// eslint-disable-next-line import/no-duplicates
-import DropdownDividerSource from '@/examples/dropdown/DropdownDivider.vue?raw';
-
-import DropdownBasic from '@/examples/dropdown/DropdownBasic.vue';
-import DropdownDivider from '@/examples/dropdown/DropdownDivider.vue';
+import dropdownBasicDemo from '@/examples/dropdown/DropdownBasic.vue?demo';
+import dropdownDividerDemo from '@/examples/dropdown/DropdownDivider.vue?demo';
 </script>
 
 <template>
@@ -15,10 +10,16 @@ import DropdownDivider from '@/examples/dropdown/DropdownDivider.vue';
     <p>下拉菜单组件，用于展示操作菜单列表。</p>
 
     <h2 id="basic">基础用法</h2>
-    <Demo :component="DropdownBasic" :source="DropdownBasicSource" />
+    <Demo
+      :component="dropdownBasicDemo.component"
+      :source="dropdownBasicDemo.source"
+    />
 
     <h2 id="divider">带分割线和禁用</h2>
-    <Demo :component="DropdownDivider" :source="DropdownDividerSource" />
+    <Demo
+      :component="dropdownDividerDemo.component"
+      :source="dropdownDividerDemo.source"
+    />
 
     <h2>API</h2>
     <h3>NebulaDropdown Props</h3>

@@ -1,4 +1,11 @@
 export { createApiClient, type ApiClient } from './createApiClient';
+export {
+  createStudioApiClient,
+  type CreateStudioApiClientOptions,
+  type StudioAuthProvider,
+  type StudioOrganizationProvider,
+  type StudioTenantProvider,
+} from './createStudioApiClient.ts';
 export { parseApiResponse } from './parseApiResponse';
 export {
   beginRequestProgress,

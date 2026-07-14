@@ -20,9 +20,10 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "test": "vp test"
+    "test": "vp test run"
   },
   "dependencies": {
+    "@nebula-studio/contracts": "workspace:^",
     "nprogress": "catalog:utils"
   },
   "devDependencies": {

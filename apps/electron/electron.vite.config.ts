@@ -1,6 +1,8 @@
 import {
+  createNebulaApiProxy,
   defineNebulaConfig,
-  nebulaProxyDiscovery,
+  getNebulaAppManifest,
+  nebulaWorkspaceManifestPlugin,
 } from '@nebula-studio-internal/vite';
 import { resolve } from 'node:path';
 
@@ -9,20 +11,21 @@ const electronPreloadSrcDir = resolve(
   '../electron-preload/src',
 );
 
+const manifest = getNebulaAppManifest();
+
 export default defineNebulaConfig({
   platform: 'electron',
   configModuleUrl: import.meta.url,
   unifiedPreload: {
     sourceDir: electronPreloadSrcDir,
-    windowIds: ['main', 'docs', 'settings'],
+    windowIds: manifest.preloadIds,
   },
   merge: {
     renderer: {
-      plugins: [
-        nebulaProxyDiscovery({
-          subApps: ['integration', 'frontend', 'login', 'settings', 'docs'],
-        }),
-      ],
+      plugins: [nebulaWorkspaceManifestPlugin()],
+      server: {
+        proxy: createNebulaApiProxy({ preset: 'integration' }),
+      },
     },
   },
 });
