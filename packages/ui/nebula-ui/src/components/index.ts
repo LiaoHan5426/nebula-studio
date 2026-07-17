@@ -35,20 +35,6 @@ export { NebulaDrawer } from './drawer/NebulaDrawer';
 export { default as NebulaIcon } from './icon/NebulaIcon.vue';
 export { PRESET_ICONS } from './icon/preset';
 
-// Editor subsystem
-export { default as NebulaEditor } from './editor/NebulaEditor.vue';
-export { default as NebulaCodeEditor } from './editor/code/NebulaCodeEditor.vue';
-export { default as NebulaRichEditor } from './editor/rich/NebulaRichEditor.vue';
-export { default as NebulaRichEditorToolbar } from './editor/rich/NebulaRichEditorToolbar.vue';
-export { default as NebulaMarkdownPane } from './editor/markdown/NebulaMarkdownPane.vue';
-export { NebulaReader } from './editor/reader/NebulaReader';
-export type {
-  NebulaEditorCodeLanguage,
-  NebulaEditorVariant,
-  NebulaMarkdownPaneMode,
-} from './editor/types';
-export { NEBULA_EDITOR_CODE_LANGUAGE_OPTIONS } from './editor/types';
-
 // New components
 export { default as NebulaCheckbox } from './checkbox/NebulaCheckbox.vue';
 export { default as NebulaCard } from './card/NebulaCard.vue';

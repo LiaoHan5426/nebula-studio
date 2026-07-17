@@ -109,7 +109,11 @@ async function start(): Promise<void> {
   resolveRendererEntry(windowId);
   const pkg = resolveRendererEntry(windowId).renderer as RendererPkg;
   installRendererHmrFallback(pkg);
-  await loadMainByRendererPkg[pkg]();
+  const loadRenderer = loadMainByRendererPkg[pkg];
+  if (!loadRenderer) {
+    throw new Error(`boot: renderer "${pkg}" has no registered loader`);
+  }
+  await loadRenderer();
 }
 
 void start();

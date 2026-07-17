@@ -8,7 +8,7 @@ import {
   NebulaTag,
 } from '@nebula-studio/nebula-ui';
 
-import { approvalApi } from '@/shared/api/consoleApi';
+import { approvalApi } from '@/features/approval/api';
 import type { GovernanceRequest } from '@/shared/types';
 
 const requests = ref<GovernanceRequest[]>([]);

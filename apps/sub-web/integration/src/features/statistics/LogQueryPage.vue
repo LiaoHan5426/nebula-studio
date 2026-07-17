@@ -9,7 +9,7 @@ import {
   NebulaTag,
 } from '@nebula-studio/nebula-ui';
 
-import { monitorApi } from '@/shared/api/consoleApi';
+import { monitorApi } from '@/features/monitor/api';
 import { useTenant } from '@/shared/composables/useTenant';
 import { isApiSuccess } from '@/shared/types';
 

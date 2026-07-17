@@ -147,14 +147,12 @@ export const dataSourceApi = {
   },
 };
 
-export {
-  subscriptionApi,
-  tenantApi,
-  pluginApi,
-  subscriptionRequestApi,
-  monitorApi,
-  governanceApi,
-} from '@/shared/api/consoleApi';
+export { subscriptionApi } from '@/features/subscription/api';
+export { tenantApi } from '@/features/tenant/api';
+export { pluginApi } from '@/features/plugin/api';
+export { subscriptionRequestApi } from '@/features/subscription/api';
+export { monitorApi } from '@/features/monitor/api';
+export { governanceApi } from '@/features/governance/api';
 
 export { gatewayRequest } from '@/shared/api/executorApi';
 

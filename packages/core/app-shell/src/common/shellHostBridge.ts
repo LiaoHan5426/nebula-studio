@@ -54,6 +54,8 @@ export interface ShellHostBridge {
 
   readonly shouldRefreshAuthSessionAfterLogout: boolean;
 
+  logout(): Promise<void>;
+
   onShellUnmount(): void;
 
   /** 宿主 hydrate 前（如清理遗留 localStorage key） */

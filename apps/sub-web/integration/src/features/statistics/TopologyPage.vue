@@ -2,7 +2,7 @@
 import { onMounted, ref, watch } from 'vue';
 import { NebulaButton, NebulaPane, NebulaTag } from '@nebula-studio/nebula-ui';
 
-import { monitorApi } from '@/shared/api/consoleApi';
+import { monitorApi } from '@/features/monitor/api';
 import { camelTopologyApi } from '@/shared/api/topologyApi';
 import { useTenant } from '@/shared/composables/useTenant';
 import { isApiSuccess } from '@/shared/types';

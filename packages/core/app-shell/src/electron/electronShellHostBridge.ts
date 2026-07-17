@@ -13,6 +13,7 @@ const electronWindow = window as unknown as Window & {
       invoke(channel: string, ...args: unknown[]): Promise<unknown>;
     };
   };
+  api: { auth: { logout(): Promise<void> } };
 };
 
 /** 已废弃：集成层显隐改由 `nebula-shell-active-view` 驱动，启动时删除以免误判 */
@@ -30,6 +31,9 @@ export function createElectronShellHostBridge(): ShellHostBridge {
     },
     shouldSubscribeAuthSessionChannel: true,
     shouldRefreshAuthSessionAfterLogout: true,
+    async logout() {
+      await electronWindow.api.auth.logout();
+    },
 
     commitIntegrationOpen(
       open: boolean,

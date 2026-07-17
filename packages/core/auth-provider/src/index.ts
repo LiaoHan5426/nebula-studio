@@ -3,8 +3,8 @@ import {
   writeWebAuthSession,
   clearWebAuthSession,
   hasValidShellAuthSession,
-} from '@nebula-studio/app-shell';
-import type { ShellAuthSessionPayload } from '@nebula-studio/app-shell';
+} from './storage.ts';
+import type { ShellAuthSessionPayload } from './storage.ts';
 
 import type {
   AuthProvider,

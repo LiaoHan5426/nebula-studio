@@ -8,7 +8,7 @@ import {
   NebulaTag,
 } from '@nebula-studio/nebula-ui';
 
-import { tenantApi } from '@/shared/api/consoleApi';
+import { tenantApi } from '@/features/tenant/api';
 import { interfaceApi } from '@/shared/api/integration';
 import { useTenant } from '@/shared/composables/useTenant';
 import type { ApiInterface } from '@/shared/types';

@@ -12,7 +12,7 @@ import {
 import { computed, onMounted, ref } from 'vue';
 
 import { loadDagNodeSchemas } from '@/features/flows/loadDagNodeSchemas';
-import { dagApi } from '@/shared/api/consoleApi';
+import { dagApi } from '@/features/monitor/api';
 import { interfaceApi } from '@/shared/api/integration';
 import { useTenant } from '@/shared/composables/useTenant';
 import type { DagDefinitionRecord } from '@/shared/types';

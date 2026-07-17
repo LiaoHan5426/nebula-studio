@@ -7,7 +7,7 @@ import {
   NebulaTable,
   NebulaTableColumn,
 } from '@nebula-studio/nebula-ui';
-import { versionApi } from '@/shared/api/consoleApi';
+import { versionApi } from '@/features/version/api';
 import type { VersionSnapshot } from '@/shared/types';
 
 const snapshots = ref<VersionSnapshot[]>([]);

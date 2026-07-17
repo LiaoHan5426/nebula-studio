@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@nebula-studio-electron/electron-bridge": "workspace:^",
+    "@nebula-studio/auth-provider": "workspace:^",
     "@nebula-studio/contracts": "workspace:^"
   },
   "devDependencies": {

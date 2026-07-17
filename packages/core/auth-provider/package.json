@@ -15,10 +15,23 @@
     "./vue": {
       "types": "./src/vue/index.ts",
       "default": "./src/vue/index.ts"
+    },
+    "./storage": {
+      "types": "./src/storage.ts",
+      "default": "./src/storage.ts"
+    },
+    "./backend": {
+      "types": "./src/backend.ts",
+      "default": "./src/backend.ts"
     }
   },
+  "scripts": {
+    "test": "vp test run --passWithNoTests"
+  },
   "dependencies": {
-    "@nebula-studio/app-shell": "workspace:^",
     "vue": "catalog:vue"
+  },
+  "devDependencies": {
+    "vitest": "catalog:vite"
   }
 }

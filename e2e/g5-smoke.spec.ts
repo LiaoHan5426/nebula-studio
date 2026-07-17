@@ -10,10 +10,10 @@ test.describe('G5 governance flow smoke', () => {
     await page.waitForLoadState('networkidle');
 
     const paths = [
-      '/service/publish',
-      '/service/approvals',
-      '/service/releases',
-      '/service/versions',
+      '/service/publish?embed=integration',
+      '/service/approvals?embed=integration',
+      '/service/releases?embed=integration',
+      '/service/versions?embed=integration',
     ];
 
     for (const path of paths) {
@@ -23,12 +23,12 @@ test.describe('G5 governance flow smoke', () => {
   });
 
   test('approval page heading visible', async ({ page }) => {
-    await page.goto('/service/approvals');
+    await page.goto('/service/approvals?embed=integration');
     await expect(page.locator('body')).not.toBeEmpty();
   });
 
   test('releases page reachable', async ({ page }) => {
-    await page.goto('/service/releases');
+    await page.goto('/service/releases?embed=integration');
     await expect(page.locator('body')).not.toBeEmpty();
   });
 });

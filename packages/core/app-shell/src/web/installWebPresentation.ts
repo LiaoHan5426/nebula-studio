@@ -3,6 +3,7 @@ import {
   createWebPreferenceBridge,
   mergeWebPreferenceBridges,
 } from '@nebula-studio-electron/electron-bridge/vue';
+import { loginWithBackendAuth } from '@nebula-studio/auth-provider/backend';
 
 import {
   markWebPresentationHost,
@@ -14,7 +15,7 @@ import {
   redirectShellToWebLogin,
   writeWebAuthSession,
 } from './webAuth';
-import { loginWithBackendAuth } from './webBackendAuth';
+
 import { createWebNotifyApi } from './webNotify';
 import { createWebShellEmbeddedStateHandlers } from './webShellEmbeddedState';
 import type { PreferenceIpcListener } from './webShellEmbeddedState';

@@ -3,15 +3,21 @@ import {
   isWebShellHost,
 } from '../common/presentationHost';
 import { WEB_SHELL_EMBED_QUERY } from '../common/shellPresentationConfig';
+import {
+  clearWebAuthSession,
+  readWebAuthSession,
+  SHELL_AUTH_SESSION_KEY,
+} from '@nebula-studio/auth-provider/storage';
+import type { ShellAuthSessionPayload } from '@nebula-studio/auth-provider/storage';
 
-export const SHELL_AUTH_SESSION_KEY = 'nebula-studio-auth-session';
-
-export interface ShellAuthSessionPayload {
-  user: string;
-  token?: string;
-  roles?: string[];
-  userId?: string;
-}
+export {
+  clearWebAuthSession,
+  hasValidShellAuthSession,
+  readWebAuthSession,
+  SHELL_AUTH_SESSION_KEY,
+  writeWebAuthSession,
+} from '@nebula-studio/auth-provider/storage';
+export type { ShellAuthSessionPayload } from '@nebula-studio/auth-provider/storage';
 
 export function getWebShellEmbedSurface(): string | null {
   if (typeof window === 'undefined') return null;
@@ -99,33 +105,6 @@ export function redirectShellToWebLogin(returnHref: string): void {
   u.searchParams.set(WEB_SHELL_EMBED_QUERY, 'login');
   u.searchParams.set('return', returnHref);
   location.replace(u.toString());
-}
-
-export function readWebAuthSession(): ShellAuthSessionPayload | null {
-  try {
-    const raw = sessionStorage.getItem(SHELL_AUTH_SESSION_KEY);
-    if (!raw) return null;
-    return JSON.parse(raw) as ShellAuthSessionPayload;
-  } catch {
-    return null;
-  }
-}
-
-export function writeWebAuthSession(payload: ShellAuthSessionPayload): void {
-  sessionStorage.setItem(SHELL_AUTH_SESSION_KEY, JSON.stringify(payload));
-}
-
-export function clearWebAuthSession(): void {
-  sessionStorage.removeItem(SHELL_AUTH_SESSION_KEY);
-}
-
-/** Shell 登录态需同时有用户名与足够长度的 JWT */
-export function hasValidShellAuthSession(
-  session: ShellAuthSessionPayload | null | undefined,
-): boolean {
-  const user = session?.user?.trim();
-  const token = session?.token?.trim();
-  return Boolean(user && token && token.length >= 20);
 }
 
 /** 壳层 iframe 内嵌子应用（Web `embed` / Electron `renderer` 查询参数） */

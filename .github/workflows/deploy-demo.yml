@@ -46,7 +46,12 @@ jobs:
           node-version: '22'
           cache: true
           run-install: |
-            - args: []
+            - args: ['--frozen-lockfile']
+
+      - name: Quality checks
+        run: |
+          vp check
+          vp run test
 
       - name: Resolve base path
         id: vars
@@ -64,6 +69,15 @@ jobs:
           NEBULA_MSW_ENABLED: 'true'
           NEBULA_MSW_BASE_PATH: ${{ steps.vars.outputs.base_path }}
         run: vp run web#build
+
+      - name: Enforce bundle budgets
+        run: vp run check:bundle
+
+      - name: Install Playwright Chromium
+        run: vp exec playwright install --with-deps chromium
+
+      - name: Run browser E2E
+        run: vp run test:e2e
 
       - name: Copy MSW Service Worker
         run: cp node_modules/msw/lib/mockServiceWorker.js apps/web/dist/mockServiceWorker.js

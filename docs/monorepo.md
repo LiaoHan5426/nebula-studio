@@ -55,8 +55,8 @@ preload 包位于 `apps/electron-preload/<slug>`，其 npm 包名遵循 `@nebula
 | 分组 | 工作区成员 |
 | --- | --- |
 | UI | `@nebula-studio/nebula-ui`、`@nebula-studio/nebula-layout`、`@nebula-studio/nebula-agent` |
-| 编辑器 | `nebula-editor`、`@nebula-studio/code-editor`、`@nebula-studio/nebula-flow-editor`、`@nebula-studio/nebula-dag-editor`、`@nebula-studio/nebula-low-render`、`@nebula-studio/nebula-integration-panel` |
-| 功能 | `@nebula-studio/plugin-installer`、`@nebula-studio/use-confirm` |
+| 编辑器 | `nebula-editor`、`@nebula-studio/nebula-flow-editor`、`@nebula-studio/nebula-dag-editor`、`@nebula-studio/nebula-low-render`、`@nebula-studio/nebula-integration-panel` |
+| 功能 | `@nebula-studio/use-confirm` |
 | 基础样式/类型 | `@nebula-studio/styles`、`@nebula-studio/types` |
 
 ## 新增、移动或改名检查清单

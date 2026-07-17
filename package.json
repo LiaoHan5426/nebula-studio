@@ -16,6 +16,7 @@
     "dev:electron": "vp run electron#dev",
     "dev:web": "vp run web#dev",
     "build:web": "vp run web#build",
+    "check:bundle": "node ./scripts/check-bundle-budget.mjs",
     "cap": "vp run mobile#cap",
     "check": "vp check --fix",
     "lint:ox": "vp lint --fix --threads=2",

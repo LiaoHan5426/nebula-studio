@@ -479,7 +479,7 @@ export function useAppLifecycle(opts: UseAppLifecycleOptions) {
   }
 
   async function logout(): Promise<void> {
-    await (window as any).api.auth.logout();
+    await shellHost.logout();
     opts.resetOrganizationSession();
     clearWebAuthSession();
     if (shellHost.shouldRefreshAuthSessionAfterLogout)

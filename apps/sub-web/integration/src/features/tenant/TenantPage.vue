@@ -9,8 +9,8 @@ import {
   NebulaTag,
 } from '@nebula-studio/nebula-ui';
 
-import { tenantApi } from '@/shared/api/consoleApi';
-import type { TenantRecord } from '@/shared/api/consoleApi';
+import { tenantApi } from '@/features/tenant/api';
+import type { TenantRecord } from '@/features/tenant/api';
 import { getAuthUserId } from '@/shared/auth/session';
 import { useAuth } from '@/shared/composables/useAuth';
 import { isApiSuccess } from '@/shared/types';

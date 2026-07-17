@@ -1,8 +1,5 @@
 @import 'vxe-table/lib/style.css';
 
-/** NebulaReader Markdown / plain 代码块语法高亮（highlight.js） */
-@import 'highlight.js/styles/github.css';
-
 /** tiptap 编辑器基础样式 */
 .tiptap {
   box-sizing: border-box;

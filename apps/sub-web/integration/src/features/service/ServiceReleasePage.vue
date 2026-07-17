@@ -8,7 +8,7 @@ import {
   NebulaTag,
 } from '@nebula-studio/nebula-ui';
 
-import { releaseApi } from '@/shared/api/consoleApi';
+import { releaseApi } from '@/features/release/api';
 import type { ReleaseRecord } from '@/shared/types';
 
 const releases = ref<ReleaseRecord[]>([]);

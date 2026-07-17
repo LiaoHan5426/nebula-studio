@@ -44,9 +44,7 @@ function isSseRequest(url?: string): boolean {
   return url?.includes('/events') ?? false;
 }
 
-function configureSseProxy(proxy: {
-  on: (event: string, handler: (...args: unknown[]) => void) => void;
-}): void {
+const configureSseProxy: NonNullable<ProxyOptions['configure']> = (proxy) => {
   proxy.on('proxyRes', (proxyRes, req) => {
     const res = proxyRes as {
       headers: Record<string, string | string[] | undefined>;
@@ -74,7 +72,7 @@ function configureSseProxy(proxy: {
     }
     console.error('[nebula-vite] http proxy error:', request.url, err);
   });
-}
+};
 
 function buildProxyEntry(target: string, sse: boolean): ProxyOptions {
   if (!sse) {

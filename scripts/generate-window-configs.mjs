@@ -10,6 +10,7 @@
 
 import Ajv from 'ajv';
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -105,6 +106,7 @@ function generateTypeScript(config) {
   lines.push('export interface GeneratedWindowEntry {');
   lines.push('  preload: string;');
   lines.push('  renderer: string;');
+  lines.push('  webEmbedEntry?: string;');
   lines.push('  label: string;');
   lines.push('  iconSvg?: string;');
   lines.push('  defaultEnabled?: boolean;');
@@ -116,6 +118,7 @@ function generateTypeScript(config) {
   lines.push('export interface GeneratedModalRendererEntry {');
   lines.push('  preload: string;');
   lines.push('  renderer: string;');
+  lines.push('  webEmbedEntry?: string;');
   lines.push('  preloadCapabilities?: string[];');
   lines.push('}');
   lines.push('');
@@ -143,6 +146,8 @@ function generateTypeScript(config) {
     lines.push(`  ${JSON.stringify(windowId)}: {`);
     lines.push(`    preload: ${JSON.stringify(win.preload)},`);
     lines.push(`    renderer: ${JSON.stringify(win.renderer)},`);
+    if (win.webEmbedEntry)
+      lines.push(`    webEmbedEntry: ${JSON.stringify(win.webEmbedEntry)},`);
     lines.push(`    label: ${JSON.stringify(win.label)},`);
     if (win.iconSvg) lines.push(`    iconSvg: ${JSON.stringify(win.iconSvg)},`);
     if (win.defaultEnabled !== undefined)
@@ -168,6 +173,10 @@ function generateTypeScript(config) {
       lines.push(`  ${JSON.stringify(modalId)}: {`);
       lines.push(`    preload: ${JSON.stringify(modal.preload)},`);
       lines.push(`    renderer: ${JSON.stringify(modal.renderer)},`);
+      if (modal.webEmbedEntry)
+        lines.push(
+          `    webEmbedEntry: ${JSON.stringify(modal.webEmbedEntry)},`,
+        );
       if (modal.preloadCapabilities) {
         lines.push(
           `    preloadCapabilities: ${JSON.stringify(modal.preloadCapabilities)},`,
@@ -240,6 +249,10 @@ if (!existsSync(outputDir)) {
   mkdirSync(outputDir, { recursive: true });
 }
 writeFileSync(outputPath, ts, 'utf-8');
+execFileSync('vp', ['fmt', outputPath, '--write'], {
+  cwd: rootDir,
+  stdio: 'inherit',
+});
 
 console.log(`Generated: ${outputPath}`);
 console.log(`   ${ts.split('\n').length} lines written.`);

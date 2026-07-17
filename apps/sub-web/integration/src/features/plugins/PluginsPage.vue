@@ -10,8 +10,8 @@ import {
   NebulaTag,
 } from '@nebula-studio/nebula-ui';
 
-import { pluginApi } from '@/shared/api/consoleApi';
-import type { PluginRecord } from '@/shared/api/consoleApi';
+import { pluginApi } from '@/features/plugin/api';
+import type { PluginRecord } from '@/features/plugin/api';
 import PluginConnectorSection from '@/features/plugins/PluginConnectorSection.vue';
 import { useAuth } from '@/shared/composables/useAuth';
 import { ConnectorType, isApiSuccess } from '@/shared/types';

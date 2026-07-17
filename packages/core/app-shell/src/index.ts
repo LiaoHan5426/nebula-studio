@@ -66,13 +66,13 @@ export {
   completeLoginWithOrg,
   fetchAuthMode,
   loginWithBackendAuth,
-} from './web/webBackendAuth';
+} from '@nebula-studio/auth-provider/backend';
 export type {
   AuthMode,
   BackendLoginResult,
   OrgSummary,
   OrgSummary as BackendOrgSummary,
-} from './web/webBackendAuth';
+} from '@nebula-studio/auth-provider/backend';
 export { SHELL_ACTIVE_VIEW_STORAGE_KEY } from './common/shellHostStorageKeys';
 export {
   readActiveViewPreference,

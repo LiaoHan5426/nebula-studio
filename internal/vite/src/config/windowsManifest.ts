@@ -1,5 +1,5 @@
 import { readFileSync, existsSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export interface WindowsConfig {
@@ -13,6 +13,7 @@ export interface WindowsConfig {
     {
       preload: string;
       renderer: string;
+      webEmbedEntry?: string;
       label: string;
       integratable?: boolean;
       defaultEnabled?: boolean;
@@ -26,6 +27,7 @@ export interface WindowsConfig {
     {
       preload: string;
       renderer: string;
+      webEmbedEntry?: string;
       preloadCapabilities?: string[];
     }
   >;
@@ -45,15 +47,8 @@ export interface NebulaAppManifest {
   embedBootEntries: Record<string, string>;
 }
 
-const DEFAULT_EMBED_BOOT_ENTRIES: Record<string, string> = {
-  settings: './embed/settings-entry.js',
-  login: './embed/login-entry.js',
-  docs: './embed/docs-entry.js',
-  integration: './embed/integration-entry.js',
-};
-
 export function findMonorepoRoot(fromDir: string): string {
-  let current = fromDir;
+  let current = resolve(fromDir);
   while (true) {
     if (
       existsSync(join(current, 'pnpm-workspace.yaml')) ||
@@ -88,11 +83,18 @@ export function buildAppManifest(
 ): NebulaAppManifest {
   const subApps = new Set<string>();
   const preloadIds = new Set<string>();
+  const embedBootEntries: Record<string, string> = {};
 
   for (const win of Object.values(config.windows)) {
     subApps.add(win.renderer);
     preloadIds.add(win.preload);
     assertRendererPackage(rootDir, win.renderer);
+    registerWebEmbedEntry(
+      rootDir,
+      win.renderer,
+      win.webEmbedEntry,
+      embedBootEntries,
+    );
   }
 
   if (config.modalRenderers) {
@@ -100,31 +102,57 @@ export function buildAppManifest(
       subApps.add(modal.renderer);
       preloadIds.add(modal.preload);
       assertRendererPackage(rootDir, modal.renderer);
-    }
-  }
-
-  const embedSurfaces = [...subApps].filter(
-    (id) => id in DEFAULT_EMBED_BOOT_ENTRIES,
-  );
-
-  const embedBootEntries: Record<string, string> = {};
-  for (const surface of embedSurfaces) {
-    const entry = DEFAULT_EMBED_BOOT_ENTRIES[surface];
-    if (!entry) {
-      throw new Error(
-        `[nebula-vite] embed surface "${surface}" has no boot entry mapping`,
+      registerWebEmbedEntry(
+        rootDir,
+        modal.renderer,
+        modal.webEmbedEntry,
+        embedBootEntries,
       );
     }
-    embedBootEntries[surface] = entry;
   }
+
+  const embedSurfaces = Object.keys(embedBootEntries).toSorted();
 
   return {
     subApps: [...subApps].toSorted(),
     windowIds: Object.keys(config.windows).toSorted(),
     preloadIds: [...preloadIds].toSorted(),
-    embedSurfaces: embedSurfaces.toSorted(),
+    embedSurfaces,
     embedBootEntries,
   };
+}
+
+function registerWebEmbedEntry(
+  rootDir: string,
+  renderer: string,
+  entry: string | undefined,
+  entries: Record<string, string>,
+): void {
+  if (!entry) return;
+  if (!entry.startsWith('./embed/') || !entry.endsWith('-entry.js')) {
+    throw new Error(
+      `[nebula-vite] renderer "${renderer}" has invalid webEmbedEntry "${entry}"`,
+    );
+  }
+  const existing = entries[renderer];
+  if (existing && existing !== entry) {
+    throw new Error(
+      `[nebula-vite] renderer "${renderer}" has conflicting Web embed entries`,
+    );
+  }
+  const sourcePath = join(
+    rootDir,
+    'apps',
+    'web',
+    'src',
+    entry.slice(2).replace(/\.js$/, '.ts'),
+  );
+  if (!existsSync(sourcePath)) {
+    throw new Error(
+      `[nebula-vite] renderer "${renderer}" missing Web embed entry ${entry}`,
+    );
+  }
+  entries[renderer] = entry;
 }
 
 function assertRendererPackage(rootDir: string, renderer: string): void {

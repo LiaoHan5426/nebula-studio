@@ -10,8 +10,8 @@ import {
   NebulaTag,
 } from '@nebula-studio/nebula-ui';
 
-import { subscriptionRequestApi } from '@/shared/api/consoleApi';
-import type { SubscriptionRequestRecord } from '@/shared/api/consoleApi';
+import { subscriptionRequestApi } from '@/features/subscription/api';
+import type { SubscriptionRequestRecord } from '@/features/subscription/api';
 import { GRANT_SCHEDULE_OPTIONS } from '@/shared/grant/schedule';
 import { isApiSuccess } from '@/shared/types';
 

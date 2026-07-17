@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { dagApi } from '@/shared/api/consoleApi';
+import { dagApi } from '@/features/monitor/api';
 
 const { consoleRequest } = vi.hoisted(() => ({
   consoleRequest: vi.fn(),

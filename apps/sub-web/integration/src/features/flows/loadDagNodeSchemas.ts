@@ -1,6 +1,6 @@
 import type { PluginNodeSchema } from '@nebula-studio/nebula-low-render';
 
-import { pluginCatalogApi } from '@/shared/api/consoleApi';
+import { pluginCatalogApi } from '@/features/plugin/api';
 import type { ApiInterface } from '@/shared/types';
 import { isApiSuccess } from '@/shared/types';
 

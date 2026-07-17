@@ -37,33 +37,37 @@ export function createEventBus(): ShellEventBus {
   };
 }
 
-declare global {
-  interface Window {
-    __NEBULA_SHELL_EVENT_BUS__?: ShellEventBus;
-  }
+type ShellEventBusHost = {
+  __NEBULA_SHELL_EVENT_BUS__?: ShellEventBus;
+};
+
+function asShellEventBusHost(target: Window): ShellEventBusHost {
+  return target as unknown as ShellEventBusHost;
 }
 
 /** 解析当前上下文可用的 Shell 事件总线（宿主优先，否则创建并挂载到 window）。 */
 export function resolveShellEventBus(existing?: ShellEventBus): ShellEventBus {
+  const currentHost = asShellEventBusHost(window);
   if (existing) {
-    window.__NEBULA_SHELL_EVENT_BUS__ = existing;
+    currentHost.__NEBULA_SHELL_EVENT_BUS__ = existing;
     return existing;
   }
 
   try {
-    if (window.parent !== window && window.parent.__NEBULA_SHELL_EVENT_BUS__) {
-      return window.parent.__NEBULA_SHELL_EVENT_BUS__;
+    const parentHost = asShellEventBusHost(window.parent);
+    if (window.parent !== window && parentHost.__NEBULA_SHELL_EVENT_BUS__) {
+      return parentHost.__NEBULA_SHELL_EVENT_BUS__;
     }
   } catch {
     // cross-origin iframe
   }
 
-  if (window.__NEBULA_SHELL_EVENT_BUS__) {
-    return window.__NEBULA_SHELL_EVENT_BUS__;
+  if (currentHost.__NEBULA_SHELL_EVENT_BUS__) {
+    return currentHost.__NEBULA_SHELL_EVENT_BUS__;
   }
 
   const bus = createEventBus();
-  window.__NEBULA_SHELL_EVENT_BUS__ = bus;
+  currentHost.__NEBULA_SHELL_EVENT_BUS__ = bus;
   return bus;
 }
 

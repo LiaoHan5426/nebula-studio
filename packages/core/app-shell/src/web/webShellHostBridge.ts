@@ -9,6 +9,10 @@ const LEGACY_SHELL_INTEGRATION_OPEN_WEB_KEY =
 /** 旧版独立键，迁移后删除以免干扰「仅 active-view」语义 */
 const LEGACY_SHELL_INTEGRATION_HOME_KEY = 'nebula-shell-integration-home';
 
+const webWindow = window as unknown as {
+  api: { auth: { logout(): Promise<void> } };
+};
+
 export function createWebShellHostBridge(): ShellHostBridge {
   return {
     kind: 'web',
@@ -20,6 +24,9 @@ export function createWebShellHostBridge(): ShellHostBridge {
     },
     shouldSubscribeAuthSessionChannel: false,
     shouldRefreshAuthSessionAfterLogout: false,
+    async logout() {
+      await webWindow.api.auth.logout();
+    },
 
     commitIntegrationOpen(
       open: boolean,

@@ -11,7 +11,7 @@ import type {
   TenantRecord,
 } from '@nebula-studio/tenant';
 
-import { tenantApi } from '@/shared/api/consoleApi';
+import { tenantApi } from '@/features/tenant/api';
 import { isApiSuccess } from '@/shared/types';
 
 export type { TenantRecord };
