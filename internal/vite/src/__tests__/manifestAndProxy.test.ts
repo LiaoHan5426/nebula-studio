@@ -78,6 +78,7 @@ describe('createNebulaApiProxy', () => {
     expect(keys.indexOf('/api/executor')).toBeLessThan(keys.indexOf('/api'));
     expect(proxy['/api']?.target).toBe('http://console.test');
     expect(proxy['/api/executor']?.target).toBe('http://executor.test');
+    expect(typeof proxy['/api/executor']?.configure).toBe('function');
   });
 
   it('rejects an explicitly empty proxy target', () => {

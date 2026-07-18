@@ -87,6 +87,46 @@ function buildProxyEntry(target: string, sse: boolean): ProxyOptions {
   };
 }
 
+/**
+ * Executor 管理 API 使用服务身份（X-Service-Token），浏览器不应持有该令牌。
+ * 开发代理在转发时注入，与 platform-integration / executor 的默认值对齐。
+ */
+function resolveExecutorServiceToken(): string {
+  return (
+    process.env.NEBULA_EXECUTOR_SERVICE_TOKEN ??
+    'change-me-platform-executor-service-token'
+  );
+}
+
+function buildExecutorProxyEntry(target: string, sse: boolean): ProxyOptions {
+  const serviceToken = resolveExecutorServiceToken();
+  const injectServiceToken: NonNullable<ProxyOptions['configure']> = (
+    proxy,
+  ) => {
+    proxy.on('proxyReq', (proxyReq) => {
+      proxyReq.setHeader('X-Service-Token', serviceToken);
+    });
+    if (sse) {
+      configureSseProxy(proxy);
+    }
+  };
+
+  if (!sse) {
+    return {
+      target,
+      changeOrigin: true,
+      configure: injectServiceToken,
+    };
+  }
+  return {
+    target,
+    changeOrigin: true,
+    timeout: 0,
+    proxyTimeout: 0,
+    configure: injectServiceToken,
+  };
+}
+
 function integrationRoutes(
   targets: Required<NebulaApiProxyTargets>,
   sse: boolean,
@@ -94,13 +134,16 @@ function integrationRoutes(
   return [
     ['/api/integration/gateway', buildProxyEntry(targets.executor, sse)],
     ['/api/integration/demo', buildProxyEntry(targets.executor, sse)],
-    ['/api/executor', buildProxyEntry(targets.executor, sse)],
+    ['/api/executor', buildExecutorProxyEntry(targets.executor, sse)],
     ['/api/system', buildProxyEntry(targets.platform, sse)],
     ['/api/platform', buildProxyEntry(targets.platform, sse)],
     ['/api/security/governance', buildProxyEntry(targets.platform, sse)],
     ['/api/version', buildProxyEntry(targets.platform, sse)],
     ['/api/release', buildProxyEntry(targets.platform, sse)],
     ['/api/releases', buildProxyEntry(targets.platform, sse)],
+    // 设置子应用配置页走 config-center，与 standard preset 对齐到 platform-console
+    ['/api/config', buildProxyEntry(targets.platform, sse)],
+    ['/api/task', buildProxyEntry(targets.platform, sse)],
     ['/api', buildProxyEntry(targets.console, sse)],
   ];
 }

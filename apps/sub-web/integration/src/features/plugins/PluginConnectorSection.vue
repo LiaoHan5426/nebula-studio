@@ -50,7 +50,12 @@ async function loadConnectors() {
   try {
     const response = await connectorApi.list();
     if (isApiSuccess(response)) {
-      connectors.value = response.data;
+      const seen = new Set<string>();
+      connectors.value = response.data.filter((c) => {
+        if (!c.connectorId || seen.has(c.connectorId)) return false;
+        seen.add(c.connectorId);
+        return true;
+      });
     }
   } finally {
     loading.value = false;
@@ -148,8 +153,8 @@ function resolveTypeLabel(connector: Connector): string {
     </div>
     <div v-else class="connector-section__list">
       <article
-        v-for="connector in visibleConnectors"
-        :key="connector.connectorId"
+        v-for="(connector, index) in visibleConnectors"
+        :key="`${connector.connectorId}-${connector.pluginVersion ?? 'na'}-${index}`"
         class="connector-section__row"
       >
         <div class="connector-section__row-main">

@@ -24,7 +24,9 @@ onMounted(() => {
 async function loadStats() {
   loading.value = true;
   try {
-    const response = await monitorApi.interfaceRanking(currentTenantId.value);
+    const response = await monitorApi.interfaceRanking(
+      currentTenantId.value || '',
+    );
     if (isApiSuccess(response)) {
       stats.value = (response.data ?? []).map((row) => ({
         tenantId: currentTenantId.value,
@@ -36,6 +38,9 @@ async function loadStats() {
         avgDuration: row.avgDuration ?? row.avg_latency_ms ?? '-',
       }));
     }
+  } catch (e) {
+    console.warn('[integration] load interface ranking failed', e);
+    stats.value = [];
   } finally {
     loading.value = false;
   }

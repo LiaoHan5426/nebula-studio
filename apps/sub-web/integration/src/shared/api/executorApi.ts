@@ -11,15 +11,21 @@ export interface ExecutorRouteView {
   description?: string;
 }
 
+/** Executor 管理面走服务令牌（由 Vite/BFF 注入），401 不应清用户会话。 */
+const executorAuthOpts = { skipAuth: true } as const;
+
 export const executorRoutesApi = {
   list(): Promise<ApiResponse<ExecutorRouteView[]>> {
-    return apiRequest<ExecutorRouteView[]>('/api/executor', '/routes');
+    return apiRequest<ExecutorRouteView[]>('/api/executor', '/routes', {
+      ...executorAuthOpts,
+    });
   },
 
   get(routeId: string): Promise<ApiResponse<ExecutorRouteView>> {
     return apiRequest<ExecutorRouteView>(
       '/api/executor',
       `/routes/${encodeURIComponent(routeId)}`,
+      { ...executorAuthOpts },
     );
   },
 };

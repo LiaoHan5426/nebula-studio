@@ -1,4 +1,8 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import {
+  createRouter,
+  createWebHashHistory,
+  createWebHistory,
+} from 'vue-router';
 import type {
   NavigationGuardNext,
   RouteLocationNormalized,
@@ -8,6 +12,24 @@ import type {
 import { hasValidAuthToken, clearAuthSession } from '@/shared/auth/session';
 import { isPlatformAdmin } from '@/shared/auth/roles';
 import { isIntegrationShellIframeEmbed } from '@/shared/composables/useShellEmbed';
+import { WEB_SHELL_EMBED_QUERY } from '@nebula-studio/app-shell';
+
+function createIntegrationHistory() {
+  // iframe 入口为 index.html?embed=integration；若用 History 模式导航到 /statistics/...
+  // 会丢掉 embed 查询参数，刷新/重判时误走 Shell 或独立登录守卫。
+  const params = new URLSearchParams(window.location.search);
+  const embedSurface =
+    params.get(WEB_SHELL_EMBED_QUERY) ??
+    params.get('renderer') ??
+    (window as Window & { __NEBULA_EMBED_SURFACE__?: string })
+      .__NEBULA_EMBED_SURFACE__;
+  const injectedMode = (window as Window & { __NEBULA_RUNTIME_MODE__?: string })
+    .__NEBULA_RUNTIME_MODE__;
+  if (embedSurface === 'integration' || injectedMode === 'platform-embed') {
+    return createWebHashHistory();
+  }
+  return createWebHistory();
+}
 
 // 登录页：复用 login 子应用组件（@nebula-studio-renderer/login/app）
 const LoginApp = () => import('@nebula-studio-renderer/login/app');
@@ -278,7 +300,7 @@ const routes: RouteRecordRaw[] = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createIntegrationHistory(),
   routes,
 });
 

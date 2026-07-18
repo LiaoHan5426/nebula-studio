@@ -41,6 +41,9 @@ async function loadLogs() {
         createdAt: row.createdAt ?? row.created_at,
       }));
     }
+  } catch (e) {
+    console.warn('[integration] load call logs failed', e);
+    logs.value = [];
   } finally {
     loading.value = false;
   }

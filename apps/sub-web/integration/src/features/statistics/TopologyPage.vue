@@ -79,6 +79,10 @@ async function loadTopology() {
         label: String(e.edgeType ?? e.edge_type ?? ''),
       }));
     }
+  } catch (e) {
+    console.warn('[integration] load topology failed', e);
+    nodes.value = [];
+    links.value = [];
   } finally {
     loading.value = false;
   }

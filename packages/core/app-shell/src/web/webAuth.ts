@@ -23,7 +23,12 @@ export function getWebShellEmbedSurface(): string | null {
   if (typeof window === 'undefined') return null;
   const params = new URLSearchParams(window.location.search);
   // Web: index.html?embed=integration；Electron 壳 iframe: ?renderer=integration
-  return params.get(WEB_SHELL_EMBED_QUERY) ?? params.get('renderer');
+  const fromQuery = params.get(WEB_SHELL_EMBED_QUERY) ?? params.get('renderer');
+  if (fromQuery) return fromQuery;
+  // History 导航会丢掉 ?embed=；启动时注入的表面 ID 作为稳定回退
+  const injected = (window as Window & { __NEBULA_EMBED_SURFACE__?: string })
+    .__NEBULA_EMBED_SURFACE__;
+  return injected?.trim() ? injected.trim() : null;
 }
 
 /** Web 壳主界面：未登录则整页跳转登录 */

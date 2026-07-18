@@ -61,7 +61,7 @@ export class EmbedStrategy implements AuthStrategy {
 
     const session = readParentShellAuthSession();
     if (session?.token && session.user) {
-      this.applyShellSession(session.user, session.token);
+      this.applyShellSession(session.user, session.token, session.roles ?? []);
       return;
     }
 
@@ -73,6 +73,7 @@ export class EmbedStrategy implements AuthStrategy {
               getSession?: () => Promise<{
                 user?: string;
                 token?: string;
+                roles?: string[];
               } | null>;
             };
           };
@@ -80,7 +81,7 @@ export class EmbedStrategy implements AuthStrategy {
       ).api;
       const remote = await parentApi?.auth?.getSession?.();
       if (remote?.token && remote.user) {
-        this.applyShellSession(remote.user, remote.token);
+        this.applyShellSession(remote.user, remote.token, remote.roles ?? []);
       }
     } catch {
       /* ignore cross-frame access errors */

@@ -18,9 +18,13 @@ async function bootstrapIntegrationContext() {
 
 onMounted(async () => {
   // Auth 已由 AuthBootstrap 统一处理（boot.ts → auth: { enabled: true }）
-  // 此处仅做租户上下文初始化
+  // 此处仅做租户上下文初始化；失败不阻断页面渲染
   if (hasValidAuthToken()) {
-    await bootstrapIntegrationContext();
+    try {
+      await bootstrapIntegrationContext();
+    } catch (e) {
+      console.warn('[integration] bootstrap tenant context failed', e);
+    }
   }
 });
 </script>

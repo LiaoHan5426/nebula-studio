@@ -33,6 +33,8 @@ interface ImportMeta {
 }
 
 interface Window {
+  __NEBULA_RUNTIME_MODE__?: 'standalone' | 'platform-embed' | 'electron';
+  __NEBULA_EMBED_SURFACE__?: string;
   electron: {
     ipcRenderer: {
       invoke(channel: string, ...args: unknown[]): Promise<unknown>;

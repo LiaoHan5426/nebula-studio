@@ -49,23 +49,28 @@ export function createUseTenant(options: UseTenantOptions) {
   }
 
   async function loadTenantOptions() {
-    const response = await tenantApi.mine();
-    if (!isApiSuccess(response)) {
-      tenantOptions.value = [];
-      currentTenantId.value = '';
-      currentTenantName.value = '';
-      localStorage.removeItem(STORAGE_KEY);
-      return;
-    }
+    try {
+      const response = await tenantApi.mine();
+      if (!isApiSuccess(response)) {
+        tenantOptions.value = [];
+        currentTenantId.value = '';
+        currentTenantName.value = '';
+        localStorage.removeItem(STORAGE_KEY);
+        return;
+      }
 
-    tenantOptions.value = response.data ?? [];
-    const selected = pickDefaultTenant(tenantOptions.value);
-    if (selected) {
-      setCurrentTenant(selected.tenantId, selected.tenantName);
-    } else {
-      currentTenantId.value = '';
-      currentTenantName.value = '';
-      localStorage.removeItem(STORAGE_KEY);
+      tenantOptions.value = response.data ?? [];
+      const selected = pickDefaultTenant(tenantOptions.value);
+      if (selected) {
+        setCurrentTenant(selected.tenantId, selected.tenantName);
+      } else {
+        currentTenantId.value = '';
+        currentTenantName.value = '';
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    } catch (e) {
+      console.warn('[tenant] loadTenantOptions failed', e);
+      tenantOptions.value = [];
     }
   }
 

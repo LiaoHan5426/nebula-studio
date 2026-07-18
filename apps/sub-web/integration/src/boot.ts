@@ -29,6 +29,12 @@ export async function bootIntegration(opts?: {
   const mode = opts?.mode ?? detectRuntimeMode();
   const shellEventBus = resolveShellEventBus(opts?.shellEventBus);
 
+  // 供鉴权/嵌入检测在 History 丢掉 ?embed= 后仍能识别 iframe 子应用
+  window.__NEBULA_RUNTIME_MODE__ = mode;
+  if (mode === 'platform-embed') {
+    window.__NEBULA_EMBED_SURFACE__ = 'integration';
+  }
+
   // MSW mock：仅 GitHub demo 部署时启用（构建时由 NEBULA_MSW_ENABLED 环境变量注入）
   if (__NEBULA_MSW_ENABLED__) {
     const { worker } = await import('@nebula-studio/msw/browser');

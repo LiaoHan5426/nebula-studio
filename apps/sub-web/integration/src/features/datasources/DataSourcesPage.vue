@@ -49,7 +49,12 @@ async function loadDataSources() {
 async function loadConnectors() {
   const response = await connectorApi.getDatabaseConnectors();
   if (isApiSuccess(response)) {
-    connectors.value = response.data;
+    const seen = new Set<string>();
+    connectors.value = response.data.filter((c) => {
+      if (!c.connectorId || seen.has(c.connectorId)) return false;
+      seen.add(c.connectorId);
+      return true;
+    });
   }
 }
 
@@ -196,8 +201,8 @@ async function handleTest(id: string) {
           <span>连接器</span>
           <select v-model="form.connectorId" class="field__select">
             <option
-              v-for="c in connectors"
-              :key="c.connectorId"
+              v-for="(c, index) in connectors"
+              :key="`${c.connectorId}-${index}`"
               :value="c.connectorId"
             >
               {{ c.connectorId }}
