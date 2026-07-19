@@ -56,7 +56,10 @@ export async function bootFrontend(opts?: {
             registerShellHostIpc: mode !== 'platform-embed',
             processVersions: { node: __NEBULA_BUILD_NODE_VERSION__ },
           },
-    auth: { enabled: true },
+    // Electron shell owns the login UI and must mount before a session exists.
+    // Gating it here makes a fresh desktop launch return without mounting Vue,
+    // leaving an intentional-but-silent blank window.
+    auth: { enabled: mode !== 'electron' },
     shellEventBus,
     beforeMountAsync: async () => {
       // 动态导入 registerIntegratedApps（保持原有副作用）

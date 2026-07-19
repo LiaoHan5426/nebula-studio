@@ -1,14 +1,27 @@
-import { defineComponent, h, ref, Teleport } from 'vue';
+import {
+  computed,
+  defineComponent,
+  h,
+  inject,
+  provide,
+  ref,
+  Teleport,
+} from 'vue';
+import type { InjectionKey } from 'vue';
 import { cn } from '../../utils/cn';
 import { useDropdownPosition } from '../../composables/useDropdownPosition';
 import { useDropdownDismiss } from '../../composables/useDropdownDismiss';
+
+const dropdownCloseKey: InjectionKey<() => void> = Symbol(
+  'nebula-dropdown-close',
+);
 
 export const NebulaDropdown = defineComponent({
   name: 'NebulaDropdown',
   props: {
     open: {
       type: Boolean,
-      default: false,
+      default: undefined,
     },
     placement: {
       type: String as () => 'bottom-end' | 'bottom-start',
@@ -31,20 +44,30 @@ export const NebulaDropdown = defineComponent({
   setup(props, { slots, emit }) {
     const triggerRef = ref<HTMLElement | null>(null);
     const menuRef = ref<HTMLElement | null>(null);
+    const internalOpen = ref(false);
+    const isOpen = computed({
+      get: () => props.open ?? internalOpen.value,
+      set: (value: boolean) => {
+        internalOpen.value = value;
+        emit('update:open', value);
+      },
+    });
 
     const close = () => {
-      if (props.open) emit('update:open', false);
+      if (isOpen.value) isOpen.value = false;
     };
+
+    provide(dropdownCloseKey, close);
 
     const toggle = (event: MouseEvent) => {
       event.preventDefault();
       event.stopPropagation();
-      emit('update:open', !props.open);
+      isOpen.value = !isOpen.value;
     };
 
     const { menuStyle } = useDropdownPosition({
       triggerRef,
-      open: () => props.open,
+      open: () => isOpen.value,
       placement: () => props.placement,
       offset: () => props.offset,
     });
@@ -52,7 +75,7 @@ export const NebulaDropdown = defineComponent({
     useDropdownDismiss({
       triggerRef,
       menuRef,
-      open: () => props.open,
+      open: () => isOpen.value,
       onClose: close,
     });
 
@@ -64,11 +87,17 @@ export const NebulaDropdown = defineComponent({
             ref: triggerRef,
             class: 'nebula-dropdown__trigger',
             onClick: toggle,
+            onKeydown: (event: KeyboardEvent) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                isOpen.value = !isOpen.value;
+              }
+            },
           },
           slots.trigger?.(),
         ),
-        props.open &&
-          h(Teleport, { to: 'body' }, () =>
+        isOpen.value &&
+          h(Teleport, { to: 'body' }, [
             h(
               'div',
               {
@@ -80,7 +109,7 @@ export const NebulaDropdown = defineComponent({
               },
               slots.default?.(),
             ),
-          ),
+          ]),
       ]);
   },
 });
@@ -103,6 +132,7 @@ export const NebulaDropdownItem = defineComponent({
   },
   emits: ['click'],
   setup(props, { slots, emit }) {
+    const closeDropdown = inject(dropdownCloseKey, () => undefined);
     return () =>
       h(
         'button',
@@ -114,6 +144,7 @@ export const NebulaDropdownItem = defineComponent({
           onClick: (event: MouseEvent) => {
             if (props.disabled) return;
             emit('click', event);
+            closeDropdown();
           },
           onMouseup: (event: MouseEvent) => {
             event.stopPropagation();

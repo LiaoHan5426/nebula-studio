@@ -8,6 +8,8 @@ import {
 import appConfig from '../../app.config';
 import { resolveRendererEntry } from '../main/windowRegistry';
 
+document.documentElement.dataset.platform = 'electron';
+
 type WindowId = keyof typeof appConfig.windows;
 type ModalId = keyof typeof appConfig.modalRenderers;
 type AnyBootWindowId = WindowId | ModalId;

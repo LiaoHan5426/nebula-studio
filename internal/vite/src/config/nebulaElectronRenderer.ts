@@ -1,12 +1,18 @@
 import type { UserConfig } from 'vite';
 import { mergeConfig } from 'vite';
 import { nebulaRendererChunkBuildPartial } from './chunks/index.ts';
-import { nebulaBuildNodeVersionDefine } from '../env/nebulaBuildDefines.ts';
+import {
+  nebulaBuildNodeVersionDefine,
+  nebulaMswDefine,
+} from '../env/nebulaBuildDefines.ts';
+import { nebulaClientDefinePlugin } from '../plugin/nebulaClientDefine.ts';
 import { nebulaRendererOptimizeDeps } from './nebulaRendererOptimizeDeps.ts';
 import { nebulaSubWebAliasPlugin } from '../plugin/nebulaSubWebAlias.ts';
 import { resolveNebulaRendererPluginList } from './nebulaRendererPlugins.ts';
 import type { NebulaRendererPluginSelection } from './nebulaRendererPlugins.ts';
 import { nebulaRendererResolve } from './nebulaRendererResolve.ts';
+import { handleNebulaRendererWarning } from './nebulaRendererWarnings.ts';
+import type { NebulaRendererOnWarn } from './nebulaRendererWarnings.ts';
 import type {
   NebulaManualChunkMeta,
   NebulaRendererChunksOptions,
@@ -22,6 +28,7 @@ export type NebulaElectronRendererPatch = Pick<
 > & {
   build?: {
     rollupOptions?: {
+      onwarn?: NebulaRendererOnWarn;
       output?: {
         manualChunks?: (
           id: string,
@@ -49,17 +56,26 @@ export interface NebulaElectronRendererOptions {
 export function nebulaElectronRendererPartial(
   options: NebulaElectronRendererOptions = {},
 ): NebulaElectronRendererPatch {
-  const base: Pick<
-    UserConfig,
-    'define' | 'plugins' | 'resolve' | 'optimizeDeps'
-  > = {
-    define: nebulaBuildNodeVersionDefine(),
+  const base: UserConfig = {
+    define: {
+      ...nebulaBuildNodeVersionDefine(),
+      ...nebulaMswDefine(),
+    },
     plugins: resolveNebulaRendererPluginList({
       ...options.plugins,
-      extra: [nebulaSubWebAliasPlugin(), ...(options.plugins?.extra ?? [])],
+      extra: [
+        nebulaClientDefinePlugin(),
+        nebulaSubWebAliasPlugin(),
+        ...(options.plugins?.extra ?? []),
+      ],
     }),
     resolve: nebulaRendererResolve,
     optimizeDeps: nebulaRendererOptimizeDeps,
+    build: {
+      rollupOptions: {
+        onwarn: handleNebulaRendererWarning,
+      },
+    },
   };
   const chunkPartial = nebulaRendererChunkBuildPartial(options.chunks);
   const merged = chunkPartial ? mergeConfig(base, chunkPartial) : base;

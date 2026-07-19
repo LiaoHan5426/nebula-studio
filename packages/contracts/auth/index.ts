@@ -44,6 +44,8 @@ export interface AuthMe {
 export interface BackendLoginResult {
   token?: string;
   username: string;
+  userId?: string | number;
+  roles?: string[];
   needsOrgSelection?: boolean;
   organizations?: OrgSummary[];
   currentOrgId?: string;

@@ -15,6 +15,7 @@ const props = withDefaults(
     /** 图标按钮模式：使用 size="icon" 并自动设置紧凑尺寸 */
     icon?: boolean;
     active?: boolean;
+    size?: ButtonVariants['size'];
     disabled?: boolean;
     class?: string;
     title?: string;
@@ -27,6 +28,7 @@ const props = withDefaults(
     variant: 'secondary',
     icon: false,
     active: false,
+    size: 'default',
     disabled: false,
     class: '',
     title: '',
@@ -50,13 +52,16 @@ const shadcnVariant = computed(() => {
   return map[props.variant];
 });
 
-const resolvedSize = computed(() => (props.icon ? 'icon' : 'default'));
+const resolvedSize = computed(() => (props.icon ? 'icon' : props.size));
 </script>
 
 <template>
   <Button
     :variant="shadcnVariant"
     :size="resolvedSize"
+    class="nebula-button"
+    :data-variant="props.variant"
+    :data-size="resolvedSize"
     data-button-group-item
     :class="cn(props.active && 'bg-accent', props.class)"
     v-bind="

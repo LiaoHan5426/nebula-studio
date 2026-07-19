@@ -8,13 +8,13 @@ html[data-theme='dark'] {
   --popover: 230 30% 14%;
   --popover-foreground: 220 30% 95%;
   --muted: 231 22% 20%;
-  --muted-foreground: 227 13% 66%;
+  --muted-foreground: 227 15% 72%;
   --accent: 232 28% 24%;
   --accent-foreground: 220 30% 96%;
   --accent-hover: 232 30% 28%;
   --accent-lighter: 232 22% 30%;
-  --border: 231 18% 30%;
-  --input: 231 18% 30%;
+  --border: 231 18% 36%;
+  --input: 231 18% 39%;
   --input-background: 231 26% 14%;
   --ring: 228 90% 68%;
   --secondary: 231 24% 22%;

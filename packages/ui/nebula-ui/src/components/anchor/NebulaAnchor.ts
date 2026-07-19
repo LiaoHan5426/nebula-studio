@@ -123,6 +123,28 @@ export const NebulaAnchor = defineComponent({
       emit('update:activeId', id);
     }
 
+    function navigateTo(id: string, event: MouseEvent): void {
+      event.preventDefault();
+      const target = document.getElementById(id);
+      if (!target) return;
+
+      const root = props.scrollRoot
+        ? document.querySelector(props.scrollRoot)
+        : null;
+      if (root instanceof HTMLElement) {
+        const top =
+          root.scrollTop +
+          target.getBoundingClientRect().top -
+          root.getBoundingClientRect().top -
+          16;
+        root.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+      } else {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      setActive(id);
+      history.replaceState(null, '', `#${encodeURIComponent(id)}`);
+    }
+
     const { reattach: reattachScroll } = useScrollSpy({
       items: () => props.items,
       trackScroll: () => props.trackScroll,
@@ -202,6 +224,8 @@ export const NebulaAnchor = defineComponent({
                             .filter(Boolean)
                             .join(' '),
                           href: `#${item.id}`,
+                          onClick: (event: MouseEvent) =>
+                            navigateTo(item.id, event),
                         },
                         item.label,
                       ),

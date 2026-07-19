@@ -47,13 +47,22 @@ export class ElectronStrategy implements AuthStrategy {
       )) as {
         user?: string;
         token?: string;
+        roles?: string[];
+        userId?: string;
       } | null;
 
       if (session?.user && session.token) {
-        setAuthSession(session.user, session.token);
+        setAuthSession(
+          session.user,
+          session.token,
+          session.roles,
+          session.userId,
+        );
         globalAuthProvider.setSession({
           user: session.user,
           token: session.token,
+          roles: session.roles,
+          userId: session.userId,
         });
       }
     } catch {
@@ -62,12 +71,24 @@ export class ElectronStrategy implements AuthStrategy {
 
     // 2. 监听 session 变更
     const sessionHandler = (...args: unknown[]): void => {
-      const payload = args[1] as { user?: string; token?: string } | null;
+      const payload = args[1] as {
+        user?: string;
+        token?: string;
+        roles?: string[];
+        userId?: string;
+      } | null;
       if (payload?.user && payload.token) {
-        setAuthSession(payload.user, payload.token);
+        setAuthSession(
+          payload.user,
+          payload.token,
+          payload.roles,
+          payload.userId,
+        );
         globalAuthProvider.setSession({
           user: payload.user,
           token: payload.token,
+          roles: payload.roles,
+          userId: payload.userId,
         });
       } else {
         globalAuthProvider.clearSession();

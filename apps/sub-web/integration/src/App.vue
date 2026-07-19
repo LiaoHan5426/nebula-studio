@@ -5,6 +5,7 @@ import { RouterView, useRoute } from 'vue-router';
 import AppLayout from '@/app/AppLayout.vue';
 import { useTenant } from '@/shared/composables/useTenant';
 import { hasValidAuthToken } from '@/shared/auth/session';
+import { syncAuthProfile } from '@/shared/composables/useAuth';
 
 const route = useRoute();
 const isLoginPage = computed(() => route.path === '/login');
@@ -13,6 +14,7 @@ const { loadTenantOptions } = useTenant();
 /** 对接租户仅用于 API 上下文，不在控制台 UI 展示 */
 async function bootstrapIntegrationContext() {
   if (!hasValidAuthToken()) return;
+  await syncAuthProfile();
   await loadTenantOptions();
 }
 

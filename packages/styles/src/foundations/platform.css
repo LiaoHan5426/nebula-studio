@@ -1,0 +1,17 @@
+/* Web keeps a spacious, layered presentation. Electron density is overridden by its host. */
+html[data-platform='web'] {
+  --radius-sm: 0.45rem;
+  --radius-md: 0.65rem;
+  --radius-lg: 0.9rem;
+  --radius-xl: 1.2rem;
+}
+
+html[data-platform='web'] body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+html[data-platform='web'] ::selection {
+  color: hsl(var(--primary-foreground));
+  background: hsl(var(--primary) / 72%);
+}

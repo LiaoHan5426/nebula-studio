@@ -14,6 +14,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vee-validate/zod": "catalog:form",
     "@nebula-studio-internal/tailwind": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
@@ -23,7 +24,8 @@
     "@nebula-studio/runtime": "workspace:^",
     "@nebula-studio-electron/electron-bridge": "workspace:^",
     "markdown-it": "catalog:markdown",
-    "shiki": "catalog:markdown"
+    "shiki": "catalog:markdown",
+    "zod": "catalog:form"
   },
   "devDependencies": {
     "@electron-toolkit/preload": "catalog:electron",

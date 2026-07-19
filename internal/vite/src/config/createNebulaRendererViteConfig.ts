@@ -8,10 +8,12 @@ import {
   nebulaBuildNodeVersionDefine,
   nebulaMswDefine,
 } from '../env/nebulaBuildDefines.ts';
+import { nebulaClientDefinePlugin } from '../plugin/nebulaClientDefine.ts';
 import { nebulaRendererOptimizeDeps } from './nebulaRendererOptimizeDeps.ts';
 import { resolveNebulaRendererPluginList } from './nebulaRendererPlugins.ts';
 import type { NebulaRendererPluginSelection } from './nebulaRendererPlugins.ts';
 import { nebulaRendererResolve } from './nebulaRendererResolve.ts';
+import { handleNebulaRendererWarning } from './nebulaRendererWarnings.ts';
 
 export interface CreateNebulaRendererViteConfigOptions {
   root: string;
@@ -61,6 +63,7 @@ export function createNebulaRendererViteConfig(
 
   let baseConfig: UserConfig = {
     plugins: [
+      nebulaClientDefinePlugin(),
       tailwindcss(),
       ...resolveNebulaRendererPluginList(pluginSelection),
     ],
@@ -75,11 +78,7 @@ export function createNebulaRendererViteConfig(
     },
     build: {
       rolldownOptions: {
-        onwarn(warning, defaultHandler) {
-          // @vueuse/core 中 /* #__PURE__ */ 注解位置不符合 Rolldown 规范，不影响产物
-          if (warning.code === 'INVALID_ANNOTATION') return;
-          defaultHandler(warning);
-        },
+        onwarn: handleNebulaRendererWarning,
       },
     },
   };

@@ -6,6 +6,14 @@ import '@/styles/doc-page.css';
 const route = useRoute();
 
 const sidebar = computed(() => route.meta.sidebar as string | undefined);
+const pageTitle = computed(() => route.meta.title as string | undefined);
+const pageCategory = computed(() =>
+  sidebar.value === 'components'
+    ? '组件参考'
+    : sidebar.value === 'guide'
+      ? '使用指南'
+      : '',
+);
 
 const guideSidebar = [
   { text: '项目介绍', to: '/guide/intro' },
@@ -25,6 +33,7 @@ const componentsSidebar = [
   {
     group: '表单',
     items: [
+      { text: 'Form 表单', to: '/components/form' },
       { text: 'Input 输入框', to: '/components/input' },
       { text: 'Select 选择器', to: '/components/select' },
       { text: 'Switch 开关', to: '/components/switch' },
@@ -133,6 +142,11 @@ function isActive(path: string): boolean {
 
       <!-- Main Content -->
       <main class="docs-content">
+        <header v-if="sidebar && pageTitle" class="docs-page-header">
+          <span class="docs-page-header__eyebrow">{{ pageCategory }}</span>
+          <h1>{{ pageTitle }}</h1>
+          <div class="docs-page-header__rule" />
+        </header>
         <RouterView />
       </main>
     </div>
@@ -171,6 +185,13 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
+  background:
+    radial-gradient(
+      circle at 88% -10%,
+      hsl(var(--primary) / 8%),
+      transparent 30%
+    ),
+    hsl(var(--background));
 }
 
 .docs-nav {
@@ -178,15 +199,17 @@ body {
   flex-shrink: 0;
   align-items: center;
   height: 56px;
-  padding: 0 24px;
-  background: hsl(var(--background));
+  padding: 0 28px;
+  background: hsl(var(--header) / 94%);
   border-bottom: 1px solid hsl(var(--border));
+  box-shadow: 0 1px 0 hsl(var(--foreground) / 3%);
 }
 
 .docs-nav__title {
   margin-right: 32px;
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 17px;
+  font-weight: 750;
+  letter-spacing: -0.02em;
   color: hsl(var(--foreground));
   text-decoration: none;
 }
@@ -197,16 +220,20 @@ body {
 }
 
 .docs-nav__link {
-  padding: 4px 0;
+  padding: 8px 10px;
   font-size: 14px;
   color: hsl(var(--muted-foreground));
   text-decoration: none;
-  transition: color 0.2s;
+  border-radius: var(--radius-md);
+  transition:
+    color 0.2s,
+    background-color 0.2s;
 }
 
 .docs-nav__link:hover,
 .docs-nav__link--active {
   color: hsl(var(--primary));
+  background: hsl(var(--primary) / 9%);
 }
 
 .docs-body {
@@ -218,46 +245,93 @@ body {
 .docs-sidebar {
   flex-shrink: 0;
   width: 260px;
-  padding: 16px 0;
+  padding: 22px 14px;
   overflow-y: auto;
+  background: hsl(var(--sidebar) / 70%);
   border-right: 1px solid hsl(var(--border));
 }
 
 .docs-sidebar__section {
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 .docs-sidebar__heading {
-  padding: 8px 24px 4px;
+  padding: 8px 12px 6px;
   margin: 0;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.02em;
   color: hsl(var(--foreground));
 }
 
 .docs-sidebar__link {
   display: block;
-  padding: 6px 24px;
+  padding: 7px 12px;
   font-size: 13.5px;
   color: hsl(var(--muted-foreground));
   text-decoration: none;
-  transition: color 0.2s;
+  border-radius: var(--radius-md);
+  transition:
+    color 0.2s,
+    background-color 0.2s;
 }
 
 .docs-sidebar__link:hover {
   color: hsl(var(--primary));
+  background: hsl(var(--accent) / 72%);
 }
 
 .docs-sidebar__link--active {
-  font-weight: 500;
+  font-weight: 650;
   color: hsl(var(--primary));
+  background: hsl(var(--primary) / 11%);
+  box-shadow: inset 3px 0 0 hsl(var(--primary));
 }
 
 .docs-content {
   flex: 1;
-  max-width: 960px;
-  padding: 24px 40px;
+  width: 100%;
+  max-width: 1120px;
+  padding: 34px 52px 64px;
   margin: 0 auto;
   overflow-y: auto;
+}
+
+.docs-page-header {
+  max-width: 900px;
+  margin-bottom: 24px;
+}
+
+.docs-page-header__eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  color: hsl(var(--primary));
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.docs-page-header h1 {
+  margin: 7px 0 14px;
+  font-size: clamp(28px, 3vw, 36px);
+  font-weight: 750;
+  line-height: 1.2;
+  letter-spacing: -0.035em;
+}
+
+.docs-page-header__rule {
+  width: 48px;
+  height: 3px;
+  background: hsl(var(--primary));
+  border-radius: 999px;
+}
+
+@media (max-width: 720px) {
+  .docs-sidebar {
+    width: 210px;
+  }
+
+  .docs-content {
+    padding: 28px 24px 48px;
+  }
 }
 </style>

@@ -1,4 +1,4 @@
-import { defineComponent, h, Teleport } from 'vue';
+import { computed, defineComponent, h, ref, Teleport } from 'vue';
 import { cn } from '../../utils/cn';
 import NebulaButton from '../button/NebulaButton.vue';
 import { useBodyScrollLock } from '../../composables/useBodyScrollLock';
@@ -9,7 +9,7 @@ export const NebulaDrawer = defineComponent({
   props: {
     open: {
       type: Boolean,
-      default: false,
+      default: undefined,
     },
     title: {
       type: String,
@@ -34,17 +34,26 @@ export const NebulaDrawer = defineComponent({
   },
   emits: ['update:open', 'close'],
   setup(props, { slots, emit }) {
+    const internalOpen = ref(false);
+    const isOpen = computed({
+      get: () => props.open ?? internalOpen.value,
+      set: (value: boolean) => {
+        internalOpen.value = value;
+        emit('update:open', value);
+      },
+    });
+
     const close = () => {
-      emit('update:open', false);
+      isOpen.value = false;
       emit('close');
     };
 
-    useBodyScrollLock(() => props.open);
-    useOverlayDismiss({ isOpen: () => props.open, onDismiss: close });
+    useBodyScrollLock(() => isOpen.value);
+    useOverlayDismiss({ isOpen: () => isOpen.value, onDismiss: close });
 
     return () => {
-      if (!props.open) return null;
-      return h(Teleport, { to: 'body' }, () =>
+      if (!isOpen.value) return null;
+      return h(Teleport, { to: 'body' }, [
         h('div', { class: cn('nebula-drawer-root', props.class) }, [
           h('div', {
             class: 'nebula-drawer__overlay',
@@ -109,7 +118,7 @@ export const NebulaDrawer = defineComponent({
             ],
           ),
         ]),
-      );
+      ]);
     };
   },
 });

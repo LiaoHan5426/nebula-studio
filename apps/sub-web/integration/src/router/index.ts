@@ -13,6 +13,7 @@ import { hasValidAuthToken, clearAuthSession } from '@/shared/auth/session';
 import { isPlatformAdmin } from '@/shared/auth/roles';
 import { isIntegrationShellIframeEmbed } from '@/shared/composables/useShellEmbed';
 import { WEB_SHELL_EMBED_QUERY } from '@nebula-studio/app-shell';
+import { PLATFORM_ADMIN_HOME, PORTAL_HOME } from '@/app/navigation';
 
 function createIntegrationHistory() {
   // iframe 入口为 index.html?embed=integration；若用 History 模式导航到 /statistics/...
@@ -21,8 +22,9 @@ function createIntegrationHistory() {
   const embedSurface =
     params.get(WEB_SHELL_EMBED_QUERY) ??
     params.get('renderer') ??
-    (window as Window & { __NEBULA_EMBED_SURFACE__?: string })
-      .__NEBULA_EMBED_SURFACE__;
+    (window as Window & { __NEBULA_EMBED_SURFACE__?: string })[
+      '__NEBULA_EMBED_SURFACE__'
+    ];
   const injectedMode = (window as Window & { __NEBULA_RUNTIME_MODE__?: string })
     .__NEBULA_RUNTIME_MODE__;
   if (embedSurface === 'integration' || injectedMode === 'platform-embed') {
@@ -70,13 +72,11 @@ const TopologyPage = () => import('@/features/statistics/TopologyPage.vue');
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: () =>
-      isPlatformAdmin() ? '/statistics/log-query' : '/service/register',
+    redirect: () => (isPlatformAdmin() ? PLATFORM_ADMIN_HOME : PORTAL_HOME),
   },
   {
     path: '/index.html',
-    redirect: () =>
-      isPlatformAdmin() ? '/statistics/log-query' : '/service/register',
+    redirect: () => (isPlatformAdmin() ? PLATFORM_ADMIN_HOME : PORTAL_HOME),
   },
   {
     path: '/login',
@@ -320,6 +320,11 @@ router.beforeEach(
     const isPublic = to.meta.public === true || to.path === '/login';
     const hasToken = hasValidAuthToken();
 
+    if (to.path === '/login' && hasToken) {
+      next(isPlatformAdmin() ? PLATFORM_ADMIN_HOME : PORTAL_HOME);
+      return;
+    }
+
     if (!hasToken && !isPublic) {
       clearAuthSession();
       next({ path: '/login', query: { redirect: to.fullPath } });
@@ -327,7 +332,7 @@ router.beforeEach(
     }
 
     if (to.meta.requiresAdmin === true && !isPlatformAdmin()) {
-      next({ path: '/service/register' });
+      next({ path: PORTAL_HOME });
       return;
     }
 

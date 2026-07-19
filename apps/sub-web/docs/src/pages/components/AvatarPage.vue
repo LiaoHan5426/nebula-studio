@@ -22,7 +22,7 @@ import avatarOnlineDemo from '@/examples/avatar/AvatarOnline.vue?demo';
       :source="avatarSizeDemo.source"
     />
 
-    <h2 id="online">在线状态</h2>
+    <h2 id="online">用户状态</h2>
     <Demo
       :component="avatarOnlineDemo.component"
       :source="avatarOnlineDemo.source"
@@ -66,9 +66,15 @@ import avatarOnlineDemo from '@/examples/avatar/AvatarOnline.vue?demo';
         </tr>
         <tr>
           <td><code>online</code></td>
-          <td>在线状态指示</td>
+          <td>兼容旧版在线状态指示</td>
           <td><code>boolean</code></td>
           <td><code>false</code></td>
+        </tr>
+        <tr>
+          <td><code>status</code></td>
+          <td>用户状态指示</td>
+          <td><code>'online' | 'offline' | 'away' | 'busy'</code></td>
+          <td>—</td>
         </tr>
       </tbody>
     </table>

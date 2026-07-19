@@ -1,4 +1,5 @@
 export { nebulaVue } from './nebulaVue.ts';
+export { nebulaClientDefinePlugin } from './nebulaClientDefine.ts';
 export {
   nebulaWebShell,
   nebulaWebShellPlugin,

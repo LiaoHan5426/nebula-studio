@@ -8,6 +8,7 @@ import {
   watch,
 } from 'vue';
 import type { ComponentPublicInstance } from 'vue';
+import type { NebulaFormControlProps } from '../form/types';
 
 type NebulaSelectPrimitive = string | number;
 type NebulaSelectObjectOption = Readonly<Record<string, unknown>>;
@@ -26,16 +27,19 @@ defineOptions({
 });
 
 const props = withDefaults(
-  defineProps<{
-    modelValue?: unknown;
-    options?: readonly NebulaSelectOption[];
-    labelKey?: string;
-    valueKey?: string;
-    disabledKey?: string;
-    placeholder?: string;
-    disabled?: boolean;
-    returnObject?: boolean;
-  }>(),
+  defineProps<
+    NebulaFormControlProps & {
+      modelValue?: unknown;
+      options?: readonly NebulaSelectOption[];
+      labelKey?: string;
+      valueKey?: string;
+      disabledKey?: string;
+      placeholder?: string;
+      disabled?: boolean;
+      returnObject?: boolean;
+      class?: string;
+    }
+  >(),
   {
     options: () => [],
     labelKey: 'label',
@@ -44,6 +48,13 @@ const props = withDefaults(
     placeholder: 'Select',
     disabled: false,
     returnObject: false,
+    id: '',
+    name: '',
+    required: false,
+    invalid: false,
+    ariaDescribedby: '',
+    ariaLabelledby: '',
+    class: '',
   },
 );
 
@@ -291,6 +302,8 @@ watch(
       'nebula-select--open': isOpen,
       'nebula-select--disabled': disabled,
       'nebula-select--empty': !hasSelection,
+      'nebula-select--invalid': invalid,
+      [props.class]: Boolean(props.class),
     }"
   >
     <button
@@ -298,6 +311,13 @@ watch(
       type="button"
       class="nebula-select__trigger"
       :disabled="disabled"
+      :id="props.id || undefined"
+      :name="props.name || undefined"
+      :aria-required="props.required || undefined"
+      :aria-invalid="props.invalid || undefined"
+      :aria-describedby="props.ariaDescribedby || undefined"
+      :aria-labelledby="props.ariaLabelledby || undefined"
+      :data-invalid="props.invalid || undefined"
       :aria-expanded="isOpen"
       aria-haspopup="listbox"
       @blur="emit('blur')"
@@ -400,6 +420,11 @@ watch(
   outline: none;
   border-color: hsl(var(--primary) / 70%);
   box-shadow: 0 0 0 3px hsl(var(--primary) / 18%);
+}
+
+.nebula-select--invalid .nebula-select__trigger {
+  border-color: hsl(var(--destructive));
+  box-shadow: 0 0 0 2px hsl(var(--destructive) / 12%);
 }
 
 .nebula-select__trigger:disabled {

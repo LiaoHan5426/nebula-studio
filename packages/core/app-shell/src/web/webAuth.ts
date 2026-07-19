@@ -26,8 +26,9 @@ export function getWebShellEmbedSurface(): string | null {
   const fromQuery = params.get(WEB_SHELL_EMBED_QUERY) ?? params.get('renderer');
   if (fromQuery) return fromQuery;
   // History 导航会丢掉 ?embed=；启动时注入的表面 ID 作为稳定回退
-  const injected = (window as Window & { __NEBULA_EMBED_SURFACE__?: string })
-    .__NEBULA_EMBED_SURFACE__;
+  const injected = (window as Window & { __NEBULA_EMBED_SURFACE__?: string })[
+    '__NEBULA_EMBED_SURFACE__'
+  ];
   return injected?.trim() ? injected.trim() : null;
 }
 

@@ -67,7 +67,7 @@ export class EmbedStrategy implements AuthStrategy {
 
     try {
       const parentApi = (
-        window.parent as typeof window & {
+        window.parent as unknown as {
           api?: {
             auth?: {
               getSession?: () => Promise<{
@@ -94,7 +94,7 @@ export class EmbedStrategy implements AuthStrategy {
 
     try {
       const parentApi = (
-        window.parent as typeof window & {
+        window.parent as unknown as {
           api?: { shell?: { openLogin?: () => Promise<void> } };
         }
       ).api;

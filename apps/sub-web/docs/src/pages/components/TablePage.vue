@@ -3,6 +3,7 @@ import Demo from '@/components/Demo.vue';
 
 import tableBasicDemo from '@/examples/table/TableBasic.vue?demo';
 import tableStripeDemo from '@/examples/table/TableStripe.vue?demo';
+import tablePaginationDemo from '@/examples/table/TablePagination.vue?demo';
 </script>
 
 <template>
@@ -19,6 +20,12 @@ import tableStripeDemo from '@/examples/table/TableStripe.vue?demo';
     <Demo
       :component="tableStripeDemo.component"
       :source="tableStripeDemo.source"
+    />
+
+    <h2 id="pagination">表格与分页</h2>
+    <Demo
+      :component="tablePaginationDemo.component"
+      :source="tablePaginationDemo.source"
     />
 
     <h2>API</h2>

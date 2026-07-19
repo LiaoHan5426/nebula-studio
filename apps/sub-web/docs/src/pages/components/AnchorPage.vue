@@ -14,7 +14,7 @@ import anchorBasicDemo from '@/examples/anchor/AnchorBasic.vue?demo';
       :source="anchorBasicDemo.source"
     />
 
-    <h2>API</h2>
+    <h2 id="api">API</h2>
     <h3>Props</h3>
     <table>
       <thead>
@@ -64,7 +64,7 @@ import anchorBasicDemo from '@/examples/anchor/AnchorBasic.vue?demo';
         </tr>
       </tbody>
     </table>
-    <h3>Events</h3>
+    <h3 id="events">Events</h3>
     <table>
       <thead>
         <tr>
@@ -86,7 +86,7 @@ import anchorBasicDemo from '@/examples/anchor/AnchorBasic.vue?demo';
         </tr>
       </tbody>
     </table>
-    <h3>NebulaAnchorItem</h3>
+    <h3 id="anchor-item">NebulaAnchorItem</h3>
     <table>
       <thead>
         <tr>

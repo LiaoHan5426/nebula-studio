@@ -18,7 +18,10 @@ import {
   shellPresentationConfig,
   writeWebAuthSession,
 } from '@nebula-studio/app-shell';
-import type { EmbeddedShellWindowId } from '@nebula-studio/app-shell';
+import type {
+  EmbeddedShellWindowId,
+  ShellAuthSessionPayload,
+} from '@nebula-studio/app-shell';
 import { ACCENT_PRESETS } from '@nebula-studio/nebula-layout';
 import type { BreadcrumbSegment } from '@nebula-studio/nebula-layout';
 import { computed, ref, watch } from 'vue';
@@ -31,8 +34,8 @@ export type ThemeMode = 'light' | 'dark';
 export type AppMode = 'dev' | 'build';
 
 export interface UseAppLifecycleOptions {
-  getAuthSession: () => { user: string; token?: string } | null;
-  setAuthSession: (s: { user: string; token?: string } | null) => void;
+  getAuthSession: () => ShellAuthSessionPayload | null;
+  setAuthSession: (s: ShellAuthSessionPayload | null) => void;
   openLogin: () => Promise<void>;
   refreshAuthSession: () => Promise<void>;
   resetOrganizationSession: () => void;
@@ -469,10 +472,10 @@ export function useAppLifecycle(opts: UseAppLifecycleOptions) {
 
   // ─── Auth session ──────────────────────────────────────
   function syncShellAuthSessionStorage(
-    payload: { user: string; token?: string } | null,
+    payload: ShellAuthSessionPayload | null,
   ): void {
     if (payload?.user?.trim()) {
-      writeWebAuthSession({ user: payload.user, token: payload.token });
+      writeWebAuthSession(payload);
       return;
     }
     clearWebAuthSession();
@@ -499,7 +502,7 @@ export function useAppLifecycle(opts: UseAppLifecycleOptions) {
 
   const onAuthSessionChanged = (
     _e: unknown,
-    p: { user: string; token?: string } | null,
+    p: ShellAuthSessionPayload | null,
   ): void => {
     opts.setAuthSession(p);
     syncShellAuthSessionStorage(p);

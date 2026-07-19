@@ -1,1 +1,4 @@
-export { nebulaBuildNodeVersionDefine } from './nebulaBuildDefines.ts';
+export {
+  nebulaBuildNodeVersionDefine,
+  nebulaMswDefine,
+} from './nebulaBuildDefines.ts';

@@ -3,6 +3,7 @@ import Demo from '@/components/Demo.vue';
 
 import paginationBasicDemo from '@/examples/pagination/PaginationBasic.vue?demo';
 import paginationSizesDemo from '@/examples/pagination/PaginationSizes.vue?demo';
+import paginationLayoutDemo from '@/examples/pagination/PaginationLayout.vue?demo';
 </script>
 
 <template>
@@ -19,6 +20,12 @@ import paginationSizesDemo from '@/examples/pagination/PaginationSizes.vue?demo'
     <Demo
       :component="paginationSizesDemo.component"
       :source="paginationSizesDemo.source"
+    />
+
+    <h2 id="layout">布局与对齐</h2>
+    <Demo
+      :component="paginationLayoutDemo.component"
+      :source="paginationLayoutDemo.source"
     />
 
     <h2>API</h2>
@@ -68,6 +75,18 @@ import paginationSizesDemo from '@/examples/pagination/PaginationSizes.vue?demo'
           <td>是否禁用</td>
           <td><code>boolean</code></td>
           <td><code>false</code></td>
+        </tr>
+        <tr>
+          <td><code>align</code></td>
+          <td>整体对齐方式</td>
+          <td><code>'start' | 'center' | 'end' | 'between'</code></td>
+          <td><code>'start'</code></td>
+        </tr>
+        <tr>
+          <td><code>layout</code></td>
+          <td>模块及排列顺序</td>
+          <td><code>('total' | 'sizes' | 'pager' | 'jumper')[]</code></td>
+          <td><code>['total', 'sizes', 'pager']</code></td>
         </tr>
       </tbody>
     </table>

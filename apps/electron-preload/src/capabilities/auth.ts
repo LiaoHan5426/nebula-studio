@@ -19,12 +19,19 @@ export function createAuthCapability() {
       if (r.ok === false) throw new Error(r.error);
       return r;
     },
-    getSession(): Promise<{ user: string; token?: string } | null> {
+    getSession(): Promise<{
+      user: string;
+      token?: string;
+      roles?: string[];
+      userId?: string;
+    } | null> {
       return electronAPI.ipcRenderer.invoke('auth:get-session');
     },
     establishSession(payload: {
       user: string;
       token: string;
+      roles?: string[];
+      userId?: string;
     }): Promise<boolean> {
       return electronAPI.ipcRenderer.invoke('auth:establish-session', payload);
     },

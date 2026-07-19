@@ -41,6 +41,7 @@
     "clsx": "catalog:ui-utils",
     "reka-ui": "catalog:ui",
     "tailwind-merge": "catalog:ui-utils",
+    "vee-validate": "catalog:form",
     "vue": "catalog:vue",
     "vuedraggable": "catalog:ui",
     "vxe-table": "catalog:ui",

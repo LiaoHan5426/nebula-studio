@@ -6,3 +6,4 @@
 @import './tokens/semantic-light.css';
 @import './tokens/semantic-dark.css';
 @import './foundations/theme-motion.css';
+@import './foundations/platform.css';

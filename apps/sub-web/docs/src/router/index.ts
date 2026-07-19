@@ -62,6 +62,12 @@ const routes: RouteRecordRaw[] = [
             meta: { title: 'Icon 图标', sidebar: 'components' },
           },
           {
+            path: 'form',
+            name: 'comp-form',
+            component: () => import('@/pages/components/FormPage.vue'),
+            meta: { title: 'Form 表单', sidebar: 'components' },
+          },
+          {
             path: 'input',
             name: 'comp-input',
             component: () => import('@/pages/components/InputPage.vue'),

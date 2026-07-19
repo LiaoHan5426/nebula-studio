@@ -14,7 +14,12 @@ import type { MainModule, MainModuleContext } from '../bootstrap/MainModule';
 export class IpcAuthModule implements MainModule {
   readonly name = 'IpcAuth';
 
-  #authSession: { user: string; token?: string } | null = null;
+  #authSession: {
+    user: string;
+    token?: string;
+    roles?: string[];
+    userId?: string;
+  } | null = null;
   #windowManager: MainModuleContext['windowManager'] | null = null;
   #backendBaseUrl = 'http://localhost:8080';
 
@@ -66,11 +71,24 @@ export class IpcAuthModule implements MainModule {
 
     ipcMain.handle(
       'auth:establish-session',
-      (event, payload: { user?: string; token?: string }): boolean => {
+      (
+        event,
+        payload: {
+          user?: string;
+          token?: string;
+          roles?: string[];
+          userId?: string;
+        },
+      ): boolean => {
         const user = payload?.user?.trim();
         const token = payload?.token?.trim();
         if (!user || !token) return false;
-        this.#authSession = { user, token };
+        this.#authSession = {
+          user,
+          token,
+          roles: payload.roles,
+          userId: payload.userId,
+        };
         const mainWindow = this.#windowManager?.getMainWindow();
         mainWindow?.webContents.send('auth:session-changed', this.#authSession);
         this.#windowManager?.broadcast(

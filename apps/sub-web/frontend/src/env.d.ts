@@ -14,10 +14,17 @@ declare global {
           user: string;
           password: string;
         }): Promise<{ ok: true; user: string }>;
-        getSession(): Promise<{ user: string; token?: string } | null>;
+        getSession(): Promise<{
+          user: string;
+          token?: string;
+          roles?: string[];
+          userId?: string;
+        } | null>;
         establishSession(payload: {
           user: string;
           token: string;
+          roles?: string[];
+          userId?: string;
         }): Promise<boolean>;
         logout(): Promise<boolean | void>;
       };

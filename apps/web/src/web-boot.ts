@@ -1,6 +1,8 @@
 import { WEB_SHELL_EMBED_QUERY } from '@nebula-studio/app-shell';
 import { nebulaEmbedBootEntries } from 'virtual:nebula-app-manifest';
 
+document.documentElement.dataset.platform = 'web';
+
 const embedLoaders = import.meta.glob('./embed/*-entry.ts');
 
 void (async (): Promise<void> => {

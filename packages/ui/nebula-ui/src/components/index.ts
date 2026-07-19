@@ -10,6 +10,9 @@ export type {
 export { default as NebulaButton } from './button/NebulaButton.vue';
 export { default as NebulaButtonGroup } from './button-group/NebulaButtonGroup.vue';
 export { default as NebulaDialog } from './dialog/NebulaDialog.vue';
+export { default as NebulaForm } from './form/NebulaForm.vue';
+export { default as NebulaFormItem } from './form/NebulaFormItem.vue';
+export type { NebulaFormControlProps } from './form/types';
 export { default as NebulaInput } from './input/NebulaInput.vue';
 export { NebulaDrag } from './drag/NebulaDrag';
 export { NebulaPane } from './pane/NebulaPane';

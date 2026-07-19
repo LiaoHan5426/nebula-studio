@@ -1,4 +1,42 @@
-/**
- * 仅 Electron 渲染进程：窗口/原生控件等与 Web 宿主差异的样式覆盖。
- * 全局设计令牌与语义色见 `@nebula-studio/styles`（由 `@nebula-studio-internal/tailwind/electron` 引入）。
- */
+/** Electron uses a compact, native-tool density while sharing semantic colors. */
+html[data-platform='electron'] {
+  --radius-sm: 0.3rem;
+  --radius-md: 0.42rem;
+  --radius-lg: 0.6rem;
+  --radius-xl: 0.78rem;
+}
+
+html[data-platform='electron'],
+html[data-platform='electron'] body {
+  overscroll-behavior: none;
+}
+
+html[data-platform='electron'] body {
+  font-size: 13px;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+html[data-platform='electron'] input,
+html[data-platform='electron'] textarea,
+html[data-platform='electron'] [contenteditable='true'] {
+  user-select: text;
+}
+
+html[data-platform='electron'] ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html[data-platform='electron'] ::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 32%);
+  background-clip: padding-box;
+  border: 3px solid transparent;
+  border-radius: 999px;
+}
+
+html[data-platform='electron'] ::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 48%);
+  background-clip: padding-box;
+  border: 3px solid transparent;
+}

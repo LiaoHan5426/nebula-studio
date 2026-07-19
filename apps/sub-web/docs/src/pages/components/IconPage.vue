@@ -20,10 +20,7 @@ import iconPresetDemo from '@/examples/icon/IconPreset.vue?demo';
     />
 
     <h2 id="preset">内置图标</h2>
-    <Demo
-      :component="iconPresetDemo.component"
-      :source="iconPresetDemo.source"
-    />
+    <Demo :component="iconPresetDemo.component" :show-source="false" />
 
     <h2>API</h2>
     <h3>Props</h3>

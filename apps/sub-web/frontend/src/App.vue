@@ -10,6 +10,7 @@ import {
   isShellIntegrableAppId,
   isShellStandaloneSidebarApp,
 } from '@nebula-studio/app-shell';
+import type { ShellAuthSessionPayload } from '@nebula-studio/app-shell';
 import {
   NebulaShellLayout,
   useLayoutPreferences,
@@ -37,7 +38,7 @@ const {
 } = useOrganization();
 
 // ─── Auth session ────────────────────────────────────────
-const authSession = ref<{ user: string; token?: string } | null>(null);
+const authSession = ref<ShellAuthSessionPayload | null>(null);
 
 // ─── Layout preferences ─────────────────────────────────
 const { preferences: layoutPreferences } = useLayoutPreferences();

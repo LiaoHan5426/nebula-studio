@@ -1,345 +1,229 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed } from 'vue';
+import type { NebulaFormControlProps } from '../form/types';
 
 type DatePickerType = 'date' | 'datetime' | 'datetimerange';
+type DatePickerValue = string | [string, string] | null;
 
-defineOptions({
-  name: 'NebulaDatePicker',
-});
+defineOptions({ name: 'NebulaDatePicker' });
 
 const props = withDefaults(
-  defineProps<{
-    modelValue?: string | [string, string] | null;
-    type?: DatePickerType;
-    placeholder?: string;
-    disabled?: boolean;
-  }>(),
+  defineProps<
+    NebulaFormControlProps & {
+      modelValue?: DatePickerValue;
+      type?: DatePickerType;
+      placeholder?: string;
+      disabled?: boolean;
+      min?: string;
+      max?: string;
+    }
+  >(),
   {
+    modelValue: null,
     type: 'date',
-    placeholder: '',
+    placeholder: '选择日期',
     disabled: false,
+    min: '',
+    max: '',
+    id: '',
+    name: '',
+    required: false,
+    invalid: false,
+    ariaDescribedby: '',
+    ariaLabelledby: '',
   },
 );
 
 const emit = defineEmits<{
-  'update:modelValue': [value: string | [string, string] | null];
-  change: [value: string | [string, string] | null];
+  'update:modelValue': [value: DatePickerValue];
+  change: [value: DatePickerValue];
+  blur: [event: FocusEvent];
+  focus: [event: FocusEvent];
 }>();
 
-const root = ref<HTMLElement>();
-const isOpen = ref(false);
+const nativeType = computed(() =>
+  props.type === 'date' ? 'date' : 'datetime-local',
+);
+const rangeValue = computed<[string, string]>(() =>
+  Array.isArray(props.modelValue) ? props.modelValue : ['', ''],
+);
 
-const formattedValue = computed(() => {
-  if (!props.modelValue) return '';
-  if (Array.isArray(props.modelValue)) {
-    return props.modelValue.join(' - ');
-  }
-  return props.modelValue;
-});
-
-function openPicker(): void {
-  if (props.disabled || isOpen.value) return;
-  isOpen.value = true;
+function commit(value: DatePickerValue): void {
+  emit('update:modelValue', value);
+  emit('change', value);
 }
 
-function closePicker(): void {
-  isOpen.value = false;
+function updateSingle(event: Event): void {
+  const value = (event.target as HTMLInputElement).value;
+  commit(value || null);
 }
 
-function togglePicker(): void {
-  if (isOpen.value) {
-    closePicker();
-  } else {
-    openPicker();
-  }
+function updateRange(index: 0 | 1, event: Event): void {
+  const value = (event.target as HTMLInputElement).value;
+  const next: [string, string] = [...rangeValue.value];
+  next[index] = value;
+  commit(next[0] || next[1] ? next : null);
 }
-
-function handleInputChange(event: Event) {
-  const target = event.target as HTMLInputElement;
-  const value = target.value;
-  emit('update:modelValue', value || null);
-  emit('change', value || null);
-}
-
-function handleRangeStartChange(event: Event) {
-  const target = event.target as HTMLInputElement;
-  const startValue = target.value;
-  if (Array.isArray(props.modelValue)) {
-    emit('update:modelValue', [startValue, props.modelValue[1]]);
-    emit('change', [startValue, props.modelValue[1]]);
-  } else {
-    emit('update:modelValue', [startValue, '']);
-    emit('change', [startValue, '']);
-  }
-}
-
-function handleRangeEndChange(event: Event) {
-  const target = event.target as HTMLInputElement;
-  const endValue = target.value;
-  if (Array.isArray(props.modelValue)) {
-    emit('update:modelValue', [props.modelValue[0], endValue]);
-    emit('change', [props.modelValue[0], endValue]);
-  } else {
-    emit('update:modelValue', ['', endValue]);
-    emit('change', ['', endValue]);
-  }
-}
-
-function handleDocumentPointerDown(event: PointerEvent): void {
-  if (!root.value?.contains(event.target as Node)) {
-    closePicker();
-  }
-}
-
-onMounted(() => {
-  document.addEventListener('pointerdown', handleDocumentPointerDown);
-});
-
-onBeforeUnmount(() => {
-  document.removeEventListener('pointerdown', handleDocumentPointerDown);
-});
 </script>
 
 <template>
   <div
-    ref="root"
     class="nebula-date-picker"
     :class="{
-      'nebula-date-picker--open': isOpen,
+      'nebula-date-picker--range': type === 'datetimerange',
       'nebula-date-picker--disabled': disabled,
+      'nebula-date-picker--invalid': invalid,
     }"
   >
-    <button
-      type="button"
-      class="nebula-date-picker__trigger"
+    <template v-if="type === 'datetimerange'">
+      <label class="nebula-date-picker__field">
+        <span class="nebula-date-picker__label">开始时间</span>
+        <input
+          :type="nativeType"
+          :id="props.id || undefined"
+          :name="props.name || undefined"
+          class="nebula-date-picker__input"
+          :value="rangeValue[0]"
+          :disabled="disabled"
+          :required="props.required"
+          :aria-invalid="props.invalid || undefined"
+          :aria-describedby="props.ariaDescribedby || undefined"
+          :aria-labelledby="props.ariaLabelledby || undefined"
+          :min="min || undefined"
+          :max="rangeValue[1] || max || undefined"
+          aria-label="开始时间"
+          @change="updateRange(0, $event)"
+          @blur="emit('blur', $event)"
+          @focus="emit('focus', $event)"
+        />
+      </label>
+      <span class="nebula-date-picker__separator" aria-hidden="true">至</span>
+      <label class="nebula-date-picker__field">
+        <span class="nebula-date-picker__label">结束时间</span>
+        <input
+          :type="nativeType"
+          :id="props.id ? `${props.id}-end` : undefined"
+          :name="props.name ? `${props.name}End` : undefined"
+          class="nebula-date-picker__input"
+          :value="rangeValue[1]"
+          :disabled="disabled"
+          :required="props.required"
+          :aria-invalid="props.invalid || undefined"
+          :aria-describedby="props.ariaDescribedby || undefined"
+          :aria-labelledby="props.ariaLabelledby || undefined"
+          :min="rangeValue[0] || min || undefined"
+          :max="max || undefined"
+          aria-label="结束时间"
+          @change="updateRange(1, $event)"
+          @blur="emit('blur', $event)"
+          @focus="emit('focus', $event)"
+        />
+      </label>
+    </template>
+    <input
+      v-else
+      :type="nativeType"
+      :id="props.id || undefined"
+      :name="props.name || undefined"
+      class="nebula-date-picker__input"
+      :value="typeof modelValue === 'string' ? modelValue : ''"
       :disabled="disabled"
-      @click="togglePicker"
-    >
-      <span class="nebula-date-picker__value">
-        <span v-if="formattedValue">{{ formattedValue }}</span>
-        <span v-else class="nebula-date-picker__placeholder">
-          {{ placeholder || '选择日期' }}
-        </span>
-      </span>
-      <span class="nebula-date-picker__icon">📅</span>
-    </button>
-
-    <Transition name="nebula-date-picker-pop">
-      <div v-if="isOpen" class="nebula-date-picker__dropdown">
-        <!-- 单日期选择 -->
-        <template v-if="type !== 'datetimerange'">
-          <input
-            type="datetime-local"
-            class="nebula-date-picker__input"
-            :value="(modelValue as string) || ''"
-            @change="handleInputChange"
-            @click.stop
-          />
-        </template>
-        <!-- 日期范围选择 -->
-        <template v-else>
-          <div class="nebula-date-picker__range">
-            <div class="nebula-date-picker__range-item">
-              <label class="nebula-date-picker__range-label">开始时间</label>
-              <input
-                type="datetime-local"
-                class="nebula-date-picker__input"
-                :value="Array.isArray(modelValue) ? modelValue[0] : ''"
-                @change="handleRangeStartChange"
-                @click.stop
-              />
-            </div>
-            <div class="nebula-date-picker__range-separator">~</div>
-            <div class="nebula-date-picker__range-item">
-              <label class="nebula-date-picker__range-label">结束时间</label>
-              <input
-                type="datetime-local"
-                class="nebula-date-picker__input"
-                :value="Array.isArray(modelValue) ? modelValue[1] : ''"
-                @change="handleRangeEndChange"
-                @click.stop
-              />
-            </div>
-          </div>
-        </template>
-        <div class="nebula-date-picker__actions">
-          <button
-            type="button"
-            class="nebula-date-picker__btn"
-            @click="closePicker"
-          >
-            取消
-          </button>
-          <button
-            type="button"
-            class="nebula-date-picker__btn nebula-date-picker__btn--primary"
-            @click="closePicker"
-          >
-            确定
-          </button>
-        </div>
-      </div>
-    </Transition>
+      :required="props.required"
+      :aria-invalid="props.invalid || undefined"
+      :aria-describedby="props.ariaDescribedby || undefined"
+      :aria-labelledby="props.ariaLabelledby || undefined"
+      :min="min || undefined"
+      :max="max || undefined"
+      :aria-label="placeholder"
+      :title="placeholder"
+      @change="updateSingle"
+      @blur="emit('blur', $event)"
+      @focus="emit('focus', $event)"
+    />
   </div>
 </template>
 
 <style scoped>
 .nebula-date-picker {
-  position: relative;
-  display: inline-block;
-  min-width: 200px;
+  display: inline-flex;
+  align-items: center;
+  min-width: 210px;
   color: hsl(var(--foreground));
 }
 
-.nebula-date-picker__trigger {
-  display: inline-flex;
-  gap: 0.4rem;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  min-height: 34px;
-  padding: 0.34rem 0.58rem;
-  font: inherit;
-  color: inherit;
-  text-align: left;
-  cursor: pointer;
+.nebula-date-picker--range {
+  gap: 10px;
+  min-width: min(100%, 480px);
+  padding: 10px 12px;
   background: hsl(var(--card));
   border: 1px solid hsl(var(--border));
-  border-radius: 8px;
-  transition:
-    border-color 0.15s ease,
-    box-shadow 0.15s ease,
-    background-color 0.15s ease;
+  border-radius: var(--radius-md, 8px);
 }
 
-.nebula-date-picker__trigger:hover {
-  background: hsl(var(--accent));
-  border-color: hsl(var(--primary));
-}
-
-.nebula-date-picker__trigger:focus-visible {
-  outline: none;
-  border-color: hsl(var(--primary));
-  box-shadow: 0 0 0 2px hsl(var(--primary) / 20%);
-}
-
-.nebula-date-picker__trigger:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.nebula-date-picker__value {
+.nebula-date-picker__field {
+  display: grid;
   flex: 1;
+  gap: 5px;
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
-.nebula-date-picker__placeholder {
+.nebula-date-picker__label {
+  font-size: 11px;
+  font-weight: 600;
   color: hsl(var(--muted-foreground));
 }
 
-.nebula-date-picker__icon {
-  flex-shrink: 0;
-  font-size: 14px;
-}
-
-.nebula-date-picker__dropdown {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
-  z-index: 50;
-  width: max-content;
-  min-width: 100%;
-  padding: 12px;
-  background: hsl(var(--card));
-  border: 1px solid hsl(var(--border));
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgb(0 0 0 / 15%);
-}
-
 .nebula-date-picker__input {
+  box-sizing: border-box;
   width: 100%;
-  padding: 8px;
+  min-height: 38px;
+  padding: 7px 10px;
   font: inherit;
   font-size: 13px;
+  color: hsl(var(--foreground));
+  outline: none;
+  color-scheme: light dark;
   background: hsl(var(--background));
   border: 1px solid hsl(var(--border));
-  border-radius: 6px;
+  border-radius: var(--radius-md, 8px);
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
 }
 
-.nebula-date-picker__input:focus {
-  outline: none;
+.nebula-date-picker__input:hover:not(:disabled) {
+  border-color: hsl(var(--primary) / 55%);
+}
+
+.nebula-date-picker__input:focus-visible {
   border-color: hsl(var(--primary));
+  box-shadow: 0 0 0 3px hsl(var(--primary) / 15%);
 }
 
-.nebula-date-picker__range {
-  display: flex;
-  gap: 8px;
-  align-items: flex-end;
+.nebula-date-picker--invalid .nebula-date-picker__input {
+  border-color: hsl(var(--destructive));
+  box-shadow: 0 0 0 2px hsl(var(--destructive) / 12%);
 }
 
-.nebula-date-picker__range-item {
-  flex: 1;
+.nebula-date-picker__input:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
 }
 
-.nebula-date-picker__range-label {
-  display: block;
-  margin-bottom: 4px;
+.nebula-date-picker__separator {
+  align-self: end;
+  padding-bottom: 10px;
   font-size: 12px;
   color: hsl(var(--muted-foreground));
 }
 
-.nebula-date-picker__range-separator {
-  padding-bottom: 20px;
-  color: hsl(var(--muted-foreground));
-}
+@media (max-width: 640px) {
+  .nebula-date-picker--range {
+    display: grid;
+  }
 
-.nebula-date-picker__actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-  padding-top: 12px;
-  margin-top: 12px;
-  border-top: 1px solid hsl(var(--border));
-}
-
-.nebula-date-picker__btn {
-  padding: 6px 12px;
-  font-size: 13px;
-  cursor: pointer;
-  background: transparent;
-  border: 1px solid hsl(var(--border));
-  border-radius: 4px;
-  transition: all 0.15s;
-}
-
-.nebula-date-picker__btn:hover {
-  background: hsl(var(--accent));
-  border-color: hsl(var(--accent));
-}
-
-.nebula-date-picker__btn--primary {
-  color: hsl(var(--primary));
-  border-color: hsl(var(--primary));
-}
-
-.nebula-date-picker__btn--primary:hover {
-  background: hsl(var(--primary) / 20%);
-  border-color: hsl(var(--primary) / 60%);
-}
-
-.nebula-date-picker-pop-enter-active,
-.nebula-date-picker-pop-leave-active {
-  transition:
-    opacity 0.15s ease,
-    transform 0.15s ease;
-}
-
-.nebula-date-picker-pop-enter-from,
-.nebula-date-picker-pop-leave-to {
-  opacity: 0;
-  transform: translateY(-4px);
+  .nebula-date-picker__separator {
+    display: none;
+  }
 }
 </style>

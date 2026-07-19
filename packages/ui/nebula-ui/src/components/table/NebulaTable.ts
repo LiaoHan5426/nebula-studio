@@ -1,4 +1,4 @@
-import { defineComponent, h } from 'vue';
+import { computed, defineComponent, h } from 'vue';
 import type { PropType } from 'vue';
 import { VxeTable } from 'vxe-table';
 import { cn } from '../../utils/cn';
@@ -52,7 +52,7 @@ export const NebulaTable = defineComponent({
       type: [Boolean, Object] as PropType<
         boolean | { enabled?: boolean; gt?: number }
       >,
-      default: undefined,
+      default: false,
     },
     dragMode: {
       type: String as PropType<NebulaTableDragMode>,
@@ -76,6 +76,17 @@ export const NebulaTable = defineComponent({
       computedRowConfig.useKey = props.rowKey;
     }
 
+    const computedScrollX = computed(() =>
+      typeof props.scrollX === 'boolean'
+        ? { enabled: props.scrollX }
+        : props.scrollX,
+    );
+    const scrollXEnabled = computed(() =>
+      typeof props.scrollX === 'boolean'
+        ? props.scrollX
+        : props.scrollX?.enabled !== false,
+    );
+
     return () =>
       h(
         VxeTable as unknown as object,
@@ -88,10 +99,11 @@ export const NebulaTable = defineComponent({
           maxHeight: props.maxHeight,
           rowConfig: computedRowConfig,
           columnConfig: props.columnConfig,
-          scrollX: props.scrollX,
+          scrollX: computedScrollX.value,
           treeConfig: props.treeConfig,
           class: cn(
             'nebula-table',
+            !scrollXEnabled.value && 'nebula-table--no-scroll-x',
             `nebula-table--drag-${props.dragMode}`,
             props.class,
           ),

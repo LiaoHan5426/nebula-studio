@@ -77,11 +77,13 @@ function resetSearch() {
 <template>
   <div class="nebula-admin-vertical-nav">
     <div class="nebula-admin-vertical-nav__search">
-      <span class="nebula-admin-vertical-nav__search-icon">🔍</span>
+      <span class="nebula-admin-vertical-nav__search-icon" aria-hidden="true"
+        >⌕</span
+      >
       <input
         v-model="searchQuery"
         type="text"
-        placeholder="搜索菜单..."
+        placeholder="搜索菜单"
         class="nebula-admin-vertical-nav__search-input"
         @keydown.escape="resetSearch"
       />
@@ -107,9 +109,9 @@ function resetSearch() {
             <span class="nebula-admin-vertical-nav__label">{{
               item.label
             }}</span>
-            <span class="nebula-admin-vertical-nav__arrow">{{
-              isExpanded(item.key) ? '▼' : '▶'
-            }}</span>
+            <span class="nebula-admin-vertical-nav__arrow" aria-hidden="true"
+              >›</span
+            >
           </button>
           <Transition name="nebula-admin-vertical-nav__children">
             <div

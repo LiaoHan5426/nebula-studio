@@ -7,4 +7,7 @@ if (!window.__NEBULA_RUNTIME_MODE__) {
     typeof (window as any).electron !== 'undefined' ? 'electron' : 'standalone';
 }
 
+document.documentElement.dataset.platform =
+  window.__NEBULA_RUNTIME_MODE__ === 'electron' ? 'electron' : 'web';
+
 void bootLogin();

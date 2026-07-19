@@ -81,7 +81,9 @@ export function useScrollSpy(options: UseScrollSpyOptions) {
     const root = scrollRootEl;
     const { scrollTop, clientHeight, scrollHeight } = getScrollMetrics(root);
     const allItems = items();
-    const lastDef = allItems[allItems.length - 1];
+    const lastDef = allItems
+      .toReversed()
+      .find((item) => document.getElementById(item.id));
 
     if (
       lastDef &&

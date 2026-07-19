@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { markRaw, onMounted, ref, shallowRef, watch } from 'vue';
 import type { Component } from 'vue';
 import { getHighlighter } from '@/utils/highlighter';
 
@@ -8,13 +8,23 @@ const props = withDefaults(
     component: Component;
     source?: string;
     id?: string;
+    showSource?: boolean;
   }>(),
   {
     source: '',
+    showSource: true,
   },
 );
 
 const highlightedCode = ref('');
+const demoComponent = shallowRef<Component>(markRaw(props.component));
+
+watch(
+  () => props.component,
+  (component) => {
+    demoComponent.value = markRaw(component);
+  },
+);
 
 /**
  * 对源代码进行高亮处理。
@@ -27,7 +37,10 @@ async function highlightSource() {
     const h = await getHighlighter();
     highlightedCode.value = h.codeToHtml(props.source, {
       lang: 'vue',
-      theme: 'github-dark',
+      themes: {
+        light: 'github-light',
+        dark: 'github-dark',
+      },
     });
   } catch (e) {
     console.error('Failed to highlight code:', e);
@@ -57,11 +70,11 @@ onMounted(() => {
   <div :id="id" class="demo-container">
     <!-- 预览区域 -->
     <div class="demo-preview">
-      <component :is="component" />
+      <component :is="demoComponent" />
     </div>
 
     <!-- 源码区域 -->
-    <div class="demo-source">
+    <div v-if="showSource" class="demo-source">
       <div v-if="highlightedCode" v-html="highlightedCode" />
       <pre v-else><code>{{ source }}</code></pre>
     </div>
@@ -70,14 +83,16 @@ onMounted(() => {
 
 <style scoped>
 .demo-container {
-  margin: 16px 0;
+  margin: 18px 0 24px;
   overflow: hidden;
   border: 1px solid hsl(var(--border));
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 12px 32px hsl(var(--foreground) / 6%);
 }
 
 .demo-preview {
-  padding: 24px;
+  min-height: 92px;
+  padding: 26px 28px;
   background: hsl(var(--card));
   border-bottom: 1px solid hsl(var(--border));
 }
@@ -87,18 +102,28 @@ onMounted(() => {
 }
 
 .demo-source {
-  background: hsl(var(--muted) / 24%);
+  background: hsl(var(--background-deep) / 72%);
 }
 
 /* Shiki 样式覆盖 */
 .demo-source :deep(pre.shiki) {
-  padding: 16px;
+  padding: 18px 20px;
   margin: 0;
   font-size: 13px;
-  line-height: 1.6;
-  background: transparent;
+  line-height: 1.7;
+  background-color: #f6f8fa !important;
   border: none;
   border-radius: 0;
+}
+
+:global(html.dark) .demo-source :deep(pre.shiki),
+:global(html[data-theme='dark']) .demo-source :deep(pre.shiki) {
+  background-color: var(--shiki-dark-bg) !important;
+}
+
+:global(html.dark) .demo-source :deep(pre.shiki span),
+:global(html[data-theme='dark']) .demo-source :deep(pre.shiki span) {
+  color: var(--shiki-dark) !important;
 }
 
 .demo-source :deep(pre.shiki code) {

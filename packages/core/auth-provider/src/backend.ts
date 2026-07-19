@@ -14,6 +14,8 @@ interface BackendLoginResponse {
   data?: {
     token?: string;
     username?: string;
+    userId?: string | number;
+    roles?: string[];
     needsOrgSelection?: boolean;
     organizations?: OrgSummary[];
     currentOrgId?: string;
@@ -51,11 +53,21 @@ export async function fetchAuthMode(): Promise<AuthMode> {
   return body.data;
 }
 
-async function fetchMe(token?: string): Promise<OrgSummary[]> {
+async function fetchMe(token?: string): Promise<{
+  username?: string;
+  userId?: string | number;
+  roles?: string[];
+  organizations?: OrgSummary[];
+}> {
   const headers: Record<string, string> = {};
   if (token) headers.Authorization = `Bearer ${token}`;
   const body = await parseJson<{
-    data?: { organizations?: OrgSummary[] };
+    data?: {
+      username?: string;
+      userId?: string | number;
+      roles?: string[];
+      organizations?: OrgSummary[];
+    };
     isSuccess?: boolean;
     code?: number;
   }>(
@@ -64,7 +76,7 @@ async function fetchMe(token?: string): Promise<OrgSummary[]> {
       headers,
     }),
   );
-  return isResponseOk(body) ? (body.data?.organizations ?? []) : [];
+  return isResponseOk(body) ? (body.data ?? {}) : {};
 }
 
 export async function loginWithBackendAuth(
@@ -94,17 +106,28 @@ export async function loginWithBackendAuth(
   const result: BackendLoginResult = {
     token: body.data.token,
     username: body.data.username ?? trimmed,
+    userId: body.data.userId,
+    roles: body.data.roles,
     needsOrgSelection: body.data.needsOrgSelection,
     currentOrgId: body.data.currentOrgId,
     currentOrgName: body.data.currentOrgName,
     organizations: body.data.organizations,
   };
   if (
-    result.needsOrgSelection &&
-    !result.organizations?.length &&
-    result.token
+    result.token &&
+    (!result.roles?.length || !result.organizations?.length)
   ) {
-    result.organizations = await fetchMe(result.token);
+    try {
+      const profile = await fetchMe(result.token);
+      result.username = profile.username ?? result.username;
+      result.userId = profile.userId ?? result.userId;
+      result.roles = profile.roles ?? result.roles;
+      if (result.needsOrgSelection && !result.organizations?.length) {
+        result.organizations = profile.organizations;
+      }
+    } catch {
+      // 登录已成功时，资料补全失败不应阻止进入应用；子应用仍会再次同步 profile。
+    }
   }
   return result;
 }
@@ -129,11 +152,24 @@ export async function completeLoginWithOrg(
   if (!isResponseOk(body) || !body.data) {
     throw new Error('组织选择响应无效');
   }
-  return {
+  const result: BackendLoginResult = {
     token: body.data.token ?? token,
     username: body.data.username ?? '',
+    userId: body.data.userId,
+    roles: body.data.roles,
     currentOrgId: body.data.currentOrgId,
     currentOrgName: body.data.currentOrgName,
     needsOrgSelection: false,
   };
+  if (result.token && !result.roles?.length) {
+    try {
+      const profile = await fetchMe(result.token);
+      result.username = profile.username ?? result.username;
+      result.userId = profile.userId;
+      result.roles = profile.roles;
+    } catch {
+      // See loginWithBackendAuth: profile sync is best-effort.
+    }
+  }
+  return result;
 }

@@ -4,7 +4,9 @@ import { NebulaAvatar } from '@nebula-studio/nebula-ui';
 
 <template>
   <div class="doc-demo-row">
-    <NebulaAvatar text="在" :online="true" />
-    <NebulaAvatar text="离" :online="false" />
+    <NebulaAvatar text="在" status="online" />
+    <NebulaAvatar text="离" status="offline" />
+    <NebulaAvatar text="开" status="away" />
+    <NebulaAvatar text="忙" status="busy" />
   </div>
 </template>

@@ -149,7 +149,44 @@
 }
 
 .nebula-tree__group {
-  font-size: 0.85rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  width: 100%;
+  padding: 0.45rem 0.55rem;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: hsl(var(--foreground));
+  text-align: left;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm, 6px);
+}
+
+.nebula-tree__group:hover {
+  background: hsl(var(--muted) / 55%);
+}
+
+.nebula-tree__group:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.nebula-tree__label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nebula-tree__icon,
+.nebula-tree__chevron {
+  flex: 0 0 auto;
+}
+
+.nebula-tree__chevron {
   color: hsl(var(--muted-foreground));
 }
 
@@ -826,6 +863,13 @@ html[data-theme='dark']
 .nebula-table--drag-row .vxe-body--row,
 .nebula-table--drag-both .vxe-body--row {
   cursor: grab;
+}
+
+/* VXE 会为虚拟横向滚动预留两个 1px 占位层；未启用时不应显示为“空白行”。 */
+.nebula-table--no-scroll-x .vxe-body--x-space,
+.nebula-table--no-scroll-x .vxe-table--scroll-x-handle,
+.nebula-table--no-scroll-x .vxe-table--scroll-x-handle-appearance {
+  display: none !important;
 }
 
 /* NebulaAnchor — in-page nav + optional back-to-top */

@@ -1,166 +1,68 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import {
   NebulaAdminContent,
   NebulaAdminVerticalNav,
   useShellHosted,
 } from '@nebula-studio/nebula-layout';
-import type { NavItem } from '@nebula-studio/nebula-layout';
-import { NebulaButton, NebulaButtonGroup } from '@nebula-studio/nebula-ui';
+import { NebulaButton } from '@nebula-studio/nebula-ui';
 
 import AppHeader from '@/app/AppHeader.vue';
+import {
+  expandedMenuForPath,
+  homeForSurface,
+  platformAdminNavItems,
+  portalNavItems,
+  surfaceForPath,
+  userManageNavItems,
+} from '@/app/navigation';
 import { useAuth } from '@/shared/composables/useAuth';
 
+const route = useRoute();
+const router = useRouter();
 const { isShellHosted } = useShellHosted();
 const { isPlatformAdmin } = useAuth();
 
-const currentSide = ref<'user' | 'admin'>('admin');
-
-const platformAdminNavItems: NavItem[] = [
-  {
-    key: 'plugins',
-    label: '插件管理',
-    icon: '🔌',
-    children: [
-      { to: '/plugins/database', label: '数据库适配插件' },
-      { to: '/plugins/protocol', label: '协议插件' },
-      { to: '/plugins/preprocessor', label: '前置处理器插件' },
-      { to: '/plugins/postprocessor', label: '后置处理器插件' },
-      { to: '/plugins/aggregator', label: '聚合插件' },
-      { to: '/plugins/dispatcher', label: '分发插件' },
-      { to: '/plugins/transformer', label: '转换插件' },
-      { to: '/plugins/market', label: '插件市场' },
-    ],
-  },
-  {
-    key: 'tenant',
-    label: '租户管理',
-    icon: '🏢',
-    to: '/tenant',
-  },
-  {
-    key: 'service',
-    label: '服务管理',
-    icon: '⚙️',
-    children: [
-      { to: '/service/register', label: '服务注册' },
-      { to: '/service/publish', label: '服务发布' },
-      { to: '/service/approvals', label: '发布审批' },
-      { to: '/service/releases', label: '发布管理' },
-      { to: '/service/versions', label: '版本快照' },
-      { to: '/service/authorize', label: '服务授权' },
-      { to: '/service/subscription-requests', label: '订阅审批' },
-      { to: '/service/governance', label: '服务治理' },
-      { to: '/service/test', label: '服务测试' },
-    ],
-  },
-  {
-    key: 'integration-core',
-    label: '集成核心',
-    icon: '🔧',
-    children: [
-      { to: '/datasources', label: '数据源' },
-      { to: '/flows', label: '流程定义' },
-      { to: '/dag', label: 'DAG 编排' },
-      { to: '/tasks', label: '任务调度' },
-      { to: '/executor/routes', label: 'Executor 路由' },
-    ],
-  },
-  {
-    key: 'statistics',
-    label: '服务统计',
-    icon: '📊',
-    children: [
-      { to: '/statistics/log-query', label: '日志查询' },
-      { to: '/statistics/log-stats', label: '日志统计' },
-      { to: '/statistics/topology', label: '服务拓扑' },
-    ],
-  },
-];
-
-const integratorAdminNavItems: NavItem[] = [
-  {
-    key: 'plugins',
-    label: '插件管理',
-    icon: '🔌',
-    children: [
-      { to: '/plugins/database', label: '数据库适配插件' },
-      { to: '/plugins/protocol', label: '协议插件' },
-      { to: '/plugins/preprocessor', label: '前置处理器插件' },
-      { to: '/plugins/postprocessor', label: '后置处理器插件' },
-      { to: '/plugins/aggregator', label: '聚合插件' },
-      { to: '/plugins/dispatcher', label: '分发插件' },
-      { to: '/plugins/transformer', label: '转换插件' },
-      { to: '/plugins/market', label: '插件市场' },
-    ],
-  },
-  {
-    key: 'tenant',
-    label: '我的租户',
-    icon: '🏢',
-    to: '/tenant',
-  },
-  {
-    key: 'service',
-    label: '服务管理',
-    icon: '⚙️',
-    children: [
-      { to: '/service/register', label: '服务注册' },
-      { to: '/service/publish', label: '服务发布' },
-      { to: '/service/approvals', label: '发布审批' },
-      { to: '/service/releases', label: '发布管理' },
-      { to: '/service/versions', label: '版本快照' },
-      { to: '/service/authorize', label: '服务授权' },
-      { to: '/service/governance', label: '服务治理' },
-      { to: '/service/test', label: '服务测试' },
-    ],
-  },
-  {
-    key: 'integration-core',
-    label: '集成核心',
-    icon: '🔧',
-    children: [
-      { to: '/datasources', label: '数据源' },
-      { to: '/flows', label: '流程定义' },
-      { to: '/dag', label: 'DAG 编排' },
-      { to: '/tasks', label: '任务调度' },
-      { to: '/executor/routes', label: 'Executor 路由' },
-    ],
-  },
-  {
-    key: 'statistics',
-    label: '服务统计',
-    icon: '📊',
-    children: [
-      { to: '/statistics/log-query', label: '日志查询' },
-      { to: '/statistics/log-stats', label: '日志统计' },
-      { to: '/statistics/topology', label: '服务拓扑' },
-    ],
-  },
-];
-
-const userNavItems: NavItem[] = [
-  {
-    key: 'subscriptions',
-    label: '库表订阅',
-    to: '/subscriptions',
-  },
-  {
-    key: 'my-services',
-    label: '我的服务',
-    to: '/my-interfaces',
-  },
-];
-
-const activeAdminNavItems = computed(() =>
-  isPlatformAdmin.value ? platformAdminNavItems : integratorAdminNavItems,
+const surface = computed(() => surfaceForPath(route.path));
+const managementNavItems = computed(() =>
+  isPlatformAdmin.value ? platformAdminNavItems : userManageNavItems,
 );
-
 const activeNavItems = computed(() =>
-  currentSide.value === 'user' ? userNavItems : activeAdminNavItems.value,
+  surface.value === 'portal' ? portalNavItems : managementNavItems.value,
+);
+const surfaceTitle = computed(() =>
+  surface.value === 'portal'
+    ? '应用工作台'
+    : isPlatformAdmin.value
+      ? '平台管理中心'
+      : '我的管理中心',
+);
+const surfaceDescription = computed(() =>
+  surface.value === 'portal'
+    ? '订阅、使用并查看属于你的集成服务'
+    : isPlatformAdmin.value
+      ? '统一管理平台资源、租户与运行状态'
+      : '管理你的服务、数据源与集成流程',
+);
+const switchLabel = computed(() =>
+  surface.value === 'portal' ? '进入管理中心' : '返回应用工作台',
 );
 
-const expandedMenus = ref<Set<string>>(new Set(['integration-core']));
+const expandedMenus = ref<Set<string>>(new Set());
+
+watch(
+  [() => route.path, activeNavItems],
+  ([path, items]) => {
+    expandedMenus.value = expandedMenuForPath(items, path);
+  },
+  { immediate: true },
+);
+
+function switchSurface(): void {
+  const target = surface.value === 'portal' ? 'manage' : 'portal';
+  void router.push(homeForSurface(target, isPlatformAdmin.value));
+}
 </script>
 
 <template>
@@ -171,22 +73,13 @@ const expandedMenus = ref<Set<string>>(new Set(['integration-core']));
   >
     <template #subnav>
       <div class="integration-subnav">
-        <NebulaButtonGroup class="integration-subnav__toggle">
-          <NebulaButton
-            variant="ghost"
-            :active="currentSide === 'admin'"
-            @click="currentSide = 'admin'"
-          >
-            管理端
+        <div class="surface-summary surface-summary--embedded">
+          <span class="surface-summary__eyebrow">集成平台</span>
+          <strong>{{ surfaceTitle }}</strong>
+          <NebulaButton variant="outline" size="sm" @click="switchSurface">
+            {{ switchLabel }}
           </NebulaButton>
-          <NebulaButton
-            variant="ghost"
-            :active="currentSide === 'user'"
-            @click="currentSide = 'user'"
-          >
-            使用端
-          </NebulaButton>
-        </NebulaButtonGroup>
+        </div>
         <NebulaAdminVerticalNav
           v-model="expandedMenus"
           :items="activeNavItems"
@@ -198,28 +91,21 @@ const expandedMenus = ref<Set<string>>(new Set(['integration-core']));
 
   <div v-else class="app-layout">
     <aside class="app-layout__sidebar">
-      <div class="app-layout__sidebar-head">
-        <div class="app-layout__brand">
-          <h1 class="app-layout__title">集成平台</h1>
-          <p class="app-layout__subtitle">插件 · 订阅 · 服务 · 流程</p>
+      <div class="surface-summary">
+        <div class="surface-summary__mark" aria-hidden="true">N</div>
+        <div class="surface-summary__copy">
+          <span class="surface-summary__eyebrow">Nebula Integration</span>
+          <h1>{{ surfaceTitle }}</h1>
+          <p>{{ surfaceDescription }}</p>
         </div>
-
-        <NebulaButtonGroup class="app-layout__side-toggle">
-          <NebulaButton
-            variant="ghost"
-            :active="currentSide === 'admin'"
-            @click="currentSide = 'admin'"
-          >
-            管理端
-          </NebulaButton>
-          <NebulaButton
-            variant="ghost"
-            :active="currentSide === 'user'"
-            @click="currentSide = 'user'"
-          >
-            使用端
-          </NebulaButton>
-        </NebulaButtonGroup>
+        <NebulaButton
+          class="surface-summary__switch"
+          variant="outline"
+          size="sm"
+          @click="switchSurface"
+        >
+          {{ switchLabel }}
+        </NebulaButton>
       </div>
 
       <NebulaAdminVerticalNav
@@ -229,7 +115,7 @@ const expandedMenus = ref<Set<string>>(new Set(['integration-core']));
       />
     </aside>
     <div class="app-layout__main">
-      <AppHeader />
+      <AppHeader :surface-title="surfaceTitle" />
       <main class="app-layout__content">
         <slot />
       </main>
@@ -238,7 +124,8 @@ const expandedMenus = ref<Set<string>>(new Set(['integration-core']));
 </template>
 
 <style scoped>
-.integration-embed-root {
+.integration-embed-root,
+.integration-subnav {
   height: 100%;
   min-height: 0;
 }
@@ -246,22 +133,6 @@ const expandedMenus = ref<Set<string>>(new Set(['integration-core']));
 .integration-subnav {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  min-height: 0;
-}
-
-.integration-subnav__toggle {
-  display: flex;
-  flex-shrink: 0;
-  gap: 4px;
-  padding: 10px 12px 8px;
-  border-bottom: 1px solid hsl(var(--border) / 60%);
-}
-
-.integration-subnav__toggle [data-button-group-item] {
-  flex: 1;
-  font-size: 12px;
-  font-weight: 500;
 }
 
 .app-layout {
@@ -277,50 +148,78 @@ const expandedMenus = ref<Set<string>>(new Set(['integration-core']));
   display: flex;
   flex-shrink: 0;
   flex-direction: column;
-  width: 220px;
+  width: 256px;
   min-height: 0;
   overflow: hidden;
-  background: hsl(var(--card));
-  border-right: 1px solid hsl(var(--border));
+  background: hsl(var(--sidebar));
+  border-right: 1px solid hsl(var(--border) / 72%);
+  box-shadow: 8px 0 28px hsl(var(--foreground) / 3%);
 }
 
-.app-layout__sidebar-head {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 16px 12px 12px;
-  border-bottom: 1px solid hsl(var(--border));
+.surface-summary {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  gap: 10px;
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid hsl(var(--border) / 68%);
 }
 
-.app-layout__brand {
+.surface-summary__mark {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  font-weight: 800;
+  color: white;
+  background: linear-gradient(145deg, hsl(var(--primary)), #7c5cff);
+  border-radius: 11px;
+  box-shadow: 0 8px 20px hsl(var(--primary) / 24%);
+}
+
+.surface-summary__copy {
   min-width: 0;
 }
 
-.app-layout__title {
-  margin: 0 0 4px;
-  font-size: 16px;
+.surface-summary__eyebrow {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 10px;
   font-weight: 700;
-  line-height: 1.25;
+  color: hsl(var(--primary));
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
 }
 
-.app-layout__subtitle {
+.surface-summary h1,
+.surface-summary strong {
   margin: 0;
-  font-size: 12px;
-  line-height: 1.4;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.surface-summary p {
+  margin: 4px 0 0;
+  font-size: 11px;
+  line-height: 1.45;
   color: hsl(var(--muted-foreground));
 }
 
-.app-layout__side-toggle {
-  display: flex;
-  gap: 4px;
-  padding: 3px;
+.surface-summary__switch {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin-top: 3px;
 }
 
-.app-layout__side-toggle [data-button-group-item] {
-  flex: 1;
-  min-width: 0;
-  font-size: 12px;
-  font-weight: 500;
+.surface-summary--embedded {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 14px 12px 12px;
+}
+
+.surface-summary--embedded strong {
+  margin-bottom: 4px;
 }
 
 .app-layout__nav {
@@ -340,7 +239,28 @@ const expandedMenus = ref<Set<string>>(new Set(['integration-core']));
 .app-layout__content {
   flex: 1;
   min-height: 0;
-  padding: 16px 20px 20px;
+  padding: 22px 26px 28px;
   overflow: auto;
+  background:
+    radial-gradient(
+      circle at 95% 0%,
+      hsl(var(--primary) / 5%),
+      transparent 26rem
+    ),
+    hsl(var(--background));
+}
+
+:global(html[data-platform='electron']) .app-layout__sidebar {
+  width: 232px;
+  box-shadow: none;
+}
+
+:global(html[data-platform='electron']) .surface-summary {
+  padding: 14px 12px 11px;
+}
+
+:global(html[data-platform='electron']) .app-layout__content {
+  padding: 14px 18px 18px;
+  background: hsl(var(--background));
 }
 </style>
