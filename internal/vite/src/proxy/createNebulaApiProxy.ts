@@ -44,7 +44,10 @@ function isSseRequest(url?: string): boolean {
   return url?.includes('/events') ?? false;
 }
 
-const configureSseProxy: NonNullable<ProxyOptions['configure']> = (proxy) => {
+const configureSseProxy: NonNullable<ProxyOptions['configure']> = (
+  proxy,
+  _options,
+) => {
   proxy.on('proxyRes', (proxyRes, req) => {
     const res = proxyRes as {
       headers: Record<string, string | string[] | undefined>;
@@ -102,12 +105,13 @@ function buildExecutorProxyEntry(target: string, sse: boolean): ProxyOptions {
   const serviceToken = resolveExecutorServiceToken();
   const injectServiceToken: NonNullable<ProxyOptions['configure']> = (
     proxy,
+    options,
   ) => {
     proxy.on('proxyReq', (proxyReq) => {
       proxyReq.setHeader('X-Service-Token', serviceToken);
     });
     if (sse) {
-      configureSseProxy(proxy);
+      configureSseProxy(proxy, options);
     }
   };
 
