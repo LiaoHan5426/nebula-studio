@@ -1,5 +1,7 @@
 import {
+  installShellEmbedNavigationListener,
   installWebPresentation,
+  postShellEmbedPageMeta,
   wireShellEventBus,
 } from '@nebula-studio/app-shell';
 import { bootSubApp } from '@nebula-studio-electron/electron-bridge/vue';
@@ -62,6 +64,41 @@ export async function bootMicroApp(
   }
 
   await options.beforeMountAsync?.();
+
+  if (options.router && mode === 'platform-embed') {
+    disposers.push(
+      installShellEmbedNavigationListener((path) => {
+        void options.router?.push(path);
+      }),
+    );
+    disposers.push(
+      options.router.afterEach((to) => {
+        const title =
+          typeof to.meta.title === 'string'
+            ? to.meta.title
+            : typeof to.name === 'string'
+              ? to.name
+              : undefined;
+        const helpKey =
+          typeof to.meta.helpKey === 'string' ? to.meta.helpKey : undefined;
+        postShellEmbedPageMeta({
+          appId: options.appId,
+          path: to.fullPath,
+          ...(title ? { title } : {}),
+          ...(helpKey ? { helpKey } : {}),
+        });
+        requestAnimationFrame(() => {
+          const focusTarget = document.querySelector<HTMLElement>(
+            'main, [role="main"], h1, [tabindex="-1"]',
+          );
+          if (!focusTarget) return;
+          if (!focusTarget.hasAttribute('tabindex'))
+            focusTarget.setAttribute('tabindex', '-1');
+          focusTarget.focus({ preventScroll: true });
+        });
+      }),
+    );
+  }
 
   const app = bootSubApp({
     App: options.rootComponent,

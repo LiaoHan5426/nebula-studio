@@ -87,6 +87,35 @@
           "type": "string",
           "description": "Human-readable window label."
         },
+        "description": {
+          "type": "string",
+          "description": "Short task-oriented description used by Shell search and launch surfaces."
+        },
+        "category": {
+          "type": "string",
+          "enum": ["workspace", "product", "support", "settings"],
+          "description": "Shell navigation and launcher category."
+        },
+        "helpKey": {
+          "type": "string",
+          "description": "Stable contextual help key."
+        },
+        "searchKeywords": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true,
+          "description": "Additional global-search keywords."
+        },
+        "roles": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true,
+          "description": "Roles allowed to discover this Shell entry."
+        },
+        "returnTo": {
+          "type": "string",
+          "description": "Default route or Shell surface used when returning to this entry."
+        },
         "iconSvg": {
           "type": "string",
           "description": "Inline SVG markup for the window icon."

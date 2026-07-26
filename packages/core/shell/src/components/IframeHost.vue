@@ -5,9 +5,17 @@
   管理子应用 iframe 的渲染、加载过渡、空状态展示。
 -->
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import type { EmbeddedShellWindowId } from '@nebula-studio/app-shell';
-import { getShellIntegratedAppMeta } from '@nebula-studio/app-shell';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import type {
+  EmbeddedShellWindowId,
+  ShellEmbedPageMetaPayload,
+} from '@nebula-studio/app-shell';
+import {
+  getShellIntegratedAppMeta,
+  isShellEmbedPageMetaPayload,
+} from '@nebula-studio/app-shell';
+import ShellRecoveryState from './ShellRecoveryState.vue';
+import type { ShellRecoveryKind } from './ShellRecoveryState.vue';
 
 const props = defineProps<{
   usesIframeEmbed: boolean;
@@ -19,11 +27,60 @@ const props = defineProps<{
   activeViewId: string | null;
   integrationOpen: boolean;
   resolveViewLabel: (viewId: string) => string;
+  recoveryKind?: ShellRecoveryKind | null;
 }>();
 
 const emit = defineEmits<{
   'embed-load': [viewId: string];
+  'page-meta': [viewId: string, payload: ShellEmbedPageMetaPayload];
+  retry: [viewId: string];
+  workspace: [];
+  login: [];
 }>();
+
+const online = ref(typeof navigator === 'undefined' || navigator.onLine);
+const failedViewIds = ref(new Set<string>());
+
+function updateOnline(): void {
+  online.value = navigator.onLine;
+}
+
+function onFrameLoad(viewId: string): void {
+  failedViewIds.value.delete(viewId);
+  emit('embed-load', viewId);
+}
+
+function onFrameError(viewId: string): void {
+  failedViewIds.value.add(viewId);
+}
+
+function retryActive(): void {
+  if (!props.activeViewId) return;
+  failedViewIds.value.delete(props.activeViewId);
+  emit('retry', props.activeViewId);
+}
+
+function onEmbedMessage(event: MessageEvent): void {
+  if (event.origin !== window.location.origin) return;
+  if (!isShellEmbedPageMetaPayload(event.data)) return;
+  const frame = [
+    ...document.querySelectorAll<HTMLIFrameElement>('.shell-embed-frame'),
+  ].find((candidate) => candidate.contentWindow === event.source);
+  const viewId = frame?.dataset.viewId;
+  if (viewId) emit('page-meta', viewId, event.data);
+}
+
+onMounted(() => {
+  window.addEventListener('online', updateOnline);
+  window.addEventListener('offline', updateOnline);
+  window.addEventListener('message', onEmbedMessage);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('online', updateOnline);
+  window.removeEventListener('offline', updateOnline);
+  window.removeEventListener('message', onEmbedMessage);
+});
 
 function isReady(viewId: string): boolean {
   return (
@@ -131,16 +188,18 @@ watch(
       :class="{ 'is-visible': isSwitching && !transitionReady }"
     />
 
-    <div v-if="usesIframeEmbed" class="shell-embed">
+    <div v-if="usesIframeEmbed && activeViewId" class="shell-embed">
       <template v-for="viewId in availableViewIds" :key="viewId">
         <iframe
           v-if="loadedEmbedIds.has(viewId)"
           v-show="isFrameVisible(viewId)"
           class="shell-embed-frame"
+          :data-view-id="viewId"
           :class="frameMotionClass(viewId)"
           :src="embedSrc[viewId as EmbeddedShellWindowId]"
           :title="`Nebula Studio — ${viewId}`"
-          @load="emit('embed-load', viewId)"
+          @load="onFrameLoad(viewId)"
+          @error="onFrameError(viewId)"
         />
       </template>
     </div>
@@ -168,24 +227,24 @@ watch(
       </div>
     </Transition>
 
-    <div v-if="!activeViewId && !integrationOpen" class="workspace-empty">
-      <div class="workspace-empty-icon">
-        <svg
-          width="64"
-          height="64"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.5"
-        >
-          <rect x="3" y="3" width="7" height="7" rx="1" />
-          <rect x="14" y="3" width="7" height="7" rx="1" />
-          <rect x="14" y="14" width="7" height="7" rx="1" />
-          <rect x="3" y="14" width="7" height="7" rx="1" />
-        </svg>
-      </div>
-      <h3 class="workspace-empty-title">暂无内容</h3>
-      <p class="workspace-empty-desc">请从左侧导航或应用集成中选择一个应用</p>
+    <div
+      v-if="
+        activeViewId &&
+        (!online || failedViewIds.has(activeViewId) || recoveryKind)
+      "
+      class="shell-embed-recovery"
+    >
+      <ShellRecoveryState
+        :kind="!online ? 'offline' : recoveryKind || 'load-error'"
+        :app-label="resolveViewLabel(activeViewId)"
+        @retry="retryActive"
+        @login="emit('login')"
+        @back="emit('workspace')"
+      />
+    </div>
+
+    <div v-if="!activeViewId && !integrationOpen" class="workspace-surface">
+      <slot name="workspace" />
     </div>
   </div>
 </template>
@@ -351,34 +410,18 @@ watch(
   }
 }
 
-.workspace-empty {
+.workspace-surface {
   display: flex;
   flex: 1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: calc(100vh - var(--shell-top) - 60px);
-  padding: 2rem;
-  text-align: center;
+  min-height: 0;
+  overflow: auto;
 }
 
-.workspace-empty-icon {
-  width: 64px;
-  height: 64px;
-  margin-bottom: 1rem;
-  color: hsl(var(--muted-foreground));
-}
-
-.workspace-empty-title {
-  margin: 0 0 0.5rem;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: hsl(var(--foreground));
-}
-
-.workspace-empty-desc {
-  margin: 0;
-  font-size: 0.95rem;
-  color: hsl(var(--muted-foreground));
+.shell-embed-recovery {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  background: hsl(var(--background-deep));
 }
 </style>

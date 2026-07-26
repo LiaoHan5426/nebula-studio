@@ -112,6 +112,12 @@ function generateTypeScript(config) {
   lines.push('  renderer: string;');
   lines.push('  webEmbedEntry?: string;');
   lines.push('  label: string;');
+  lines.push('  description?: string;');
+  lines.push("  category?: 'workspace' | 'product' | 'support' | 'settings';");
+  lines.push('  helpKey?: string;');
+  lines.push('  searchKeywords?: string[];');
+  lines.push('  roles?: string[];');
+  lines.push('  returnTo?: string;');
   lines.push('  iconSvg?: string;');
   lines.push('  defaultEnabled?: boolean;');
   lines.push('  integratable?: boolean;');
@@ -153,6 +159,16 @@ function generateTypeScript(config) {
     if (win.webEmbedEntry)
       lines.push(`    webEmbedEntry: ${JSON.stringify(win.webEmbedEntry)},`);
     lines.push(`    label: ${JSON.stringify(win.label)},`);
+    if (win.description)
+      lines.push(`    description: ${JSON.stringify(win.description)},`);
+    if (win.category)
+      lines.push(`    category: ${JSON.stringify(win.category)},`);
+    if (win.helpKey) lines.push(`    helpKey: ${JSON.stringify(win.helpKey)},`);
+    if (win.searchKeywords)
+      lines.push(`    searchKeywords: ${JSON.stringify(win.searchKeywords)},`);
+    if (win.roles) lines.push(`    roles: ${JSON.stringify(win.roles)},`);
+    if (win.returnTo)
+      lines.push(`    returnTo: ${JSON.stringify(win.returnTo)},`);
     if (win.iconSvg) lines.push(`    iconSvg: ${JSON.stringify(win.iconSvg)},`);
     if (win.defaultEnabled !== undefined)
       lines.push(`    defaultEnabled: ${win.defaultEnabled},`);

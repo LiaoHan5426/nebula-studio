@@ -29,6 +29,12 @@ for (const id of _embeddedIds) {
       label: w.label,
       iconSvg: w.iconSvg ?? '',
     };
+    if (w.description !== undefined) entry.description = w.description;
+    if (w.category !== undefined) entry.category = w.category;
+    if (w.helpKey !== undefined) entry.helpKey = w.helpKey;
+    if (w.searchKeywords !== undefined) entry.searchKeywords = w.searchKeywords;
+    if (w.roles !== undefined) entry.roles = w.roles;
+    if (w.returnTo !== undefined) entry.returnTo = w.returnTo;
     if (w.integratable !== undefined) entry.integratable = w.integratable;
     if (w.requiresAuth !== undefined) entry.requiresAuth = w.requiresAuth;
     _catalog[id] = entry;

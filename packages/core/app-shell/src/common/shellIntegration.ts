@@ -3,6 +3,12 @@ import type { EmbeddedShellWindowId } from './shellPresentationConfig';
 export interface ShellIntegratedAppMeta {
   id: EmbeddedShellWindowId;
   label: string;
+  description?: string;
+  category?: 'workspace' | 'product' | 'support' | 'settings';
+  helpKey?: string;
+  searchKeywords?: string[];
+  roles?: string[];
+  returnTo?: string;
   iconSvg: string;
   defaultEnabled?: boolean;
   /** 为 false 时仅作为嵌入子应用（如侧栏「设置」），不出现在「应用集成」网格 */

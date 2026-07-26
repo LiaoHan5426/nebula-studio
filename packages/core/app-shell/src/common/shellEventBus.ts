@@ -5,7 +5,15 @@ export type ShellEventMap = {
   'tenant:changed': { tenantId: string };
   'auth:logout': { reason?: string };
   'theme:changed': { theme: string };
-  'notification:received': { id?: string; title?: string; content?: string };
+  'notification:received': {
+    id?: string;
+    title?: string;
+    content?: string;
+    actionLabel?: string;
+    viewId?: string;
+    path?: string;
+    severity?: 'info' | 'success' | 'warning' | 'danger';
+  };
 };
 
 type Handler<T> = (payload: T) => void;

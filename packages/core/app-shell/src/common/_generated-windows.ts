@@ -12,6 +12,12 @@ export interface GeneratedWindowEntry {
   renderer: string;
   webEmbedEntry?: string;
   label: string;
+  description?: string;
+  category?: 'workspace' | 'product' | 'support' | 'settings';
+  helpKey?: string;
+  searchKeywords?: string[];
+  roles?: string[];
+  returnTo?: string;
   iconSvg?: string;
   defaultEnabled?: boolean;
   integratable?: boolean;
@@ -37,6 +43,12 @@ export const GENERATED_WINDOWS: Record<string, GeneratedWindowEntry> = {
     preload: 'main',
     renderer: 'frontend',
     label: '工作台',
+    description: '查看最近访问、申请、待办、异常和常用资源。',
+    category: 'workspace',
+    helpKey: 'shell.workspace',
+    searchKeywords: ['首页', '最近访问', '待办', '申请'],
+    roles: ['authenticated'],
+    returnTo: 'workspace',
     iconSvg:
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>',
     integratable: false,
@@ -48,6 +60,12 @@ export const GENERATED_WINDOWS: Record<string, GeneratedWindowEntry> = {
     renderer: 'docs',
     webEmbedEntry: './embed/docs-entry.js',
     label: '文档',
+    description: '查找产品帮助、任务指引和开发者参考。',
+    category: 'support',
+    helpKey: 'docs.home',
+    searchKeywords: ['帮助', '指南', '组件', '文档'],
+    roles: ['public'],
+    returnTo: '/',
     iconSvg:
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
     defaultEnabled: true,
@@ -60,6 +78,12 @@ export const GENERATED_WINDOWS: Record<string, GeneratedWindowEntry> = {
     renderer: 'settings',
     webEmbedEntry: './embed/settings-entry.js',
     label: '设置',
+    description: '调整个人偏好并管理组织或平台设置。',
+    category: 'settings',
+    helpKey: 'settings.home',
+    searchKeywords: ['外观', '用户', '角色', '权限', '配置'],
+    roles: ['authenticated'],
+    returnTo: '/appearance',
     iconSvg:
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>',
     defaultEnabled: true,
@@ -72,6 +96,12 @@ export const GENERATED_WINDOWS: Record<string, GeneratedWindowEntry> = {
     renderer: 'integration',
     webEmbedEntry: './embed/integration-entry.js',
     label: '集成平台',
+    description: '查找和申请资源，或进入提供方与平台治理工作台。',
+    category: 'product',
+    helpKey: 'integration.home',
+    searchKeywords: ['资源', 'API', '库表', 'Connector', '订阅', '插件'],
+    roles: ['authenticated'],
+    returnTo: '/catalog',
     iconSvg:
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
     defaultEnabled: true,

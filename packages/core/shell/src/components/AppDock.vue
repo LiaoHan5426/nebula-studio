@@ -19,6 +19,10 @@ const props = defineProps<{
   gridViewIds: string[];
   /** 待启用的休眠应用 ID 列表 */
   dormantIntegrableIds: string[];
+  /** 当前用户角色，用于在启动器入口层过滤无权限应用 */
+  roles?: string[];
+  /** 最近访问顺序 */
+  recentViewIds?: string[];
 }>();
 
 const emit = defineEmits<{
@@ -37,6 +41,9 @@ const emit = defineEmits<{
 }>();
 
 const isSorting = ref(false);
+const query = ref('');
+const category = ref('all');
+const scope = ref<'all' | 'recent'>('all');
 
 const gridModel = computed({
   get: () => props.gridViewIds,
@@ -44,6 +51,47 @@ const gridModel = computed({
 });
 const addPickerOpen = ref(false);
 let suppressTileClickUntilTs = 0;
+
+const categoryOptions = [
+  { value: 'all', label: '全部分类' },
+  { value: 'product', label: '产品与资源' },
+  { value: 'support', label: '帮助与支持' },
+  { value: 'settings', label: '设置' },
+  { value: 'workspace', label: '工作台' },
+];
+
+function canAccess(viewId: string): boolean {
+  const required = getShellIntegratedAppMeta(
+    viewId as EmbeddedShellWindowId,
+  ).roles;
+  if (!required?.length || required.includes('authenticated')) return true;
+  return required.some((role) => props.roles?.includes(role));
+}
+
+const filteredGridViewIds = computed(() => {
+  const keyword = query.value.trim().toLocaleLowerCase();
+  const recent = new Set(props.recentViewIds ?? []);
+  return props.gridViewIds.filter((viewId) => {
+    const meta = getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId);
+    if (!canAccess(viewId)) return false;
+    if (scope.value === 'recent' && !recent.has(viewId)) return false;
+    if (category.value !== 'all' && meta.category !== category.value)
+      return false;
+    return (
+      !keyword ||
+      [meta.label, meta.description, ...(meta.searchKeywords ?? [])].some(
+        (value) => value?.toLocaleLowerCase().includes(keyword),
+      )
+    );
+  });
+});
+
+const filtersActive = computed(
+  () =>
+    query.value.trim() !== '' ||
+    category.value !== 'all' ||
+    scope.value !== 'all',
+);
 
 function draggableItemKey(item: unknown): string {
   return String(item);
@@ -84,18 +132,58 @@ function selectApp(viewId: string): void {
     <div class="integration-panel">
       <div class="integration-panel-head">
         <h2 id="integration-dialog-title" class="integration-title">
-          应用集成
+          应用启动器
         </h2>
         <NebulaButton v-if="closable" variant="ghost" @click="$emit('close')">
           关闭
         </NebulaButton>
       </div>
       <p class="integration-desc">
-        点击图标可进入子应用；右上角可隐藏已添加应用；使用加号可重新启用。
+        按任务、分类或最近访问查找应用。全部视图下可拖拽调整顺序。
       </p>
       <div class="integration-panel-body">
+        <div class="integration-filters" aria-label="应用筛选">
+          <label>
+            <span class="sr-only">搜索应用</span>
+            <input
+              v-model="query"
+              type="search"
+              placeholder="搜索应用"
+              autocomplete="off"
+            />
+          </label>
+          <label>
+            <span class="sr-only">应用分类</span>
+            <select v-model="category">
+              <option
+                v-for="option in categoryOptions"
+                :key="option.value"
+                :value="option.value"
+              >
+                {{ option.label }}
+              </option>
+            </select>
+          </label>
+          <div class="integration-scope">
+            <button
+              type="button"
+              :class="{ 'is-active': scope === 'all' }"
+              @click="scope = 'all'"
+            >
+              全部
+            </button>
+            <button
+              type="button"
+              :class="{ 'is-active': scope === 'recent' }"
+              @click="scope = 'recent'"
+            >
+              最近
+            </button>
+          </div>
+        </div>
         <div class="integration-grid">
           <NebulaDrag
+            v-if="!filtersActive"
             v-model="gridModel"
             class="integration-grid-apps"
             :item-key="draggableItemKey"
@@ -141,6 +229,36 @@ function selectApp(viewId: string): void {
               </div>
             </template>
           </NebulaDrag>
+          <template v-else>
+            <div
+              v-for="viewId in filteredGridViewIds"
+              :key="viewId"
+              role="button"
+              tabindex="0"
+              class="integration-tile"
+              @click="selectApp(viewId)"
+              @keydown.enter.prevent="selectApp(viewId)"
+              @keydown.space.prevent="selectApp(viewId)"
+            >
+              <span
+                class="integration-tile-icon"
+                aria-hidden="true"
+                v-html="
+                  getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId)
+                    .iconSvg
+                "
+              />
+              <span class="integration-tile-label">
+                {{
+                  getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId)
+                    .label
+                }}
+              </span>
+            </div>
+            <p v-if="!filteredGridViewIds.length" class="integration-empty">
+              没有符合当前筛选条件的应用。
+            </p>
+          </template>
           <button
             v-if="dormantIntegrableIds.length > 0"
             type="button"
@@ -236,6 +354,52 @@ function selectApp(viewId: string): void {
   flex: 1;
   min-height: 0;
   overflow: auto;
+}
+
+.integration-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+  margin-top: var(--space-4);
+}
+
+.integration-filters input,
+.integration-filters select {
+  min-height: 2.5rem;
+  padding: 0 var(--space-3);
+  font: inherit;
+  color: hsl(var(--foreground));
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-md);
+}
+
+.integration-scope {
+  display: flex;
+  padding: 3px;
+  background: hsl(var(--muted) / 45%);
+  border-radius: var(--radius-md);
+}
+
+.integration-scope button {
+  padding: var(--space-2) var(--space-3);
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  border-radius: calc(var(--radius-md) - 2px);
+}
+
+.integration-scope button.is-active {
+  color: hsl(var(--foreground));
+  background: hsl(var(--card));
+  box-shadow: var(--shadow-soft);
+}
+
+.integration-empty {
+  grid-column: 1 / -1;
+  color: hsl(var(--muted-foreground));
 }
 
 .integration-panel-head {
@@ -451,5 +615,17 @@ function selectApp(viewId: string): void {
   font-size: 12px;
   font-weight: 600;
   color: hsl(var(--primary));
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  white-space: nowrap;
+  border: 0;
+  clip-path: inset(50%);
 }
 </style>

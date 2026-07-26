@@ -6,22 +6,36 @@
  * 本文件负责组装 OrgSwitcher / IframeHost / AppDock 并保留生命周期与 IPC 胶水逻辑。
  */
 import {
+  embeddedViewRequiresShellAuth,
   getShellIntegratedAppMeta,
   isShellIntegrableAppId,
   isShellStandaloneSidebarApp,
+  postShellEmbedNavigate,
 } from '@nebula-studio/app-shell';
-import type { ShellAuthSessionPayload } from '@nebula-studio/app-shell';
+import type {
+  EmbeddedShellWindowId,
+  ShellAuthSessionPayload,
+  ShellEmbedPageMetaPayload,
+} from '@nebula-studio/app-shell';
 import {
   NebulaShellLayout,
   useLayoutPreferences,
 } from '@nebula-studio/nebula-layout';
 import {
   AppDock,
+  GlobalCommandPalette,
   IframeHost,
+  NotificationCenter,
   OrgSwitcher,
+  PersonalWorkspace,
   useAppLifecycle,
 } from '@nebula-studio/nebula-shell';
-import { onMounted, onUnmounted, ref } from 'vue';
+import type {
+  GlobalSearchItem,
+  WorkspaceLink,
+  WorkspaceModel,
+} from '@nebula-studio/nebula-shell';
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 
 import { useOrganization } from '@/shared/composables/useOrganization';
 
@@ -64,6 +78,7 @@ const {
   activeShellTagKey,
   showShellTagsBar,
   shellBreadcrumbItems,
+  visitedViewIds,
   usesIframeEmbed,
   shellHost,
   // Actions
@@ -72,6 +87,7 @@ const {
   logout,
   reportShellViewport,
   resolveShellViewLabel,
+  getEmbedIframe,
   onEmbedIframeLoad,
   ensureEmbedSurfaceLoading,
   tryCompleteEmbedFromExistingFrame,
@@ -121,6 +137,191 @@ const {
 // ── Computed helpers ────────────────────────────────────
 // `standaloneSidebarAppIds` 由 useAppLifecycle 提供，
 // 自动根据 windows.json 中 `integratable: false` 推导独立侧边栏应用列表。
+const commandPaletteOpen = ref(false);
+const activePageMeta = ref<ShellEmbedPageMetaPayload | null>(null);
+const pendingEmbedPaths = new Map<string, string>();
+const shellRecoveryKind = computed(() =>
+  activeViewId.value &&
+  embeddedViewRequiresShellAuth(activeViewId.value) &&
+  !authSession.value
+    ? ('session-expired' as const)
+    : null,
+);
+
+const resolvedBreadcrumbItems = computed(() => {
+  const items = [...shellBreadcrumbItems.value];
+  const pageTitle = activePageMeta.value?.title;
+  if (pageTitle && items.at(-1)?.label !== pageTitle) {
+    items.push({
+      key: `page-${activePageMeta.value?.path ?? pageTitle}`,
+      label: pageTitle,
+      icon: 'file' as const,
+    });
+  }
+  return items;
+});
+
+const workspaceModel = computed<WorkspaceModel>(() => ({
+  summaries: [
+    {
+      id: 'requests',
+      label: '访问申请',
+      value: 0,
+      description: '暂无待处理申请',
+      tone: 'info',
+      action: {
+        id: 'requests',
+        title: '查看我的申请',
+        viewId: 'integration',
+        path: '/subscriptions',
+      },
+    },
+    {
+      id: 'tasks',
+      label: '待办任务',
+      value: 0,
+      description: '当前无待办',
+      tone: 'success',
+    },
+    {
+      id: 'incidents',
+      label: '运行异常',
+      value: 0,
+      description: '当前无异常',
+      tone: 'neutral',
+    },
+    {
+      id: 'resources',
+      label: '常用资源',
+      value: 0,
+      description: '等待资源目录接入',
+      tone: 'neutral',
+      action: {
+        id: 'catalog',
+        title: '打开资源目录',
+        viewId: 'integration',
+        path: '/catalog',
+      },
+    },
+  ],
+  recent: visitedViewIds.value
+    .toReversed()
+    .slice(0, 5)
+    .map((viewId) => {
+      const meta = getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId);
+      return {
+        id: `recent-${viewId}`,
+        title: meta.label,
+        description: meta.description,
+        viewId,
+        icon: 'history',
+      };
+    }),
+  commonResources: [],
+  quickActions: [
+    {
+      id: 'find-resource',
+      title: '查找资源',
+      description: '搜索 API、库表与 Connector',
+      viewId: 'integration',
+      path: '/catalog',
+      icon: 'search',
+    },
+    {
+      id: 'my-requests',
+      title: '跟进申请',
+      description: '查看申请与订阅进度',
+      viewId: 'integration',
+      path: '/subscriptions',
+      icon: 'clipboard-check',
+    },
+    {
+      id: 'appearance',
+      title: '调整外观',
+      description: '设置主题与工作区密度',
+      viewId: 'settings',
+      path: '/appearance',
+      icon: 'palette',
+    },
+    {
+      id: 'create-resource',
+      title: '创建资源',
+      description: '进入提供方资源登记流程',
+      viewId: 'integration',
+      path: '/service/register',
+      icon: 'circle-plus',
+    },
+  ],
+}));
+
+const globalSearchItems = computed<GlobalSearchItem[]>(() => {
+  const roles = new Set(authSession.value?.roles ?? []);
+  const apps = availableViewIds.value
+    .map((viewId) => getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId))
+    .filter((meta) => {
+      const required = meta.roles ?? [];
+      return (
+        !required.length ||
+        required.includes('public') ||
+        (required.includes('authenticated') && Boolean(authSession.value)) ||
+        required.some((role) => roles.has(role))
+      );
+    })
+    .map(
+      (meta): GlobalSearchItem => ({
+        id: `app-${meta.id}`,
+        kind: 'app',
+        title: meta.label,
+        description: meta.description,
+        viewId: meta.id,
+        icon: 'layout-grid',
+        keywords: meta.searchKeywords,
+        roles: meta.roles,
+      }),
+    );
+  return [
+    ...apps,
+    {
+      id: 'resource-catalog',
+      kind: 'resource',
+      title: '资源目录',
+      description: '查找 API、库表和 Connector',
+      viewId: 'integration',
+      path: '/catalog',
+      icon: 'database',
+      keywords: ['资源', '申请', '订阅'],
+    },
+    {
+      id: 'workspace-help',
+      kind: 'document',
+      title: '工作台与全局体验指南',
+      description: '了解工作台、恢复状态和键盘操作',
+      viewId: 'docs',
+      path: '/patterns/experience-baseline',
+      icon: 'book-open',
+    },
+    {
+      id: 'manage-apps',
+      kind: 'action',
+      title: '管理应用启动器',
+      description: '筛选、排序、隐藏或重新启用应用',
+      icon: 'layout-grid',
+    },
+  ];
+});
+
+watch(
+  [activeViewId, activePageMeta],
+  ([viewId, pageMeta]) => {
+    const label = viewId ? resolveShellViewLabel(viewId) : '工作台';
+    document.title = `${pageMeta?.title ?? label} — Nebula Studio`;
+  },
+  { immediate: true },
+);
+
+watch(activeViewId, (viewId) => {
+  if (activePageMeta.value?.appId !== viewId) activePageMeta.value = null;
+});
 
 // ─── Lifecycle hooks ─────────────────────────────────────
 onMounted(async () => {
@@ -199,6 +400,7 @@ onMounted(async () => {
     );
   }
   requestAnimationFrame(() => reportShellViewport());
+  window.addEventListener('keydown', onGlobalKeydown);
 });
 
 onUnmounted(() => {
@@ -219,7 +421,48 @@ onUnmounted(() => {
       onAuthLoginDismissed,
     );
   }
+  window.removeEventListener('keydown', onGlobalKeydown);
 });
+
+function onGlobalKeydown(event: KeyboardEvent): void {
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+    event.preventDefault();
+    commandPaletteOpen.value = !commandPaletteOpen.value;
+  }
+}
+
+async function activateWorkspaceLink(item: WorkspaceLink): Promise<void> {
+  if (item.id === 'manage-apps') {
+    openIntegrationLauncher();
+    return;
+  }
+  if (!item.viewId) return;
+  if (item.path) pendingEmbedPaths.set(item.viewId, item.path);
+  await selectIntegratedApp(item.viewId);
+  await nextTick();
+  const frame = getEmbedIframe(item.viewId);
+  if (frame?.contentWindow && item.path) {
+    postShellEmbedNavigate(frame.contentWindow, item.path);
+    pendingEmbedPaths.delete(item.viewId);
+  }
+}
+
+function onEmbedLoadWithNavigation(viewId: string): void {
+  onEmbedIframeLoad(viewId);
+  const path = pendingEmbedPaths.get(viewId);
+  if (!path) return;
+  postShellEmbedNavigate(getEmbedIframe(viewId)?.contentWindow, path);
+  pendingEmbedPaths.delete(viewId);
+}
+
+function onPageMeta(viewId: string, payload: ShellEmbedPageMetaPayload): void {
+  if (viewId === activeViewId.value) activePageMeta.value = payload;
+}
+
+function retryEmbed(viewId: string): void {
+  const frame = getEmbedIframe(viewId);
+  if (frame) frame.src = embedSrc.value[viewId as EmbeddedShellWindowId];
+}
 
 async function onOrgChange(orgId: string): Promise<void> {
   await switchOrganization(orgId);
@@ -238,7 +481,7 @@ async function handleLogin(): Promise<void> {
   >
     <NebulaShellLayout
       v-model:preferences-open="preferencesOpen"
-      :breadcrumbs="shellBreadcrumbItems"
+      :breadcrumbs="resolvedBreadcrumbItems"
       :show-tags-bar="showShellTagsBar"
       :tags="shellTagItems"
       :active-tag-key="activeShellTagKey"
@@ -333,6 +576,7 @@ async function handleLogin(): Promise<void> {
       </template>
 
       <template #header-actions>
+        <NotificationCenter @activate="activateWorkspaceLink" />
         <OrgSwitcher
           :enabled="orgEnabled"
           :options="orgOptions"
@@ -354,14 +598,31 @@ async function handleLogin(): Promise<void> {
           :active-view-id="activeViewId"
           :integration-open="integrationOpen"
           :resolve-view-label="resolveShellViewLabel"
-          @embed-load="onEmbedIframeLoad"
-        />
+          :recovery-kind="shellRecoveryKind"
+          @embed-load="onEmbedLoadWithNavigation"
+          @page-meta="onPageMeta"
+          @retry="retryEmbed"
+          @workspace="openWorkspace"
+          @login="handleLogin"
+        >
+          <template #workspace>
+            <PersonalWorkspace
+              :username="authSession?.user"
+              :model="workspaceModel"
+              @activate="activateWorkspaceLink"
+              @search="commandPaletteOpen = true"
+              @manage-apps="openIntegrationLauncher"
+            />
+          </template>
+        </IframeHost>
 
         <AppDock
           :open="integrationOpen"
           :closable="integrationClosable"
           v-model:grid-view-ids="integrationGridViewIds"
           :dormant-integrable-ids="dormantIntegrableIds"
+          :roles="authSession?.roles"
+          :recent-view-ids="visitedViewIds"
           @select-app="selectIntegratedApp"
           @hide-app="hideIntegratedApp"
           @enable-app="enableIntegratedApp"
@@ -370,6 +631,11 @@ async function handleLogin(): Promise<void> {
         />
       </div>
     </NebulaShellLayout>
+    <GlobalCommandPalette
+      v-model:open="commandPaletteOpen"
+      :items="globalSearchItems"
+      @activate="activateWorkspaceLink"
+    />
   </div>
 </template>
 

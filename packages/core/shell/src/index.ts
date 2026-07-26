@@ -13,8 +13,23 @@ export { default as IframeHost } from './components/IframeHost.vue';
 
 export { default as AppDock } from './components/AppDock.vue';
 
+export { default as PersonalWorkspace } from './components/PersonalWorkspace.vue';
+
+export { default as GlobalCommandPalette } from './components/GlobalCommandPalette.vue';
+
+export { default as ShellRecoveryState } from './components/ShellRecoveryState.vue';
+export type { ShellRecoveryKind } from './components/ShellRecoveryState.vue';
+
 export { default as NotificationCenter } from './components/NotificationCenter.vue';
 export type { ShellNotification } from './components/NotificationCenter.vue';
+
+export type {
+  GlobalSearchItem,
+  GlobalSearchKind,
+  WorkspaceLink,
+  WorkspaceModel,
+  WorkspaceSummary,
+} from './types/workspace.js';
 
 // Composables
 export { useShellAuthWaiter } from './composables/useShellAuthWaiter.js';

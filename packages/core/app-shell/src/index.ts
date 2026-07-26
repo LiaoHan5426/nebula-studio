@@ -86,14 +86,23 @@ export type { ShellSurfacePreference } from './common/activeViewPreference';
 export {
   SHELL_EMBED_RESET_MESSAGE,
   SHELL_EMBED_RESET_ACK_MESSAGE,
+  SHELL_EMBED_NAVIGATE_MESSAGE,
+  SHELL_EMBED_PAGE_META_MESSAGE,
   createShellEmbedResetPayload,
   createShellEmbedResetAckPayload,
   installShellEmbedResetListener,
   isShellEmbedResetPayload,
   isShellEmbedResetAckPayload,
   postShellEmbedReset,
+  installShellEmbedNavigationListener,
+  isShellEmbedNavigatePayload,
+  isShellEmbedPageMetaPayload,
+  postShellEmbedNavigate,
+  postShellEmbedPageMeta,
 } from './common/shellEmbedMessaging';
 export type {
+  ShellEmbedNavigatePayload,
+  ShellEmbedPageMetaPayload,
   ShellEmbedResetPayload,
   ShellEmbedResetAckPayload,
 } from './common/shellEmbedMessaging';
