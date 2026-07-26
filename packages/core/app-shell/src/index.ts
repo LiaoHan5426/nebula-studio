@@ -100,6 +100,15 @@ export {
   postShellEmbedNavigate,
   postShellEmbedPageMeta,
 } from './common/shellEmbedMessaging';
+export {
+  HELP_TOPICS,
+  TASK_GUIDES,
+  TASK_GUIDE_STORAGE_KEY,
+  readTaskGuideState,
+  resolveHelpTopic,
+  writeTaskGuideState,
+} from './common/helpCenter';
+export type { HelpTopic, TaskGuide, TaskGuideId } from './common/helpCenter';
 export type {
   ShellEmbedNavigatePayload,
   ShellEmbedPageMetaPayload,

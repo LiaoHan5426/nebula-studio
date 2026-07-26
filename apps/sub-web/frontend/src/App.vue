@@ -38,6 +38,7 @@ import type {
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 
 import { useOrganization } from '@/shared/composables/useOrganization';
+import TaskGuidePanel from '@/components/TaskGuidePanel.vue';
 
 // ─── Organization ────────────────────────────────────────
 const {
@@ -138,7 +139,16 @@ const {
 // `standaloneSidebarAppIds` 由 useAppLifecycle 提供，
 // 自动根据 windows.json 中 `integratable: false` 推导独立侧边栏应用列表。
 const commandPaletteOpen = ref(false);
+const taskGuideOpen = ref(false);
 const activePageMeta = ref<ShellEmbedPageMetaPayload | null>(null);
+const currentHelpKey = computed(
+  () =>
+    activePageMeta.value?.helpKey ??
+    (activeViewId.value
+      ? getShellIntegratedAppMeta(activeViewId.value as EmbeddedShellWindowId)
+          .helpKey
+      : 'shell.workspace'),
+);
 const pendingEmbedPaths = new Map<string, string>();
 const shellRecoveryKind = computed(() =>
   activeViewId.value &&
@@ -297,7 +307,7 @@ const globalSearchItems = computed<GlobalSearchItem[]>(() => {
       title: '工作台与全局体验指南',
       description: '了解工作台、恢复状态和键盘操作',
       viewId: 'docs',
-      path: '/patterns/experience-baseline',
+      path: '/help/consumer/getting-started',
       icon: 'book-open',
     },
     {
@@ -447,6 +457,17 @@ async function activateWorkspaceLink(item: WorkspaceLink): Promise<void> {
   }
 }
 
+async function navigateFromTaskGuide(target: {
+  viewId: string;
+  path: string;
+}): Promise<void> {
+  await activateWorkspaceLink({
+    id: `task-guide-${target.viewId}`,
+    title: '任务引导',
+    ...target,
+  });
+}
+
 function onEmbedLoadWithNavigation(viewId: string): void {
   onEmbedIframeLoad(viewId);
   const path = pendingEmbedPaths.get(viewId);
@@ -576,6 +597,15 @@ async function handleLogin(): Promise<void> {
       </template>
 
       <template #header-actions>
+        <button
+          type="button"
+          class="shell-help-button"
+          title="上下文帮助与任务引导"
+          aria-label="上下文帮助与任务引导"
+          @click="taskGuideOpen = true"
+        >
+          ?
+        </button>
         <NotificationCenter @activate="activateWorkspaceLink" />
         <OrgSwitcher
           :enabled="orgEnabled"
@@ -636,6 +666,12 @@ async function handleLogin(): Promise<void> {
       :items="globalSearchItems"
       @activate="activateWorkspaceLink"
     />
+    <TaskGuidePanel
+      v-model:open="taskGuideOpen"
+      :authenticated="Boolean(authSession)"
+      :help-key="currentHelpKey"
+      @navigate="navigateFromTaskGuide"
+    />
   </div>
 </template>
 
@@ -682,6 +718,18 @@ async function handleLogin(): Promise<void> {
   min-width: 0;
   min-height: 0;
   overflow: hidden;
+}
+
+.shell-help-button {
+  width: 34px;
+  height: 34px;
+  font-size: 16px;
+  font-weight: 800;
+  color: hsl(var(--foreground));
+  cursor: pointer;
+  background: hsl(var(--muted) / 48%);
+  border: 1px solid hsl(var(--border));
+  border-radius: 50%;
 }
 
 @media (width <= 960px) {

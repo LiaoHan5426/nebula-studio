@@ -27,6 +27,25 @@ export async function createMarkdownRendererWithHighlight(): Promise<MarkdownIt>
     },
   });
 
+  const defaultHeadingOpen =
+    md.renderer.rules.heading_open ??
+    ((tokens, index, options, _env, self) =>
+      self.renderToken(tokens, index, options));
+  md.renderer.rules.heading_open = (tokens, index, options, env, self) => {
+    const token = tokens[index];
+    const inline = tokens[index + 1];
+    if (token && inline?.type === 'inline') {
+      const slug = inline.content
+        .trim()
+        .toLowerCase()
+        .replace(/[^\p{Letter}\p{Number}]+/gu, '-')
+        .replace(/^-|-$/g, '');
+      token.attrSet('id', slug);
+      token.attrJoin('class', 'docs-heading-anchor');
+    }
+    return defaultHeadingOpen(tokens, index, options, env, self);
+  };
+
   return md;
 }
 

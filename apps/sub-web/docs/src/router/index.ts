@@ -39,7 +39,135 @@ const routes = applyDocsExperienceMeta([
         meta: { title: '首页' },
       },
       {
+        path: 'help',
+        name: 'product-help',
+        redirect: '/help/consumer/getting-started',
+        children: [
+          {
+            path: 'consumer/getting-started',
+            name: 'help-consumer-getting-started',
+            component: () => import('@/pages/ProductHelpPage.vue'),
+            meta: {
+              title: '消费者快速开始',
+              sidebar: 'product-help',
+              documentId: 'consumer-getting-started',
+            },
+          },
+          {
+            path: 'consumer/sign-in',
+            name: 'help-consumer-sign-in',
+            component: () => import('@/pages/ProductHelpPage.vue'),
+            meta: {
+              title: '登录、MFA 与账号恢复',
+              sidebar: 'product-help',
+              documentId: 'consumer-sign-in',
+            },
+          },
+          {
+            path: 'consumer/find-request',
+            name: 'help-find-request',
+            component: () => import('@/pages/ProductHelpPage.vue'),
+            meta: {
+              title: '查找并申请资源',
+              sidebar: 'product-help',
+              documentId: 'find-request',
+            },
+          },
+          {
+            path: 'consumer/connect-resource',
+            name: 'help-connect-resource',
+            component: () => import('@/pages/ProductHelpPage.vue'),
+            meta: {
+              title: '接入已获批资源',
+              sidebar: 'product-help',
+              documentId: 'connect-resource',
+            },
+          },
+          {
+            path: 'provider/getting-started',
+            name: 'help-provider-getting-started',
+            component: () => import('@/pages/ProductHelpPage.vue'),
+            meta: {
+              title: '提供方快速开始',
+              sidebar: 'product-help',
+              documentId: 'provider-getting-started',
+            },
+          },
+          {
+            path: 'provider/publish',
+            name: 'help-provider-publish',
+            component: () => import('@/pages/ProductHelpPage.vue'),
+            meta: {
+              title: '发布资源与版本',
+              sidebar: 'product-help',
+              documentId: 'publish-resource',
+            },
+          },
+          {
+            path: 'admin/getting-started',
+            name: 'help-admin-getting-started',
+            component: () => import('@/pages/ProductHelpPage.vue'),
+            meta: {
+              title: '管理员快速开始',
+              sidebar: 'product-help',
+              documentId: 'admin-getting-started',
+            },
+          },
+          {
+            path: 'admin/approvals',
+            name: 'help-admin-approvals',
+            component: () => import('@/pages/ProductHelpPage.vue'),
+            meta: {
+              title: '审批与风险判断',
+              sidebar: 'product-help',
+              documentId: 'approvals',
+            },
+          },
+          {
+            path: 'admin/plugin-configuration',
+            name: 'help-admin-plugin-configuration',
+            component: () => import('@/pages/ProductHelpPage.vue'),
+            meta: {
+              title: '插件安装与配置',
+              sidebar: 'product-help',
+              documentId: 'plugin-configuration',
+            },
+          },
+          {
+            path: 'admin/settings',
+            name: 'help-admin-settings',
+            component: () => import('@/pages/ProductHelpPage.vue'),
+            meta: {
+              title: 'Settings 治理',
+              sidebar: 'product-help',
+              documentId: 'settings',
+            },
+          },
+          {
+            path: 'troubleshooting',
+            name: 'help-troubleshooting',
+            component: () => import('@/pages/ProductHelpPage.vue'),
+            meta: {
+              title: '故障排查',
+              sidebar: 'product-help',
+              documentId: 'troubleshooting',
+            },
+          },
+        ],
+      },
+      {
+        path: 'reference/component-guidelines',
+        name: 'reference-component-guidelines',
+        component: () => import('@/pages/ProductHelpPage.vue'),
+        meta: {
+          title: '组件使用规范',
+          sidebar: 'reference',
+          documentId: 'component-guidelines',
+        },
+      },
+      {
         path: 'guide',
+        alias: '/reference/guide',
         name: 'guide',
         redirect: '/guide/intro',
         children: [
@@ -65,6 +193,7 @@ const routes = applyDocsExperienceMeta([
       },
       {
         path: 'components',
+        alias: '/reference/components',
         name: 'components',
         redirect: '/components/button',
         children: [
@@ -210,6 +339,7 @@ const routes = applyDocsExperienceMeta([
       },
       {
         path: 'patterns',
+        alias: '/reference/patterns',
         name: 'patterns',
         redirect: '/patterns/experience-baseline',
         children: [

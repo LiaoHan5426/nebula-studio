@@ -387,13 +387,21 @@ const routes = applyIntegrationExperienceMeta([
     path: '/provider/publish',
     name: 'provider-publish',
     component: ServicePublishPage,
-    meta: { title: '服务发布', surface: 'provider' },
+    meta: {
+      title: '服务发布',
+      surface: 'provider',
+      helpKey: 'integration.service-publish',
+    },
   },
   {
     path: '/provider/approvals',
     name: 'provider-approvals',
     component: ServiceApprovalPage,
-    meta: { title: '发布申请', surface: 'provider' },
+    meta: {
+      title: '发布申请',
+      surface: 'provider',
+      helpKey: 'integration.service-approvals',
+    },
   },
   {
     path: '/provider/releases',
@@ -447,6 +455,7 @@ const routes = applyIntegrationExperienceMeta([
       title: '访问审批',
       surface: 'admin',
       requiresAdmin: true,
+      helpKey: 'integration.service-approvals',
     },
   },
   {

@@ -1,23 +1,27 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useRoute, RouterLink, RouterView } from 'vue-router';
 import { NebulaDocsLayout } from '@nebula-studio/nebula-layout';
 import '@/styles/doc-page.css';
+import { HELP_DOCUMENTS } from '@/content/productHelp';
 
 const route = useRoute();
 
 const sidebar = computed(() => route.meta.sidebar as string | undefined);
 const pageTitle = computed(() => route.meta.title as string | undefined);
 const pageCategory = computed(() =>
-  sidebar.value === 'components'
-    ? '组件参考'
-    : sidebar.value === 'guide'
-      ? '使用指南'
-      : sidebar.value === 'patterns'
-        ? '体验模式'
-        : '',
+  sidebar.value === 'product-help'
+    ? '产品帮助'
+    : sidebar.value === 'components' || sidebar.value === 'reference'
+      ? '开发者参考'
+      : sidebar.value === 'guide'
+        ? '开发指南'
+        : sidebar.value === 'patterns'
+          ? '体验模式'
+          : '',
 );
 const layoutTitle = computed(() => (sidebar.value ? pageTitle.value : ''));
+const searchQuery = ref('');
 
 const guideSidebar = [
   { text: '项目介绍', to: '/guide/intro' },
@@ -80,6 +84,59 @@ const patternsSidebar = [
   { text: '全局体验基线', to: '/patterns/experience-baseline' },
 ];
 
+const productGroups = ['消费者', '提供方', '管理员'].map((audience) => ({
+  group: audience,
+  items: HELP_DOCUMENTS.filter((item) => item.audience === audience),
+}));
+const referenceSearchItems = [
+  {
+    title: '组件使用规范',
+    description: '可访问性、键盘与响应式规范',
+    path: '/reference/component-guidelines',
+  },
+  ...guideSidebar.map((item) => ({
+    title: item.text,
+    description: '开发指南',
+    path: item.to.replace('/guide', '/reference/guide'),
+  })),
+  ...componentsSidebar.flatMap((group) =>
+    group.items.map((item) => ({
+      title: item.text,
+      description: `组件参考 · ${group.group}`,
+      path: item.to.replace('/components', '/reference/components'),
+    })),
+  ),
+  ...patternsSidebar.map((item) => ({
+    title: item.text,
+    description: '体验模式',
+    path: item.to.replace('/patterns', '/reference/patterns'),
+  })),
+];
+const searchResults = computed(() => {
+  const query = searchQuery.value.trim().toLowerCase();
+  if (!query) return [];
+  const product = HELP_DOCUMENTS.map((item) => ({
+    title: item.title,
+    description: `${item.audience} · ${item.description}`,
+    path: item.path,
+    searchable: [
+      item.title,
+      item.description,
+      item.source,
+      ...item.keywords,
+    ].join(' '),
+  }));
+  return [
+    ...product,
+    ...referenceSearchItems.map((item) => ({
+      ...item,
+      searchable: `${item.title} ${item.description}`,
+    })),
+  ]
+    .filter((item) => item.searchable.toLowerCase().includes(query))
+    .slice(0, 12);
+});
+
 function isActive(path: string): boolean {
   return route.path === path;
 }
@@ -96,32 +153,106 @@ function isActive(path: string): boolean {
   >
     <template #navigation>
       <RouterLink to="/" class="docs-nav__title">Nebula Studio</RouterLink>
+      <div class="docs-search">
+        <input
+          v-model="searchQuery"
+          type="search"
+          placeholder="搜索全部帮助与参考"
+          aria-label="全文搜索文档"
+        />
+        <div v-if="searchQuery" class="docs-search__results">
+          <p v-if="searchResults.length === 0">没有匹配文档</p>
+          <RouterLink
+            v-for="result in searchResults"
+            :key="result.path"
+            :to="result.path"
+            @click="searchQuery = ''"
+          >
+            <strong>{{ result.title }}</strong>
+            <span>{{ result.description }}</span>
+          </RouterLink>
+        </div>
+      </div>
       <nav class="docs-nav__links">
         <RouterLink
-          to="/guide/intro"
+          to="/help/consumer/getting-started"
           class="docs-nav__link"
-          :class="{ 'docs-nav__link--active': sidebar === 'guide' }"
+          :class="{ 'docs-nav__link--active': sidebar === 'product-help' }"
         >
-          指南
+          产品帮助
         </RouterLink>
         <RouterLink
-          to="/components/button"
+          to="/reference/component-guidelines"
           class="docs-nav__link"
-          :class="{ 'docs-nav__link--active': sidebar === 'components' }"
+          :class="{
+            'docs-nav__link--active': [
+              'guide',
+              'components',
+              'patterns',
+              'reference',
+            ].includes(sidebar ?? ''),
+          }"
         >
-          组件
-        </RouterLink>
-        <RouterLink
-          to="/patterns/experience-baseline"
-          class="docs-nav__link"
-          :class="{ 'docs-nav__link--active': sidebar === 'patterns' }"
-        >
-          体验模式
+          开发者参考
         </RouterLink>
       </nav>
 
       <div v-if="sidebar" class="docs-sidebar">
-        <template v-if="sidebar === 'guide'">
+        <template v-if="sidebar === 'product-help'">
+          <div
+            v-for="section in productGroups"
+            :key="section.group"
+            class="docs-sidebar__section"
+          >
+            <h3 class="docs-sidebar__heading">{{ section.group }}</h3>
+            <RouterLink
+              v-for="item in section.items"
+              :key="item.path"
+              :to="item.path"
+              class="docs-sidebar__link"
+              :class="{ 'docs-sidebar__link--active': isActive(item.path) }"
+            >
+              {{ item.title }}
+            </RouterLink>
+          </div>
+          <div class="docs-sidebar__section">
+            <h3 class="docs-sidebar__heading">支持</h3>
+            <RouterLink to="/help/troubleshooting" class="docs-sidebar__link">
+              故障排查
+            </RouterLink>
+          </div>
+        </template>
+
+        <template v-else-if="sidebar === 'reference'">
+          <div class="docs-sidebar__section">
+            <h3 class="docs-sidebar__heading">开发者参考</h3>
+            <RouterLink
+              to="/reference/component-guidelines"
+              class="docs-sidebar__link"
+              :class="{
+                'docs-sidebar__link--active': isActive(
+                  '/reference/component-guidelines',
+                ),
+              }"
+            >
+              组件使用规范
+            </RouterLink>
+            <RouterLink
+              to="/reference/components/button"
+              class="docs-sidebar__link"
+            >
+              组件示例
+            </RouterLink>
+            <RouterLink
+              to="/reference/patterns/experience-baseline"
+              class="docs-sidebar__link"
+            >
+              体验模式
+            </RouterLink>
+          </div>
+        </template>
+
+        <template v-else-if="sidebar === 'guide'">
           <div class="docs-sidebar__section">
             <h3 class="docs-sidebar__heading">指南</h3>
             <RouterLink
@@ -223,6 +354,54 @@ body {
   display: grid;
   gap: 4px;
   margin-top: 12px;
+}
+
+.docs-search {
+  position: relative;
+  margin-top: 12px;
+}
+
+.docs-search input {
+  width: 100%;
+  padding: 9px 10px;
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-md);
+}
+
+.docs-search__results {
+  position: absolute;
+  z-index: 20;
+  display: grid;
+  width: min(520px, calc(100vw - 32px));
+  max-height: 420px;
+  padding: 8px;
+  overflow: auto;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+}
+
+.docs-search__results a {
+  display: grid;
+  gap: 2px;
+  padding: 9px;
+  color: inherit;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+}
+
+.docs-search__results a:hover {
+  background: hsl(var(--muted) / 48%);
+}
+
+.docs-search__results span,
+.docs-search__results p {
+  margin: 0;
+  font-size: 12px;
+  color: hsl(var(--muted-foreground));
 }
 
 .docs-nav__link {

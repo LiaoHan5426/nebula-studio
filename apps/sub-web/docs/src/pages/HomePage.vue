@@ -5,48 +5,55 @@ import { RouterLink } from 'vue-router';
 <template>
   <div class="home-page">
     <section class="hero">
-      <h1 class="hero__name">Nebula Studio</h1>
-      <p class="hero__text">全栈组件库</p>
+      <p class="hero__eyebrow">Help center · v0.0.0</p>
+      <h1 class="hero__name">Nebula Studio 帮助中心</h1>
+      <p class="hero__text">完成任务，也理解平台</p>
       <p class="hero__tagline">
-        基于 Vue 3 + TypeScript 的企业级组件库，提供丰富的高质量组件与完善的文档
+        产品帮助面向消费者、提供方和管理员；开发者参考保留组件示例、体验模式和实现规范。
       </p>
       <div class="hero__actions">
-        <RouterLink to="/guide/intro" class="hero__btn hero__btn--brand">
-          快速开始
+        <RouterLink
+          to="/help/consumer/getting-started"
+          class="hero__btn hero__btn--brand"
+        >
+          进入产品帮助
         </RouterLink>
-        <RouterLink to="/components/button" class="hero__btn hero__btn--alt">
-          组件总览
+        <RouterLink
+          to="/reference/component-guidelines"
+          class="hero__btn hero__btn--alt"
+        >
+          打开开发者参考
         </RouterLink>
       </div>
     </section>
 
     <section class="features">
-      <div class="feature">
-        <span class="feature__icon">🧩</span>
-        <h2 class="feature__title">丰富的组件</h2>
+      <RouterLink to="/help/consumer/find-request" class="feature">
+        <span class="feature__label">消费者</span>
+        <h2 class="feature__title">查找、申请与接入资源</h2>
         <p class="feature__details">
-          涵盖表单、数据展示、反馈、导航、内容等类别的 20+ 组件
+          从资源目录到申请状态，再到获批后的接入信息。
         </p>
-      </div>
-      <div class="feature">
-        <span class="feature__icon">🎨</span>
-        <h2 class="feature__title">主题定制</h2>
+      </RouterLink>
+      <RouterLink to="/help/provider/getting-started" class="feature">
+        <span class="feature__label">提供方</span>
+        <h2 class="feature__title">登记、发布与响应申请</h2>
         <p class="feature__details">
-          基于 CSS 变量的主题系统，支持亮色/暗色模式一键切换
+          使用提供方工作台管理服务、版本和消费者待办。
         </p>
-      </div>
-      <div class="feature">
-        <span class="feature__icon">📦</span>
-        <h2 class="feature__title">TypeScript 优先</h2>
+      </RouterLink>
+      <RouterLink to="/help/admin/getting-started" class="feature">
+        <span class="feature__label">管理员</span>
+        <h2 class="feature__title">审批、插件与平台治理</h2>
         <p class="feature__details">
-          所有组件提供完整类型定义，享受完美的编辑器智能提示
+          从异常和风险开始，处理权限、配置与审计任务。
         </p>
-      </div>
-      <div class="feature">
-        <span class="feature__icon">🌙</span>
-        <h2 class="feature__title">暗色模式</h2>
-        <p class="feature__details">内置暗色模式支持，所有组件均已适配</p>
-      </div>
+      </RouterLink>
+      <RouterLink to="/reference/component-guidelines" class="feature">
+        <span class="feature__label">开发者</span>
+        <h2 class="feature__title">组件、模式与代码示例</h2>
+        <p class="feature__details">包含可访问性、键盘、响应式和组合规范。</p>
+      </RouterLink>
     </section>
   </div>
 </template>
@@ -67,6 +74,14 @@ import { RouterLink } from 'vue-router';
   font-size: 32px;
   font-weight: 700;
   color: hsl(var(--foreground));
+}
+
+.hero__eyebrow {
+  font-size: 12px;
+  font-weight: 800;
+  color: hsl(var(--primary));
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
 .hero__text {
@@ -125,12 +140,18 @@ import { RouterLink } from 'vue-router';
 
 .feature {
   padding: 20px;
+  color: inherit;
+  text-decoration: none;
   border: 1px solid hsl(var(--border));
   border-radius: 8px;
 }
 
-.feature__icon {
-  font-size: 28px;
+.feature__label {
+  font-size: 11px;
+  font-weight: 800;
+  color: hsl(var(--primary));
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .feature__title {

@@ -27,8 +27,8 @@
 .doc-section p {
   margin-top: 8px;
   font-size: 14px;
-  color: hsl(var(--muted-foreground));
   line-height: 1.75;
+  color: hsl(var(--muted-foreground));
 }
 
 .doc-section pre {
