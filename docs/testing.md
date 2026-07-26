@@ -73,3 +73,30 @@ vp run build
 - 文档中的脚本仍存在于对应 `package.json`；
 - 端口和代理与 Vite/后端配置一致；
 - 包名与实际 `package.json#name` 一致。
+
+# Phase 8 验收矩阵
+
+浏览器验收分为互不混跑的四个 Playwright project：
+
+| Project | 命令 | 责任边界 |
+| --- | --- | --- |
+| `mock-regression` | `vp run test:e2e:mock` | 快速回归，允许通过 `page.route` 固定数据 |
+| `experience` | `vp run test:e2e:experience` | 六类界面的亮暗主题、响应式、键盘焦点、视觉和资源首屏预算 |
+| `real-stack` | `vp run test:e2e:real` | 启动 Platform Console、Camel Console、Executor 和 Web，不允许网络 Mock |
+| `electron` | `vp run test:e2e:electron` | Electron 启动、认证会话、Preload capability、窗口切换、截图和性能附件 |
+
+真实栈脚本默认从同级 `../nebula` 读取后端。自定义后端目录时直接调用脚本：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/e2e/run-real-stack.ps1 -BackendRoot F:\path\to\nebula
+```
+
+脚本先通过 Maven reactor 安装三项服务所需模块，并在任一服务进程提前退出时立即失败。失败日志位于 `test-results/real-stack`，Playwright trace、截图和录像位于 `test-results/playwright`。
+
+真实栈运行前会从在线 Platform Console OpenAPI 重新生成契约，并对生成文件执行 `git diff --exit-code`。因此后端字段变化必须先更新并提交前端契约，否则验收立即失败。
+
+资源性能预算：
+
+- Web 资源目录首屏不超过 2500 ms，详情不超过 2000 ms。
+- Electron 资源目录首屏不超过 4000 ms。
+- 每次运行将测量值作为 JSON attachment 写入 Playwright 结果，便于比较真实基线。

@@ -1,6 +1,9 @@
 name: CI
 
 on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 18 * * 1-5'
   pull_request:
     branches: [main, master]
   push:
@@ -12,6 +15,7 @@ concurrency:
 
 jobs:
   quality:
+    if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -41,8 +45,8 @@ jobs:
       - name: Install Playwright Chromium
         run: vp exec playwright install --with-deps chromium
 
-      - name: Run browser E2E
-        run: vp run test:e2e
+      - name: Run mock browser E2E
+        run: vp run test:e2e:mock
 
       - name: Upload verified web artifact
         uses: actions/upload-artifact@v4
@@ -51,8 +55,9 @@ jobs:
           path: apps/web/dist
           if-no-files-found: error
 
-  electron:
-    runs-on: ubuntu-latest
+  experience:
+    if: github.event_name != 'schedule'
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v6
 
@@ -63,24 +68,94 @@ jobs:
           run-install: |
             - args: ['--frozen-lockfile']
 
-      - name: Detect Electron-related changes
-        id: changes
-        shell: bash
-        run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            BASE="${{ github.event.pull_request.base.sha }}"
-            HEAD="${{ github.event.pull_request.head.sha }}"
-          else
-            BASE="${{ github.event.before }}"
-            HEAD="${{ github.sha }}"
-          fi
-          if git diff --name-only "$BASE" "$HEAD" | grep -Eq \
-            '^apps/electron/|^apps/electron-preload/|^apps/sub-web/docs/|^configs/|^packages/core/app-shell/'; then
-            echo "needed=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "needed=false" >> "$GITHUB_OUTPUT"
-          fi
+      - name: Install Playwright Chromium
+        run: vp exec playwright install chromium
+
+      - name: Run accessibility, visual, and performance baselines
+        run: vp run test:e2e:experience
+
+      - name: Upload experience diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: experience-diagnostics
+          path: |
+            test-results/playwright
+            playwright-report
+          if-no-files-found: ignore
+
+  electron:
+    if: github.event_name != 'schedule'
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: voidzero-dev/setup-vp@v1
+        with:
+          node-version: '22'
+          cache: true
+          run-install: |
+            - args: ['--frozen-lockfile']
 
       - name: Build Electron app
-        if: steps.changes.outputs.needed == 'true'
         run: vp run --filter @nebula-studio/electron build
+
+      - name: Run Electron capability E2E
+        run: vp exec playwright test --project=electron
+
+      - name: Upload Electron E2E diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: electron-e2e-diagnostics
+          path: |
+            test-results/playwright
+            playwright-report
+          if-no-files-found: ignore
+
+  real-stack:
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          path: nebula-studio
+
+      - uses: actions/checkout@v6
+        with:
+          repository: LiaoHan5426/nebula
+          path: nebula
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+
+      - uses: voidzero-dev/setup-vp@v1
+        with:
+          node-version: '22'
+          cache: true
+
+      - name: Install frontend dependencies
+        working-directory: nebula-studio
+        run: vp install --frozen-lockfile
+
+      - name: Install Playwright Chromium
+        working-directory: nebula-studio
+        run: vp exec playwright install chromium
+
+      - name: Run real-stack E2E
+        working-directory: nebula-studio
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/e2e/run-real-stack.ps1 -BackendRoot "${{ github.workspace }}\nebula"
+
+      - name: Upload service and Playwright diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: real-stack-diagnostics
+          path: |
+            nebula-studio/test-results/real-stack
+            nebula-studio/test-results/playwright
+            nebula-studio/playwright-report
+          if-no-files-found: ignore

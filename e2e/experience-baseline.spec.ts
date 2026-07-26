@@ -11,22 +11,22 @@ const surfaces: BaselineSurface[] = [
   { name: 'login', path: '/?embed=login', surface: 'auth' },
   {
     name: 'portal',
-    path: '/subscriptions?embed=integration',
+    path: '/?embed=integration#/subscriptions',
     surface: 'portal',
   },
   {
     name: 'admin',
-    path: '/plugins/database?embed=integration',
+    path: '/?embed=integration#/plugins/database',
     surface: 'admin',
   },
   {
     name: 'settings',
-    path: '/appearance?embed=settings',
+    path: '/?embed=settings#/appearance',
     surface: 'settings',
   },
   {
     name: 'docs',
-    path: '/patterns/experience-baseline?embed=docs',
+    path: '/?embed=docs#/patterns/experience-baseline',
     surface: 'docs',
   },
 ];
@@ -77,13 +77,21 @@ for (const theme of themes) {
       await page.addInitScript(
         ({ selectedTheme }) => {
           localStorage.setItem('nebula-studio-web-theme', selectedTheme);
+          localStorage.setItem(
+            'nebula.task-guides.v1',
+            JSON.stringify({
+              'first-login': true,
+              'first-request': true,
+              'first-publish': true,
+            }),
+          );
           const isLogin =
             new URL(window.location.href).searchParams.get('embed') === 'login';
           if (isLogin) {
             sessionStorage.removeItem('nebula-studio-auth-session');
             return;
           }
-          const roles = window.location.pathname.startsWith('/plugins/')
+          const roles = window.location.hash.startsWith('#/plugins/')
             ? ['ADMIN']
             : ['USER'];
           sessionStorage.setItem(
@@ -152,13 +160,21 @@ test('keyboard focus is visible on each interactive surface', async ({
 }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.addInitScript(() => {
+    localStorage.setItem(
+      'nebula.task-guides.v1',
+      JSON.stringify({
+        'first-login': true,
+        'first-request': true,
+        'first-publish': true,
+      }),
+    );
     const isLogin =
       new URL(window.location.href).searchParams.get('embed') === 'login';
     if (isLogin) {
       sessionStorage.removeItem('nebula-studio-auth-session');
       return;
     }
-    const roles = window.location.pathname.startsWith('/plugins/')
+    const roles = window.location.hash.startsWith('#/plugins/')
       ? ['ADMIN']
       : ['USER'];
     sessionStorage.setItem(

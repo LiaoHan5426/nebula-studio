@@ -21,6 +21,8 @@ export default defineConfig({
         'node_modules',
         '.nvmrc',
         'coverage',
+        'playwright-report',
+        'test-results',
         'CODEOWNERS',
         '.nitro',
         '.output',

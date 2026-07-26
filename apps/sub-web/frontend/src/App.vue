@@ -336,6 +336,28 @@ watch(activeViewId, (viewId) => {
 // ─── Lifecycle hooks ─────────────────────────────────────
 onMounted(async () => {
   shellHost.onBeforeShellHydrate();
+
+  // 认证恢复必须先于 Shell 状态和组织上下文加载：这些步骤可能访问受保护
+  // API，也可能在等待期间收到登录窗口广播。先订阅再读取可避免丢失事件。
+  window.electron.ipcRenderer.on('settings:theme:changed', onThemeChanged);
+  if (shellHost.shouldSubscribeAuthSessionChannel) {
+    window.electron.ipcRenderer.on(
+      'auth:session-changed',
+      onAuthSessionChanged,
+    );
+    window.electron.ipcRenderer.on(
+      'auth:login-dismissed',
+      onAuthLoginDismissed,
+    );
+  }
+  try {
+    authSession.value = await window.api.auth.getSession();
+    syncShellAuthSessionStorage(authSession.value);
+  } catch {
+    authSession.value = null;
+    syncShellAuthSessionStorage(null);
+  }
+
   await loadShellState();
 
   const preferredSurface = shellHost.shouldRestoreActiveViewFromPreference
@@ -387,28 +409,9 @@ onMounted(async () => {
     }
   }
 
-  // Refresh auth
-  try {
-    authSession.value = await window.api.auth.getSession();
-    syncShellAuthSessionStorage(authSession.value);
-  } catch {
-    authSession.value = null;
-  }
-
   await loadOrganizationContext();
   reportShellViewport();
   if (!usesIframeEmbed) window.addEventListener('resize', reportShellViewport);
-  window.electron.ipcRenderer.on('settings:theme:changed', onThemeChanged);
-  if (shellHost.shouldSubscribeAuthSessionChannel) {
-    window.electron.ipcRenderer.on(
-      'auth:session-changed',
-      onAuthSessionChanged,
-    );
-    window.electron.ipcRenderer.on(
-      'auth:login-dismissed',
-      onAuthLoginDismissed,
-    );
-  }
   requestAnimationFrame(() => reportShellViewport());
   window.addEventListener('keydown', onGlobalKeydown);
 });

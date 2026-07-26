@@ -474,11 +474,17 @@ export function useAppLifecycle(opts: UseAppLifecycleOptions) {
   function syncShellAuthSessionStorage(
     payload: ShellAuthSessionPayload | null,
   ): void {
-    if (payload?.user?.trim()) {
-      writeWebAuthSession(payload);
-      return;
+    try {
+      if (payload?.user?.trim()) {
+        writeWebAuthSession(payload);
+        return;
+      }
+      clearWebAuthSession();
+    } catch {
+      // Electron file:// renderer may not expose sessionStorage. The main
+      // process session remains authoritative; storage is only a Web/iframe
+      // compatibility mirror and must not invalidate a restored login.
     }
-    clearWebAuthSession();
   }
 
   async function logout(): Promise<void> {

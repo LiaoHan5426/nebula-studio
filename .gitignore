@@ -12,6 +12,8 @@ dist
 dist-ssr
 *.local
 .temp
+playwright-report/
+test-results/
 # Electron app build artifacts (electron-vite → `out/`, electron-builder → `dist/` under package)
 apps/electron/out/
 apps/electron/dist/

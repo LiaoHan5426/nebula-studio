@@ -35,13 +35,13 @@ test.describe('Studio navigation flow', () => {
     page,
   }) => {
     const paths = [
-      '/service/publish?embed=integration',
-      '/service/governance?embed=integration',
-      '/service/authorize?embed=integration',
-      '/service/approvals?embed=integration',
-      '/service/releases?embed=integration',
-      '/service/versions?embed=integration',
-      '/subscriptions?embed=integration',
+      '/?embed=integration#/service/publish',
+      '/?embed=integration#/service/governance',
+      '/?embed=integration#/service/authorize',
+      '/?embed=integration#/service/approvals',
+      '/?embed=integration#/service/releases',
+      '/?embed=integration#/service/versions',
+      '/?embed=integration#/subscriptions',
     ];
 
     for (const path of paths) {
@@ -72,14 +72,14 @@ test.describe('Integration page headings', () => {
   });
 
   test('governance page shows title', async ({ page }) => {
-    await page.goto('/service/governance?embed=integration');
+    await page.goto('/?embed=integration#/service/governance');
     await expect(page.getByRole('heading', { name: '服务治理' })).toBeVisible({
       timeout: 10_000,
     });
   });
 
   test('subscriptions page loads list region', async ({ page }) => {
-    await page.goto('/subscriptions?embed=integration');
+    await page.goto('/?embed=integration#/subscriptions');
     await expect(page.getByRole('heading', { name: '库表订阅' })).toBeVisible({
       timeout: 10_000,
     });

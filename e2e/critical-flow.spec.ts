@@ -64,7 +64,7 @@ test('critical auth, Console, Executor, SSE, and logout flow', async ({
     )
     .toContain('e2e-user');
 
-  await page.goto('/service/governance?embed=integration');
+  await page.goto('/?embed=integration#/service/governance');
   await expect(page.getByRole('heading', { name: '服务治理' })).toBeVisible();
 
   const contracts = await page.evaluate(async () => {
