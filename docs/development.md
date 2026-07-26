@@ -20,7 +20,7 @@ vp test
 3. 在 `configs/windows.json` 增加窗口/子应用元数据和必要的 preload capability。
 4. 执行 `vp run generate:configs`，不要手改生成文件。
 5. 将 Web 宿主需要发现的子应用加入 `apps/web/vite.config.ts`。
-6. 若 Electron 需要新 preload，在 `apps/electron-preload/<slug>` 增加对应包。
+6. 若 Electron 需要新能力，在 `apps/electron-preload/src/capabilities` 增加能力工厂，并通过窗口配置声明；不要创建窗口专属 preload 包。
 7. 补充应用 README、本文档索引、类型检查和最小启动/路由测试。
 
 目录名、窗口 ID 和包名可能不同（现有 `frontend` → `main` 即为例子），因此配置应明确写出映射，不能靠字符串猜测。
@@ -37,6 +37,17 @@ vp test
 - 仓库内部构建工具：`internal` 或 `tools`。
 
 包需要声明稳定的 `exports`，避免业务应用跨包导入内部源码路径。公共包不得依赖具体 renderer，防止形成循环依赖。
+
+## 工作区清单元数据
+
+当前仓库中的应用和共享包均为私有工作区，`package.json` 遵循以下基线：
+
+- `version` 统一为 `0.0.0`，`private` 统一为 `true`；
+- 填写准确的 `description`、`author`、`license`、`homepage`、`repository` 和 `bugs`；
+- 子包的 `repository.directory` 必须与其仓库相对目录一致；
+- 当前未声明开源许可，因此使用 `UNLICENSED`；未来需要发布包时，应先确定许可证和独立版本策略。
+
+新增或移动工作区时必须同步维护上述字段，不得复制其他项目的仓库地址。
 
 ## API 开发
 

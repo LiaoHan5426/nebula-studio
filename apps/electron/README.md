@@ -23,7 +23,8 @@ Electron **应用根包**：主进程、preload 与各 **Vue renderer** 的 **el
    - `package.json` → `build`：先全量 typecheck，再 `electron-vite build`。文档子应用 `@nebula-studio-renderer/docs` 通过 renderer 动态入口加载（`?renderer=docs`），无需单独复制静态站点。
 
 3. **Vite 配置**
-   - `electron.vite.config.ts` → `@nebula-studio-internal/vite` 的 `defineNebulaConfig({ platform: 'electron' })`；preload 输入默认来自各 `@nebula-studio-preload/*` 包。
+   - `electron.vite.config.ts` → `@nebula-studio-internal/vite` 的 `defineNebulaConfig({ platform: 'electron' })`。
+   - preload 输入由生成 manifest 的窗口 ID 创建，统一加载 `apps/electron-preload/src/unified.ts`，再按能力配置组装桥接 API。
 
 ## 脚本（摘要）
 

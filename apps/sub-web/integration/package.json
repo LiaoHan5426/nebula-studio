@@ -2,6 +2,18 @@
   "name": "@nebula-studio-renderer/integration",
   "version": "0.0.0",
   "private": true,
+  "description": "Nebula Studio integration management renderer.",
+  "author": "Liao Han <liaohan5426@gmail.com>",
+  "license": "UNLICENSED",
+  "homepage": "https://github.com/LiaoHan5426/nebula-studio#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LiaoHan5426/nebula-studio.git",
+    "directory": "apps/sub-web/integration"
+  },
+  "bugs": {
+    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
+  },
   "type": "module",
   "exports": {
     "./app": "./src/App.vue",

@@ -1,6 +1,6 @@
 # Settings 子应用独立启动
 
-路径：`J:/Code/nebula-workspace/nebula-studio/apps/sub-web/settings`
+路径：`apps/sub-web/settings`
 
 ## 前置
 
@@ -9,7 +9,7 @@
 ## 启动
 
 ```powershell
-cd J:/Code/nebula-workspace/nebula-studio
+# 在 nebula-studio 仓库根目录执行
 vp run --filter @nebula-studio-renderer/settings dev
 ```
 

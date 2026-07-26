@@ -12,14 +12,14 @@
 
 ## 依赖关系
 
-- 依赖 `@nebula-studio-electron/electron-shared` 与 `electron-shared-vue`（类型与运行时桥）。
+- 依赖 `@nebula-studio-electron/electron-bridge`（包含 `./vue` 子路径）提供类型与运行时桥。
 - **不**应反向依赖具体 renderer 包（`@nebula-studio-renderer/*`），避免环。
 
 ## 恢复 / 迁移时注意
 
-- 修改 **窗口键、壳布局字段** 时：同步 **`apps/electron/app.config.ts`**、**`apps/web`** 入口及本文档导出的 config 类型使用处。
+- 修改 **窗口键、壳布局字段** 时：更新 `configs/windows.json` 并重新生成配置，再检查 `apps/electron` 与 `apps/web` 的消费入口。
 - 与 **preload 暴露的 `window.api` 形态** 相关的类型：仍在各 renderer 的 `env.d.ts` 中维护；通用常量见 `@nebula-studio/types`。
 
 ## 相关
 
-- [Monorepo 索引](../../docs/monorepo.md) · [Electron README](../../apps/electron/README.md) · [Web README](../../apps/web/README.md)
+- [Monorepo 索引](../../../docs/monorepo.md) · [Electron README](../../../apps/electron/README.md) · [Web README](../../../apps/web/README.md)

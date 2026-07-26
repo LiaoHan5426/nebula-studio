@@ -2,14 +2,18 @@
   "name": "@nebula-studio-internal/tailwind",
   "version": "0.0.0",
   "private": true,
-  "homepage": "https://github.com/vbenjs/vue-vben-admin",
-  "bugs": "https://github.com/vbenjs/vue-vben-admin/issues",
+  "description": "Shared Tailwind CSS theme and integration for Nebula Studio.",
+  "author": "Liao Han <liaohan5426@gmail.com>",
+  "license": "UNLICENSED",
+  "homepage": "https://github.com/LiaoHan5426/nebula-studio#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vbenjs/vue-vben-admin.git",
-    "directory": "tools/tailwind"
+    "url": "git+https://github.com/LiaoHan5426/nebula-studio.git",
+    "directory": "tools/tailwindcss"
   },
-  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
+  },
   "type": "module",
   "files": [
     "src"

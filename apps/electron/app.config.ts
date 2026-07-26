@@ -7,7 +7,7 @@ import {
  * - `main`：整体 Electron **底座**（壳层 BrowserWindow，子应用默认以 iframe 内嵌，与 Web 一致）。
  * - 若 `electronEmbeddedPresentation` 为 `browser-view`，则在底座内以 BrowserView 展示子应用。
  *
- * Preload：`apps/electron-preload/<slug>` → `@nebula-studio-preload/<slug>`
+ * Preload：`apps/electron-preload/src/unified.ts` 按生成的窗口标识与 capability 配置组装
  * Renderer 源码：`apps/<renderers>/<包名>`（见 `renderers`）→ `@nebula-studio-renderer/<窗口键>`
  *
  * 壳层与子应用共用同一套 `index.html` + `?renderer=`（见 `src/renderer/boot.ts`）。

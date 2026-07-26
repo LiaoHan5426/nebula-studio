@@ -1,4 +1,5 @@
-> **导航**：[Electron 应用 README](../README.md) · [Monorepo 索引](../../../../docs/monorepo.md)  
+> **导航**：[Electron 应用 README](../../README.md) · [Monorepo 索引](../../../../docs/monorepo.md)
+>
 > 本文档描述 **主进程** 模块化与运维细节；渲染进程见 `src/renderer/` 与上层 README。
 
 ### Main 模块化（已按步骤落地）
@@ -14,8 +15,8 @@
 5. IPC 通知模块 `IpcNotification`
    - 预留 `notify:app`（`message` / `notification` + `success`/`info`/`warning`/`danger`）与 `notify:system` 两类能力。
    - `notify:app` 支持 `showCloseButton`、`durationMs`、`detail`（可点击详情）与 `requestId` 响应回调。
-   - 子应用（如 `docs`）preload 通过 `notify:bridge:*` 桥接，主 preload 走 `notify:*` 直连；日志记录包含 `source`（应用标识）。
-   - `source` 为字符串（如 `main` / `docs`），并在主进程按 `app.config.windows` 校验是否存在对应应用。
+   - 统一 preload 的通知能力通过 `notify:bridge:*` 桥接；日志记录包含 `source`（窗口标识）。
+   - `source` 为字符串（如 `main` / `docs`），并在主进程按生成的窗口配置校验是否存在对应应用。
 6. 自动更新模块 `AutoUpdater`
    - 先提供可插拔占位，后续可接入 `electron-updater`。
 7. 关闭策略模块 `ApplicationTerminatorOnLastWindowClose`

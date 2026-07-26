@@ -59,7 +59,7 @@ vp run dev:web
 nebula-studio/
 ├─ apps/
 │  ├─ electron/          # Electron 主进程与 renderer 引导
-│  ├─ electron-preload/  # 各窗口的 preload 包
+│  ├─ electron-preload/  # 统一 preload 与按能力组装的桥接实现
 │  ├─ sub-web/           # Vue renderer 子应用
 │  └─ web/               # Web 壳与 embed 多入口
 ├─ internal/             # 仓库内部 Vite、Node 等共享工具
@@ -76,7 +76,7 @@ nebula-studio/
 
 ## 架构速览
 
-1. **Electron**（`apps/electron`）：主进程负责窗口生命周期。renderer 使用单一 `index.html` 与 `src/renderer/boot.ts`，再根据 `?renderer=` 动态加载 `app.config.ts` 声明的子应用入口；preload 位于 `apps/electron-preload/*`。
+1. **Electron**（`apps/electron`）：主进程负责窗口生命周期。renderer 使用单一 `index.html` 与 `src/renderer/boot.ts`，再根据 `?renderer=` 动态加载 `app.config.ts` 声明的子应用入口；preload 由 `apps/electron-preload/src/unified.ts` 按窗口能力组装。
 2. **Web**（`apps/web`）：提供 Web 壳与 embed 入口（`src/shell-entry.ts`、`src/embed/*-entry.ts`），并与 `@nebula-studio/app-shell` 的 Web 集成路径保持一致。
 3. **全局样式**：业务侧统一引入 `@nebula-studio-internal/tailwind/electron`。其内部依次加载 Tailwind v4 主题与 `@nebula-studio/styles`；仅 Electron 使用的覆盖样式放在 `apps/electron/src/renderer/styles/electron-overrides.css`。
 4. **全局类型**：`@nebula-studio/types` 通过 `tools/tsconfig/web.json` 的 `compilerOptions.types` 注入 renderer。不要在多个 `env.d.ts` 中重复声明相同的 ambient 模块。
