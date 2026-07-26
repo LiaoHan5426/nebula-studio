@@ -41,6 +41,7 @@
     "test": "vp test run --passWithNoTests"
   },
   "dependencies": {
+    "@nebula-studio/contracts": "workspace:^",
     "vue": "catalog:vue"
   },
   "devDependencies": {

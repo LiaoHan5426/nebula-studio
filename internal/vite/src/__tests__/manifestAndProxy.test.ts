@@ -26,6 +26,11 @@ describe('windows manifest', () => {
       settings: './embed/settings-entry.js',
     });
     expect(manifest.preloadIds).toContain('main');
+    expect(manifest.preloadCapabilities).toEqual({
+      docs: ['notify'],
+      main: ['auth', 'notify', 'shell'],
+      settings: ['settings'],
+    });
   });
 
   it('finds the monorepo root from a relative Vite root', () => {
@@ -49,6 +54,7 @@ describe('windows manifest', () => {
               renderer: 'custom',
               label: 'Custom',
               webEmbedEntry: './embed/custom-entry.js',
+              preloadCapabilities: ['auth'],
             },
           },
         },
@@ -58,6 +64,7 @@ describe('windows manifest', () => {
       expect(manifest.embedBootEntries).toEqual({
         custom: './embed/custom-entry.js',
       });
+      expect(manifest.preloadCapabilities).toEqual({ main: ['auth'] });
     } finally {
       rmSync(root, { recursive: true, force: true });
     }

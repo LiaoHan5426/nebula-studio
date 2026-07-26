@@ -1,4 +1,12 @@
 import { BrowserWindow, ipcMain, net } from 'electron';
+import type {
+  AuthApiResponse,
+  AuthLoginRequest,
+  BackendLoginResult,
+  ElectronAuthEstablishSessionPayload,
+  ElectronAuthLoginPayload,
+  ElectronAuthSession,
+} from '@nebula-studio/contracts/auth';
 import type { MainModule, MainModuleContext } from '../bootstrap/MainModule';
 
 /**
@@ -14,12 +22,7 @@ import type { MainModule, MainModuleContext } from '../bootstrap/MainModule';
 export class IpcAuthModule implements MainModule {
   readonly name = 'IpcAuth';
 
-  #authSession: {
-    user: string;
-    token?: string;
-    roles?: string[];
-    userId?: string;
-  } | null = null;
+  #authSession: ElectronAuthSession | null = null;
   #windowManager: MainModuleContext['windowManager'] | null = null;
   #backendBaseUrl = 'http://localhost:8080';
 
@@ -36,7 +39,7 @@ export class IpcAuthModule implements MainModule {
 
     ipcMain.handle(
       'auth:login',
-      async (event, payload: { user?: string; password?: string }) => {
+      async (event, payload: Partial<ElectronAuthLoginPayload>) => {
         const user = payload?.user?.trim();
         if (!user) {
           return { ok: false as const, error: '请输入用户名' };
@@ -73,12 +76,7 @@ export class IpcAuthModule implements MainModule {
       'auth:establish-session',
       (
         event,
-        payload: {
-          user?: string;
-          token?: string;
-          roles?: string[];
-          userId?: string;
-        },
+        payload: Partial<ElectronAuthEstablishSessionPayload>,
       ): boolean => {
         const user = payload?.user?.trim();
         const token = payload?.token?.trim();
@@ -133,17 +131,17 @@ export class IpcAuthModule implements MainModule {
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password: password ?? '' }),
+          body: JSON.stringify({
+            username,
+            password: password ?? '',
+          } satisfies AuthLoginRequest),
         },
       );
       if (!response.ok) {
         return { ok: false, error: '登录失败，请检查用户名和密码' };
       }
-      const body = (await response.json()) as {
-        data?: { token?: string; username?: string };
-        isSuccess?: boolean;
-        code?: number;
-      };
+      const body =
+        (await response.json()) as AuthApiResponse<BackendLoginResult>;
       const ok =
         body.isSuccess === true ||
         body.code === 200 ||

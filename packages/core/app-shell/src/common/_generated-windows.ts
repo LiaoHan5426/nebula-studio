@@ -1,6 +1,12 @@
 // AUTO-GENERATED — do not edit manually.
 // Source: configs/windows.json
 
+export type GeneratedPreloadCapability =
+  | 'auth'
+  | 'notify'
+  | 'settings'
+  | 'shell';
+
 export interface GeneratedWindowEntry {
   preload: string;
   renderer: string;
@@ -10,14 +16,14 @@ export interface GeneratedWindowEntry {
   defaultEnabled?: boolean;
   integratable?: boolean;
   requiresAuth?: boolean;
-  preloadCapabilities?: string[];
+  preloadCapabilities: GeneratedPreloadCapability[];
 }
 
 export interface GeneratedModalRendererEntry {
   preload: string;
   renderer: string;
   webEmbedEntry?: string;
-  preloadCapabilities?: string[];
+  preloadCapabilities: GeneratedPreloadCapability[];
 }
 
 export const GENERATED_SHELL_CONFIG = {

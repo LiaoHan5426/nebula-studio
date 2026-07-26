@@ -35,6 +35,7 @@
     "@electron-toolkit/utils": "catalog:electron",
     "@nebula-studio-electron/electron-bridge": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
+    "@nebula-studio/contracts": "workspace:^",
     "electron-updater": "catalog:electron",
     "yaml": "catalog:parser"
   },

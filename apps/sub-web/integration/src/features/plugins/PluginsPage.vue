@@ -141,7 +141,9 @@ onMounted(() => {
 function resolvePluginCategory(item: PluginRecord): string {
   const fromMeta =
     item.pluginCategory ??
-    (item.metadata as { pluginCategory?: string } | undefined)?.pluginCategory;
+    (typeof item.metadata?.pluginCategory === 'string'
+      ? item.metadata.pluginCategory
+      : undefined);
   if (typeof fromMeta === 'string' && fromMeta.trim()) {
     return fromMeta.trim().toLowerCase();
   }
@@ -162,7 +164,7 @@ function resolveDisplayName(item: PluginRecord, connectorId: string): string {
   if (desc.includes('postgresql')) return 'PostgreSQL 连接器';
   if (desc.includes('mysql')) return 'MySQL 连接器';
   if (desc.includes('http')) return 'HTTP 连接器';
-  return String(item.pluginName ?? item.name ?? '未知插件');
+  return item.pluginName || '未知插件';
 }
 
 function mapPluginRow(item: PluginRecord): PluginRow {
@@ -170,9 +172,9 @@ function mapPluginRow(item: PluginRecord): PluginRow {
   const metadata = item.metadata as { connectorId?: string } | undefined;
   const connectorId = String(item.connectorId ?? metadata?.connectorId ?? '-');
   return {
-    id: String(item.pluginId ?? item.id ?? ''),
+    id: item.pluginId,
     name: resolveDisplayName(item, connectorId),
-    version: String(item.pluginVersion ?? item.version ?? '-'),
+    version: item.pluginVersion || '-',
     connectorId,
     type: resolvePluginCategory(item) || pluginType.value,
     description: String(item.description ?? ''),

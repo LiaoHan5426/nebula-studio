@@ -4,18 +4,19 @@ import { mergeConfig } from 'vite';
 import type { PluginOption } from 'vite';
 import { nebulaElectronRendererPartial } from '../config/nebulaElectronRenderer.ts';
 import type { NebulaRendererChunksOptions } from '../config/chunks/types.ts';
+import type { PreloadCapability } from '../config/windowsManifest.ts';
 
 /**
- * 统一 Preload 配置：源文件所在目录 + 需要构建的窗口 ID 列表。
+ * 统一 Preload 配置：源文件所在目录 + 需要构建的 preload capability map。
  *
- * 每个窗口 ID 会生成一个虚拟 Rollup 入口，该入口在模块初始化时调用
- * `setWindowId('<id>')` 设置窗口标识，然后加载统一的 `unified.ts`。
+ * 每个 preload ID 会生成一个虚拟 Rollup 入口，并把从 `windows.json`
+ * 派生的能力集合直接传给统一的 `bootstrap()`。
  */
 export interface UnifiedPreloadOptions {
   /** 统一 preload 源文件所在目录的绝对路径（如 `apps/electron-preload/src`） */
   sourceDir: string;
-  /** 窗口 ID 列表，每个窗口会生成一个独立的 preload 构建入口 */
-  windowIds: string[];
+  /** Preload ID → 该入口需要暴露的能力集合 */
+  entries: Record<string, PreloadCapability[]>;
 }
 
 /**
@@ -23,16 +24,11 @@ export interface UnifiedPreloadOptions {
  *
  * 虚拟入口的模块代码：
  * ```js
- * import { setWindowId, bootstrap } from '<sourceDir>/unified.ts';
- * setWindowId('<windowId>');
- * bootstrap();
+ * import { bootstrap } from '<sourceDir>/unified.ts';
+ * bootstrap({ id: '<preloadId>', capabilities: ['auth'] });
  * ```
  *
  * `unified.ts` 不含顶层副作用，所有初始化逻辑封装在 `bootstrap()` 中。
- * ES module 加载顺序保证：
- * 1. `unified.ts` 被加载（仅定义函数，无顶层副作用）
- * 2. 入口模块体执行：`setWindowId('<id>')` → `bootstrap()`
- * 3. `bootstrap()` 内部调用 `getWindowPreloadConfig()` 读取已设置的窗口标识
  */
 function createUnifiedPreloadVirtualEntries(
   opts: UnifiedPreloadOptions,
@@ -50,12 +46,17 @@ function createUnifiedPreloadVirtualEntries(
     },
     load(id: string) {
       if (!id.startsWith(prefix)) return null;
-      const windowId = id.slice(prefix.length);
+      const preloadId = id.slice(prefix.length);
+      const capabilities = opts.entries[preloadId];
+      if (!capabilities) {
+        throw new Error(
+          `[nebula-vite] Missing capabilities for preload "${preloadId}"`,
+        );
+      }
       const unifiedPath = `${sourceDir}/unified.ts`;
       return [
-        `import { setWindowId, bootstrap } from ${JSON.stringify(unifiedPath)};`,
-        `setWindowId(${JSON.stringify(windowId)});`,
-        `bootstrap();`,
+        `import { bootstrap } from ${JSON.stringify(unifiedPath)};`,
+        `bootstrap(${JSON.stringify({ id: preloadId, capabilities })});`,
       ].join('\n');
     },
   };
@@ -106,7 +107,7 @@ export async function defineNebulaElectronViteConfig(
 
   if (opts.unifiedPreload) {
     preloadInput = {};
-    for (const id of opts.unifiedPreload.windowIds) {
+    for (const id of Object.keys(opts.unifiedPreload.entries)) {
       preloadInput[id] = `\0nebula-preload-entry:${id}`;
     }
   } else {

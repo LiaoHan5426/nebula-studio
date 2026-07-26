@@ -5,6 +5,8 @@
  * 所有 renderer / package 必须从本模块导入，禁止在各自 shared/ 内重复声明。
  */
 
+import type { ApiResponse } from '../common/index.ts';
+
 // ==================== 组织 ====================
 
 export interface OrgSummary {
@@ -41,6 +43,22 @@ export interface AuthMe {
 
 // ==================== 登录 / 组织切换 ====================
 
+export interface AuthLoginRequest {
+  username: string;
+  password: string;
+}
+
+export interface AuthCompleteLoginRequest {
+  orgId: string;
+}
+
+/**
+ * 认证接口失败时可能没有 data，因此不能直接使用 data 必填的 ApiResponse。
+ */
+export type AuthApiResponse<T> = Omit<ApiResponse<T>, 'data'> & {
+  data?: T;
+};
+
 export interface BackendLoginResult {
   token?: string;
   username: string;
@@ -72,4 +90,35 @@ export interface AuthProfile {
   username: string;
   userId: number;
   roles: string[];
+}
+
+// ==================== Electron IPC ====================
+
+export interface ElectronAuthSession {
+  user: string;
+  token?: string;
+  roles?: string[];
+  userId?: string;
+}
+
+export interface ElectronAuthLoginPayload {
+  user: string;
+  password: string;
+}
+
+export type ElectronAuthLoginResult =
+  | ({ ok: true } & ElectronAuthSession)
+  | { ok: false; error: string };
+
+export interface ElectronAuthEstablishSessionPayload extends ElectronAuthSession {
+  token: string;
+}
+
+export interface ElectronAuthApi {
+  login(payload: ElectronAuthLoginPayload): Promise<ElectronAuthLoginResult>;
+  getSession(): Promise<ElectronAuthSession | null>;
+  establishSession(
+    payload: ElectronAuthEstablishSessionPayload,
+  ): Promise<boolean>;
+  logout(): Promise<boolean | void>;
 }

@@ -18,7 +18,7 @@ export default defineNebulaConfig({
   configModuleUrl: import.meta.url,
   unifiedPreload: {
     sourceDir: electronPreloadSrcDir,
-    windowIds: manifest.preloadIds,
+    entries: manifest.preloadCapabilities,
   },
   merge: {
     renderer: {

@@ -67,7 +67,7 @@
     },
     "WindowConfig": {
       "type": "object",
-      "required": ["preload", "renderer", "label"],
+      "required": ["preload", "renderer", "label", "preloadCapabilities"],
       "additionalProperties": false,
       "properties": {
         "preload": {
@@ -118,7 +118,7 @@
     },
     "ModalRendererConfig": {
       "type": "object",
-      "required": ["preload", "renderer"],
+      "required": ["preload", "renderer", "preloadCapabilities"],
       "additionalProperties": false,
       "properties": {
         "preload": {

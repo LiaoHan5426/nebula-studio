@@ -26,6 +26,7 @@ describe('dag node schemas', () => {
       {
         pluginId: 'http-client',
         pluginName: 'HTTP Client',
+        pluginVersion: '1.0.0',
         pluginCategory: 'general',
         configSchema: {
           fields: [{ key: 'endpoint', label: 'Endpoint', type: 'text' }],
@@ -41,13 +42,11 @@ describe('dag node schemas', () => {
   it('excludes database and protocol adapter plugins from DAG palette', () => {
     expect(
       isDagOrchestrationPlugin({
-        pluginId: 'mysql-connector',
         pluginCategory: 'database',
       }),
     ).toBe(false);
     expect(
       isDagOrchestrationPlugin({
-        pluginId: 'http-connector',
         pluginCategory: 'protocol',
       }),
     ).toBe(false);
@@ -56,16 +55,19 @@ describe('dag node schemas', () => {
       {
         pluginId: 'mysql-connector',
         pluginName: 'MySQL',
+        pluginVersion: '1.0.0',
         pluginCategory: 'database',
       },
       {
         pluginId: 'http-connector',
         pluginName: 'HTTP',
+        pluginVersion: '1.0.0',
         pluginCategory: 'protocol',
       },
       {
         pluginId: 'transform',
         pluginName: 'Transform',
+        pluginVersion: '1.0.0',
         pluginCategory: 'general',
         configSchema: {
           fields: [{ key: 'expr', label: 'Expression', type: 'text' }],

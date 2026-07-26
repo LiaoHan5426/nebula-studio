@@ -5,22 +5,15 @@ import {
   parseApiResponse,
 } from '@/shared/api/client';
 import type { ApiResponse, PageResponse } from '@/shared/types';
+import type {
+  PluginCatalogItem,
+  PluginRecord,
+} from '@nebula-studio/contracts/integration';
 
-export interface PluginRecord {
-  pluginId: string;
-  pluginName: string;
-  pluginVersion?: string;
-  pluginType?: string;
-  pluginCategory?: string;
-  connectorId?: string;
-  status?: string;
-  description?: string;
-  activatedAt?: string;
-  createdBy?: string;
-  transitioning?: boolean;
-  metadata?: Record<string, unknown>;
-  [key: string]: unknown;
-}
+export type {
+  PluginCatalogItem,
+  PluginRecord,
+} from '@nebula-studio/contracts/integration';
 
 export const pluginApi = {
   list(
@@ -76,7 +69,7 @@ export const pluginApi = {
 };
 
 export const pluginCatalogApi = {
-  list(): Promise<ApiResponse<Record<string, unknown>[]>> {
+  list(): Promise<ApiResponse<PluginCatalogItem[]>> {
     return consoleRequest('/plugin-catalog');
   },
 };

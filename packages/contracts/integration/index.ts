@@ -14,6 +14,7 @@ export * from './tenant.js';
 export * from './task.js';
 export * from './cluster.js';
 export * from './topology.js';
+export * from './plugin.js';
 
 // Transport types live in contracts/common (pure types, no api-client dependency).
 export type {

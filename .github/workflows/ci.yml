@@ -35,10 +35,8 @@ jobs:
       - name: Enforce web bundle budgets
         run: vp run check:bundle
 
-      - name: Verify generated configs are up to date
-        run: |
-          vp run generate:configs
-          git diff --exit-code
+      - name: Verify generated configs and contracts are up to date
+        run: vp run check:generated
 
       - name: Install Playwright Chromium
         run: vp exec playwright install --with-deps chromium

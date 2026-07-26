@@ -2,6 +2,8 @@ import { readFileSync, existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+export type PreloadCapability = 'auth' | 'notify' | 'settings' | 'shell';
+
 export interface WindowsConfig {
   shell?: { topInsetPx?: number };
   electronEmbeddedPresentation?: 'iframe' | 'browser-view';
@@ -18,7 +20,7 @@ export interface WindowsConfig {
       integratable?: boolean;
       defaultEnabled?: boolean;
       requiresAuth?: boolean;
-      preloadCapabilities?: string[];
+      preloadCapabilities?: PreloadCapability[];
       iconSvg?: string;
     }
   >;
@@ -28,7 +30,7 @@ export interface WindowsConfig {
       preload: string;
       renderer: string;
       webEmbedEntry?: string;
-      preloadCapabilities?: string[];
+      preloadCapabilities?: PreloadCapability[];
     }
   >;
   displayOrder?: string[];
@@ -41,6 +43,8 @@ export interface NebulaAppManifest {
   windowIds: string[];
   /** Unique preload IDs used by windows and modal renderers */
   preloadIds: string[];
+  /** Preload ID → union of capabilities declared by all surfaces using it */
+  preloadCapabilities: Record<string, PreloadCapability[]>;
   /** Surfaces available for ?embed= query in Web shell */
   embedSurfaces: string[];
   /** Map embed surface → relative boot entry path from apps/web/src */
@@ -83,11 +87,17 @@ export function buildAppManifest(
 ): NebulaAppManifest {
   const subApps = new Set<string>();
   const preloadIds = new Set<string>();
+  const preloadCapabilities = new Map<string, Set<PreloadCapability>>();
   const embedBootEntries: Record<string, string> = {};
 
   for (const win of Object.values(config.windows)) {
     subApps.add(win.renderer);
-    preloadIds.add(win.preload);
+    registerPreload(
+      win.preload,
+      win.preloadCapabilities,
+      preloadIds,
+      preloadCapabilities,
+    );
     assertRendererPackage(rootDir, win.renderer);
     registerWebEmbedEntry(
       rootDir,
@@ -100,7 +110,12 @@ export function buildAppManifest(
   if (config.modalRenderers) {
     for (const modal of Object.values(config.modalRenderers)) {
       subApps.add(modal.renderer);
-      preloadIds.add(modal.preload);
+      registerPreload(
+        modal.preload,
+        modal.preloadCapabilities,
+        preloadIds,
+        preloadCapabilities,
+      );
       assertRendererPackage(rootDir, modal.renderer);
       registerWebEmbedEntry(
         rootDir,
@@ -117,9 +132,32 @@ export function buildAppManifest(
     subApps: [...subApps].toSorted(),
     windowIds: Object.keys(config.windows).toSorted(),
     preloadIds: [...preloadIds].toSorted(),
+    preloadCapabilities: Object.fromEntries(
+      [...preloadCapabilities.entries()]
+        .toSorted(([left], [right]) => left.localeCompare(right))
+        .map(([preloadId, capabilities]) => [
+          preloadId,
+          [...capabilities].toSorted(),
+        ]),
+    ),
     embedSurfaces,
     embedBootEntries,
   };
+}
+
+function registerPreload(
+  preloadId: string,
+  capabilities: PreloadCapability[] | undefined,
+  preloadIds: Set<string>,
+  capabilityMap: Map<string, Set<PreloadCapability>>,
+): void {
+  preloadIds.add(preloadId);
+  const registered =
+    capabilityMap.get(preloadId) ?? new Set<PreloadCapability>();
+  for (const capability of capabilities ?? []) {
+    registered.add(capability);
+  }
+  capabilityMap.set(preloadId, registered);
 }
 
 function registerWebEmbedEntry(

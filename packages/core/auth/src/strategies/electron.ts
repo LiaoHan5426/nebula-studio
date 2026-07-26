@@ -17,6 +17,7 @@ import {
 } from '@nebula-studio/auth-provider/session';
 import { globalAuthProvider } from '@nebula-studio/auth-provider';
 import { SHELL_AUTH_UNAUTHORIZED_EVENT } from '@nebula-studio/app-shell';
+import type { ElectronAuthSession } from '@nebula-studio/contracts/auth';
 import type { AuthBootstrapOptions, AuthStrategy } from '../types';
 
 interface ElectronAPI {
@@ -44,12 +45,7 @@ export class ElectronStrategy implements AuthStrategy {
     try {
       const session = (await electron.ipcRenderer.invoke(
         'auth:get-session',
-      )) as {
-        user?: string;
-        token?: string;
-        roles?: string[];
-        userId?: string;
-      } | null;
+      )) as ElectronAuthSession | null;
 
       if (session?.user && session.token) {
         setAuthSession(
@@ -71,12 +67,7 @@ export class ElectronStrategy implements AuthStrategy {
 
     // 2. 监听 session 变更
     const sessionHandler = (...args: unknown[]): void => {
-      const payload = args[1] as {
-        user?: string;
-        token?: string;
-        roles?: string[];
-        userId?: string;
-      } | null;
+      const payload = args[1] as ElectronAuthSession | null;
       if (payload?.user && payload.token) {
         setAuthSession(
           payload.user,

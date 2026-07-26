@@ -28,6 +28,7 @@
   "dependencies": {
     "@nebula-studio-internal/tailwind": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
+    "@nebula-studio/contracts": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
     "vue": "catalog:vue",
     "@nebula-studio/runtime": "workspace:^",

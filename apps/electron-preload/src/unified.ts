@@ -6,41 +6,36 @@ import {
   createSettingsCapability,
   createShellCapability,
 } from './capabilities/index.ts';
-import { getWindowPreloadConfig } from './config.ts';
-import type { PreloadCapability } from './config.ts';
+
+export type PreloadCapability = 'auth' | 'notify' | 'settings' | 'shell';
+
+export interface WindowPreloadConfig {
+  /** Preload 标识，同时作为 Notify 的 `source` */
+  id: string;
+  /** 从 configs/windows.json 派生的能力列表 */
+  capabilities: PreloadCapability[];
+}
 
 /**
  * 统一 Electron Preload 入口。
  *
  * 本模块 **不含顶层副作用**：所有初始化逻辑封装在 `bootstrap()` 中，
- * 由虚拟入口文件在 `setWindowId()` 之后显式调用，确保窗口标识已就绪。
+ * 能力配置由构建期虚拟入口根据 `configs/windows.json` 注入。
  *
  * 虚拟入口文件（由 `createUnifiedPreloadVirtualEntries` 生成）：
  * ```js
- * import { setWindowId, bootstrap } from '<srcDir>/unified.ts';
- * setWindowId('<windowId>');
- * bootstrap();
+ * import { bootstrap } from '<srcDir>/unified.ts';
+ * bootstrap({ id: '<preloadId>', capabilities: ['auth'] });
  * ```
  *
- * ES module 加载顺序：
- * 1. `unified.ts` 被加载（仅定义函数，无顶层副作用）
- * 2. `capabilities/*.ts` 被加载（仅定义工厂函数）
- * 3. 入口模块体执行：`setWindowId('xxx')` → `bootstrap()`
- *
- * 新增子应用时只需：
- * 1. 在 `config.ts` 的 `PRELOAD_CONFIG` 中添加窗口配置
- * 2. 在 `electron.vite.config.ts` 的 `windowIds` 中添加窗口 ID
+ * 新增窗口或能力时只需更新 `configs/windows.json`；manifest 会按复用同一
+ * preload ID 的所有窗口合并 capability。
  */
-
-export { setWindowId } from './config.ts';
 
 /**
- * 初始化 Preload：根据窗口标识组装能力模块并暴露到渲染进程。
- *
- * 须在 `setWindowId()` 之后调用。
+ * 初始化 Preload：根据构建期注入的配置组装能力模块并暴露到渲染进程。
  */
-export function bootstrap(): void {
-  const config = getWindowPreloadConfig();
+export function bootstrap(config: WindowPreloadConfig): void {
   const capabilities = new Set<PreloadCapability>(config.capabilities);
 
   // 构建 API 对象（按能力动态组装）

@@ -79,8 +79,9 @@ vp test
 | `vp run generate:configs`   | 窗口/壳层配置                   |
 | `vp run generate:manifest`  | 当前同样从窗口配置生成 manifest |
 | `vp run generate:contracts` | OpenAPI 前后端契约类型          |
+| `vp run check:generated`    | 重生成并检查配置、契约是否过期  |
 
-修改源配置后应重新生成并提交源文件与产物。生成文件通常带 `_generated` 或 generated 目录标识，不应直接编辑。
+修改源配置后应重新生成并提交源文件与产物。生成文件通常带 `_generated` 或 generated 目录标识，不应直接编辑。CI 使用仓库内的 OpenAPI 快照执行确定性检查；更新后端契约时应先刷新 `packages/contracts/generated/openapi.json`。
 
 ## 文档维护
 

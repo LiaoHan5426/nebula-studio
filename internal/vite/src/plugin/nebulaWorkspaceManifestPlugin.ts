@@ -25,6 +25,7 @@ function serializeManifest(manifest: NebulaAppManifest): string {
 export const nebulaSubApps = nebulaAppManifest.subApps;
 export const nebulaWindowIds = nebulaAppManifest.windowIds;
 export const nebulaPreloadIds = nebulaAppManifest.preloadIds;
+export const nebulaPreloadCapabilities = nebulaAppManifest.preloadCapabilities;
 export const nebulaEmbedSurfaces = nebulaAppManifest.embedSurfaces;
 export const nebulaEmbedBootEntries = nebulaAppManifest.embedBootEntries;
 

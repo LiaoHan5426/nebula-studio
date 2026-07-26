@@ -6,7 +6,7 @@
  *   node scripts/generate-contracts.mjs --url=http://localhost:8090/v3/api-docs
  *   node scripts/generate-contracts.mjs --file=packages/contracts/generated/openapi.json
  */
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -49,16 +49,24 @@ if (fileArg) {
 }
 
 const specFile = join(outDir, 'openapi.json');
-writeFileSync(specFile, JSON.stringify(spec, null, 2));
+writeFileSync(specFile, `${JSON.stringify(spec, null, 2)}\n`);
 
 console.log('Running openapi-typescript ...');
-execSync(`vp exec openapi-typescript "${specFile}" -o "${outFile}"`, {
+execFileSync('vp', ['exec', 'openapi-typescript', specFile, '-o', outFile], {
   cwd: root,
   stdio: 'inherit',
 });
 
 writeFileSync(
   join(outDir, 'index.ts'),
-  `/** Auto-generated from platform-console OpenAPI. Run: vp run generate:contracts */\nexport type { paths, components, operations } from './platform-api';\n`,
+  `/** Auto-generated export surface. Run: vp run generate:contracts */\nexport type {\n  PlatformApiComponents,\n  PlatformApiOperation,\n  PlatformApiOperationId,\n  PlatformApiOperations,\n  PlatformApiPath,\n  PlatformApiPaths,\n} from './facade.ts';\n`,
+);
+execFileSync(
+  'vp',
+  ['fmt', specFile, outFile, join(outDir, 'index.ts'), '--write'],
+  {
+    cwd: root,
+    stdio: 'inherit',
+  },
 );
 console.log(`Generated: ${outFile}`);

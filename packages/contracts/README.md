@@ -8,7 +8,12 @@
 | --- | --- |
 | `@nebula-studio/contracts/auth` | 认证域（登录、会话、组织切换） |
 | `@nebula-studio/contracts/system` | 系统域（用户、角色、权限、组织、应用、日志） |
-| `@nebula-studio/contracts/integration` | 集成域（接口、连接器、资源、治理、流程、订阅、租户） |
+| `@nebula-studio/contracts/integration` | 集成域（接口、插件、连接器、资源、治理、流程、订阅、租户） |
+| `@nebula-studio/contracts/generated` | Platform OpenAPI 生成类型的稳定 facade |
+
+业务代码不得直接导入 `generated/platform-api.ts`。生成文件名和 OpenAPI operation 命名只允许在 `generated/facade.ts` 内出现，对外使用 `PlatformApiPaths`、`PlatformApiOperation` 等稳定别名。
+
+当前提交的 Platform OpenAPI 快照只包含平台索引、资源、治理、发布和版本接口，尚未提供 Auth 与 Camel Plugin schema。因此这两个域暂由本包根据后端 DTO 维护兼容契约；待对应服务输出完整 OpenAPI 后，再在 facade 内替换其来源，业务消费路径保持不变。
 
 ---
 
@@ -48,6 +53,7 @@
 | `TableSubscription` / `CamelSubscriptionCreateRequest` / `SubscriptionRequestRecord` | `CamelSubscribeRestController` | `/api/subscribe/camel/**` | camel-console |
 | — | `SubscribeRestController` | `/api/subscribe/**` | platform-console |
 | `CamelTopologyData` / `TopologyTrace` / `TopologyError` | `TopologyRestController` | `/api/camel/topology/**` | camel-console |
+| `PluginRecord` / `PluginCatalogItem` | `PluginRestController` / `PluginCatalogRestController` | `/api/console/plugin/**` | camel-console |
 | — | `DagRestController` | `/api/console/dag/**` | camel-console |
 | — | `TenantRestController` | `/api/console/tenant/**` | camel-console |
 | — | `TaskExecutionController` | `/api/executor/task/**` | executor |

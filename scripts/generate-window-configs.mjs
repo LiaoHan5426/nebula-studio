@@ -103,6 +103,10 @@ function generateTypeScript(config) {
   lines.push('// AUTO-GENERATED — do not edit manually.');
   lines.push('// Source: configs/windows.json');
   lines.push('');
+  lines.push(
+    "export type GeneratedPreloadCapability = 'auth' | 'notify' | 'settings' | 'shell';",
+  );
+  lines.push('');
   lines.push('export interface GeneratedWindowEntry {');
   lines.push('  preload: string;');
   lines.push('  renderer: string;');
@@ -112,14 +116,14 @@ function generateTypeScript(config) {
   lines.push('  defaultEnabled?: boolean;');
   lines.push('  integratable?: boolean;');
   lines.push('  requiresAuth?: boolean;');
-  lines.push('  preloadCapabilities?: string[];');
+  lines.push('  preloadCapabilities: GeneratedPreloadCapability[];');
   lines.push('}');
   lines.push('');
   lines.push('export interface GeneratedModalRendererEntry {');
   lines.push('  preload: string;');
   lines.push('  renderer: string;');
   lines.push('  webEmbedEntry?: string;');
-  lines.push('  preloadCapabilities?: string[];');
+  lines.push('  preloadCapabilities: GeneratedPreloadCapability[];');
   lines.push('}');
   lines.push('');
 

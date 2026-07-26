@@ -1,7 +1,10 @@
 import type {
+  AuthApiResponse,
+  AuthCompleteLoginRequest,
+  AuthLoginRequest,
+  AuthMe,
   AuthMode,
   BackendLoginResult,
-  OrgSummary,
 } from '@nebula-studio/contracts/auth';
 
 export type {
@@ -9,28 +12,6 @@ export type {
   BackendLoginResult,
   OrgSummary,
 } from '@nebula-studio/contracts/auth';
-
-interface BackendLoginResponse {
-  data?: {
-    token?: string;
-    username?: string;
-    userId?: string | number;
-    roles?: string[];
-    needsOrgSelection?: boolean;
-    organizations?: OrgSummary[];
-    currentOrgId?: string;
-    currentOrgName?: string;
-  };
-  isSuccess?: boolean;
-  code?: number;
-  error?: string;
-}
-
-interface BackendModeResponse {
-  data?: AuthMode;
-  isSuccess?: boolean;
-  code?: number;
-}
 
 function isResponseOk(body: { isSuccess?: boolean; code?: number }): boolean {
   return body.isSuccess === true || body.code === 200;
@@ -44,7 +25,7 @@ async function parseJson<T>(response: Response): Promise<T> {
 }
 
 export async function fetchAuthMode(): Promise<AuthMode> {
-  const body = await parseJson<BackendModeResponse>(
+  const body = await parseJson<AuthApiResponse<AuthMode>>(
     await fetch('/api/auth/mode', { credentials: 'include' }),
   );
   if (!isResponseOk(body) || !body.data) {
@@ -53,24 +34,10 @@ export async function fetchAuthMode(): Promise<AuthMode> {
   return body.data;
 }
 
-async function fetchMe(token?: string): Promise<{
-  username?: string;
-  userId?: string | number;
-  roles?: string[];
-  organizations?: OrgSummary[];
-}> {
+async function fetchMe(token?: string): Promise<Partial<AuthMe>> {
   const headers: Record<string, string> = {};
   if (token) headers.Authorization = `Bearer ${token}`;
-  const body = await parseJson<{
-    data?: {
-      username?: string;
-      userId?: string | number;
-      roles?: string[];
-      organizations?: OrgSummary[];
-    };
-    isSuccess?: boolean;
-    code?: number;
-  }>(
+  const body = await parseJson<AuthApiResponse<AuthMe>>(
     await fetch('/api/auth/me', {
       credentials: 'include',
       headers,
@@ -90,11 +57,14 @@ export async function loginWithBackendAuth(
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username: trimmed, password: password ?? '' }),
+    body: JSON.stringify({
+      username: trimmed,
+      password: password ?? '',
+    } satisfies AuthLoginRequest),
   });
-  let body: BackendLoginResponse | null = null;
+  let body: AuthApiResponse<BackendLoginResult> | null = null;
   try {
-    body = (await response.json()) as BackendLoginResponse;
+    body = (await response.json()) as AuthApiResponse<BackendLoginResult>;
   } catch {
     // The status-based error below is more useful than a JSON parse error.
   }
@@ -145,10 +115,10 @@ export async function completeLoginWithOrg(
     method: 'POST',
     credentials: 'include',
     headers,
-    body: JSON.stringify({ orgId }),
+    body: JSON.stringify({ orgId } satisfies AuthCompleteLoginRequest),
   });
   if (!response.ok) throw new Error('组织选择失败');
-  const body = (await response.json()) as BackendLoginResponse;
+  const body = (await response.json()) as AuthApiResponse<BackendLoginResult>;
   if (!isResponseOk(body) || !body.data) {
     throw new Error('组织选择响应无效');
   }

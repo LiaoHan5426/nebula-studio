@@ -2,6 +2,7 @@ import type {
   PluginNodeField,
   PluginNodeSchema,
 } from '@nebula-studio/nebula-low-render';
+import type { PluginCatalogItem } from '@nebula-studio/contracts/integration';
 
 export function readPluginNodeFields(configSchema: unknown): PluginNodeField[] {
   if (!configSchema || typeof configSchema !== 'object') return [];
@@ -9,18 +10,11 @@ export function readPluginNodeFields(configSchema: unknown): PluginNodeField[] {
   return Array.isArray(fields) ? (fields as PluginNodeField[]) : [];
 }
 
-export interface PluginCatalogItem {
-  connectorId?: string;
-  pluginId?: string;
-  label?: string;
-  pluginName?: string;
-  pluginCategory?: string;
-  configSchema?: unknown;
-}
-
 const DAG_EXCLUDED_PLUGIN_CATEGORIES = new Set(['database', 'protocol']);
 
-export function isDagOrchestrationPlugin(item: PluginCatalogItem): boolean {
+export function isDagOrchestrationPlugin(
+  item: Pick<PluginCatalogItem, 'pluginCategory'>,
+): boolean {
   const category = String(item.pluginCategory ?? 'general')
     .trim()
     .toLowerCase();
