@@ -81,10 +81,9 @@ body {
 .page {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  max-width: 1200px;
-  padding: 16px 20px 20px;
-  margin: 0 auto;
+  gap: var(--surface-gap-compact);
+  width: 100%;
+  min-width: 0;
 }
 
 .page__toolbar,

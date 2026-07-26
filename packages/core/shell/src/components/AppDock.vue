@@ -8,7 +8,7 @@
 import { computed, ref } from 'vue';
 import type { EmbeddedShellWindowId } from '@nebula-studio/app-shell';
 import { getShellIntegratedAppMeta } from '@nebula-studio/app-shell';
-import { NebulaButton, NebulaDrag } from '@nebula-studio/nebula-ui';
+import { NebulaButton, NebulaDrag, NebulaIcon } from '@nebula-studio/nebula-ui';
 
 const props = defineProps<{
   /** 面板是否可见 */
@@ -124,7 +124,7 @@ function selectApp(viewId: string): void {
                   aria-label="隐藏应用"
                   @click.stop="emit('hide-app', viewId)"
                 >
-                  ×
+                  <NebulaIcon icon="close" />
                 </button>
                 <span
                   class="integration-tile-icon"
@@ -150,7 +150,11 @@ function selectApp(viewId: string): void {
             aria-controls="integration-add-list"
             @click="addPickerOpen = !addPickerOpen"
           >
-            <span class="integration-plus" aria-hidden="true">+</span>
+            <NebulaIcon
+              class="integration-plus"
+              icon="add"
+              aria-hidden="true"
+            />
             <span class="integration-tile-label">添加应用</span>
           </button>
         </div>

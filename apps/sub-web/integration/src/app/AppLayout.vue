@@ -1,20 +1,19 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { RouterLink, useRoute, useRouter } from 'vue-router';
 import {
-  NebulaAdminContent,
   NebulaAdminVerticalNav,
+  NebulaSurfaceLayout,
   useShellHosted,
 } from '@nebula-studio/nebula-layout';
 import { NebulaButton } from '@nebula-studio/nebula-ui';
 
-import AppHeader from '@/app/AppHeader.vue';
 import {
   expandedMenuForPath,
   homeForSurface,
   platformAdminNavItems,
   portalNavItems,
-  surfaceForPath,
+  resolveIntegrationSurface,
   userManageNavItems,
 } from '@/app/navigation';
 import { useAuth } from '@/shared/composables/useAuth';
@@ -22,9 +21,11 @@ import { useAuth } from '@/shared/composables/useAuth';
 const route = useRoute();
 const router = useRouter();
 const { isShellHosted } = useShellHosted();
-const { isPlatformAdmin } = useAuth();
+const { isPlatformAdmin, isLoggedIn, username, logout } = useAuth();
 
-const surface = computed(() => surfaceForPath(route.path));
+const surface = computed(() =>
+  resolveIntegrationSurface(route.meta.surface, isPlatformAdmin.value),
+);
 const managementNavItems = computed(() =>
   isPlatformAdmin.value ? platformAdminNavItems : userManageNavItems,
 );
@@ -33,20 +34,20 @@ const activeNavItems = computed(() =>
 );
 const surfaceTitle = computed(() =>
   surface.value === 'portal'
-    ? '应用工作台'
-    : isPlatformAdmin.value
+    ? '资源门户'
+    : surface.value === 'admin'
       ? '平台管理中心'
-      : '我的管理中心',
+      : '提供方工作台',
 );
 const surfaceDescription = computed(() =>
   surface.value === 'portal'
-    ? '订阅、使用并查看属于你的集成服务'
-    : isPlatformAdmin.value
+    ? '查找、申请并使用组织内可用的数据、服务与连接能力'
+    : surface.value === 'admin'
       ? '统一管理平台资源、租户与运行状态'
-      : '管理你的服务、数据源与集成流程',
+      : '创建并管理你的服务、数据源与集成流程',
 );
 const switchLabel = computed(() =>
-  surface.value === 'portal' ? '进入管理中心' : '返回应用工作台',
+  surface.value === 'portal' ? '进入管理工作台' : '返回资源门户',
 );
 
 const expandedMenus = ref<Set<string>>(new Set());
@@ -60,71 +61,89 @@ watch(
 );
 
 function switchSurface(): void {
-  const target = surface.value === 'portal' ? 'manage' : 'portal';
+  const target =
+    surface.value === 'portal'
+      ? isPlatformAdmin.value
+        ? 'admin'
+        : 'provider'
+      : 'portal';
   void router.push(homeForSurface(target, isPlatformAdmin.value));
 }
 </script>
 
 <template>
-  <NebulaAdminContent
-    v-if="isShellHosted"
-    horizontal
-    class="integration-embed-root"
+  <NebulaSurfaceLayout
+    :surface="surface"
+    :density="surface === 'portal' ? 'comfortable' : 'compact'"
+    content-width="full"
+    :embedded="isShellHosted"
+    :title="surfaceTitle"
+    :description="surfaceDescription"
+    eyebrow="Nebula Integration"
+    navigation-label="Integration 导航"
+    class="integration-root"
   >
-    <template #subnav>
+    <template #navigation>
       <div class="integration-subnav">
-        <div class="surface-summary surface-summary--embedded">
-          <span class="surface-summary__eyebrow">集成平台</span>
-          <strong>{{ surfaceTitle }}</strong>
-          <NebulaButton variant="outline" size="sm" @click="switchSurface">
-            {{ switchLabel }}
-          </NebulaButton>
+        <div class="surface-summary">
+          <div class="surface-summary__mark" aria-hidden="true">N</div>
+          <div class="surface-summary__copy">
+            <span class="surface-summary__eyebrow">集成平台</span>
+            <strong>{{ surfaceTitle }}</strong>
+          </div>
         </div>
+
+        <nav
+          v-if="surface === 'portal'"
+          class="portal-nav"
+          aria-label="资源门户导航"
+        >
+          <RouterLink
+            v-for="item in portalNavItems"
+            :key="item.key"
+            :to="item.to!"
+            class="portal-nav__item"
+            active-class="is-active"
+          >
+            {{ item.label }}
+          </RouterLink>
+        </nav>
         <NebulaAdminVerticalNav
+          v-else
           v-model="expandedMenus"
           :items="activeNavItems"
         />
       </div>
     </template>
-    <slot />
-  </NebulaAdminContent>
 
-  <div v-else class="app-layout">
-    <aside class="app-layout__sidebar">
-      <div class="surface-summary">
-        <div class="surface-summary__mark" aria-hidden="true">N</div>
-        <div class="surface-summary__copy">
-          <span class="surface-summary__eyebrow">Nebula Integration</span>
-          <h1>{{ surfaceTitle }}</h1>
-          <p>{{ surfaceDescription }}</p>
-        </div>
-        <NebulaButton
-          class="surface-summary__switch"
-          variant="outline"
-          size="sm"
-          @click="switchSurface"
-        >
-          {{ switchLabel }}
+    <template #actions>
+      <div v-if="!isShellHosted && isLoggedIn" class="integration-user">
+        <span class="integration-user__avatar" aria-hidden="true">
+          {{ username?.slice(0, 1).toUpperCase() }}
+        </span>
+        <span>{{ username }}</span>
+        <NebulaButton size="sm" variant="outline" @click="logout">
+          退出登录
         </NebulaButton>
       </div>
+      <NebulaButton
+        v-else-if="!isShellHosted"
+        size="sm"
+        @click="router.push('/login')"
+      >
+        登录
+      </NebulaButton>
+      <NebulaButton variant="outline" size="sm" @click="switchSurface">
+        {{ switchLabel }}
+      </NebulaButton>
+    </template>
 
-      <NebulaAdminVerticalNav
-        v-model="expandedMenus"
-        :items="activeNavItems"
-        class="app-layout__nav"
-      />
-    </aside>
-    <div class="app-layout__main">
-      <AppHeader :surface-title="surfaceTitle" />
-      <main class="app-layout__content">
-        <slot />
-      </main>
-    </div>
-  </div>
+    <slot />
+  </NebulaSurfaceLayout>
 </template>
 
 <style scoped>
-.integration-embed-root,
+.integration-root,
 .integration-subnav {
   height: 100%;
   min-height: 0;
@@ -133,27 +152,6 @@ function switchSurface(): void {
 .integration-subnav {
   display: flex;
   flex-direction: column;
-}
-
-.app-layout {
-  display: flex;
-  flex: 1;
-  width: 100%;
-  min-height: 0;
-  color: hsl(var(--foreground));
-  background: hsl(var(--background));
-}
-
-.app-layout__sidebar {
-  display: flex;
-  flex-shrink: 0;
-  flex-direction: column;
-  width: 256px;
-  min-height: 0;
-  overflow: hidden;
-  background: hsl(var(--sidebar));
-  border-right: 1px solid hsl(var(--border) / 72%);
-  box-shadow: 8px 0 28px hsl(var(--foreground) / 3%);
 }
 
 .surface-summary {
@@ -190,7 +188,6 @@ function switchSurface(): void {
   letter-spacing: 0.09em;
 }
 
-.surface-summary h1,
 .surface-summary strong {
   margin: 0;
   font-size: 16px;
@@ -198,69 +195,44 @@ function switchSurface(): void {
   letter-spacing: -0.015em;
 }
 
-.surface-summary p {
-  margin: 4px 0 0;
-  font-size: 11px;
-  line-height: 1.45;
+.portal-nav {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+}
+
+.portal-nav__item {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-body);
+  font-weight: 600;
   color: hsl(var(--muted-foreground));
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
 }
 
-.surface-summary__switch {
-  grid-column: 1 / -1;
-  width: 100%;
-  margin-top: 3px;
+.portal-nav__item:hover,
+.portal-nav__item.is-active {
+  color: hsl(var(--primary));
+  background: hsl(var(--primary) / 10%);
+  border-color: hsl(var(--primary) / 18%);
 }
 
-.surface-summary--embedded {
+.integration-user {
   display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  padding: 14px 12px 12px;
+  gap: var(--space-2);
+  align-items: center;
+  font-size: var(--font-size-caption);
 }
 
-.surface-summary--embedded strong {
-  margin-bottom: 4px;
-}
-
-.app-layout__nav {
-  flex: 1;
-  min-height: 0;
-}
-
-.app-layout__main {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  min-width: 0;
-  min-height: 0;
-  overflow: hidden;
-}
-
-.app-layout__content {
-  flex: 1;
-  min-height: 0;
-  padding: 22px 26px 28px;
-  overflow: auto;
-  background:
-    radial-gradient(
-      circle at 95% 0%,
-      hsl(var(--primary) / 5%),
-      transparent 26rem
-    ),
-    hsl(var(--background));
-}
-
-:global(html[data-platform='electron']) .app-layout__sidebar {
-  width: 232px;
-  box-shadow: none;
-}
-
-:global(html[data-platform='electron']) .surface-summary {
-  padding: 14px 12px 11px;
-}
-
-:global(html[data-platform='electron']) .app-layout__content {
-  padding: 14px 18px 18px;
-  background: hsl(var(--background));
+.integration-user__avatar {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  font-weight: 700;
+  color: hsl(var(--primary-foreground));
+  background: hsl(var(--primary));
+  border-radius: 50%;
 }
 </style>

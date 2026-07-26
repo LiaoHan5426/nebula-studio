@@ -20,47 +20,36 @@ const route = useRoute();
 
 const defaultPluginInfo = {
   label: '数据库适配插件',
-  icon: '🗄️',
   desc: '适配需要连接的数据库，如 PostgreSQL、MySQL 等',
 };
 
-const pluginTypeMap: Record<
-  string,
-  { label: string; icon: string; desc: string }
-> = {
+const pluginTypeMap: Record<string, { label: string; desc: string }> = {
   database: {
     label: '数据库适配插件',
-    icon: '🗄️',
     desc: '适配需要连接的数据库，如 PostgreSQL、MySQL 等',
   },
   protocol: {
     label: '协议插件',
-    icon: '🔗',
     desc: '适配需要的连接协议，如 HTTP、TCP 等',
   },
   preprocessor: {
     label: '前置处理器插件',
-    icon: '⚡',
     desc: '在请求处理前进行预处理，参考 Camel 前置处理器',
   },
   postprocessor: {
     label: '后置处理器插件',
-    icon: '🔄',
     desc: '在请求处理后进行后置处理，参考 Camel 后置处理器',
   },
   aggregator: {
     label: '聚合插件',
-    icon: '📦',
     desc: '聚合多个处理结果，参考 Camel 聚合处理器',
   },
   dispatcher: {
     label: '分发插件',
-    icon: '📤',
     desc: '复制分发、条件分发等，参考 Camel 分发处理器',
   },
   transformer: {
     label: '转换插件',
-    icon: '🔀',
     desc: '转换数据格式，放在处理步骤前为参数转换，放在后为结果转换',
   },
 };

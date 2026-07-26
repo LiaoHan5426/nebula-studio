@@ -6,7 +6,11 @@ defineProps<{
 </script>
 
 <template>
-  <div class="nebula-layout-admin">
+  <div
+    class="nebula-layout-admin"
+    data-nebula-surface="admin"
+    data-nebula-density="compact"
+  >
     <aside class="nebula-layout-admin__sidebar">
       <header v-if="title || subtitle" class="nebula-layout-admin__head">
         <h1 v-if="title">{{ title }}</h1>

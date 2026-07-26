@@ -8,11 +8,13 @@ import type {
   RouteLocationNormalized,
   RouteRecordRaw,
 } from 'vue-router';
+import type { ExperienceSurface } from '@nebula-studio/nebula-layout';
 
 import { hasValidAuthToken, clearAuthSession } from '@/shared/auth/session';
 import { isPlatformAdmin } from '@/shared/auth/roles';
 import { isIntegrationShellIframeEmbed } from '@/shared/composables/useShellEmbed';
 import { WEB_SHELL_EMBED_QUERY } from '@nebula-studio/app-shell';
+import { defineExperiencePageMeta } from '@nebula-studio/nebula-layout';
 import { PLATFORM_ADMIN_HOME, PORTAL_HOME } from '@/app/navigation';
 
 function createIntegrationHistory() {
@@ -69,7 +71,41 @@ const LogQueryPage = () => import('@/features/statistics/LogQueryPage.vue');
 const LogStatsPage = () => import('@/features/statistics/LogStatsPage.vue');
 const TopologyPage = () => import('@/features/statistics/TopologyPage.vue');
 
-const routes: RouteRecordRaw[] = [
+function applyIntegrationExperienceMeta(
+  records: RouteRecordRaw[],
+): RouteRecordRaw[] {
+  return records.map((record) => {
+    const existingMeta = record.meta ?? {};
+    const title = String(existingMeta.title ?? record.name ?? '集成平台');
+    const surface =
+      (existingMeta.surface as ExperienceSurface | undefined) ??
+      (existingMeta.public === true ? 'auth' : 'provider');
+    return {
+      ...record,
+      meta: {
+        ...defineExperiencePageMeta({
+          title,
+          surface,
+          density: surface === 'portal' ? 'comfortable' : 'compact',
+          helpKey: `integration.${String(record.name ?? 'index')}`,
+          roles:
+            existingMeta.requiresAdmin === true
+              ? ['platform-admin']
+              : surface === 'auth'
+                ? ['public']
+                : ['authenticated'],
+          keywords: [title, '集成平台'],
+        }),
+        ...existingMeta,
+      },
+      children: record.children
+        ? applyIntegrationExperienceMeta(record.children)
+        : undefined,
+    } as RouteRecordRaw;
+  });
+}
+
+const routes = applyIntegrationExperienceMeta([
   {
     path: '/',
     redirect: () => (isPlatformAdmin() ? PLATFORM_ADMIN_HOME : PORTAL_HOME),
@@ -89,49 +125,49 @@ const routes: RouteRecordRaw[] = [
     path: '/plugins/database',
     name: 'plugin-database',
     component: PluginsPage,
-    meta: { title: '数据库适配插件' },
+    meta: { title: '数据库适配插件', surface: 'admin' },
   },
   // 插件管理 - 协议插件
   {
     path: '/plugins/protocol',
     name: 'plugin-protocol',
     component: PluginsPage,
-    meta: { title: '协议插件' },
+    meta: { title: '协议插件', surface: 'admin' },
   },
   // 插件管理 - 前置处理器插件
   {
     path: '/plugins/preprocessor',
     name: 'plugin-preprocessor',
     component: PluginsPage,
-    meta: { title: '前置处理器插件' },
+    meta: { title: '前置处理器插件', surface: 'admin' },
   },
   // 插件管理 - 后置处理器插件
   {
     path: '/plugins/postprocessor',
     name: 'plugin-postprocessor',
     component: PluginsPage,
-    meta: { title: '后置处理器插件' },
+    meta: { title: '后置处理器插件', surface: 'admin' },
   },
   // 插件管理 - 聚合插件
   {
     path: '/plugins/aggregator',
     name: 'plugin-aggregator',
     component: PluginsPage,
-    meta: { title: '聚合插件' },
+    meta: { title: '聚合插件', surface: 'admin' },
   },
   // 插件管理 - 分发插件
   {
     path: '/plugins/dispatcher',
     name: 'plugin-dispatcher',
     component: PluginsPage,
-    meta: { title: '分发插件' },
+    meta: { title: '分发插件', surface: 'admin' },
   },
   // 插件管理 - 转换插件
   {
     path: '/plugins/transformer',
     name: 'plugin-transformer',
     component: PluginsPage,
-    meta: { title: '转换插件' },
+    meta: { title: '转换插件', surface: 'admin' },
   },
   // 租户管理
   {
@@ -166,7 +202,11 @@ const routes: RouteRecordRaw[] = [
     path: '/service/subscription-requests',
     name: 'service-subscription-requests',
     component: SubscriptionRequestsPage,
-    meta: { title: '订阅审批', requiresAdmin: true },
+    meta: {
+      title: '订阅审批',
+      requiresAdmin: true,
+      surface: 'admin',
+    },
   },
   // 服务管理 - 服务治理
   {
@@ -206,7 +246,7 @@ const routes: RouteRecordRaw[] = [
     path: '/plugins/market',
     name: 'plugin-market',
     component: PluginMarketPage,
-    meta: { title: '插件市场' },
+    meta: { title: '插件市场', surface: 'admin' },
   },
   // 服务管理 - 服务测试（经 executor 网关调用已发布服务）
   {
@@ -254,7 +294,7 @@ const routes: RouteRecordRaw[] = [
     path: '/subscriptions',
     name: 'subscriptions',
     component: () => import('@/features/subscriptions/SubscriptionsPage.vue'),
-    meta: { title: '库表订阅' },
+    meta: { title: '库表订阅', surface: 'portal' },
   },
   {
     path: '/tasks',
@@ -295,9 +335,20 @@ const routes: RouteRecordRaw[] = [
     path: '/my-interfaces',
     name: 'my-interfaces',
     component: () => import('@/features/interfaces/MyInterfacesPage.vue'),
-    meta: { title: '我的服务' },
+    meta: { title: '我的服务', surface: 'portal' },
   },
-];
+  {
+    path: '/catalog',
+    redirect: '/subscriptions',
+    meta: { title: '资源目录', surface: 'portal' },
+  },
+  {
+    path: '/manage',
+    redirect: () =>
+      isPlatformAdmin() ? PLATFORM_ADMIN_HOME : '/service/register',
+    meta: { title: '管理工作台', surface: 'provider' },
+  },
+]);
 
 const router = createRouter({
   history: createIntegrationHistory(),

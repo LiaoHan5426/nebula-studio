@@ -188,6 +188,52 @@
   padding: 0;
 }
 
+@media (width <= 30rem) {
+  .nebula-layout-shell {
+    --layout-sidebar-width: var(--layout-sidebar-width-collapsed);
+  }
+
+  .nebula-layout-shell__sidebar {
+    width: var(--layout-sidebar-width-collapsed);
+    min-width: var(--layout-sidebar-width-collapsed);
+  }
+
+  .nebula-layout-sidebar-brand__text,
+  .nebula-layout-nav-item__label {
+    display: none;
+  }
+
+  .nebula-layout-shell__header {
+    gap: 4px;
+    padding-inline: 4px;
+  }
+
+  .nebula-layout-shell__header-left,
+  .nebula-layout-shell__header-actions {
+    gap: 4px;
+  }
+
+  .nebula-layout-shell__header-left {
+    flex: 0 1 auto;
+  }
+
+  .nebula-layout-shell__header .nebula-header-search {
+    justify-content: center;
+    width: 34px;
+    min-width: 34px;
+    padding-inline: 0;
+  }
+
+  .nebula-layout-shell__header .nebula-header-search > span {
+    display: none;
+  }
+
+  .nebula-layout-shell__header .nebula-header-tool-group {
+    gap: 4px;
+    padding: 2px;
+  }
+}
+
 /* 内容区全屏：隐藏侧栏与顶栏，保留标签栏；偏好入口改为右侧浮动按钮 */
 .nebula-layout-shell.is-content-fullscreen {
   grid-template-columns: minmax(0, 1fr);

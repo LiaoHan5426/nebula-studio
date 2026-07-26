@@ -448,6 +448,9 @@ importers:
       '@nebula-studio/app-shell':
         specifier: workspace:^
         version: link:../../../packages/core/app-shell
+      '@nebula-studio/nebula-layout':
+        specifier: workspace:^
+        version: link:../../../packages/ui/nebula-layout
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
         version: link:../../../packages/ui/nebula-ui
@@ -679,6 +682,9 @@ importers:
       '@nebula-studio/msw':
         specifier: workspace:^
         version: link:../../../packages/core/msw
+      '@nebula-studio/nebula-layout':
+        specifier: workspace:^
+        version: link:../../../packages/ui/nebula-layout
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
         version: link:../../../packages/ui/nebula-ui

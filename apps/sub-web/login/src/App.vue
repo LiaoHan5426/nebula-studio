@@ -12,7 +12,8 @@ import {
   NebulaInput,
   NebulaSelect,
 } from '@nebula-studio/nebula-ui';
-import { ref } from 'vue';
+import { NebulaAuthLayout } from '@nebula-studio/nebula-layout';
+import { computed, ref } from 'vue';
 
 const user = ref('');
 const password = ref('');
@@ -21,6 +22,14 @@ const busy = ref(false);
 const step = ref<'credentials' | 'org'>('credentials');
 const pendingLogin = ref<BackendLoginResult | null>(null);
 const selectedOrgId = ref('');
+const authTitle = computed(() =>
+  step.value === 'credentials' ? '登录 Nebula' : '选择组织',
+);
+const authDescription = computed(() =>
+  step.value === 'credentials'
+    ? '管理员将进入平台管理中心，普通用户将进入应用工作台。'
+    : '选择本次登录要使用的组织空间。',
+);
 
 async function finishLogin(result: BackendLoginResult): Promise<void> {
   const { username, token, roles, userId } = result;
@@ -119,9 +128,13 @@ async function onOrgSubmit(): Promise<void> {
 </script>
 
 <template>
-  <main class="login-page">
-    <section class="login-shell">
-      <div class="login-brand" aria-hidden="true">
+  <NebulaAuthLayout
+    :title="authTitle"
+    :description="authDescription"
+    eyebrow="欢迎回来"
+  >
+    <template #brand>
+      <div class="login-brand">
         <div class="login-brand__logo">N</div>
         <p class="login-brand__eyebrow">Nebula Studio</p>
         <h1>连接数据、服务与流程</h1>
@@ -134,130 +147,83 @@ async function onOrgSubmit(): Promise<void> {
           <span>安全的租户级管理</span>
         </div>
       </div>
+    </template>
 
-      <div class="login-panel">
-        <div class="login-panel__heading">
-          <span class="login-panel__badge">欢迎回来</span>
-          <h2>{{ step === 'credentials' ? '登录 Nebula' : '选择组织' }}</h2>
-          <p>
-            {{
-              step === 'credentials'
-                ? '管理员将进入平台管理中心，普通用户将进入应用工作台。'
-                : '选择本次登录要使用的组织空间。'
-            }}
-          </p>
-        </div>
+    <form v-if="step === 'credentials'" @submit.prevent="onSubmit">
+      <label class="login-field">
+        <span>用户名</span>
+        <NebulaInput
+          v-model="user"
+          type="text"
+          autocomplete="username"
+          placeholder="请输入用户名"
+        />
+      </label>
+      <label class="login-field">
+        <span>密码</span>
+        <NebulaInput
+          v-model="password"
+          type="password"
+          autocomplete="current-password"
+          placeholder="请输入密码"
+        />
+      </label>
 
-        <form v-if="step === 'credentials'" @submit.prevent="onSubmit">
-          <label class="login-field">
-            <span>用户名</span>
-            <NebulaInput
-              v-model="user"
-              type="text"
-              autocomplete="username"
-              placeholder="请输入用户名"
-            />
-          </label>
-          <label class="login-field">
-            <span>密码</span>
-            <NebulaInput
-              v-model="password"
-              type="password"
-              autocomplete="current-password"
-              placeholder="请输入密码"
-            />
-          </label>
+      <p v-if="errorMsg" class="login-error" role="alert">
+        {{ errorMsg }}
+      </p>
 
-          <p v-if="errorMsg" class="login-error" role="alert">
-            {{ errorMsg }}
-          </p>
+      <NebulaButton
+        class="login-submit"
+        type="submit"
+        variant="primary"
+        :disabled="busy"
+      >
+        {{ busy ? '正在登录…' : '登录' }}
+      </NebulaButton>
+    </form>
 
-          <NebulaButton
-            class="login-submit"
-            type="submit"
-            variant="primary"
-            :disabled="busy"
-          >
-            {{ busy ? '正在登录…' : '登录' }}
-          </NebulaButton>
-          <p class="login-demo">演示账号：demo / demo 或 admin / admin123</p>
-        </form>
+    <form v-else @submit.prevent="onOrgSubmit">
+      <label class="login-field">
+        <span>组织</span>
+        <NebulaSelect
+          v-model="selectedOrgId"
+          :options="pendingLogin?.organizations ?? []"
+          label-key="orgName"
+          value-key="id"
+          placeholder="请选择组织"
+        />
+      </label>
+      <p v-if="errorMsg" class="login-error" role="alert">
+        {{ errorMsg }}
+      </p>
+      <NebulaButton
+        class="login-submit"
+        type="submit"
+        variant="primary"
+        :disabled="busy || !selectedOrgId"
+      >
+        {{ busy ? '正在进入…' : '进入系统' }}
+      </NebulaButton>
+    </form>
 
-        <form v-else @submit.prevent="onOrgSubmit">
-          <label class="login-field">
-            <span>组织</span>
-            <NebulaSelect
-              v-model="selectedOrgId"
-              :options="pendingLogin?.organizations ?? []"
-              label-key="orgName"
-              value-key="id"
-              placeholder="请选择组织"
-            />
-          </label>
-          <p v-if="errorMsg" class="login-error" role="alert">
-            {{ errorMsg }}
-          </p>
-          <NebulaButton
-            class="login-submit"
-            type="submit"
-            variant="primary"
-            :disabled="busy || !selectedOrgId"
-          >
-            {{ busy ? '正在进入…' : '进入系统' }}
-          </NebulaButton>
-        </form>
-      </div>
-    </section>
-  </main>
+    <template #footer>
+      <p v-if="step === 'credentials'" class="login-demo">
+        演示账号：demo / demo 或 admin / admin123
+      </p>
+    </template>
+  </NebulaAuthLayout>
 </template>
 
 <style lang="scss" scoped>
-.login-page {
-  box-sizing: border-box;
-  display: grid;
-  min-height: 100vh;
-  padding: clamp(24px, 5vw, 72px);
-  font:
-    14px/1.5 Inter,
-    'Segoe UI',
-    system-ui,
-    sans-serif;
-  color: hsl(var(--foreground));
-  background:
-    radial-gradient(
-      circle at 14% 12%,
-      hsl(var(--primary) / 14%),
-      transparent 30rem
-    ),
-    radial-gradient(circle at 88% 86%, #7c5cff1a, transparent 28rem),
-    hsl(var(--background-deep));
-}
-
-.login-shell {
-  display: grid;
-  grid-template-columns: minmax(340px, 1.15fr) minmax(340px, 0.85fr);
-  width: min(960px, 100%);
-  min-height: 540px;
-  margin: auto;
-  overflow: hidden;
-  background: hsl(var(--card) / 82%);
-  border: 1px solid hsl(var(--border) / 72%);
-  border-radius: 24px;
-  box-shadow: 0 28px 90px hsl(var(--foreground) / 14%);
-  backdrop-filter: blur(22px);
-}
-
 .login-brand {
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  min-height: 100%;
   padding: 64px;
   overflow: hidden;
-  color: white;
-  background:
-    linear-gradient(145deg, rgb(31 54 134 / 96%), rgb(78 55 160 / 94%)),
-    hsl(var(--primary));
 }
 
 .login-brand::after {
@@ -324,38 +290,11 @@ async function onOrgSubmit(): Promise<void> {
   content: '✓';
 }
 
-.login-panel {
-  align-self: center;
-  padding: 56px 48px;
-}
-
-.login-panel__heading {
-  margin-bottom: 30px;
-}
-
-.login-panel__badge {
-  display: inline-block;
-  padding: 4px 9px;
-  margin-bottom: 15px;
-  font-size: 11px;
-  font-weight: 700;
-  color: hsl(var(--primary));
-  background: hsl(var(--primary) / 10%);
-  border-radius: 999px;
-}
-
-.login-panel h2 {
-  margin: 0 0 9px;
-  font-size: 27px;
-  line-height: 1.2;
-  letter-spacing: -0.025em;
-}
-
-.login-panel__heading p,
 .login-demo {
-  margin: 0;
+  margin: 15px 0 0;
   font-size: 12px;
   color: hsl(var(--muted-foreground));
+  text-align: center;
 }
 
 .login-field {
@@ -383,67 +322,5 @@ async function onOrgSubmit(): Promise<void> {
 .login-submit {
   width: 100%;
   margin-top: 5px;
-}
-
-.login-demo {
-  margin-top: 15px;
-  text-align: center;
-}
-
-:global(html[data-platform='electron']) .login-page {
-  display: flex;
-  align-items: stretch;
-  min-height: 100vh;
-  padding: 0;
-  background: hsl(var(--background));
-}
-
-:global(html[data-platform='electron']) .login-shell {
-  display: block;
-  width: 100%;
-  min-height: 100vh;
-  margin: 0;
-  overflow-y: auto;
-  background: hsl(var(--background));
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-  backdrop-filter: none;
-}
-
-:global(html[data-platform='electron']) .login-brand {
-  display: none;
-}
-
-:global(html[data-platform='electron']) .login-panel {
-  width: 100%;
-  padding: 46px 30px 30px;
-}
-
-:global(html[data-platform='electron']) .login-panel__heading {
-  margin-bottom: 24px;
-}
-
-:global(html[data-platform='electron']) .login-panel h2 {
-  font-size: 23px;
-}
-
-@media (max-width: 760px) {
-  .login-page {
-    padding: 18px;
-  }
-
-  .login-shell {
-    display: block;
-    min-height: auto;
-  }
-
-  .login-brand {
-    display: none;
-  }
-
-  .login-panel {
-    padding: 38px 30px;
-  }
 }
 </style>

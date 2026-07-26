@@ -126,7 +126,12 @@ function onThemeUpdate(theme: NebulaThemeMode) {
 </script>
 
 <template>
-  <div :class="shellClass" :style="shellStyle">
+  <div
+    :class="shellClass"
+    :style="shellStyle"
+    data-nebula-surface="shell"
+    data-nebula-density="compact"
+  >
     <aside
       class="nebula-layout-shell__sidebar nebula-layout-transition"
       @mouseenter="sidebar.onSidebarEnter()"

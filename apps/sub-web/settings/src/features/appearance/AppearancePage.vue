@@ -38,11 +38,11 @@ onUnmounted(() => {
 <template>
   <NebulaPane
     class="panel"
-    title="Theme"
-    description="Use unified nebula theme toggle"
+    title="外观与主题"
+    description="统一设置 Nebula Studio 的界面主题"
   >
     <div class="theme-group">
-      <span class="theme-label">Dark mode</span>
+      <span class="theme-label">深色模式</span>
       <NebulaButton
         icon
         variant="ghost"
@@ -83,8 +83,8 @@ onUnmounted(() => {
       </NebulaButton>
     </div>
     <p class="hint">
-      Current: <strong>{{ currentTheme }}</strong
-      >{{ saving ? ' (saving...)' : '' }}
+      当前：<strong>{{ currentTheme === 'dark' ? '深色' : '浅色' }}</strong
+      >{{ saving ? '（保存中…）' : '' }}
     </p>
   </NebulaPane>
 </template>

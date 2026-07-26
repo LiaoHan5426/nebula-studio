@@ -2,12 +2,9 @@
 import { computed } from 'vue';
 import { RouterLink, RouterView, useRoute } from 'vue-router';
 import {
-  NebulaAdminContent,
-  NebulaAdminLayout,
-  NebulaAdminSubNav,
+  NebulaSettingsLayout,
   useShellHosted,
 } from '@nebula-studio/nebula-layout';
-import type { SubNavItem } from '@nebula-studio/nebula-layout';
 
 const route = useRoute();
 const { isShellHosted } = useShellHosted();
@@ -23,51 +20,78 @@ const navItems = [
   { to: '/config', label: '配置管理' },
 ] as const;
 
-const subNavItems = computed<SubNavItem[]>(() =>
-  navItems.map((item) => ({
-    key: item.to,
-    label: item.label,
-    to: item.to,
-  })),
-);
-
 const pageTitle = computed(() => {
   const match = navItems.find((item) => route.path.startsWith(item.to));
   return match?.label ?? '系统设置';
 });
+
+const pageDescription = computed(
+  () =>
+    (route.meta.description as string | undefined) ??
+    '管理个人偏好、组织访问和平台运行配置。',
+);
 </script>
 
 <template>
-  <NebulaAdminContent v-if="isShellHosted" class="settings-embed-root">
-    <template #subnav>
-      <NebulaAdminSubNav :items="subNavItems" />
+  <NebulaSettingsLayout
+    :embedded="isShellHosted"
+    density="compact"
+    content-width="wide"
+    :title="pageTitle"
+    :description="pageDescription"
+    eyebrow="设置"
+    navigation-label="设置导航"
+    class="settings-root"
+  >
+    <template #navigation>
+      <div class="settings-nav__brand">
+        <span>NEBULA STUDIO</span>
+        <strong>设置中心</strong>
+      </div>
+      <nav class="settings-nav" aria-label="设置分类">
+        <RouterLink
+          v-for="item in navItems"
+          :key="item.to"
+          :to="item.to"
+          class="settings-nav__item"
+          active-class="is-active"
+        >
+          {{ item.label }}
+        </RouterLink>
+      </nav>
     </template>
     <RouterView />
-  </NebulaAdminContent>
-
-  <NebulaAdminLayout v-else title="系统设置" subtitle="Settings Admin">
-    <template #sidebar>
-      <RouterLink
-        v-for="item in navItems"
-        :key="item.to"
-        :to="item.to"
-        class="settings-nav__item"
-        active-class="is-active"
-      >
-        {{ item.label }}
-      </RouterLink>
-    </template>
-    <template #header>
-      <h2>{{ pageTitle }}</h2>
-    </template>
-    <RouterView />
-  </NebulaAdminLayout>
+  </NebulaSettingsLayout>
 </template>
 
 <style lang="scss" scoped>
-.settings-embed-root {
+.settings-root {
   height: 100%;
   min-height: 0;
+}
+
+.settings-nav__brand {
+  display: grid;
+  gap: 3px;
+  padding: 2px 4px 16px;
+  border-bottom: 1px solid hsl(var(--border) / 68%);
+}
+
+.settings-nav__brand span {
+  font-size: 10px;
+  font-weight: 700;
+  color: hsl(var(--primary));
+  letter-spacing: 0.1em;
+}
+
+.settings-nav__brand strong {
+  font-size: 17px;
+}
+
+.settings-nav {
+  display: grid;
+  gap: 4px;
+  margin-top: 12px;
 }
 
 .settings-nav__item {
@@ -86,12 +110,7 @@ const pageTitle = computed(() => {
 
 .settings-nav__item.is-active {
   font-weight: 600;
-  color: hsl(var(--foreground));
+  color: hsl(var(--primary));
   background: hsl(var(--primary) / 14%);
-}
-
-h2 {
-  margin: 0;
-  font-size: 20px;
 }
 </style>

@@ -7,11 +7,16 @@ html[data-platform='web'] {
 }
 
 html[data-platform='web'] body {
-  text-rendering: optimizeLegibility;
+  text-rendering: optimizelegibility;
   -webkit-font-smoothing: antialiased;
 }
 
 html[data-platform='web'] ::selection {
   color: hsl(var(--primary-foreground));
   background: hsl(var(--primary) / 72%);
+}
+
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
 }

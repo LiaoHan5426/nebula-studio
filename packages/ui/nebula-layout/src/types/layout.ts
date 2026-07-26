@@ -2,6 +2,36 @@ export type NebulaThemeMode = 'light' | 'dark';
 
 export type ThemePreferenceMode = NebulaThemeMode | 'system';
 
+export type ExperienceSurface =
+  | 'auth'
+  | 'shell'
+  | 'portal'
+  | 'provider'
+  | 'admin'
+  | 'settings'
+  | 'docs';
+
+export type ExperienceDensity = 'comfortable' | 'compact';
+
+export type ContentWidth = 'reading' | 'standard' | 'wide' | 'full';
+
+export type ExperiencePageMeta = {
+  title: string;
+  description?: string;
+  surface: ExperienceSurface;
+  density: ExperienceDensity;
+  helpKey: string;
+  roles?: readonly string[];
+  keywords?: readonly string[];
+  returnTo?: string;
+} & Record<PropertyKey, unknown>;
+
+export function defineExperiencePageMeta(
+  meta: ExperiencePageMeta,
+): ExperiencePageMeta {
+  return meta;
+}
+
 export interface SubNavItem {
   key: string;
   label: string;

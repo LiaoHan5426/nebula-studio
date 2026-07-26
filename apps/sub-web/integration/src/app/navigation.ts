@@ -1,20 +1,30 @@
 import type { NavItem } from '@nebula-studio/nebula-layout';
 
-export type IntegrationSurface = 'portal' | 'manage';
+export type IntegrationSurface = 'portal' | 'provider' | 'admin';
 
 export const PORTAL_HOME = '/subscriptions';
 export const PLATFORM_ADMIN_HOME = '/plugins/database';
 export const USER_MANAGE_HOME = '/service/register';
 
 export const portalNavItems: NavItem[] = [
-  { key: 'subscriptions', label: '库表订阅', icon: '订', to: PORTAL_HOME },
-  { key: 'my-services', label: '我的服务', icon: '服', to: '/my-interfaces' },
+  {
+    key: 'subscriptions',
+    label: '库表订阅',
+    icon: 'database',
+    to: PORTAL_HOME,
+  },
+  {
+    key: 'my-services',
+    label: '我的服务',
+    icon: 'server',
+    to: '/my-interfaces',
+  },
 ];
 
 const serviceManagement: NavItem = {
   key: 'service',
   label: '服务管理',
-  icon: '服',
+  icon: 'server',
   children: [
     { to: '/service/register', label: '服务注册' },
     { to: '/service/publish', label: '服务发布' },
@@ -30,7 +40,7 @@ const serviceManagement: NavItem = {
 const integrationCore: NavItem = {
   key: 'integration-core',
   label: '集成编排',
-  icon: '集',
+  icon: 'workflow',
   children: [
     { to: '/datasources', label: '数据源' },
     { to: '/flows', label: '流程定义' },
@@ -43,7 +53,7 @@ const integrationCore: NavItem = {
 const statistics: NavItem = {
   key: 'statistics',
   label: '运行观测',
-  icon: '观',
+  icon: 'chart-no-axes-combined',
   children: [
     { to: '/statistics/log-query', label: '日志查询' },
     { to: '/statistics/log-stats', label: '运行统计' },
@@ -55,7 +65,7 @@ export const platformAdminNavItems: NavItem[] = [
   {
     key: 'plugins',
     label: '插件中心',
-    icon: '插',
+    icon: 'puzzle',
     children: [
       { to: '/plugins/database', label: '数据库适配插件' },
       { to: '/plugins/protocol', label: '协议插件' },
@@ -67,7 +77,12 @@ export const platformAdminNavItems: NavItem[] = [
       { to: '/plugins/market', label: '插件市场' },
     ],
   },
-  { key: 'tenant', label: '租户管理', icon: '租', to: '/tenant' },
+  {
+    key: 'tenant',
+    label: '租户管理',
+    icon: 'building-2',
+    to: '/tenant',
+  },
   {
     ...serviceManagement,
     children: [
@@ -80,23 +95,25 @@ export const platformAdminNavItems: NavItem[] = [
 ];
 
 export const userManageNavItems: NavItem[] = [
-  { key: 'tenant', label: '我的租户', icon: '我', to: '/tenant' },
+  {
+    key: 'tenant',
+    label: '我的租户',
+    icon: 'building-2',
+    to: '/tenant',
+  },
   serviceManagement,
   integrationCore,
   statistics,
 ];
 
-function itemContainsPath(item: NavItem, path: string): boolean {
-  if (item.to && (path === item.to || path.startsWith(`${item.to}/`))) {
-    return true;
+export function resolveIntegrationSurface(
+  value: unknown,
+  platformAdmin: boolean,
+): IntegrationSurface {
+  if (value === 'portal' || value === 'provider' || value === 'admin') {
+    return value;
   }
-  return item.children?.some((child) => path === child.to) ?? false;
-}
-
-export function surfaceForPath(path: string): IntegrationSurface {
-  return portalNavItems.some((item) => itemContainsPath(item, path))
-    ? 'portal'
-    : 'manage';
+  return platformAdmin ? 'admin' : 'provider';
 }
 
 export function homeForSurface(

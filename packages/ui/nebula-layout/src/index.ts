@@ -1,6 +1,7 @@
 import './styles/layout-tokens.css';
 import './styles/layout-transitions.css';
 import './styles/layout-chrome.css';
+import './styles/layout-experience.css';
 
 export { default as NebulaShellLayout } from './components/shell/NebulaShellLayout.vue';
 export { default as NebulaShellHeader } from './components/shell/NebulaShellHeader.vue';
@@ -12,6 +13,14 @@ export { default as NebulaAdminLayout } from './components/admin/NebulaAdminLayo
 export { default as NebulaAdminContent } from './components/admin/NebulaAdminContent.vue';
 export { default as NebulaAdminSubNav } from './components/admin/NebulaAdminSubNav.vue';
 export { default as NebulaAdminVerticalNav } from './components/admin/NebulaAdminVerticalNav.vue';
+export { default as NebulaSurfaceLayout } from './components/surfaces/NebulaSurfaceLayout.vue';
+export {
+  NebulaPortalLayout,
+  NebulaProviderLayout,
+  NebulaSettingsLayout,
+  NebulaDocsLayout,
+} from './components/surfaces/surfaceLayouts';
+export { default as NebulaAuthLayout } from './components/auth/NebulaAuthLayout.vue';
 
 export { useLayoutPreferences } from './composables/useLayoutPreferences';
 export {
@@ -30,5 +39,13 @@ export type {
   SubNavItem,
   NavItem,
   NavChild,
+  ExperienceDensity,
+  ExperiencePageMeta,
+  ExperienceSurface,
+  ContentWidth,
 } from './types/layout';
-export { DEFAULT_LAYOUT_PREFERENCES, ACCENT_PRESETS } from './types/layout';
+export {
+  DEFAULT_LAYOUT_PREFERENCES,
+  ACCENT_PRESETS,
+  defineExperiencePageMeta,
+} from './types/layout';

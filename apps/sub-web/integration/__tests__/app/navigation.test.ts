@@ -8,22 +8,24 @@ import {
   homeForSurface,
   platformAdminNavItems,
   portalNavItems,
-  surfaceForPath,
+  resolveIntegrationSurface,
 } from '@/app/navigation';
+import router from '@/router';
 
 describe('integration navigation model', () => {
   it('uses role-specific landing pages', () => {
-    expect(homeForSurface('manage', true)).toBe(PLATFORM_ADMIN_HOME);
-    expect(homeForSurface('manage', false)).toBe(USER_MANAGE_HOME);
+    expect(homeForSurface('admin', true)).toBe(PLATFORM_ADMIN_HOME);
+    expect(homeForSurface('provider', false)).toBe(USER_MANAGE_HOME);
     expect(homeForSurface('portal', true)).toBe(PORTAL_HOME);
     expect(homeForSurface('portal', false)).toBe(PORTAL_HOME);
   });
 
-  it('derives the surface from the route instead of local tab state', () => {
-    expect(surfaceForPath('/subscriptions')).toBe('portal');
-    expect(surfaceForPath('/my-interfaces')).toBe('portal');
-    expect(surfaceForPath('/plugins/database')).toBe('manage');
-    expect(surfaceForPath('/service/register')).toBe('manage');
+  it('resolves explicit route metadata without inspecting paths', () => {
+    expect(resolveIntegrationSurface('portal', true)).toBe('portal');
+    expect(resolveIntegrationSurface('provider', true)).toBe('provider');
+    expect(resolveIntegrationSurface('admin', false)).toBe('admin');
+    expect(resolveIntegrationSurface(undefined, true)).toBe('admin');
+    expect(resolveIntegrationSurface(undefined, false)).toBe('provider');
   });
 
   it('opens the menu group containing the active route', () => {
@@ -31,5 +33,15 @@ describe('integration navigation model', () => {
       ...expandedMenuForPath(platformAdminNavItems, PLATFORM_ADMIN_HOME),
     ]).toEqual(['plugins']);
     expect([...expandedMenuForPath(portalNavItems, PORTAL_HOME)]).toEqual([]);
+  });
+
+  it('assigns an explicit experience contract to every named page', () => {
+    const pages = router.getRoutes().filter((route) => route.name);
+
+    for (const page of pages) {
+      expect(page.meta.surface).toBeTruthy();
+      expect(page.meta.density).toBeTruthy();
+      expect(page.meta.helpKey).toBeTruthy();
+    }
   });
 });

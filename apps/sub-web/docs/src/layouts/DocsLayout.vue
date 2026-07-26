@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useRoute, RouterLink, RouterView } from 'vue-router';
+import { NebulaDocsLayout } from '@nebula-studio/nebula-layout';
 import '@/styles/doc-page.css';
 
 const route = useRoute();
@@ -12,8 +13,11 @@ const pageCategory = computed(() =>
     ? '组件参考'
     : sidebar.value === 'guide'
       ? '使用指南'
-      : '',
+      : sidebar.value === 'patterns'
+        ? '体验模式'
+        : '',
 );
+const layoutTitle = computed(() => (sidebar.value ? pageTitle.value : ''));
 
 const guideSidebar = [
   { text: '项目介绍', to: '/guide/intro' },
@@ -72,15 +76,25 @@ const componentsSidebar = [
   },
 ];
 
+const patternsSidebar = [
+  { text: '全局体验基线', to: '/patterns/experience-baseline' },
+];
+
 function isActive(path: string): boolean {
   return route.path === path;
 }
 </script>
 
 <template>
-  <div class="docs-layout">
-    <!-- Top Navigation -->
-    <header class="docs-nav">
+  <NebulaDocsLayout
+    :title="layoutTitle"
+    :eyebrow="pageCategory"
+    content-width="wide"
+    density="comfortable"
+    navigation-label="文档导航"
+    class="docs-layout"
+  >
+    <template #navigation>
       <RouterLink to="/" class="docs-nav__title">Nebula Studio</RouterLink>
       <nav class="docs-nav__links">
         <RouterLink
@@ -97,13 +111,16 @@ function isActive(path: string): boolean {
         >
           组件
         </RouterLink>
+        <RouterLink
+          to="/patterns/experience-baseline"
+          class="docs-nav__link"
+          :class="{ 'docs-nav__link--active': sidebar === 'patterns' }"
+        >
+          体验模式
+        </RouterLink>
       </nav>
-    </header>
 
-    <div class="docs-body">
-      <!-- Sidebar -->
-      <aside v-if="sidebar" class="docs-sidebar">
-        <!-- Guide sidebar -->
+      <div v-if="sidebar" class="docs-sidebar">
         <template v-if="sidebar === 'guide'">
           <div class="docs-sidebar__section">
             <h3 class="docs-sidebar__heading">指南</h3>
@@ -119,7 +136,6 @@ function isActive(path: string): boolean {
           </div>
         </template>
 
-        <!-- Components sidebar -->
         <template v-else-if="sidebar === 'components'">
           <div
             v-for="section in componentsSidebar"
@@ -138,19 +154,26 @@ function isActive(path: string): boolean {
             </RouterLink>
           </div>
         </template>
-      </aside>
 
-      <!-- Main Content -->
-      <main class="docs-content">
-        <header v-if="sidebar && pageTitle" class="docs-page-header">
-          <span class="docs-page-header__eyebrow">{{ pageCategory }}</span>
-          <h1>{{ pageTitle }}</h1>
-          <div class="docs-page-header__rule" />
-        </header>
-        <RouterView />
-      </main>
-    </div>
-  </div>
+        <template v-else-if="sidebar === 'patterns'">
+          <div class="docs-sidebar__section">
+            <h3 class="docs-sidebar__heading">体验模式</h3>
+            <RouterLink
+              v-for="item in patternsSidebar"
+              :key="item.to"
+              :to="item.to"
+              class="docs-sidebar__link"
+              :class="{ 'docs-sidebar__link--active': isActive(item.to) }"
+            >
+              {{ item.text }}
+            </RouterLink>
+          </div>
+        </template>
+      </div>
+    </template>
+
+    <RouterView />
+  </NebulaDocsLayout>
 </template>
 
 <style>
@@ -182,41 +205,24 @@ body {
 
 <style scoped>
 .docs-layout {
-  display: flex;
-  flex-direction: column;
   height: 100%;
-  background:
-    radial-gradient(
-      circle at 88% -10%,
-      hsl(var(--primary) / 8%),
-      transparent 30%
-    ),
-    hsl(var(--background));
-}
-
-.docs-nav {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  height: 56px;
-  padding: 0 28px;
-  background: hsl(var(--header) / 94%);
-  border-bottom: 1px solid hsl(var(--border));
-  box-shadow: 0 1px 0 hsl(var(--foreground) / 3%);
 }
 
 .docs-nav__title {
-  margin-right: 32px;
+  display: block;
+  padding: 0 4px 16px;
   font-size: 17px;
   font-weight: 750;
-  letter-spacing: -0.02em;
   color: hsl(var(--foreground));
+  letter-spacing: -0.02em;
   text-decoration: none;
+  border-bottom: 1px solid hsl(var(--border) / 68%);
 }
 
 .docs-nav__links {
-  display: flex;
-  gap: 24px;
+  display: grid;
+  gap: 4px;
+  margin-top: 12px;
 }
 
 .docs-nav__link {
@@ -236,19 +242,8 @@ body {
   background: hsl(var(--primary) / 9%);
 }
 
-.docs-body {
-  display: flex;
-  flex: 1;
-  min-height: 0;
-}
-
 .docs-sidebar {
-  flex-shrink: 0;
-  width: 260px;
-  padding: 22px 14px;
-  overflow-y: auto;
-  background: hsl(var(--sidebar) / 70%);
-  border-right: 1px solid hsl(var(--border));
+  padding-top: 18px;
 }
 
 .docs-sidebar__section {
@@ -260,8 +255,8 @@ body {
   margin: 0;
   font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.02em;
   color: hsl(var(--foreground));
+  letter-spacing: 0.02em;
 }
 
 .docs-sidebar__link {
@@ -288,50 +283,9 @@ body {
   box-shadow: inset 3px 0 0 hsl(var(--primary));
 }
 
-.docs-content {
-  flex: 1;
-  width: 100%;
-  max-width: 1120px;
-  padding: 34px 52px 64px;
-  margin: 0 auto;
-  overflow-y: auto;
-}
-
-.docs-page-header {
-  max-width: 900px;
-  margin-bottom: 24px;
-}
-
-.docs-page-header__eyebrow {
-  font-size: 12px;
-  font-weight: 700;
-  color: hsl(var(--primary));
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-}
-
-.docs-page-header h1 {
-  margin: 7px 0 14px;
-  font-size: clamp(28px, 3vw, 36px);
-  font-weight: 750;
-  line-height: 1.2;
-  letter-spacing: -0.035em;
-}
-
-.docs-page-header__rule {
-  width: 48px;
-  height: 3px;
-  background: hsl(var(--primary));
-  border-radius: 999px;
-}
-
 @media (max-width: 720px) {
-  .docs-sidebar {
-    width: 210px;
-  }
-
-  .docs-content {
-    padding: 28px 24px 48px;
+  .docs-sidebar__section {
+    margin-bottom: 8px;
   }
 }
 </style>

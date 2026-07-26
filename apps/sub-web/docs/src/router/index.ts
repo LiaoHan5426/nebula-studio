@@ -1,8 +1,33 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import type { RouteRecordRaw } from 'vue-router';
+import { defineExperiencePageMeta } from '@nebula-studio/nebula-layout';
 import DocsLayout from '@/layouts/DocsLayout.vue';
 
-const routes: RouteRecordRaw[] = [
+function applyDocsExperienceMeta(records: RouteRecordRaw[]): RouteRecordRaw[] {
+  return records.map((record) => {
+    const title = String(record.meta?.title ?? record.name ?? '文档');
+    const name = String(record.name ?? 'index');
+    return {
+      ...record,
+      meta: {
+        ...defineExperiencePageMeta({
+          title,
+          surface: 'docs',
+          density: 'comfortable',
+          helpKey: `docs.${name}`,
+          roles: ['public'],
+          keywords: [title, '文档', '帮助'],
+        }),
+        ...record.meta,
+      },
+      children: record.children
+        ? applyDocsExperienceMeta(record.children)
+        : undefined,
+    } as RouteRecordRaw;
+  });
+}
+
+const routes = applyDocsExperienceMeta([
   {
     path: '/',
     component: DocsLayout,
@@ -183,13 +208,27 @@ const routes: RouteRecordRaw[] = [
           },
         ],
       },
+      {
+        path: 'patterns',
+        name: 'patterns',
+        redirect: '/patterns/experience-baseline',
+        children: [
+          {
+            path: 'experience-baseline',
+            name: 'experience-baseline',
+            component: () =>
+              import('@/pages/patterns/ExperienceBaselinePage.vue'),
+            meta: { title: '全局体验基线', sidebar: 'patterns' },
+          },
+        ],
+      },
     ],
   },
   {
     path: '/index.html',
     redirect: '/',
   },
-];
+]);
 
 const router = createRouter({
   history: createWebHistory(),

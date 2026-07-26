@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
+import { NebulaIcon } from '@nebula-studio/nebula-ui';
 
 export interface NavChild {
   to: string;
@@ -77,9 +78,11 @@ function resetSearch() {
 <template>
   <div class="nebula-admin-vertical-nav">
     <div class="nebula-admin-vertical-nav__search">
-      <span class="nebula-admin-vertical-nav__search-icon" aria-hidden="true"
-        >⌕</span
-      >
+      <NebulaIcon
+        icon="search"
+        class="nebula-admin-vertical-nav__search-icon"
+        aria-hidden="true"
+      />
       <input
         v-model="searchQuery"
         type="text"
@@ -91,9 +94,10 @@ function resetSearch() {
         v-if="searchQuery"
         type="button"
         class="nebula-admin-vertical-nav__search-clear"
+        aria-label="清除菜单搜索"
         @click="resetSearch"
       >
-        ×
+        <NebulaIcon icon="close" aria-hidden="true" />
       </button>
     </div>
 
@@ -105,13 +109,20 @@ function resetSearch() {
             :class="{ 'is-expanded': isExpanded(item.key) }"
             @click="toggleMenu(item.key)"
           >
-            <span class="nebula-admin-vertical-nav__icon">{{ item.icon }}</span>
+            <NebulaIcon
+              v-if="item.icon"
+              :icon="item.icon"
+              class="nebula-admin-vertical-nav__icon"
+              aria-hidden="true"
+            />
             <span class="nebula-admin-vertical-nav__label">{{
               item.label
             }}</span>
-            <span class="nebula-admin-vertical-nav__arrow" aria-hidden="true"
-              >›</span
-            >
+            <NebulaIcon
+              icon="chevronRight"
+              class="nebula-admin-vertical-nav__arrow"
+              aria-hidden="true"
+            />
           </button>
           <Transition name="nebula-admin-vertical-nav__children">
             <div
@@ -138,9 +149,12 @@ function resetSearch() {
           :class="{ 'is-active': isActive(item.to!) }"
           @click="searchQuery = ''"
         >
-          <span class="nebula-admin-vertical-nav__icon">{{
-            item.icon ?? ' '
-          }}</span>
+          <NebulaIcon
+            v-if="item.icon"
+            :icon="item.icon"
+            class="nebula-admin-vertical-nav__icon"
+            aria-hidden="true"
+          />
           <span class="nebula-admin-vertical-nav__label">{{ item.label }}</span>
         </RouterLink>
       </template>
