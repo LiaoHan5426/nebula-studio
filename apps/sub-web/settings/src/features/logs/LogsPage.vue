@@ -2,7 +2,10 @@
 import { computed, onMounted, ref, watch } from 'vue';
 import {
   NebulaButton,
+  NebulaDrawer,
+  NebulaFilterBar,
   NebulaInput,
+  NebulaSelect,
   NebulaTable,
   NebulaTableColumn,
 } from '@nebula-studio/nebula-ui';
@@ -10,6 +13,7 @@ import {
 import { logsApi } from '@/shared/api/system';
 import type { LogRecord } from '@/shared/api/system';
 import { isApiSuccess } from '@/shared/types';
+import { useRouter } from 'vue-router';
 
 type LogTab = 'login' | 'operations' | 'audit';
 
@@ -25,9 +29,20 @@ const loading = ref(false);
 const page = ref(1);
 const total = ref(0);
 const keyword = ref('');
+const level = ref('');
+const selected = ref<LogRecord>();
+const detailOpen = ref(false);
+const router = useRouter();
 
 const pageTitle = computed(
   () => tabs.find((tab) => tab.key === activeTab.value)?.label ?? '日志管理',
+);
+const visibleRecords = computed(() =>
+  records.value.filter(
+    (record) =>
+      !level.value ||
+      String(record.level ?? record.operationType ?? '') === level.value,
+  ),
 );
 
 onMounted(() => {
@@ -89,6 +104,47 @@ function nextPage() {
   page.value += 1;
   void loadLogs();
 }
+
+function openDetails(record: LogRecord) {
+  selected.value = record;
+  detailOpen.value = true;
+}
+
+function exportLogs() {
+  const columns = [
+    'id',
+    'username',
+    'level',
+    'module',
+    'operationType',
+    'entityName',
+    'message',
+    'createTime',
+  ];
+  const escape = (value: unknown) =>
+    `"${String(value ?? '').replaceAll('"', '""')}"`;
+  const csv = [
+    columns.join(','),
+    ...visibleRecords.value.map((record) =>
+      columns.map((column) => escape(record[column])).join(','),
+    ),
+  ].join('\n');
+  const url = URL.createObjectURL(
+    new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8' }),
+  );
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = `nebula-${activeTab.value}-logs.csv`;
+  anchor.click();
+  URL.revokeObjectURL(url);
+}
+
+function openRelatedEntity() {
+  const entity = String(selected.value?.entityName ?? '').toLowerCase();
+  if (entity.includes('user')) void router.push('/organization/users');
+  else if (entity.includes('role')) void router.push('/access/roles');
+  else if (entity.includes('app')) void router.push('/platform/apps');
+}
 </script>
 
 <template>
@@ -106,7 +162,7 @@ function nextPage() {
       </button>
     </div>
 
-    <div class="page__actions">
+    <NebulaFilterBar :result-summary="`共 ${total} 条记录`">
       <NebulaInput
         v-model="keyword"
         type="text"
@@ -120,13 +176,30 @@ function nextPage() {
         "
         @keydown.enter="search"
       />
-      <NebulaButton variant="secondary" @click="search">查询</NebulaButton>
-      <NebulaButton variant="secondary" @click="loadLogs">刷新</NebulaButton>
-    </div>
+      <NebulaSelect
+        v-model="level"
+        :options="[
+          { label: '全部级别/操作', value: '' },
+          { label: 'INFO', value: 'INFO' },
+          { label: 'WARN', value: 'WARN' },
+          { label: 'ERROR', value: 'ERROR' },
+          { label: 'CREATE', value: 'CREATE' },
+          { label: 'UPDATE', value: 'UPDATE' },
+          { label: 'DELETE', value: 'DELETE' },
+        ]"
+        aria-label="日志级别或操作类型"
+      />
+      <template #actions>
+        <NebulaButton variant="secondary" @click="search">查询</NebulaButton>
+        <NebulaButton variant="outline" @click="exportLogs">
+          导出 CSV
+        </NebulaButton>
+      </template>
+    </NebulaFilterBar>
 
     <div class="page__table-wrap">
       <NebulaTable
-        :data="records"
+        :data="visibleRecords"
         :loading="loading"
         row-key="id"
         :empty-text="`暂无${pageTitle}`"
@@ -163,8 +236,36 @@ function nextPage() {
         />
         <NebulaTableColumn field="message" title="内容" min-width="220" />
         <NebulaTableColumn field="createTime" title="时间" min-width="160" />
+        <NebulaTableColumn title="操作" width="90">
+          <template #default="{ row }">
+            <NebulaButton variant="ghost" @click="openDetails(row)">
+              详情
+            </NebulaButton>
+          </template>
+        </NebulaTableColumn>
       </NebulaTable>
     </div>
+
+    <NebulaDrawer
+      v-model:open="detailOpen"
+      title="审计记录详情"
+      :subtitle="String(selected?.id || '')"
+      width="480px"
+    >
+      <dl v-if="selected" class="log-detail">
+        <div v-for="(value, key) in selected" :key="String(key)">
+          <dt>{{ key }}</dt>
+          <dd>{{ value ?? '—' }}</dd>
+        </div>
+      </dl>
+      <NebulaButton
+        v-if="selected?.entityName"
+        variant="outline"
+        @click="openRelatedEntity"
+      >
+        打开关联实体
+      </NebulaButton>
+    </NebulaDrawer>
 
     <div class="page__pager">
       <span>共 {{ total }} 条</span>
@@ -218,5 +319,27 @@ function nextPage() {
   align-items: center;
   font-size: 14px;
   color: hsl(var(--muted-foreground));
+}
+
+.log-detail {
+  display: grid;
+  margin: 0 0 var(--space-4);
+}
+
+.log-detail div {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: var(--space-3);
+  padding: 10px 0;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.log-detail dt {
+  color: hsl(var(--muted-foreground));
+}
+
+.log-detail dd {
+  margin: 0;
+  overflow-wrap: anywhere;
 }
 </style>

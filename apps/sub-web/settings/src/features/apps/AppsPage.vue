@@ -2,7 +2,8 @@
 import { onMounted, ref } from 'vue';
 import {
   NebulaButton,
-  NebulaPane,
+  NebulaDialog,
+  NebulaInput,
   NebulaTable,
   NebulaTableColumn,
   NebulaTag,
@@ -12,11 +13,14 @@ import { appsApi } from '@/shared/api/system';
 import type { ShellAppRecord } from '@/shared/api/system';
 import { isApiSuccess } from '@/shared/types';
 import { useConfirm } from '@/shared/composables/useConfirm';
+import EntityListPage from '@/shared/components/EntityListPage.vue';
 
 const apps = ref<ShellAppRecord[]>([]);
 const loading = ref(false);
 const showDialog = ref(false);
 const saving = ref(false);
+const selected = ref<ShellAppRecord>();
+const detailOpen = ref(false);
 
 const form = ref({
   label: '',
@@ -81,26 +85,43 @@ async function toggleStatus(app: ShellAppRecord) {
 }
 
 async function removeApp(app: ShellAppRecord) {
-  const confirmed = await useConfirm(`确定删除应用 ${app.label}？`);
+  const confirmed = await useConfirm(
+    `删除应用 ${app.label} 后，Shell 入口和相关窗口配置将不可用。是否继续？`,
+  );
   if (!confirmed) return;
   const response = await appsApi.delete(app.id);
   if (isApiSuccess(response)) {
     await loadApps();
   }
 }
+
+function openDetails(app: ShellAppRecord) {
+  selected.value = app;
+  detailOpen.value = true;
+}
 </script>
 
 <template>
-  <div class="page">
-    <div class="page__actions">
+  <EntityListPage
+    v-model:detail-open="detailOpen"
+    title="应用管理"
+    description="注册 Studio 应用，并检查 Renderer、Preload 与运行状态。"
+    eyebrow="Applications & runtime"
+    :result-summary="`${apps.length} 个应用`"
+    :loading="loading"
+    :empty="!loading && apps.length === 0"
+    :detail-title="selected?.label || '应用详情'"
+    :detail-subtitle="selected?.id || ''"
+  >
+    <template #actions>
       <NebulaButton variant="primary" @click="openCreate"
         >注册应用</NebulaButton
       >
       <NebulaButton variant="secondary" @click="loadApps">刷新</NebulaButton>
-    </div>
+    </template>
 
     <div class="page__table-wrap">
-      <NebulaTable :data="apps" :loading="loading" row-key="id">
+      <NebulaTable :data="apps" row-key="id">
         <NebulaTableColumn field="label" title="名称" min-width="120" />
         <NebulaTableColumn field="renderer" title="Renderer" min-width="120" />
         <NebulaTableColumn field="preload" title="Preload" min-width="120" />
@@ -114,9 +135,12 @@ async function removeApp(app: ShellAppRecord) {
             </NebulaTag>
           </template>
         </NebulaTableColumn>
-        <NebulaTableColumn title="操作" width="180">
+        <NebulaTableColumn title="操作" width="230">
           <template #default="{ row }">
             <div class="row-actions">
+              <NebulaButton variant="ghost" @click="openDetails(row)">
+                详情
+              </NebulaButton>
               <NebulaButton variant="secondary" @click="toggleStatus(row)">
                 {{ row.status === 'ACTIVE' ? '禁用' : '启用' }}
               </NebulaButton>
@@ -129,27 +153,48 @@ async function removeApp(app: ShellAppRecord) {
       </NebulaTable>
     </div>
 
-    <div
-      v-if="showDialog"
-      class="modal-overlay"
-      @click.self="showDialog = false"
-    >
-      <NebulaPane title="注册应用" class="modal">
+    <template #detail>
+      <dl v-if="selected" class="entity-detail">
+        <div>
+          <dt>应用名称</dt>
+          <dd>{{ selected.label }}</dd>
+        </div>
+        <div>
+          <dt>Renderer</dt>
+          <dd>{{ selected.renderer || '未配置' }}</dd>
+        </div>
+        <div>
+          <dt>Preload</dt>
+          <dd>{{ selected.preload || '未配置' }}</dd>
+        </div>
+        <div>
+          <dt>状态</dt>
+          <dd>{{ selected.status }}</dd>
+        </div>
+      </dl>
+    </template>
+
+    <template #dialogs>
+      <NebulaDialog
+        v-model:open="showDialog"
+        title="注册应用"
+        description="应用注册会影响 Shell 导航和桌面窗口入口。"
+      >
         <label class="field">
           <span>名称</span>
-          <input v-model="form.label" />
+          <NebulaInput v-model="form.label" />
         </label>
         <label class="field">
           <span>Renderer</span>
-          <input v-model="form.renderer" placeholder="integration" />
+          <NebulaInput v-model="form.renderer" placeholder="integration" />
         </label>
         <label class="field">
           <span>Preload</span>
-          <input v-model="form.preload" />
+          <NebulaInput v-model="form.preload" />
         </label>
         <label class="field">
           <span>排序</span>
-          <input v-model.number="form.sortOrder" type="number" />
+          <NebulaInput v-model="form.sortOrder" type="number" />
         </label>
         <div class="modal__actions">
           <NebulaButton variant="secondary" @click="showDialog = false">
@@ -159,14 +204,35 @@ async function removeApp(app: ShellAppRecord) {
             {{ saving ? '保存中…' : '保存' }}
           </NebulaButton>
         </div>
-      </NebulaPane>
-    </div>
-  </div>
+      </NebulaDialog>
+    </template>
+  </EntityListPage>
 </template>
 
 <style scoped lang="scss">
 .row-actions {
   display: flex;
   gap: 6px;
+}
+
+.entity-detail {
+  display: grid;
+  margin: 0;
+}
+
+.entity-detail div {
+  display: grid;
+  grid-template-columns: 100px minmax(0, 1fr);
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.entity-detail dt {
+  color: hsl(var(--muted-foreground));
+}
+
+.entity-detail dd {
+  margin: 0;
 }
 </style>

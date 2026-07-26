@@ -92,6 +92,18 @@ export interface ConfigItem {
   tenantId?: string;
   group?: string;
   type?: string;
+  defaultValue?: string;
+  inheritedValue?: string;
+  inheritedFrom?: string;
+  sensitive?: boolean;
+  impactScope?: string;
+  schema?: {
+    type?: 'string' | 'number' | 'boolean' | 'json';
+    description?: string;
+    enum?: string[];
+    restartRequired?: boolean;
+    sensitive?: boolean;
+  };
   createdAt?: string;
   updatedAt?: string;
 }

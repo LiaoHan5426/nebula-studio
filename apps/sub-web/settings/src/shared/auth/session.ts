@@ -5,6 +5,9 @@
  */
 export {
   getAuthToken,
+  getAuthUsername,
+  getAuthRoles,
+  getAuthUserId,
   clearAuthSession,
   hasValidAuthToken,
   hasAuthenticatedSession,

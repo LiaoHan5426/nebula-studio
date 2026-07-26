@@ -2,6 +2,7 @@
 import { onMounted, ref, computed } from 'vue';
 import {
   NebulaButton,
+  NebulaDialog,
   NebulaInput,
   NebulaPane,
   NebulaSelect,
@@ -11,12 +12,14 @@ import {
 import { configApi } from '@/shared/api/configApi';
 import type { ConfigItem } from '@/shared/api/configApi';
 import { isApiSuccess } from '@/shared/types';
+import { useConfirm } from '@/shared/composables/useConfirm';
 
 const configs = ref<ConfigItem[]>([]);
 const loading = ref(false);
 const showCreate = ref(false);
 const selectedGroup = ref('');
 const selectedScope = ref('');
+const previewOpen = ref(false);
 
 const form = ref<Partial<ConfigItem>>({
   key: '',
@@ -35,6 +38,48 @@ const groupedConfigs = computed(() => {
   }
   return groups;
 });
+
+const matchingConfig = computed(() =>
+  configs.value.find(
+    (item) =>
+      item.key === form.value.key &&
+      item.scope === form.value.scope &&
+      (item.tenantId ?? '') === (form.value.tenantId ?? ''),
+  ),
+);
+const activeSchema = computed(() => matchingConfig.value?.schema);
+const sensitive = computed(
+  () =>
+    activeSchema.value?.sensitive === true ||
+    matchingConfig.value?.sensitive === true ||
+    /password|secret|token|credential|private/i.test(form.value.key || ''),
+);
+const inheritedFrom = computed(() =>
+  matchingConfig.value?.inheritedFrom
+    ? matchingConfig.value.inheritedFrom
+    : form.value.scope === 'GLOBAL'
+      ? '平台默认值'
+      : form.value.scope === 'TENANT'
+        ? '继承平台默认值，可由组织覆盖'
+        : '继承平台与组织配置，可由应用覆盖',
+);
+const changePreview = computed(() => ({
+  scope: form.value.scope,
+  oldValue: sensitive.value
+    ? '••••••（敏感值）'
+    : (matchingConfig.value?.value ??
+      matchingConfig.value?.inheritedValue ??
+      matchingConfig.value?.defaultValue ??
+      '未设置或由上级继承'),
+  newValue: sensitive.value ? '••••••（敏感值）' : form.value.value,
+  impact: matchingConfig.value?.impactScope
+    ? matchingConfig.value.impactScope
+    : form.value.scope === 'GLOBAL'
+      ? '影响所有组织和应用，可能需要重启相关服务'
+      : form.value.scope === 'TENANT'
+        ? '影响指定组织中的全部应用'
+        : '仅影响目标应用实例',
+}));
 
 onMounted(async () => {
   await loadConfigs();
@@ -59,6 +104,7 @@ async function handleCreate() {
   const response = await configApi.save(form.value);
   if (isApiSuccess(response)) {
     showCreate.value = false;
+    previewOpen.value = false;
     form.value = {
       key: '',
       value: '',
@@ -71,6 +117,10 @@ async function handleCreate() {
 }
 
 async function handleDelete(config: ConfigItem) {
+  const confirmed = await useConfirm(
+    `确定删除配置「${config.key}」？删除后将恢复其上级继承值或默认值，依赖该作用域的运行实例可能立即受到影响。`,
+  );
+  if (!confirmed) return;
   await configApi.delete(config.key, config.scope, config.tenantId);
   await loadConfigs();
 }
@@ -87,6 +137,20 @@ function formatValue(value: string): string {
   } catch {
     return value;
   }
+}
+
+function isSensitiveConfig(config: ConfigItem): boolean {
+  return (
+    config.sensitive === true ||
+    config.schema?.sensitive === true ||
+    /password|secret|token|credential|private/i.test(config.key)
+  );
+}
+
+function displayValue(config: ConfigItem): string {
+  return isSensitiveConfig(config)
+    ? '••••••（敏感值已隐藏）'
+    : formatValue(config.value);
 }
 </script>
 
@@ -137,38 +201,61 @@ function formatValue(value: string): string {
                   <NebulaTag :variant="scopeVariant(config.scope)">
                     {{ config.scope }}
                   </NebulaTag>
+                  <NebulaTag v-if="isSensitiveConfig(config)" variant="warning">
+                    敏感
+                  </NebulaTag>
                 </div>
                 <NebulaButton variant="secondary" @click="handleDelete(config)">
                   删除
                 </NebulaButton>
               </div>
-              <pre class="config-page__value">{{
-                formatValue(config.value)
-              }}</pre>
+              <pre class="config-page__value">{{ displayValue(config) }}</pre>
+              <dl class="config-page__metadata">
+                <div>
+                  <dt>默认值</dt>
+                  <dd>{{ config.defaultValue ?? '未声明' }}</dd>
+                </div>
+                <div>
+                  <dt>继承来源</dt>
+                  <dd>{{ config.inheritedFrom ?? '当前作用域直接设置' }}</dd>
+                </div>
+                <div>
+                  <dt>影响范围</dt>
+                  <dd>{{ config.impactScope ?? config.scope }}</dd>
+                </div>
+              </dl>
             </div>
           </div>
         </div>
       </div>
     </NebulaPane>
 
-    <!-- 新建配置弹窗 -->
-    <div
-      v-if="showCreate"
-      class="modal-overlay"
-      @click.self="showCreate = false"
+    <NebulaDialog
+      v-model:open="showCreate"
+      title="新建配置"
+      description="配置值将按作用域覆盖上级默认值，提交前请检查影响预览。"
     >
-      <NebulaPane title="新建配置" class="modal">
+      <div class="config-form">
         <label class="field">
-          <span>配置键 (Key)</span>
+          <span>配置键（Key）</span>
           <NebulaInput v-model="form.key" placeholder="如 app.name" />
         </label>
         <label class="field">
-          <span>配置值 (Value)</span>
+          <span>配置值（Value）</span>
           <textarea
             v-model="form.value"
             rows="4"
             placeholder="配置值，支持 JSON"
           />
+          <small v-if="activeSchema?.description">
+            {{ activeSchema.description }}
+          </small>
+          <small v-if="activeSchema?.enum?.length">
+            可选值：{{ activeSchema.enum.join('、') }}
+          </small>
+          <small v-if="matchingConfig?.defaultValue">
+            Schema 默认值：{{ matchingConfig.defaultValue }}
+          </small>
         </label>
         <label class="field">
           <span>范围</span>
@@ -189,14 +276,64 @@ function formatValue(value: string): string {
           <span>租户 ID</span>
           <NebulaInput v-model="form.tenantId" placeholder="租户 ID" />
         </label>
+        <section class="config-meta">
+          <div>
+            <span>继承层级</span>
+            <strong>{{ inheritedFrom }}</strong>
+          </div>
+          <div>
+            <span>敏感性</span>
+            <strong>{{
+              sensitive ? '敏感配置，将掩码展示' : '普通配置'
+            }}</strong>
+          </div>
+          <div>
+            <span>Schema 类型</span>
+            <strong>{{ activeSchema?.type ?? form.type ?? 'string' }}</strong>
+          </div>
+          <div>
+            <span>运行影响</span>
+            <strong>{{
+              activeSchema?.restartRequired ? '保存后需要重启' : '动态生效'
+            }}</strong>
+          </div>
+        </section>
+        <section v-if="previewOpen" class="change-preview">
+          <h3>变更预览</h3>
+          <dl>
+            <div>
+              <dt>作用域</dt>
+              <dd>{{ changePreview.scope }}</dd>
+            </div>
+            <div>
+              <dt>旧值</dt>
+              <dd>{{ changePreview.oldValue }}</dd>
+            </div>
+            <div>
+              <dt>新值</dt>
+              <dd>{{ changePreview.newValue }}</dd>
+            </div>
+            <div>
+              <dt>潜在影响</dt>
+              <dd>{{ changePreview.impact }}</dd>
+            </div>
+          </dl>
+        </section>
         <div class="modal__actions">
           <NebulaButton variant="secondary" @click="showCreate = false">
             取消
           </NebulaButton>
-          <NebulaButton @click="handleCreate">保存</NebulaButton>
+          <NebulaButton
+            v-if="!previewOpen"
+            variant="outline"
+            @click="previewOpen = true"
+          >
+            预览变更
+          </NebulaButton>
+          <NebulaButton v-else @click="handleCreate">确认保存</NebulaButton>
         </div>
-      </NebulaPane>
-    </div>
+      </div>
+    </NebulaDialog>
   </div>
 </template>
 
@@ -272,18 +409,27 @@ function formatValue(value: string): string {
   border-radius: 4px;
 }
 
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 900;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgb(0 0 0 / 45%);
+.config-page__metadata {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: var(--space-3) 0 0;
 }
 
-.modal {
-  width: min(480px, 92vw);
+.config-page__metadata div {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.config-page__metadata dt {
+  font-size: 11px;
+  color: hsl(var(--muted-foreground));
+}
+
+.config-page__metadata dd {
+  margin: 0;
+  font-size: 12px;
+  overflow-wrap: anywhere;
 }
 
 .field {
@@ -307,5 +453,50 @@ function formatValue(value: string): string {
   display: flex;
   gap: 8px;
   justify-content: flex-end;
+}
+
+.config-form {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.config-meta {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: hsl(var(--muted) / 40%);
+  border-radius: var(--radius-md);
+}
+
+.config-meta div,
+.change-preview dl div {
+  display: grid;
+  grid-template-columns: 100px minmax(0, 1fr);
+  gap: var(--space-3);
+}
+
+.config-meta span,
+.change-preview dt {
+  color: hsl(var(--muted-foreground));
+}
+
+.change-preview {
+  padding: var(--space-3);
+  border: 1px solid hsl(var(--primary) / 30%);
+  border-radius: var(--radius-md);
+}
+
+.change-preview h3 {
+  margin: 0 0 var(--space-2);
+}
+
+.change-preview dl,
+.change-preview dd {
+  margin: 0;
+}
+
+.change-preview dl div {
+  padding: 8px 0;
+  border-bottom: 1px solid hsl(var(--border));
 }
 </style>

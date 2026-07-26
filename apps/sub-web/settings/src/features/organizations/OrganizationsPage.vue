@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue';
 import {
   NebulaButton,
+  NebulaDialog,
   NebulaInput,
   NebulaPane,
 } from '@nebula-studio/nebula-ui';
@@ -81,7 +82,9 @@ async function saveOrganization() {
 }
 
 async function removeOrganization(node: OrganizationNode) {
-  const confirmed = await useConfirm(`确定删除组织 ${node.orgName}？`);
+  const confirmed = await useConfirm(
+    `确定删除组织「${node.orgName}」？下级组织与成员归属可能受到影响，请先完成迁移。`,
+  );
   if (!confirmed) return;
   const response = await organizationsApi.delete(node.id);
   if (isApiSuccess(response)) {
@@ -144,38 +147,36 @@ async function savePolicy() {
       />
     </NebulaPane>
 
-    <div
-      v-if="showDialog"
-      class="modal-overlay"
-      @click.self="showDialog = false"
+    <NebulaDialog
+      v-model:open="showDialog"
+      title="新建组织"
+      description="创建后可继续添加下级组织，并在成员管理中分配人员。"
     >
-      <NebulaPane title="新建组织" class="modal">
-        <label class="field">
-          <span>组织名称</span>
-          <NebulaInput v-model="form.orgName" />
-        </label>
-        <label class="field">
-          <span>组织编码</span>
-          <NebulaInput v-model="form.orgCode" />
-        </label>
-        <label class="field">
-          <span>父级 ID</span>
-          <NebulaInput v-model="form.parentId" placeholder="留空表示根组织" />
-        </label>
-        <label class="field">
-          <span>描述</span>
-          <NebulaInput v-model="form.description" />
-        </label>
-        <div class="modal__actions">
-          <NebulaButton variant="secondary" @click="showDialog = false">
-            取消
-          </NebulaButton>
-          <NebulaButton :disabled="saving" @click="saveOrganization">
-            {{ saving ? '保存中…' : '保存' }}
-          </NebulaButton>
-        </div>
-      </NebulaPane>
-    </div>
+      <label class="field">
+        <span>组织名称</span>
+        <NebulaInput v-model="form.orgName" />
+      </label>
+      <label class="field">
+        <span>组织编码</span>
+        <NebulaInput v-model="form.orgCode" />
+      </label>
+      <label class="field">
+        <span>父级 ID</span>
+        <NebulaInput v-model="form.parentId" placeholder="留空表示根组织" />
+      </label>
+      <label class="field">
+        <span>描述</span>
+        <NebulaInput v-model="form.description" />
+      </label>
+      <div class="modal__actions">
+        <NebulaButton variant="secondary" @click="showDialog = false">
+          取消
+        </NebulaButton>
+        <NebulaButton :disabled="saving" @click="saveOrganization">
+          {{ saving ? '保存中…' : '保存' }}
+        </NebulaButton>
+      </div>
+    </NebulaDialog>
   </div>
 </template>
 

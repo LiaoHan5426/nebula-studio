@@ -2,7 +2,7 @@
 import SubscriptionCreateDialog from './components/SubscriptionCreateDialog.vue';
 import SubscriptionEventsPanel from './components/SubscriptionEventsPanel.vue';
 import SubscriptionsList from './components/SubscriptionsList.vue';
-import { useSubscriptionsPage } from './composables/useSubscriptionsPage';
+import { useSubscriptionsPage } from '@/features/subscription-manager';
 
 const {
   subscriptions,

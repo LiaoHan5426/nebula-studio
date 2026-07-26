@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NebulaButton, NebulaPane } from '@nebula-studio/nebula-ui';
+import { NebulaButton, NebulaDialog } from '@nebula-studio/nebula-ui';
 
 import {
   answerConfirm,
@@ -10,48 +10,34 @@ const state = useConfirmState();
 </script>
 
 <template>
-  <div
-    v-if="state.open"
-    class="confirm-overlay"
-    role="dialog"
-    aria-modal="true"
+  <NebulaDialog
+    :open="state.open"
+    title="确认操作"
+    :description="state.message"
+    @update:open="!$event && answerConfirm(false)"
   >
-    <NebulaPane class="confirm-dialog" title="确认">
-      <p class="confirm-dialog__message">{{ state.message }}</p>
-      <div class="confirm-dialog__actions">
-        <NebulaButton variant="secondary" @click="answerConfirm(false)">
-          取消
-        </NebulaButton>
-        <NebulaButton variant="primary" @click="answerConfirm(true)">
-          确定
-        </NebulaButton>
-      </div>
-    </NebulaPane>
-  </div>
+    <div class="confirm-dialog__impact">
+      请确认你已了解该操作对关联对象和当前用户的影响。
+    </div>
+    <div class="confirm-dialog__actions">
+      <NebulaButton variant="secondary" @click="answerConfirm(false)">
+        取消
+      </NebulaButton>
+      <NebulaButton variant="primary" @click="answerConfirm(true)">
+        确认执行
+      </NebulaButton>
+    </div>
+  </NebulaDialog>
 </template>
 
 <style scoped>
-.confirm-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-  background: rgb(8 10 18 / 52%);
-  backdrop-filter: blur(2px);
-}
-
-.confirm-dialog {
-  width: min(420px, 100%);
-}
-
-.confirm-dialog__message {
-  margin: 0;
+.confirm-dialog__impact {
+  padding: 10px 12px;
   font-size: 14px;
   line-height: 1.5;
-  color: hsl(var(--foreground));
+  color: hsl(var(--muted-foreground));
+  background: hsl(var(--muted) / 45%);
+  border-radius: var(--radius-md);
 }
 
 .confirm-dialog__actions {

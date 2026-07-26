@@ -31,7 +31,7 @@ describe('integration navigation model', () => {
   it('opens the menu group containing the active route', () => {
     expect([
       ...expandedMenuForPath(platformAdminNavItems, PLATFORM_ADMIN_HOME),
-    ]).toEqual(['plugins']);
+    ]).toEqual([]);
     expect([...expandedMenuForPath(portalNavItems, PORTAL_HOME)]).toEqual([]);
   });
 

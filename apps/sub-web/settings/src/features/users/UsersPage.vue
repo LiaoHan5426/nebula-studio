@@ -2,8 +2,8 @@
 import { onMounted, ref } from 'vue';
 import {
   NebulaButton,
+  NebulaDialog,
   NebulaInput,
-  NebulaPane,
   NebulaSelect,
   NebulaTable,
   NebulaTableColumn,
@@ -14,6 +14,7 @@ import { usersApi } from '@/shared/api/system';
 import type { UserRecord } from '@/shared/api/system';
 import { isApiSuccess } from '@/shared/types';
 import { useConfirm } from '@/shared/composables/useConfirm';
+import EntityListPage from '@/shared/components/EntityListPage.vue';
 
 const users = ref<UserRecord[]>([]);
 const loading = ref(false);
@@ -22,6 +23,8 @@ const total = ref(0);
 const keyword = ref('');
 const showDialog = ref(false);
 const saving = ref(false);
+const selected = ref<UserRecord>();
+const detailOpen = ref(false);
 
 const form = ref({
   username: '',
@@ -91,32 +94,54 @@ async function toggleStatus(user: UserRecord) {
 }
 
 async function removeUser(user: UserRecord) {
-  const confirmed = await useConfirm(`确定删除用户 ${user.username}？`);
+  const confirmed = await useConfirm(
+    `删除用户 ${user.username} 后，其登录会话和角色关联将失效。是否继续？`,
+  );
   if (!confirmed) return;
   const response = await usersApi.delete(user.id);
   if (isApiSuccess(response)) {
     await loadUsers();
   }
 }
+
+function openDetails(user: UserRecord) {
+  selected.value = user;
+  detailOpen.value = true;
+}
 </script>
 
 <template>
-  <div class="page">
-    <div class="page__actions">
-      <NebulaInput
-        v-model="keyword"
-        placeholder="搜索用户名"
-        class="search"
-        @keydown.enter="loadUsers"
-      />
+  <EntityListPage
+    v-model:detail-open="detailOpen"
+    title="成员管理"
+    description="管理组织成员、账号状态和基础身份信息。"
+    eyebrow="Organization & members"
+    :result-summary="`共 ${total} 名成员`"
+    :loading="loading"
+    :empty="!loading && users.length === 0"
+    :detail-title="selected?.username || '成员详情'"
+    :detail-subtitle="selected?.id || ''"
+  >
+    <template #actions>
       <NebulaButton variant="primary" @click="openCreate"
         >新建用户</NebulaButton
       >
+    </template>
+    <template #filters>
+      <NebulaInput
+        v-model="keyword"
+        placeholder="搜索用户名、姓名或邮箱"
+        class="search"
+        @keydown.enter="loadUsers"
+      />
+    </template>
+    <template #filterActions>
+      <NebulaButton variant="outline" @click="loadUsers">查询</NebulaButton>
       <NebulaButton variant="secondary" @click="loadUsers">刷新</NebulaButton>
-    </div>
+    </template>
 
     <div class="page__table-wrap">
-      <NebulaTable :data="users" :loading="loading" row-key="id">
+      <NebulaTable :data="users" row-key="id">
         <NebulaTableColumn field="username" title="用户名" min-width="120" />
         <NebulaTableColumn field="realName" title="姓名" min-width="100" />
         <NebulaTableColumn field="email" title="邮箱" min-width="140" />
@@ -129,9 +154,12 @@ async function removeUser(user: UserRecord) {
             </NebulaTag>
           </template>
         </NebulaTableColumn>
-        <NebulaTableColumn title="操作" width="180">
+        <NebulaTableColumn title="操作" width="230">
           <template #default="{ row }">
             <div class="row-actions">
+              <NebulaButton variant="ghost" @click="openDetails(row)">
+                详情
+              </NebulaButton>
               <NebulaButton variant="secondary" @click="toggleStatus(row)">
                 {{ row.status === 'ACTIVE' ? '禁用' : '启用' }}
               </NebulaButton>
@@ -144,44 +172,66 @@ async function removeUser(user: UserRecord) {
       </NebulaTable>
     </div>
 
-    <p class="hint">共 {{ total }} 条</p>
+    <template #detail>
+      <dl v-if="selected" class="entity-detail">
+        <div>
+          <dt>用户名</dt>
+          <dd>{{ selected.username }}</dd>
+        </div>
+        <div>
+          <dt>姓名</dt>
+          <dd>{{ selected.realName || '未填写' }}</dd>
+        </div>
+        <div>
+          <dt>邮箱</dt>
+          <dd>{{ selected.email || '未填写' }}</dd>
+        </div>
+        <div>
+          <dt>账号状态</dt>
+          <dd>{{ selected.status }}</dd>
+        </div>
+      </dl>
+    </template>
 
-    <div
-      v-if="showDialog"
-      class="modal-overlay"
-      @click.self="showDialog = false"
-    >
-      <NebulaPane title="新建用户" class="modal">
-        <label class="field">
-          <span>用户名</span>
-          <NebulaInput v-model="form.username" placeholder="admin" />
-        </label>
-        <label class="field">
-          <span>密码</span>
-          <NebulaInput
-            v-model="form.password"
-            type="password"
-            placeholder="••••••"
-          />
-        </label>
-        <label class="field">
-          <span>姓名</span>
-          <NebulaInput v-model="form.realName" />
-        </label>
-        <label class="field">
-          <span>邮箱</span>
-          <NebulaInput v-model="form.email" />
-        </label>
-        <label class="field">
-          <span>状态</span>
-          <NebulaSelect
-            v-model="form.status"
-            :options="[
-              { value: 'ACTIVE', label: '正常' },
-              { value: 'INACTIVE', label: '禁用' },
-            ]"
-          />
-        </label>
+    <template #dialogs>
+      <NebulaDialog
+        v-model:open="showDialog"
+        title="新建用户"
+        description="创建账号后，可在角色管理中分配访问范围。"
+        content-class="settings-form-dialog"
+      >
+        <div class="dialog-form">
+          <label class="field">
+            <span>用户名</span>
+            <NebulaInput v-model="form.username" placeholder="admin" />
+          </label>
+          <label class="field">
+            <span>密码</span>
+            <NebulaInput
+              v-model="form.password"
+              type="password"
+              placeholder="••••••"
+            />
+          </label>
+          <label class="field">
+            <span>姓名</span>
+            <NebulaInput v-model="form.realName" />
+          </label>
+          <label class="field">
+            <span>邮箱</span>
+            <NebulaInput v-model="form.email" />
+          </label>
+          <label class="field">
+            <span>状态</span>
+            <NebulaSelect
+              v-model="form.status"
+              :options="[
+                { value: 'ACTIVE', label: '正常' },
+                { value: 'INACTIVE', label: '禁用' },
+              ]"
+            />
+          </label>
+        </div>
         <div class="modal__actions">
           <NebulaButton variant="secondary" @click="showDialog = false">
             取消
@@ -190,9 +240,9 @@ async function removeUser(user: UserRecord) {
             {{ saving ? '保存中…' : '保存' }}
           </NebulaButton>
         </div>
-      </NebulaPane>
-    </div>
-  </div>
+      </NebulaDialog>
+    </template>
+  </EntityListPage>
 </template>
 
 <style scoped lang="scss">
@@ -205,8 +255,24 @@ async function removeUser(user: UserRecord) {
   gap: 6px;
 }
 
-.hint {
-  font-size: 12px;
+.entity-detail {
+  display: grid;
+  margin: 0;
+}
+
+.entity-detail div {
+  display: grid;
+  grid-template-columns: 100px minmax(0, 1fr);
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.entity-detail dt {
   color: hsl(var(--muted-foreground));
+}
+
+.entity-detail dd {
+  margin: 0;
 }
 </style>

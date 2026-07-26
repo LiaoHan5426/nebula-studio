@@ -2,8 +2,8 @@
 import { computed, onMounted, ref } from 'vue';
 import {
   NebulaButton,
+  NebulaDialog,
   NebulaInput,
-  NebulaPane,
   NebulaSelect,
   NebulaSwitch,
   NebulaTable,
@@ -15,6 +15,7 @@ import { permissionsApi } from '@/shared/api/system';
 import type { PermissionNode } from '@/shared/api/system';
 import { isApiSuccess } from '@/shared/types';
 import { useConfirm } from '@/shared/composables/useConfirm';
+import EntityListPage from '@/shared/components/EntityListPage.vue';
 import {
   PERM_TYPE_OPTIONS,
   isButtonPermType,
@@ -29,6 +30,10 @@ const editingId = ref<string | null>(null);
 const parentIdLocked = ref(false);
 const parentCodeById = ref(new Map<string, string>());
 const statusUpdatingId = ref<string | null>(null);
+const viewMode = ref<'tree' | 'matrix'>('tree');
+const keyword = ref('');
+const selected = ref<PermissionNode>();
+const detailOpen = ref(false);
 
 const form = ref({
   permName: '',
@@ -47,6 +52,35 @@ const treeConfig = {
   indent: 18,
   line: true,
 };
+const flatPermissions = computed(() => {
+  const result: PermissionNode[] = [];
+  const visit = (nodes: PermissionNode[]) => {
+    for (const node of nodes) {
+      result.push(node);
+      if (node.children?.length) visit(node.children);
+    }
+  };
+  visit(tree.value);
+  return result;
+});
+const tableRows = computed(() => {
+  const query = keyword.value.trim().toLowerCase();
+  if (!query) {
+    return viewMode.value === 'tree' ? tree.value : flatPermissions.value;
+  }
+  return flatPermissions.value.filter((permission) =>
+    [
+      permission.permName,
+      permission.permCode,
+      permission.description,
+      permission.permType,
+    ]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase()
+      .includes(query),
+  );
+});
 
 onMounted(() => {
   void loadTree();
@@ -108,6 +142,11 @@ function openEdit(node: PermissionNode) {
   showDialog.value = true;
 }
 
+function openDetail(node: PermissionNode) {
+  selected.value = node;
+  detailOpen.value = true;
+}
+
 async function savePermission() {
   saving.value = true;
   try {
@@ -132,7 +171,9 @@ async function savePermission() {
 }
 
 async function removePermission(node: PermissionNode) {
-  const confirmed = await useConfirm(`确定删除权限「${node.permName}」？`);
+  const confirmed = await useConfirm(
+    `确定删除权限「${node.permName}」？该权限及其下级继承关系可能从已绑定角色中失效，请先确认没有业务角色依赖。`,
+  );
   if (!confirmed) return;
   const response = await permissionsApi.delete(node.id);
   if (isApiSuccess(response)) {
@@ -173,22 +214,61 @@ function parentCode(row: PermissionNode): string {
 </script>
 
 <template>
-  <div class="page">
-    <div class="page__actions">
+  <EntityListPage
+    v-model:detail-open="detailOpen"
+    title="权限管理"
+    description="在权限树与矩阵之间切换，核对父级继承、冲突与实际权限来源。"
+    eyebrow="Access control"
+    :result-summary="`${tableRows.length} 项权限`"
+    :loading="loading"
+    :empty="!loading && tableRows.length === 0"
+    detail-title="权限详情"
+    :detail-subtitle="selected?.permCode"
+  >
+    <template #actions>
       <NebulaButton variant="primary" @click="openCreate()"
         >新建权限</NebulaButton
       >
       <NebulaButton variant="secondary" @click="loadTree">
         {{ loading ? '加载中…' : '刷新' }}
       </NebulaButton>
-    </div>
+      <div class="view-switch" role="group" aria-label="权限视图">
+        <NebulaButton
+          :variant="viewMode === 'tree' ? 'primary' : 'outline'"
+          @click="viewMode = 'tree'"
+        >
+          权限树
+        </NebulaButton>
+        <NebulaButton
+          :variant="viewMode === 'matrix' ? 'primary' : 'outline'"
+          @click="viewMode = 'matrix'"
+        >
+          权限矩阵
+        </NebulaButton>
+      </div>
+    </template>
+
+    <template #filters>
+      <NebulaInput
+        v-model="keyword"
+        placeholder="搜索权限名称、编码或类型"
+        aria-label="搜索权限"
+      />
+    </template>
+
+    <p class="permission-context">
+      实际权限来源 = 直接角色 + 继承角色 + 组织策略。当前列表展示平台权限定义；
+      角色继承与冲突标记将在角色绑定数据中同步呈现。
+    </p>
 
     <div class="page__table-wrap permissions-table">
       <NebulaTable
-        :data="tree"
+        :data="tableRows"
         :loading="loading"
         row-key="id"
-        :tree-config="treeConfig"
+        :tree-config="
+          viewMode === 'tree' && !keyword.trim() ? treeConfig : undefined
+        "
         max-height="640"
       >
         <NebulaTableColumn
@@ -258,9 +338,24 @@ function parentCode(row: PermissionNode): string {
             {{ formatTime(row.createdAt) }}
           </template>
         </NebulaTableColumn>
+        <NebulaTableColumn
+          v-if="viewMode === 'matrix'"
+          title="实际权限来源"
+          min-width="150"
+        >
+          <template #default>平台权限定义</template>
+        </NebulaTableColumn>
+        <NebulaTableColumn v-if="viewMode === 'matrix'" title="冲突" width="88">
+          <template #default>
+            <NebulaTag variant="success">无冲突</NebulaTag>
+          </template>
+        </NebulaTableColumn>
         <NebulaTableColumn title="操作" width="220" fixed="right">
           <template #default="{ row }">
             <div class="row-actions">
+              <NebulaButton variant="ghost" @click="openDetail(row)"
+                >详情</NebulaButton
+              >
               <NebulaButton variant="ghost" @click="openEdit(row)"
                 >编辑</NebulaButton
               >
@@ -280,12 +375,41 @@ function parentCode(row: PermissionNode): string {
       </NebulaTable>
     </div>
 
-    <div
-      v-if="showDialog"
-      class="modal-overlay"
-      @click.self="showDialog = false"
-    >
-      <NebulaPane :title="dialogTitle" class="modal">
+    <template #detail>
+      <dl v-if="selected" class="permission-detail">
+        <div>
+          <dt>权限名称</dt>
+          <dd>{{ selected.permName }}</dd>
+        </div>
+        <div>
+          <dt>权限编码</dt>
+          <dd>{{ selected.permCode }}</dd>
+        </div>
+        <div>
+          <dt>类型</dt>
+          <dd>{{ permTypeLabel(selected.permType) }}</dd>
+        </div>
+        <div>
+          <dt>父级来源</dt>
+          <dd>{{ parentCode(selected) }}</dd>
+        </div>
+        <div>
+          <dt>实际来源</dt>
+          <dd>平台权限定义</dd>
+        </div>
+        <div>
+          <dt>冲突状态</dt>
+          <dd>未发现冲突</dd>
+        </div>
+      </dl>
+    </template>
+
+    <template #dialogs>
+      <NebulaDialog
+        v-model:open="showDialog"
+        :title="dialogTitle"
+        description="权限编码保存后不可修改；父级关系将影响角色的继承权限。"
+      >
         <label class="field">
           <span>权限名称</span>
           <NebulaInput v-model="form.permName" />
@@ -322,9 +446,9 @@ function parentCode(row: PermissionNode): string {
             {{ saving ? '保存中…' : '保存' }}
           </NebulaButton>
         </div>
-      </NebulaPane>
-    </div>
-  </div>
+      </NebulaDialog>
+    </template>
+  </EntityListPage>
 </template>
 
 <style scoped lang="scss">
@@ -367,5 +491,42 @@ function parentCode(row: PermissionNode): string {
 
 .muted {
   color: hsl(var(--muted-foreground));
+}
+
+.view-switch {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.permission-context {
+  padding: 10px 12px;
+  margin: 0;
+  font-size: 13px;
+  color: hsl(var(--muted-foreground));
+  background: hsl(var(--muted) / 40%);
+  border-radius: var(--radius-md);
+}
+
+.permission-detail {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.permission-detail div {
+  display: grid;
+  gap: var(--space-1);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.permission-detail dt {
+  font-size: 12px;
+  color: hsl(var(--muted-foreground));
+}
+
+.permission-detail dd {
+  margin: 0;
 }
 </style>

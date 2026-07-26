@@ -54,22 +54,6 @@ body {
   border-radius: 12px;
 }
 
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 40;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-  background: rgb(8 10 18 / 52%);
-  backdrop-filter: blur(2px);
-}
-
-.modal {
-  width: min(480px, 100%);
-}
-
 .field {
   display: flex;
   flex-direction: column;

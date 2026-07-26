@@ -65,7 +65,7 @@ const ServiceVersionPage = () =>
 const ExecutorRoutesPage = () =>
   import('@/features/executor/ExecutorRoutesPage.vue');
 const PluginMarketPage = () =>
-  import('@/features/plugins/PluginMarketPage.vue');
+  import('@/features/plugin-catalog/PluginCatalogPage.vue');
 // 服务统计页面
 const LogQueryPage = () => import('@/features/statistics/LogQueryPage.vue');
 const LogStatsPage = () => import('@/features/statistics/LogStatsPage.vue');
@@ -80,6 +80,8 @@ const MyRequestsPage = () =>
   import('@/features/resource-catalog/MyRequestsPage.vue');
 const MyResourcesPage = () =>
   import('@/features/resource-catalog/MyResourcesPage.vue');
+const ManagementHomePage = () =>
+  import('@/features/management/ManagementHomePage.vue');
 
 function applyIntegrationExperienceMeta(
   records: RouteRecordRaw[],
@@ -376,10 +378,102 @@ const routes = applyIntegrationExperienceMeta([
     meta: { title: '我的资源', surface: 'portal' },
   },
   {
+    path: '/provider/services',
+    name: 'provider-services',
+    component: ServiceRegisterPage,
+    meta: { title: '服务注册', surface: 'provider' },
+  },
+  {
+    path: '/provider/publish',
+    name: 'provider-publish',
+    component: ServicePublishPage,
+    meta: { title: '服务发布', surface: 'provider' },
+  },
+  {
+    path: '/provider/approvals',
+    name: 'provider-approvals',
+    component: ServiceApprovalPage,
+    meta: { title: '发布申请', surface: 'provider' },
+  },
+  {
+    path: '/provider/releases',
+    name: 'provider-releases',
+    component: ServiceReleasePage,
+    meta: { title: '发布记录', surface: 'provider' },
+  },
+  {
+    path: '/provider/versions',
+    name: 'provider-versions',
+    component: ServiceVersionPage,
+    meta: { title: '版本快照', surface: 'provider' },
+  },
+  {
+    path: '/provider/datasources',
+    name: 'provider-datasources',
+    component: () => import('@/features/datasources/DataSourcesPage.vue'),
+    meta: { title: '数据源', surface: 'provider' },
+  },
+  {
+    path: '/provider/flows',
+    name: 'provider-flows',
+    component: () => import('@/features/flows/FlowsPage.vue'),
+    meta: { title: '流程定义', surface: 'provider' },
+  },
+  {
+    path: '/manage/plugins',
+    name: 'manage-plugins',
+    component: PluginMarketPage,
+    meta: {
+      title: '插件治理',
+      surface: 'admin',
+      requiresAdmin: true,
+    },
+  },
+  {
+    path: '/manage/tenants',
+    name: 'manage-tenants',
+    component: TenantPage,
+    meta: {
+      title: '租户管理',
+      surface: 'admin',
+      requiresAdmin: true,
+    },
+  },
+  {
+    path: '/manage/subscription-requests',
+    name: 'manage-subscription-requests',
+    component: SubscriptionRequestsPage,
+    meta: {
+      title: '访问审批',
+      surface: 'admin',
+      requiresAdmin: true,
+    },
+  },
+  {
+    path: '/manage/governance',
+    name: 'manage-governance',
+    component: ServiceGovernancePage,
+    meta: {
+      title: '治理策略',
+      surface: 'admin',
+      requiresAdmin: true,
+    },
+  },
+  {
+    path: '/provider',
+    name: 'provider-home',
+    component: ManagementHomePage,
+    meta: { title: '提供方工作台', surface: 'provider' },
+  },
+  {
     path: '/manage',
-    redirect: () =>
-      isPlatformAdmin() ? PLATFORM_ADMIN_HOME : '/service/register',
-    meta: { title: '管理工作台', surface: 'provider' },
+    name: 'management-home',
+    component: ManagementHomePage,
+    meta: {
+      title: '平台治理工作台',
+      surface: 'admin',
+      requiresAdmin: true,
+    },
   },
 ]);
 
@@ -397,7 +491,11 @@ router.beforeEach(
     document.title = `${to.meta.title || '集成平台'} - Nebula Studio`;
 
     if (isIntegrationShellIframeEmbed()) {
-      next();
+      if (to.meta.requiresAdmin === true && !isPlatformAdmin()) {
+        next({ path: PORTAL_HOME });
+      } else {
+        next();
+      }
       return;
     }
 

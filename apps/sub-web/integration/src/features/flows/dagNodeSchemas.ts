@@ -1,44 +1,10 @@
-import type {
-  PluginNodeField,
-  PluginNodeSchema,
-} from '@nebula-studio/nebula-low-render';
-import type { PluginCatalogItem } from '@nebula-studio/contracts/integration';
+import type { PluginNodeSchema } from '@nebula-studio/nebula-low-render';
 
-export function readPluginNodeFields(configSchema: unknown): PluginNodeField[] {
-  if (!configSchema || typeof configSchema !== 'object') return [];
-  const fields = (configSchema as { fields?: unknown }).fields;
-  return Array.isArray(fields) ? (fields as PluginNodeField[]) : [];
-}
-
-const DAG_EXCLUDED_PLUGIN_CATEGORIES = new Set(['database', 'protocol']);
-
-export function isDagOrchestrationPlugin(
-  item: Pick<PluginCatalogItem, 'pluginCategory'>,
-): boolean {
-  const category = String(item.pluginCategory ?? 'general')
-    .trim()
-    .toLowerCase();
-  return !DAG_EXCLUDED_PLUGIN_CATEGORIES.has(category);
-}
-
-export function buildNodeSchemasFromCatalog(
-  items: PluginCatalogItem[] = [],
-): Record<string, PluginNodeSchema> {
-  const schemas: Record<string, PluginNodeSchema> = {
-    INTERFACE: { label: '原子服务调用', fields: [] },
-  };
-  for (const item of items) {
-    if (!isDagOrchestrationPlugin(item)) {
-      continue;
-    }
-    const connectorId = String(item.connectorId ?? item.pluginId ?? 'PLUGIN');
-    schemas[connectorId] = {
-      label: String(item.label ?? item.pluginName ?? connectorId),
-      fields: readPluginNodeFields(item.configSchema),
-    };
-  }
-  return schemas;
-}
+export {
+  buildNodeSchemasFromCatalog,
+  isDagOrchestrationPlugin,
+} from '@/features/plugin-catalog/mappers';
+export { readPluginNodeFields } from '@/features/plugin-catalog/schema';
 
 export interface AtomicInterfaceOption {
   interfaceId: string;

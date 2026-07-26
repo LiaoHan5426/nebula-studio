@@ -5,25 +5,77 @@ import {
   NebulaSettingsLayout,
   useShellHosted,
 } from '@nebula-studio/nebula-layout';
+import { canAccessSettings } from '@/shared/auth/access';
+import type { SettingsAccess } from '@/shared/auth/access';
 
 const route = useRoute();
 const { isShellHosted } = useShellHosted();
 
-const navItems = [
-  { to: '/users', label: '用户管理' },
-  { to: '/roles', label: '角色管理' },
-  { to: '/permissions', label: '权限管理' },
-  { to: '/organizations', label: '组织管理' },
-  { to: '/apps', label: '应用管理' },
-  { to: '/logs', label: '日志管理' },
-  { to: '/appearance', label: '外观设置' },
-  { to: '/config', label: '配置管理' },
-] as const;
+interface SettingsNavGroup {
+  label: string;
+  access: SettingsAccess;
+  items: Array<{ to: string; label: string; access?: SettingsAccess }>;
+}
 
-const pageTitle = computed(() => {
-  const match = navItems.find((item) => route.path.startsWith(item.to));
-  return match?.label ?? '系统设置';
-});
+const allGroups: SettingsNavGroup[] = [
+  {
+    label: '治理工作台',
+    access: 'organization',
+    items: [{ to: '/governance', label: '待办与摘要' }],
+  },
+  {
+    label: '个人设置',
+    access: 'personal',
+    items: [
+      { to: '/profile', label: '个人资料' },
+      { to: '/sessions', label: '登录会话' },
+      { to: '/appearance', label: '外观设置' },
+      { to: '/language', label: '语言与区域' },
+    ],
+  },
+  {
+    label: '组织与成员',
+    access: 'organization',
+    items: [
+      { to: '/organization/users', label: '成员管理' },
+      { to: '/organization/structure', label: '组织结构' },
+    ],
+  },
+  {
+    label: '访问控制',
+    access: 'organization',
+    items: [
+      { to: '/access/roles', label: '角色管理' },
+      {
+        to: '/access/permissions',
+        label: '权限矩阵',
+        access: 'platform',
+      },
+    ],
+  },
+  {
+    label: '应用与运行',
+    access: 'platform',
+    items: [
+      { to: '/platform/apps', label: '应用管理' },
+      { to: '/platform/config', label: '配置管理' },
+      { to: '/platform/audit', label: '审计日志' },
+    ],
+  },
+];
+
+const navGroups = computed(() =>
+  allGroups
+    .map((group) => ({
+      ...group,
+      items: group.items.filter((item) =>
+        canAccessSettings(item.access ?? group.access),
+      ),
+    }))
+    .filter((group) => group.items.length > 0),
+);
+
+const pageTitle = computed(() => String(route.meta.title ?? '设置中心'));
 
 const pageDescription = computed(
   () =>
@@ -49,15 +101,22 @@ const pageDescription = computed(
         <strong>设置中心</strong>
       </div>
       <nav class="settings-nav" aria-label="设置分类">
-        <RouterLink
-          v-for="item in navItems"
-          :key="item.to"
-          :to="item.to"
-          class="settings-nav__item"
-          active-class="is-active"
+        <section
+          v-for="group in navGroups"
+          :key="group.label"
+          class="settings-nav__group"
         >
-          {{ item.label }}
-        </RouterLink>
+          <h2>{{ group.label }}</h2>
+          <RouterLink
+            v-for="item in group.items"
+            :key="item.to"
+            :to="item.to"
+            class="settings-nav__item"
+            active-class="is-active"
+          >
+            {{ item.label }}
+          </RouterLink>
+        </section>
       </nav>
     </template>
     <RouterView />
@@ -90,8 +149,23 @@ const pageDescription = computed(
 
 .settings-nav {
   display: grid;
-  gap: 4px;
+  gap: 16px;
   margin-top: 12px;
+}
+
+.settings-nav__group {
+  display: grid;
+  gap: 4px;
+}
+
+.settings-nav__group h2 {
+  padding: 0 12px;
+  margin: 0 0 3px;
+  font-size: 10px;
+  font-weight: 800;
+  color: hsl(var(--muted-foreground));
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .settings-nav__item {

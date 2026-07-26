@@ -47,4 +47,5 @@ export interface PluginCatalogItem {
   pluginCategory?: string;
   label?: string;
   configSchema?: Record<string, unknown>;
+  nodeSchema?: Record<string, unknown>;
 }
