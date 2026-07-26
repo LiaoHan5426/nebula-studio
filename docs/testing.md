@@ -7,7 +7,10 @@
 | 格式化、lint、类型检查 | `vp check` | Vite+ 统一静态检查 |
 | 工作区单测 | `vp run test` 或 `vp test` | Vitest 单元/组件测试 |
 | 单包类型检查 | `vp run --filter <package> typecheck` | 快速验证受影响应用 |
-| Web E2E | `vp run test:e2e` | Playwright 浏览器流程 |
+| Mock E2E | `vp run test:e2e` / `vp run test:e2e:mock` | 快速、确定性的浏览器回归 |
+| 体验 E2E | `vp run test:e2e:experience` | 视觉、响应式、键盘焦点和性能 |
+| Electron E2E | `vp run test:e2e:electron` | 桌面启动、会话、Preload 与窗口切换 |
+| 真实栈 E2E | `vp run test:e2e:real` | 后端 reactor、三服务、Web、契约与真实 API |
 | 全量构建 | `vp run build` | 验证 workspace 构建与 Electron 文档复制 |
 | 完整就绪检查 | `vp run ready` | 格式化、lint、测试和构建 |
 
@@ -37,11 +40,12 @@ Playwright 配置位于 `playwright.config.ts`，默认：
 - 测试目录：`e2e`；
 - base URL：`http://localhost:5173`；
 - 自动执行 `vp run dev:web`，已有服务时复用；
-- 无头运行，单测超时 30 秒。
+- 无头运行，单项测试超时 45 秒；
+- 失败保留 trace、截图、录像和 HTML report。
 
-现有用例包括主题切换和 G4/G5 冒烟。部分 G4/G5 用例目前仅验证页面可达性，不能替代完整业务断言；修改认证、审批、发布或治理流程时应补充真实交互与结果校验。
+当前共枚举 24 项测试：Mock 12 项、体验/性能 10 项、real-stack 1 项和 Electron 1 项。Mock 负责快速回归，不能替代 real-stack；体验 project 固定在 Windows runner 比较 48 张视觉基线，避免跨操作系统字体渲染差异造成噪声。
 
-后端相关 E2E 运行前，按 [后端联调](./backend-integration.md) 启动需要的服务。测试失败时区分页面断言失败和代理目标未启动导致的 502。
+真实后端验收优先运行 `vp run test:e2e:real`，由脚本按 [后端联调](./backend-integration.md) 的拓扑构建并启动服务。测试失败时先查看 `test-results/real-stack` 判断 Platform、Console 或 Executor，再查看 Playwright trace。
 
 ## 构建验证
 
@@ -74,7 +78,7 @@ vp run build
 - 端口和代理与 Vite/后端配置一致；
 - 包名与实际 `package.json#name` 一致。
 
-# Phase 8 验收矩阵
+## Phase 8 验收矩阵
 
 浏览器验收分为互不混跑的四个 Playwright project：
 
@@ -92,6 +96,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/e2e/run-real-stack
 ```
 
 脚本先通过 Maven reactor 安装三项服务所需模块，并在任一服务进程提前退出时立即失败。失败日志位于 `test-results/real-stack`，Playwright trace、截图和录像位于 `test-results/playwright`。
+
+当前实测状态（2026-07-26）：reactor 构建与 PostgreSQL 连接成功， `platform-console` 在创建 `ConfigRestController` 时因缺少 `ConfigService` Bean 退出。修复后端自动装配后重新运行同一命令；不得改用 Mock 掩盖真实栈失败。
 
 真实栈运行前会从在线 Platform Console OpenAPI 重新生成契约，并对生成文件执行 `git diff --exit-code`。因此后端字段变化必须先更新并提交前端契约，否则验收立即失败。
 

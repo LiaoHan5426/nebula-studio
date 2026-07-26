@@ -4,21 +4,21 @@ Nebula Studio 使用 pnpm workspace 组织代码，日常命令统一通过 Vite
 
 ## 顶层目录
 
-| 目录                    | 职责                                              |
-| ----------------------- | ------------------------------------------------- |
-| `apps/electron`         | Electron 主进程、窗口生命周期和 renderer 引导     |
-| `apps/electron-preload` | 统一 preload 与受控的 Electron 能力桥接           |
-| `apps/sub-web`          | 可独立运行、也可嵌入 Web/Electron 壳的 Vue 子应用 |
-| `apps/web`              | Web 宿主和 embed 入口，开发端口 `5173`            |
-| `configs`               | 窗口、展示方式及 API target 等单源配置            |
-| `packages/core`         | 认证、API、运行时、壳、租户等基础能力             |
-| `packages/editors`      | 代码、BPMN、DAG 和低代码编辑器                    |
-| `packages/features`     | 可复用业务功能                                    |
-| `packages/ui`           | UI 组件、布局和 Agent 界面能力                    |
-| `internal`              | 仓库内部 Vite 与 Node 工具，不作为产品公共 API    |
-| `tools`                 | 代码质量、TypeScript 和 Tailwind 配置             |
-| `e2e`                   | Playwright 端到端及冒烟测试                       |
-| `docs`                  | 仓库级开发文档                                    |
+| 目录                    | 职责                                               |
+| ----------------------- | -------------------------------------------------- |
+| `apps/electron`         | Electron 主进程、窗口生命周期和 renderer 引导      |
+| `apps/electron-preload` | 统一 preload 与受控的 Electron 能力桥接            |
+| `apps/sub-web`          | 可独立运行、也可嵌入 Web/Electron 壳的 Vue 子应用  |
+| `apps/web`              | Web 宿主和 embed 入口，开发端口 `5173`             |
+| `configs`               | 窗口、展示方式及 API target 等单源配置             |
+| `packages/core`         | 认证、API、运行时、壳、租户等基础能力              |
+| `packages/editors`      | 代码、BPMN、DAG 和低代码编辑器                     |
+| `packages/features`     | 可复用业务功能                                     |
+| `packages/ui`           | UI 组件、布局和 Agent 界面能力                     |
+| `internal`              | 仓库内部 Vite 与 Node 工具，不作为产品公共 API     |
+| `tools`                 | 代码质量、TypeScript 和 Tailwind 配置              |
+| `e2e`                   | Mock、体验、real-stack 与 Electron Playwright 验收 |
+| `docs`                  | 仓库级开发文档                                     |
 
 ## 应用索引
 

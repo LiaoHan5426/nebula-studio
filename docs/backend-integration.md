@@ -6,6 +6,14 @@
 
 以下命令分别在后端仓库中执行。三个服务都是常驻进程，应使用独立终端。
 
+完整验收优先在 Studio 根目录运行：
+
+```powershell
+vp run test:e2e:real
+```
+
+该命令会先从相邻 `../nebula` 构建所需 Maven reactor，再启动 Platform Console、Camel Console、Executor 和 Web，执行在线契约差异检查与 Playwright。手工启动方式适合单服务排障。
+
 ### Camel Console（8080）
 
 ```powershell
@@ -28,6 +36,8 @@ mvn spring-boot:run -DskipTests
 ```
 
 后端 demo 默认需要可访问的 PostgreSQL。数据库配置、构建前置和 Flyway 说明见 `../nebula/docs/quick-start.md`。
+
+> 当前实测状态（2026-07-26）：数据库可连接且 reactor 构建成功，但 Platform Console 在创建 `ConfigRestController` 时缺少 `ConfigService` Bean。失败日志保存在 `test-results/real-stack/platform-console.log`。在该 Bean 装配修复前，三服务真实链路不能视为通过。
 
 ## 开发代理
 
@@ -98,10 +108,11 @@ X-Tenant-Id: <tenant-id>
 
 ## 快速排障
 
-| 现象         | 优先检查                                     |
-| ------------ | -------------------------------------------- |
-| 502          | 路径对应的 `8080`/`8081`/`8090` 服务是否启动 |
-| 401          | token、登录服务和 `Authorization` 请求头     |
-| 403          | 用户角色、资源授权、租户及 API Key           |
-| 数据为空     | `tenant_id` 与 `X-Tenant-Id` 是否一致        |
-| SSE 立即断开 | Console、token、事件路径和代理缓冲配置       |
+| 现象            | 优先检查                                      |
+| --------------- | --------------------------------------------- |
+| 502             | 路径对应的 `8080`/`8081`/`8090` 服务是否启动  |
+| 401             | token、登录服务和 `Authorization` 请求头      |
+| 403             | 用户角色、资源授权、租户及 API Key            |
+| 数据为空        | `tenant_id` 与 `X-Tenant-Id` 是否一致         |
+| SSE 立即断开    | Console、token、事件路径和代理缓冲配置        |
+| 8090 启动即退出 | 查看 `ConfigService` 自动装配和 Platform 日志 |

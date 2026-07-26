@@ -59,16 +59,19 @@ vp run --filter @nebula-studio-renderer/integration dev
 
 ## 常用命令
 
-| 命令               | 用途                          |
-| ------------------ | ----------------------------- |
-| `vp run dev`       | Electron 开发模式             |
-| `vp run dev:web`   | Web 宿主开发模式              |
-| `vp run build`     | 构建全部工作区                |
-| `vp run build:web` | 仅构建 Web 宿主               |
-| `vp check`         | Vite+ 格式化、lint 和类型检查 |
-| `vp run test`      | 运行工作区单元测试            |
-| `vp run test:e2e`  | 运行 Playwright E2E           |
-| `vp run ready`     | 格式化、lint、测试和全量构建  |
+| 命令                         | 用途                          |
+| ---------------------------- | ----------------------------- |
+| `vp run dev`                 | Electron 开发模式             |
+| `vp run dev:web`             | Web 宿主开发模式              |
+| `vp run build`               | 构建全部工作区                |
+| `vp run build:web`           | 仅构建 Web 宿主               |
+| `vp check`                   | Vite+ 格式化、lint 和类型检查 |
+| `vp run test`                | 运行工作区单元测试            |
+| `vp run test:e2e`            | 运行 Mock Playwright 快速回归 |
+| `vp run test:e2e:experience` | 视觉、键盘与性能基线          |
+| `vp run test:e2e:electron`   | Electron 启动与能力 E2E       |
+| `vp run test:e2e:real`       | 构建并启动后端的真实栈 E2E    |
+| `vp run ready`               | 格式化、lint、测试和全量构建  |
 
 ## 常见问题
 
