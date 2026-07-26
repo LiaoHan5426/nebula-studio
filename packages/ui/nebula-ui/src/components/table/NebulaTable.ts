@@ -5,6 +5,13 @@ import { cn } from '../../utils/cn';
 
 type NebulaTableDragMode = 'none' | 'row' | 'column' | 'both';
 
+const dragModeClasses: Record<NebulaTableDragMode, string> = {
+  none: 'nebula-table--drag-none',
+  row: 'nebula-table--drag-row',
+  column: 'nebula-table--drag-column',
+  both: 'nebula-table--drag-both',
+};
+
 export const NebulaTable = defineComponent({
   name: 'NebulaTable',
   props: {
@@ -104,7 +111,7 @@ export const NebulaTable = defineComponent({
           class: cn(
             'nebula-table',
             !scrollXEnabled.value && 'nebula-table--no-scroll-x',
-            `nebula-table--drag-${props.dragMode}`,
+            dragModeClasses[props.dragMode],
             props.class,
           ),
         },

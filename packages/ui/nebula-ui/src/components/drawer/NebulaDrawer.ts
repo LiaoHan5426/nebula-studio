@@ -4,6 +4,11 @@ import NebulaButton from '../button/NebulaButton.vue';
 import { useBodyScrollLock } from '../../composables/useBodyScrollLock';
 import { useOverlayDismiss } from '../../composables/useOverlayDismiss';
 
+const placementClasses = {
+  left: 'nebula-drawer--left',
+  right: 'nebula-drawer--right',
+} as const;
+
 export const NebulaDrawer = defineComponent({
   name: 'NebulaDrawer',
   props: {
@@ -62,7 +67,7 @@ export const NebulaDrawer = defineComponent({
           h(
             'aside',
             {
-              class: cn('nebula-drawer', `nebula-drawer--${props.placement}`),
+              class: cn('nebula-drawer', placementClasses[props.placement]),
               style: { width: props.width },
               role: 'dialog',
               'aria-modal': 'true',

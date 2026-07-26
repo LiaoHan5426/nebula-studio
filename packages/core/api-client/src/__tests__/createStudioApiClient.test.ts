@@ -9,7 +9,7 @@ describe('createStudioApiClient', () => {
 
   it('forwards auth, tenant, and org headers from providers', async () => {
     const fetchMock = vi.fn(
-      async () =>
+      async (_input: RequestInfo | URL, _init?: RequestInit) =>
         new Response(JSON.stringify({ success: true }), {
           status: 200,
           headers: { 'content-type': 'application/json' },
@@ -25,8 +25,9 @@ describe('createStudioApiClient', () => {
 
     await client.apiRequest('/api', '/resource');
 
-    const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
-    const headers = init.headers as Record<string, string>;
+    const call = fetchMock.mock.calls[0];
+    expect(call).toBeDefined();
+    const headers = call?.[1]?.headers as Record<string, string>;
     expect(headers.Authorization).toBe('Bearer token-abc');
     expect(headers['X-Tenant-Id']).toBe('tenant-1');
     expect(headers['X-Org-Id']).toBe('org-9');

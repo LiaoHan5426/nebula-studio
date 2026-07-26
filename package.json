@@ -16,7 +16,7 @@
   },
   "type": "module",
   "scripts": {
-    "ready": "vp fmt && vp lint --threads 2 && vp run test && vp run build",
+    "ready": "vp fmt && vp lint --threads 2 && vp run test && vp run build && vp run check:editors",
     "build": "vp run -r build",
     "build:unpack": "vp run electron#build:unpack",
     "pack:win": "vp run electron#pack:win",
@@ -28,6 +28,7 @@
     "dev:web": "vp run web#dev",
     "build:web": "vp run web#build",
     "check:bundle": "node ./scripts/check-bundle-budget.mjs",
+    "check:editors": "node ./scripts/check-editor-boundaries.mjs && vp run @nebula-studio/nebula-code-editor#typecheck && vp run @nebula-studio/nebula-code-editor#test && vp run @nebula-studio/nebula-code-editor#build && vp run @nebula-studio/nebula-code-editor#check:bundle",
     "check:generated": "node ./scripts/check-generated.mjs",
     "cap": "vp run mobile#cap",
     "check": "vp check --fix",
