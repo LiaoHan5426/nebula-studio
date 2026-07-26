@@ -15,6 +15,17 @@ export interface SubscriptionRequestRecord {
   status: string;
   reason?: string;
   createdAt?: string;
+  updatedAt?: string;
+  requestConfig?: Record<string, unknown>;
+}
+
+export interface SubscriptionRequestCreatePayload {
+  tenantId: string;
+  userId: string;
+  interfaceId: string;
+  requestType?: string;
+  reason: string;
+  requestConfig?: Record<string, unknown>;
 }
 
 export const subscriptionApi = {
@@ -85,6 +96,15 @@ export const subscriptionApi = {
 };
 
 export const subscriptionRequestApi = {
+  create(
+    payload: SubscriptionRequestCreatePayload,
+  ): Promise<ApiResponse<SubscriptionRequestRecord>> {
+    return consoleRequest('/subscription-request', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  },
+
   list(
     params: {
       page?: number;
@@ -99,6 +119,20 @@ export const subscriptionRequestApi = {
     if (params.status) query.set('status', params.status);
     if (params.tenantId) query.set('tenantId', params.tenantId);
     return consoleRequest(`/subscription-request?${query.toString()}`);
+  },
+
+  listByUser(
+    userId: string,
+  ): Promise<ApiResponse<SubscriptionRequestRecord[]>> {
+    return consoleRequest(
+      `/subscription-request/user/${encodeURIComponent(userId)}`,
+    );
+  },
+
+  cancel(requestId: string): Promise<ApiResponse<void>> {
+    return consoleRequest(`/subscription-request/${requestId}/cancel`, {
+      method: 'PUT',
+    });
   },
 
   approve(

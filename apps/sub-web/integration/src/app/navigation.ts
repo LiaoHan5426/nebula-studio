@@ -2,22 +2,28 @@ import type { NavItem } from '@nebula-studio/nebula-layout';
 
 export type IntegrationSurface = 'portal' | 'provider' | 'admin';
 
-export const PORTAL_HOME = '/subscriptions';
+export const PORTAL_HOME = '/catalog';
 export const PLATFORM_ADMIN_HOME = '/plugins/database';
 export const USER_MANAGE_HOME = '/service/register';
 
 export const portalNavItems: NavItem[] = [
   {
-    key: 'subscriptions',
-    label: '库表订阅',
-    icon: 'database',
+    key: 'catalog',
+    label: '资源目录',
+    icon: 'search',
     to: PORTAL_HOME,
   },
   {
-    key: 'my-services',
-    label: '我的服务',
+    key: 'my-requests',
+    label: '我的申请',
+    icon: 'clock',
+    to: '/my-requests',
+  },
+  {
+    key: 'my-resources',
+    label: '我的资源',
     icon: 'server',
-    to: '/my-interfaces',
+    to: '/my-resources',
   },
 ];
 

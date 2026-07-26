@@ -70,6 +70,16 @@ const PluginMarketPage = () =>
 const LogQueryPage = () => import('@/features/statistics/LogQueryPage.vue');
 const LogStatsPage = () => import('@/features/statistics/LogStatsPage.vue');
 const TopologyPage = () => import('@/features/statistics/TopologyPage.vue');
+const ResourceCatalogPage = () =>
+  import('@/features/resource-catalog/ResourceCatalogPage.vue');
+const ResourceDetailPage = () =>
+  import('@/features/resource-catalog/ResourceDetailPage.vue');
+const AccessRequestPage = () =>
+  import('@/features/resource-catalog/AccessRequestPage.vue');
+const MyRequestsPage = () =>
+  import('@/features/resource-catalog/MyRequestsPage.vue');
+const MyResourcesPage = () =>
+  import('@/features/resource-catalog/MyResourcesPage.vue');
 
 function applyIntegrationExperienceMeta(
   records: RouteRecordRaw[],
@@ -333,14 +343,37 @@ const routes = applyIntegrationExperienceMeta([
   // 用户端 - 我的接口
   {
     path: '/my-interfaces',
-    name: 'my-interfaces',
-    component: () => import('@/features/interfaces/MyInterfacesPage.vue'),
-    meta: { title: '我的服务', surface: 'portal' },
+    redirect: '/my-resources',
   },
   {
     path: '/catalog',
-    redirect: '/subscriptions',
+    name: 'resource-catalog',
+    component: ResourceCatalogPage,
     meta: { title: '资源目录', surface: 'portal' },
+  },
+  {
+    path: '/catalog/:resourceId',
+    name: 'resource-detail',
+    component: ResourceDetailPage,
+    meta: { title: '资源详情', surface: 'portal' },
+  },
+  {
+    path: '/catalog/:resourceId/apply',
+    name: 'access-request',
+    component: AccessRequestPage,
+    meta: { title: '申请资源', surface: 'portal' },
+  },
+  {
+    path: '/my-requests',
+    name: 'my-requests',
+    component: MyRequestsPage,
+    meta: { title: '我的申请', surface: 'portal' },
+  },
+  {
+    path: '/my-resources',
+    name: 'my-resources',
+    component: MyResourcesPage,
+    meta: { title: '我的资源', surface: 'portal' },
   },
   {
     path: '/manage',

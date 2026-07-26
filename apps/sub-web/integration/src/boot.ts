@@ -73,7 +73,7 @@ export async function bootIntegration(opts?: {
         window.location.reload();
       },
     },
-    embedDefaultRoute: mode === 'platform-embed' ? '/subscriptions' : undefined,
+    embedDefaultRoute: mode === 'platform-embed' ? '/catalog' : undefined,
     beforeMount(app) {
       installVxePcUi(app);
       installVxeTable(app);
