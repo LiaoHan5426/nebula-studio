@@ -68,6 +68,9 @@ function Wait-Health {
     param([hashtable]$Service, [int]$TimeoutSeconds = 180)
     $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
     while ((Get-Date) -lt $deadline) {
+        if ($Service.StartedByRun) {
+            Update-OwnedProcessTree -Service $Service
+        }
         if (Test-Health $Service.Health) {
             if ($Service.StartedByRun) {
                 $port = ([uri]$Service.Health).Port
@@ -75,6 +78,10 @@ function Wait-Health {
                     Select-Object -First 1
                 if ($listener -and (Test-OwnedListener -Service $Service -ListenerPid $listener.OwningProcess)) {
                     $Service.ListenerPid = $listener.OwningProcess
+                    $listenerIdentity = Get-ProcessIdentity -ProcessId $listener.OwningProcess
+                    if ($listenerIdentity) {
+                        $Service.OwnedProcessIdentities[$listener.OwningProcess] = $listenerIdentity
+                    }
                 } elseif ($listener) {
                     throw "[real-stack] $($Service.Name) listener is not owned by this run: pid=$($listener.OwningProcess)"
                 }
@@ -93,11 +100,10 @@ function Wait-Health {
 
 function Test-OwnedListener {
     param([hashtable]$Service, [int]$ListenerPid)
-    if (-not $Service.StartedByRun -or -not $Service.Process) {
+    if (-not $Service.LauncherIdentity -or -not (Test-ProcessIdentity -Identity $Service.LauncherIdentity)) {
         return $false
     }
-
-    $launcherPid = $Service.Process.Id
+    $launcherPid = $Service.LauncherIdentity.ProcessId
     $currentPid = $ListenerPid
     while ($currentPid -gt 0) {
         if ($currentPid -eq $launcherPid) {
@@ -115,57 +121,126 @@ function Test-OwnedListener {
     return $false
 }
 
-function Get-DescendantProcessIds {
+function Get-ProcessIdentity {
     param([int]$ProcessId)
+    $process = Get-CimInstance Win32_Process -Filter "ProcessId = $ProcessId" -ErrorAction SilentlyContinue
+    if (-not $process) {
+        return $null
+    }
+    return @{
+        ProcessId = [int]$process.ProcessId
+        CreationDate = [datetime]$process.CreationDate
+    }
+}
+
+function Test-ProcessIdentity {
+    param([hashtable]$Identity)
+    if (-not $Identity) {
+        return $false
+    }
+    $current = Get-ProcessIdentity -ProcessId $Identity.ProcessId
+    return $current -and $current.CreationDate -eq $Identity.CreationDate
+}
+
+function Get-DescendantProcessIdentities {
+    param([hashtable]$Identity)
+    if (-not (Test-ProcessIdentity -Identity $Identity)) {
+        return @()
+    }
     $processes = @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue)
     $pending = [System.Collections.Generic.Queue[int]]::new()
-    $pending.Enqueue($ProcessId)
-    $descendants = [System.Collections.Generic.List[int]]::new()
+    $pending.Enqueue($Identity.ProcessId)
+    $descendants = [System.Collections.Generic.List[object]]::new()
     while ($pending.Count -gt 0) {
         $parentId = $pending.Dequeue()
         foreach ($child in $processes | Where-Object { $_.ParentProcessId -eq $parentId }) {
             $childId = [int]$child.ProcessId
-            $descendants.Add($childId)
+            $descendants.Add(@{
+                ProcessId = $childId
+                CreationDate = [datetime]$child.CreationDate
+            })
             $pending.Enqueue($childId)
         }
     }
     return $descendants.ToArray()
 }
 
-function Stop-ProcessTree {
-    param([int]$ProcessId)
-    if (-not (Get-Process -Id $ProcessId -ErrorAction SilentlyContinue)) {
+function Update-OwnedProcessTree {
+    param([hashtable]$Service)
+    if (-not $Service.LauncherIdentity) {
         return
     }
-    $processIds = @($ProcessId) + @(Get-DescendantProcessIds -ProcessId $ProcessId)
-    & taskkill /PID $ProcessId /T /F 2>$null | Out-Null
+    if (-not $Service.OwnedProcessIdentities) {
+        $Service.OwnedProcessIdentities = @{}
+    }
+    if (-not (Test-ProcessIdentity -Identity $Service.LauncherIdentity)) {
+        return
+    }
+    $Service.OwnedProcessIdentities[$Service.LauncherIdentity.ProcessId] = $Service.LauncherIdentity
+    foreach ($identity in Get-DescendantProcessIdentities -Identity $Service.LauncherIdentity) {
+        $Service.OwnedProcessIdentities[$identity.ProcessId] = $identity
+    }
+}
+
+function Stop-ProcessTree {
+    param([hashtable]$Identity)
+    if (-not (Test-ProcessIdentity -Identity $Identity)) {
+        return
+    }
+    $identities = @($Identity) + @(Get-DescendantProcessIdentities -Identity $Identity)
+    & taskkill /PID $Identity.ProcessId /T /F 2>$null | Out-Null
     $deadline = [DateTime]::UtcNow.AddSeconds(15)
     do {
-        $remaining = @($processIds | Where-Object { Get-Process -Id $_ -ErrorAction SilentlyContinue })
+        $remaining = @($identities | Where-Object { Test-ProcessIdentity -Identity $_ })
         if ($remaining.Count -eq 0) {
             return
         }
         Start-Sleep -Milliseconds 200
     } while ([DateTime]::UtcNow -lt $deadline)
     if ($remaining.Count -gt 0) {
-        throw "[real-stack] process tree still running after cleanup deadline: pids=$($remaining -join ',')"
+        $remainingPids = $remaining | ForEach-Object { $_.ProcessId }
+        throw "[real-stack] process tree still running after cleanup deadline: pids=$($remainingPids -join ',')"
     }
 }
 
 function Stop-StartedService {
     param([hashtable]$Service)
-    if (-not $Service.StartedByRun -or -not $Service.Process) {
+    if (-not $Service.StartedByRun -or -not $Service.LauncherIdentity) {
         return
     }
+    Update-OwnedProcessTree -Service $Service
     $listenerOwned = $Service.ListenerPid -and
         (Test-OwnedListener -Service $Service -ListenerPid $Service.ListenerPid)
     if ($Service.ListenerPid -and -not $listenerOwned) {
         Write-Warning "[real-stack] skipped unowned listener during cleanup: pid=$($Service.ListenerPid)"
     }
-    Stop-ProcessTree -ProcessId $Service.Process.Id
-    if ($listenerOwned -and (Get-Process -Id $Service.ListenerPid -ErrorAction SilentlyContinue)) {
-        Stop-ProcessTree -ProcessId $Service.ListenerPid
+    if ($listenerOwned) {
+        $listenerIdentity = Get-ProcessIdentity -ProcessId $Service.ListenerPid
+        if ($listenerIdentity) {
+            $Service.OwnedProcessIdentities[$listenerIdentity.ProcessId] = $listenerIdentity
+        }
     }
+    $identities = @($Service.LauncherIdentity) + @(
+        $Service.OwnedProcessIdentities.Values |
+            Where-Object { $_.ProcessId -ne $Service.LauncherIdentity.ProcessId }
+    )
+    foreach ($identity in $identities) {
+        Stop-ProcessTree -Identity $identity
+    }
+}
+
+function Stop-StartedServices {
+    param([array]$Services)
+    $errors = [System.Collections.Generic.List[object]]::new()
+    foreach ($service in $Services) {
+        try {
+            Stop-StartedService -Service $service
+        } catch {
+            $errors.Add($_)
+            Write-Warning "[real-stack] cleanup failed for $($service.Name): $($_.Exception.Message)"
+        }
+    }
+    return $errors.ToArray()
 }
 
 if ($SkipExecution) {
@@ -176,6 +251,8 @@ if (-not $env:NEBULA_E2E_PASSWORD -or -not $env:NEBULA_E2E_GATEWAY_API_KEY) {
     throw "[real-stack] NEBULA_E2E_PASSWORD and NEBULA_E2E_GATEWAY_API_KEY must be supplied via the environment"
 }
 
+$runError = $null
+$cleanupErrors = @()
 try {
     $requiresBackendBuild = $services | Where-Object { -not (Test-Health $_.Health) }
     if ($requiresBackendBuild) {
@@ -211,10 +288,14 @@ try {
             -PassThru
         $service.Process = $process
         $service.StartedByRun = $true
+        $service.OwnedProcessIdentities = @{}
+        $service.LauncherIdentity = Get-ProcessIdentity -ProcessId $process.Id
+        if (-not $service.LauncherIdentity) {
+            Stop-Process -Id $process.Id -Force -ErrorAction SilentlyContinue
+            throw "[real-stack] unable to record launcher identity: pid=$($process.Id)"
+        }
+        Update-OwnedProcessTree -Service $service
         Write-Host "[real-stack] starting $($service.Name), pid=$($process.Id)"
-    }
-
-    foreach ($service in $services) {
         Wait-Health $service
     }
     Assert-Unauthorized "http://localhost:8090/monitor/api/metrics"
@@ -239,6 +320,7 @@ try {
         Pop-Location
     }
 } catch {
+    $runError = $_
     Write-Host $_ -ForegroundColor Red
     foreach ($service in $services) {
         $logPath = Join-Path $artifactRoot "$($service.Name).log"
@@ -251,11 +333,15 @@ try {
             Get-Content $errorLogPath -Tail 30
         }
     }
-    exit 1
 } finally {
     if (-not $KeepServices) {
-        foreach ($service in $services) {
-            Stop-StartedService -Service $service
-        }
+        $cleanupErrors = @(Stop-StartedServices -Services $services)
     }
+}
+
+if ($runError -or $cleanupErrors.Count -gt 0) {
+    if ($cleanupErrors.Count -gt 0) {
+        Write-Host "[real-stack] cleanup completed with $($cleanupErrors.Count) error(s)" -ForegroundColor Red
+    }
+    exit 1
 }
