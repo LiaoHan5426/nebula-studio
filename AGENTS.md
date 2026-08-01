@@ -46,12 +46,12 @@ This workspace pairs **nebula-studio** (frontend) with **nebula** (Java backend)
 
 ### Registered repositories
 
-| Alias    | Path                                     |
-| -------- | ---------------------------------------- |
-| `studio` | `F:\2-front\nebula-studio\nebula-studio` |
-| `nebula` | `F:\1-back\nebula`                       |
+| Alias           | Path                                          |
+| --------------- | --------------------------------------------- |
+| `nebula-studio` | 当前仓库根目录（工作区默认 `nebula-studio/`） |
+| `nebula`        | 相邻 `../nebula` 仓库                         |
 
-Registry: `~/.code-review-graph/registry.json`. Re-register after moving a repo: `code-review-graph register <path> --alias <name>`.
+Registry: `~/.code-review-graph/registry.json`. 工作区 bootstrap 会在每次初始化/更新时先清理同名旧注册，再按当前实际路径注册。不要在共享文档中写盘符或用户名。
 
 ### When agents must use CRG
 
@@ -94,13 +94,13 @@ Example MCP args:
 
 From repo root:
 
-| Task                  | Command                                    |
-| --------------------- | ------------------------------------------ |
-| Graph stats           | `code-review-graph status`                 |
-| Incremental update    | `code-review-graph update --skip-flows`    |
-| Flows + communities   | `code-review-graph postprocess`            |
-| Change impact (brief) | `code-review-graph detect-changes --brief` |
-| List registered repos | `code-review-graph repos`                  |
+| Task | Command |
+| --- | --- |
+| Graph stats | `../.venv/Scripts/code-review-graph.exe status`（Windows）或 `../.venv/bin/code-review-graph status`（Unix） |
+| Incremental update | 同一可执行文件加 `update --skip-flows` |
+| Flows + communities | 同一可执行文件加 `postprocess` |
+| Change impact (brief) | 同一可执行文件加 `detect-changes --brief` |
+| List registered repos | 同一可执行文件加 `repos` |
 
 After large pulls or branch switches: `code-review-graph build` (full rebuild) in each repo.
 
