@@ -4,6 +4,7 @@
  * 用法:
  *   node scripts/generate-contracts.mjs
  *   node scripts/generate-contracts.mjs --url=http://localhost:8090/v3/api-docs
+ *   node scripts/generate-contracts.mjs --strict --url=http://localhost:8090/v3/api-docs
  *   node scripts/generate-contracts.mjs --file=packages/contracts/generated/openapi.json
  */
 import { execFileSync } from 'node:child_process';
@@ -15,6 +16,7 @@ const scriptDir = dirname(fileURLToPath(import.meta.url));
 const root = join(scriptDir, '..');
 const outDir = join(root, 'packages/contracts/generated');
 const fileArg = process.argv.find((a) => a.startsWith('--file='))?.slice(7);
+const strict = process.argv.includes('--strict');
 const apiDocsUrl =
   process.argv.find((a) => a.startsWith('--url='))?.slice(6) ??
   process.env.NEBULA_OPENAPI_URL ??
@@ -32,6 +34,10 @@ if (fileArg) {
   console.log(`Fetching OpenAPI from ${apiDocsUrl} ...`);
   const res = await fetch(apiDocsUrl);
   if (!res.ok) {
+    if (strict) {
+      console.error(`Failed to fetch OpenAPI: ${res.status} ${res.statusText}`);
+      process.exit(1);
+    }
     const fallback = join(outDir, 'openapi.json');
     console.warn(`Fetch failed (${res.status}); trying fallback ${fallback}`);
     try {

@@ -12,19 +12,19 @@
 vp run test:e2e:real
 ```
 
-该命令会先从相邻 `../nebula` 构建所需 Maven reactor，再启动 Platform Console、Camel Console、Executor 和 Web，执行在线契约差异检查与 Playwright。手工启动方式适合单服务排障。
+该命令会先从相邻 `../nebula` 构建所需 Maven reactor，再启动三个正式 Platform 应用和 Web，执行在线契约差异检查与 Playwright。手工启动方式适合单服务排障。
 
-### Camel Console（8080）
+### Platform Integration（8080）
 
 ```powershell
-cd ..\nebula\demos\demo-camel-console
+cd ..\nebula\nebula-platform\platform-integration
 mvn spring-boot:run -DskipTests
 ```
 
-### Camel Executor（8081）
+### Platform Integration Executor（8081）
 
 ```powershell
-cd ..\nebula\demos\demo-camel-executor
+cd ..\nebula\nebula-platform\platform-integration-executor
 mvn spring-boot:run -DskipTests
 ```
 
@@ -35,9 +35,9 @@ cd ..\nebula\nebula-platform\platform-console
 mvn spring-boot:run -DskipTests
 ```
 
-后端 demo 默认需要可访问的 PostgreSQL。数据库配置、构建前置和 Flyway 说明见 `../nebula/docs/quick-start.md`。
+三个正式应用默认需要可访问的 PostgreSQL。数据库配置、构建前置和 Flyway 说明见 `../nebula/docs/quick-start.md`。
 
-> 当前实测状态（2026-07-26）：数据库可连接且 reactor 构建成功，但 Platform Console 在创建 `ConfigRestController` 时缺少 `ConfigService` Bean。失败日志保存在 `test-results/real-stack/platform-console.log`。在该 Bean 装配修复前，三服务真实链路不能视为通过。
+> 当前实测状态（2026-08-01）：`vp run test:e2e:real` 已从停止状态构建并启动三个正式应用，健康、监控端点未认证 401、在线契约和无 Mock Playwright 均通过。失败日志仍保存在 `test-results/real-stack` 的分服务日志中；脚本只终止本次启动且进程所有权校验通过的服务，不清理复用的用户进程。
 
 ## 开发代理
 
@@ -46,14 +46,14 @@ Integration 独立开发服务器的代理定义在 `apps/sub-web/integration/vi
 | 前端路径 | 目标 | 说明 |
 | --- | --- | --- |
 | `/api/integration/gateway` | `http://localhost:8081` | Executor 网关调用 |
-| `/api/integration/demo` | `http://localhost:8081` | Executor demo API |
+| `/api/integration/demo` | `http://localhost:8081` | Executor 兼容演示 API |
 | `/api/executor` | `http://localhost:8081` | Executor 路由和状态 |
 | `/api/system` | `http://localhost:8090` | 系统域 |
 | `/api/platform` | `http://localhost:8090` | 平台聚合域 |
 | `/api/security/governance` | `http://localhost:8090` | 安全治理 |
 | `/api/version` | `http://localhost:8090` | 版本域 |
 | `/api/release`、`/api/releases` | `http://localhost:8090` | 发布域 |
-| 其余 `/api` | `http://localhost:8080` | Camel Console、认证、租户、订阅、监控等 |
+| 其余 `/api` | `http://localhost:8080` | Platform Integration、认证、租户、订阅、监控等 |
 
 代理对包含 `/events` 的 SSE 请求关闭超时和响应缓冲。调整代理时要保留该行为，否则浏览器可能迟迟收不到事件。
 
@@ -70,10 +70,10 @@ Web/Electron 共享的 API base 和 target 单源位于 `configs/windows.json`�
 
 demo 种子账号：
 
-| 账号    | 密码       | 角色     |
-| ------- | ---------- | -------- |
-| `admin` | `admin123` | 管理员   |
-| `demo`  | `demo`     | 普通用户 |
+| 账号    | 密码         | 角色     |
+| ------- | ------------ | -------- |
+| `admin` | `[REDACTED]` | 管理员   |
+| `demo`  | `[REDACTED]` | 普通用户 |
 
 ## 租户
 
@@ -85,7 +85,7 @@ X-Tenant-Id: <tenant-id>
 
 `@nebula-studio/tenant` 负责加载当前用户租户、选择默认租户和切换租户。开发页面时不要各自实现另一套租户存储键。
 
-演示租户为 `tenant-a`。网关演示服务需要 API Key 时，种子值为 `demo-api-key-tenant-a`，请求头为 `X-API-Key`。
+演示租户为 `tenant-a`。网关演示服务需要 API Key 时，凭据值记为 `[REDACTED]`，请求头为 `X-API-Key`。
 
 ## API 响应与契约
 
@@ -108,11 +108,11 @@ X-Tenant-Id: <tenant-id>
 
 ## 快速排障
 
-| 现象            | 优先检查                                      |
-| --------------- | --------------------------------------------- |
-| 502             | 路径对应的 `8080`/`8081`/`8090` 服务是否启动  |
-| 401             | token、登录服务和 `Authorization` 请求头      |
-| 403             | 用户角色、资源授权、租户及 API Key            |
-| 数据为空        | `tenant_id` 与 `X-Tenant-Id` 是否一致         |
-| SSE 立即断开    | Console、token、事件路径和代理缓冲配置        |
-| 8090 启动即退出 | 查看 `ConfigService` 自动装配和 Platform 日志 |
+| 现象            | 优先检查                                            |
+| --------------- | --------------------------------------------------- |
+| 502             | 路径对应的 `8080`/`8081`/`8090` 服务是否启动        |
+| 401             | token、登录服务和 `Authorization` 请求头            |
+| 403             | 用户角色、资源授权、租户及 API Key                  |
+| 数据为空        | `tenant_id` 与 `X-Tenant-Id` 是否一致               |
+| SSE 立即断开    | Console、token、事件路径和代理缓冲配置              |
+| 8090 启动即退出 | 查看 Platform 日志、数据库可用性和 Config JDBC 装配 |

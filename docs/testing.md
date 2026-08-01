@@ -86,18 +86,20 @@ vp run build
 | --- | --- | --- |
 | `mock-regression` | `vp run test:e2e:mock` | 快速回归，允许通过 `page.route` 固定数据 |
 | `experience` | `vp run test:e2e:experience` | 六类界面的亮暗主题、响应式、键盘焦点、视觉和资源首屏预算 |
-| `real-stack` | `vp run test:e2e:real` | 启动 Platform Console、Camel Console、Executor 和 Web，不允许网络 Mock |
+| `real-stack` | `vp run test:e2e:real` | 启动 Platform Console、Platform Integration、Platform Integration Executor 和 Web，不允许网络 Mock |
 | `electron` | `vp run test:e2e:electron` | Electron 启动、认证会话、Preload capability、窗口切换、截图和性能附件 |
 
 真实栈脚本默认从同级 `../nebula` 读取后端。自定义后端目录时直接调用脚本：
 
 ```powershell
+$env:NEBULA_E2E_PASSWORD = "[REDACTED]"
+$env:NEBULA_E2E_GATEWAY_API_KEY = "[REDACTED]"
 powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/e2e/run-real-stack.ps1 -BackendRoot F:\path\to\nebula
 ```
 
 脚本先通过 Maven reactor 安装三项服务所需模块，并在任一服务进程提前退出时立即失败。失败日志位于 `test-results/real-stack`，Playwright trace、截图和录像位于 `test-results/playwright`。
 
-当前实测状态（2026-07-26）：reactor 构建与 PostgreSQL 连接成功， `platform-console` 在创建 `ConfigRestController` 时因缺少 `ConfigService` Bean 退出。修复后端自动装配后重新运行同一命令；不得改用 Mock 掩盖真实栈失败。
+当前实测状态（2026-08-01）：脚本从停止状态完成 142 模块定向构建，启动三个正式平台应用，通过 8090/8080/8081 健康检查、监控端点未认证 401、在线 OpenAPI 生成和 1 项无 Mock real-stack 测试，并在结束后只关闭本次启动且进程所有权校验通过的临时服务。复用的用户服务不会被记录为脚本所有，也不会被终止；该行为另有 2 项 Pester 回归测试。
 
 真实栈运行前会从在线 Platform Console OpenAPI 重新生成契约，并对生成文件执行 `git diff --exit-code`。因此后端字段变化必须先更新并提交前端契约，否则验收立即失败。
 

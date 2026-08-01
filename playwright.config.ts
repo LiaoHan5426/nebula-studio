@@ -43,7 +43,7 @@ export default defineConfig({
       name: 'real-stack',
       testMatch: /real-stack\.spec\.ts/,
       retries: 1,
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'], trace: 'off' },
     },
     {
       name: 'electron',

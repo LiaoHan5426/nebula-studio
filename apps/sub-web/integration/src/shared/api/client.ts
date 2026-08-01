@@ -5,7 +5,7 @@ import { getAuthToken, clearAuthSession } from '@/shared/auth/session';
 
 export type { ApiRequestOptions, ApiResponse };
 
-/** Console process (demo-camel-console :8080) */
+/** Platform Integration process (:8080) */
 export const CONSOLE_BASE = '/api/console';
 /** Legacy integration CRUD paths still served by console */
 export const INTEGRATION_BASE = '/api/integration';
@@ -20,7 +20,7 @@ export const SUBSCRIBE_BASE = '/api/subscribe';
 export const CAMEL_SUBSCRIBE_BASE = '/api/subscribe/camel';
 export const CAMEL_TOPOLOGY_BASE = '/api/camel/topology';
 
-/** Executor process (demo-camel-executor :8081) — proxied in dev */
+/** Platform Integration Executor process (:8081) — proxied in dev */
 export const EXECUTOR_INTEGRATION_BASE = '/api/integration';
 
 const apiClient = createStudioApiClient({

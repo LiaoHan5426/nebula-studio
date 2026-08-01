@@ -12,7 +12,7 @@ export function simpleProxy(target: string): ProxyOptions {
 /**
  * 标准 API 代理配置：
  * - platform 治理/版本/发布/系统 → :8090（默认 platform-console）
- * - 其余 `/api/**` → :8080（demo-camel-console）
+ * - 其余 `/api/**` → :8080（platform-integration）
  */
 export function standardApiProxy(
   platformTarget = 'http://localhost:8090',

@@ -1,67 +1,4808 @@
 {
-  "openapi": "3.0.1",
+  "openapi": "3.1.0",
   "info": {
     "title": "Nebula Platform Console API",
-    "version": "0.0.1-SNAPSHOT"
+    "description": "聚合 system / modules / governance / config REST",
+    "version": "1.0"
   },
+  "servers": [
+    {
+      "url": "http://localhost:8090",
+      "description": "Generated server url"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
   "paths": {
-    "/api/platform/index": {
+    "/api/task/{id}": {
       "get": {
-        "operationId": "platformIndex",
+        "tags": ["task-rest-controller"],
+        "operationId": "getById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Platform module index and health"
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": ["task-rest-controller"],
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["task-rest-controller"],
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
     },
-    "/api/resource": {
+    "/api/system/users/{id}": {
       "get": {
-        "operationId": "listResources",
+        "tags": ["user-rest-service"],
+        "operationId": "getById_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Resource list"
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": ["user-rest-service"],
+        "operationId": "update_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["user-rest-service"],
+        "operationId": "delete_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/users/{id}/status": {
+      "put": {
+        "tags": ["user-rest-service"],
+        "operationId": "updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/users/{id}/roles": {
+      "get": {
+        "tags": ["user-role-rest-service"],
+        "operationId": "listRoles",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": ["user-role-rest-service"],
+        "operationId": "replaceRoles",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/users/{id}/organizations": {
+      "get": {
+        "tags": ["user-organization-rest-service"],
+        "operationId": "listOrganizations",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": ["user-organization-rest-service"],
+        "operationId": "replaceOrganizations",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {}
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/roles/{id}": {
+      "get": {
+        "tags": ["role-rest-service"],
+        "operationId": "getById_2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": ["role-rest-service"],
+        "operationId": "update_2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Role"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["role-rest-service"],
+        "operationId": "delete_2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/roles/{id}/permissions": {
+      "get": {
+        "tags": ["role-rest-service"],
+        "operationId": "getPermissions",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": ["role-rest-service"],
+        "operationId": "replacePermissions",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/permissions/{id}": {
+      "get": {
+        "tags": ["permission-rest-service"],
+        "operationId": "getById_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": ["permission-rest-service"],
+        "operationId": "update_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Permission"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["permission-rest-service"],
+        "operationId": "delete_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/permissions/{id}/status": {
+      "put": {
+        "tags": ["permission-rest-service"],
+        "operationId": "updateStatus_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/organizations/{id}": {
+      "get": {
+        "tags": ["organization-rest-service"],
+        "operationId": "getById_4",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": ["organization-rest-service"],
+        "operationId": "update_4",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Organization"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["organization-rest-service"],
+        "operationId": "delete_4",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/org-policy": {
+      "get": {
+        "tags": ["org-policy-rest-service"],
+        "operationId": "getPolicy",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": ["org-policy-rest-service"],
+        "operationId": "updatePolicy",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrgPolicyDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/apps/{id}": {
+      "get": {
+        "tags": ["shell-app-rest-service"],
+        "operationId": "getById_5",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": ["shell-app-rest-service"],
+        "operationId": "update_5",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShellApp"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["shell-app-rest-service"],
+        "operationId": "delete_5",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/apps/{id}/status": {
+      "put": {
+        "tags": ["shell-app-rest-service"],
+        "operationId": "updateStatus_2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/apps/reorder": {
+      "put": {
+        "tags": ["shell-app-rest-service"],
+        "operationId": "reorder",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ShellApp"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/resource/{id}/status": {
+      "put": {
+        "tags": ["resource-rest-controller"],
+        "operationId": "updateStatus_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/flows/{id}": {
+      "get": {
+        "tags": ["flow-rest-service"],
+        "operationId": "getFlow",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": ["flow-rest-service"],
+        "operationId": "updateFlow",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FlowUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["flow-rest-service"],
+        "operationId": "deleteFlow",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/flows/{id}/xml": {
+      "get": {
+        "tags": ["flow-rest-service"],
+        "operationId": "getFlowXml",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": ["flow-rest-service"],
+        "operationId": "updateFlowXml",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FlowXmlRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/files/{id}/restore": {
+      "put": {
+        "tags": ["file-rest-service"],
+        "operationId": "restoreFile",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/files/user/{userId}/restore": {
+      "put": {
+        "tags": ["file-rest-service"],
+        "operationId": "restoreUserFiles",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/platform/stop/{pluginId}": {
+      "post": {
+        "tags": ["plugin-manager-controller"],
+        "operationId": "stop",
+        "parameters": [
+          {
+            "name": "pluginId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/platform/start/{pluginId}": {
+      "post": {
+        "tags": ["plugin-manager-controller"],
+        "operationId": "start",
+        "parameters": [
+          {
+            "name": "pluginId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/platform/reload/{pluginId}": {
+      "post": {
+        "tags": ["plugin-manager-controller"],
+        "operationId": "reload",
+        "parameters": [
+          {
+            "name": "pluginId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/platform/reload-all": {
+      "post": {
+        "tags": ["plugin-manager-controller"],
+        "operationId": "reloadAll",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/platform/install": {
+      "post": {
+        "tags": ["plugin-install-controller"],
+        "operationId": "install",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PluginInstallRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PluginInstallResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/monitor/api/sql/kill/{sqlId}": {
+      "post": {
+        "tags": ["monitor-controller"],
+        "operationId": "killSql",
+        "parameters": [
+          {
+            "name": "sqlId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/monitor/api/slow-sql/threshold": {
+      "post": {
+        "tags": ["monitor-controller"],
+        "operationId": "setSlowSqlThreshold",
+        "parameters": [
+          {
+            "name": "thresholdMs",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/monitor/api/reset": {
+      "post": {
+        "tags": ["monitor-controller"],
+        "operationId": "resetAllMetrics",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/monitor/api/reset/{dataSourceName}": {
+      "post": {
+        "tags": ["monitor-controller"],
+        "operationId": "resetMetrics",
+        "parameters": [
+          {
+            "name": "dataSourceName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/task": {
+      "get": {
+        "tags": ["task-rest-controller"],
+        "operationId": "list",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       },
       "post": {
-        "operationId": "registerResource",
+        "tags": ["task-rest-controller"],
+        "operationId": "create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskCreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
-            "description": "Registered resource"
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/task/{id}/trigger": {
+      "post": {
+        "tags": ["task-rest-controller"],
+        "operationId": "trigger",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/task/instance/{instanceId}/retry": {
+      "post": {
+        "tags": ["task-execution-rest-controller"],
+        "operationId": "retry",
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/users": {
+      "post": {
+        "tags": ["user-rest-service"],
+        "operationId": "create_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/users/{id}/reset-password": {
+      "post": {
+        "tags": ["user-rest-service"],
+        "operationId": "resetPassword",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/roles": {
+      "get": {
+        "tags": ["role-rest-service"],
+        "operationId": "list_1",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": ["role-rest-service"],
+        "operationId": "create_2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Role"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/permissions": {
+      "post": {
+        "tags": ["permission-rest-service"],
+        "operationId": "create_3",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Permission"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/organizations": {
+      "post": {
+        "tags": ["organization-rest-service"],
+        "operationId": "create_4",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Organization"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/organizations/{id}/users/{userId}": {
+      "post": {
+        "tags": ["organization-rest-service"],
+        "operationId": "assignUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["organization-rest-service"],
+        "operationId": "removeUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/config/update": {
+      "post": {
+        "tags": ["config-rest-service"],
+        "operationId": "updateConfig",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/config/reload": {
+      "post": {
+        "tags": ["config-rest-service"],
+        "operationId": "reloadConfigs",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/apps": {
+      "post": {
+        "tags": ["shell-app-rest-service"],
+        "operationId": "create_5",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShellApp"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/subscribe/topic": {
+      "get": {
+        "tags": ["subscribe-rest-controller"],
+        "operationId": "listTopics",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": ["subscribe-rest-controller"],
+        "operationId": "createTopic",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/subscribe/topic/{id}/sub": {
+      "post": {
+        "tags": ["subscribe-rest-controller"],
+        "operationId": "subscribe",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/subscribe/publish": {
+      "post": {
+        "tags": ["subscribe-rest-controller"],
+        "operationId": "publish",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {}
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/security/governance/release/{releaseId}/rollback": {
+      "post": {
+        "tags": ["governance-release-rest-controller"],
+        "operationId": "rollback",
+        "parameters": [
+          {
+            "name": "releaseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "operatorId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/security/governance/release/deploy": {
+      "post": {
+        "tags": ["governance-release-rest-controller"],
+        "operationId": "deploy",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
     },
     "/api/security/governance/approval/request": {
       "post": {
-        "operationId": "submitApprovalRequest",
+        "tags": ["governance-approval-rest-controller"],
+        "operationId": "submitRequest",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
-            "description": "Governance request"
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/security/governance/approval/decide": {
+      "post": {
+        "tags": ["governance-approval-rest-controller"],
+        "operationId": "decide",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/resource": {
+      "get": {
+        "tags": ["resource-rest-controller"],
+        "operationId": "query",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tenantId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": ["resource-rest-controller"],
+        "operationId": "register",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResourceMetadata"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
     },
     "/api/release": {
-      "post": {
-        "operationId": "createRelease",
+      "get": {
+        "tags": ["release-rest-controller"],
+        "operationId": "listByResource",
+        "parameters": [
+          {
+            "name": "resourceId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Release record"
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": ["release-rest-controller"],
+        "operationId": "create_6",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
     },
-    "/api/version": {
-      "get": {
-        "operationId": "listVersions",
+    "/api/release/{id}/rollback": {
+      "post": {
+        "tags": ["release-rest-controller"],
+        "operationId": "rollback_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "operatorId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Version snapshots"
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/release/{id}/deploy": {
+      "post": {
+        "tags": ["release-rest-controller"],
+        "operationId": "deploy_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "operatorId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/release/{id}/approve": {
+      "post": {
+        "tags": ["release-rest-controller"],
+        "operationId": "approve",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "operatorId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/platform/plugins/install": {
+      "post": {
+        "tags": ["platform-plugin-rest-controller"],
+        "operationId": "install_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/governance/approvals/tasks/{taskId}/reject": {
+      "post": {
+        "tags": ["approval-rest-controller"],
+        "operationId": "reject",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/governance/approvals/tasks/{taskId}/approve": {
+      "post": {
+        "tags": ["approval-rest-controller"],
+        "operationId": "approve_1",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/governance/approvals/instances": {
+      "get": {
+        "tags": ["approval-rest-controller"],
+        "operationId": "listInstances",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": ["approval-rest-controller"],
+        "operationId": "create_7",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/governance/approvals/instances/{instanceId}/submit": {
+      "post": {
+        "tags": ["approval-rest-controller"],
+        "operationId": "submit",
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/governance/approvals/instances/{instanceId}/cancel": {
+      "post": {
+        "tags": ["approval-rest-controller"],
+        "operationId": "cancel",
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/flows": {
+      "get": {
+        "tags": ["flow-rest-service"],
+        "operationId": "listFlows",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tenantId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": ["flow-rest-service"],
+        "operationId": "createFlow",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FlowCreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/flows/{id}/versions": {
+      "get": {
+        "tags": ["flow-rest-service"],
+        "operationId": "listVersions",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": ["flow-rest-service"],
+        "operationId": "createVersion",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FlowVersionCreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/flows/{id}/publish": {
+      "post": {
+        "tags": ["flow-rest-service"],
+        "operationId": "publishFlow",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/flows/{id}/execute": {
+      "post": {
+        "tags": ["flow-rest-service"],
+        "operationId": "executeFlow",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FlowExecuteRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/files/{id}/download-link": {
+      "post": {
+        "tags": ["file-rest-service"],
+        "operationId": "createDownloadLink",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FileDownloadLinkRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/files/upload": {
+      "post": {
+        "tags": ["file-rest-service"],
+        "operationId": "uploadFile",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "system"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": ["file"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/config": {
+      "get": {
+        "tags": ["config-rest-controller"],
+        "operationId": "list_2",
+        "parameters": [
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tenantId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "group",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": ["config-rest-controller"],
+        "operationId": "save",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfigItem"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/task/{id}/status": {
+      "patch": {
+        "tags": ["task-rest-controller"],
+        "operationId": "changeStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/subscribe/topic/{topicId}/sub/{subscriberId}/resume": {
+      "patch": {
+        "tags": ["subscribe-rest-controller"],
+        "operationId": "resume",
+        "parameters": [
+          {
+            "name": "topicId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subscriberId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/subscribe/topic/{topicId}/sub/{subscriberId}/pause": {
+      "patch": {
+        "tags": ["subscribe-rest-controller"],
+        "operationId": "pause",
+        "parameters": [
+          {
+            "name": "topicId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subscriberId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/platform/status/{pluginId}": {
+      "get": {
+        "tags": ["plugin-manager-controller"],
+        "operationId": "status",
+        "parameters": [
+          {
+            "name": "pluginId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/platform/list": {
+      "get": {
+        "tags": ["plugin-manager-controller"],
+        "operationId": "list_3",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PluginInfo"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/monitor": {
+      "get": {
+        "tags": ["monitor-controller"],
+        "operationId": "index",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/monitor/api/sql": {
+      "get": {
+        "tags": ["monitor-controller"],
+        "operationId": "getSqlStats",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/monitor/api/slow-sql": {
+      "get": {
+        "tags": ["monitor-controller"],
+        "operationId": "getSlowSqlList",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["monitor-controller"],
+        "operationId": "clearAllSlowSql",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/monitor/api/slow-sql/{dataSourceName}": {
+      "get": {
+        "tags": ["monitor-controller"],
+        "operationId": "getSlowSqlList_1",
+        "parameters": [
+          {
+            "name": "dataSourceName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["monitor-controller"],
+        "operationId": "clearSlowSql",
+        "parameters": [
+          {
+            "name": "dataSourceName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/monitor/api/slow-sql/stats": {
+      "get": {
+        "tags": ["monitor-controller"],
+        "operationId": "getSlowSqlStats",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/monitor/api/pool": {
+      "get": {
+        "tags": ["monitor-controller"],
+        "operationId": "getPoolStats",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/monitor/api/metrics": {
+      "get": {
+        "tags": ["monitor-controller"],
+        "operationId": "getAllMetrics",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/monitor/api/metrics/{dataSourceName}": {
+      "get": {
+        "tags": ["monitor-controller"],
+        "operationId": "getMetrics",
+        "parameters": [
+          {
+            "name": "dataSourceName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/monitor/api/executing-sql": {
+      "get": {
+        "tags": ["monitor-controller"],
+        "operationId": "getExecutingSqlList",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/monitor/api/executing-sql/by-datasource": {
+      "get": {
+        "tags": ["monitor-controller"],
+        "operationId": "getExecutingSqlByDataSource",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/task/instance": {
+      "get": {
+        "tags": ["task-execution-rest-controller"],
+        "operationId": "list_4",
+        "parameters": [
+          {
+            "name": "definitionId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tenantId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/task/instance/{instanceId}": {
+      "get": {
+        "tags": ["task-execution-rest-controller"],
+        "operationId": "status_1",
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/task/instance/{instanceId}/logs": {
+      "get": {
+        "tags": ["task-execution-rest-controller"],
+        "operationId": "logs",
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/task/by-type": {
+      "get": {
+        "tags": ["task-rest-controller"],
+        "operationId": "getByType",
+        "parameters": [
+          {
+            "name": "taskType",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/task/by-trigger": {
+      "get": {
+        "tags": ["task-rest-controller"],
+        "operationId": "getByTriggerType",
+        "parameters": [
+          {
+            "name": "triggerType",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/users/page": {
+      "get": {
+        "tags": ["user-rest-service"],
+        "operationId": "page",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/permissions/tree": {
+      "get": {
+        "tags": ["permission-rest-service"],
+        "operationId": "tree",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/organizations/{id}/users": {
+      "get": {
+        "tags": ["organization-rest-service"],
+        "operationId": "listUsers",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/organizations/users/{userId}/organizations": {
+      "get": {
+        "tags": ["organization-rest-service"],
+        "operationId": "listUserOrganizations",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/organizations/tree": {
+      "get": {
+        "tags": ["organization-rest-service"],
+        "operationId": "tree_1",
+        "parameters": [
+          {
+            "name": "parentId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/logs/operations/page": {
+      "get": {
+        "tags": ["log-rest-service"],
+        "operationId": "operationsPage",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "level",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "module",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/logs/login/page": {
+      "get": {
+        "tags": ["log-rest-service"],
+        "operationId": "loginPage",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "username",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/logs/audit/page": {
+      "get": {
+        "tags": ["log-rest-service"],
+        "operationId": "auditPage",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "operationType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "entityName",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/config/{key}": {
+      "get": {
+        "tags": ["config-rest-service"],
+        "operationId": "getConfig",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/config/{key}/{defaultValue}": {
+      "get": {
+        "tags": ["config-rest-service"],
+        "operationId": "getConfigWithDefault",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "defaultValue",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/config/type/{type}": {
+      "get": {
+        "tags": ["config-rest-service"],
+        "operationId": "getConfigsByType",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/config/all": {
+      "get": {
+        "tags": ["config-rest-service"],
+        "operationId": "getAllConfigs",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/apps/page": {
+      "get": {
+        "tags": ["shell-app-rest-service"],
+        "operationId": "page_1",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/subscribe/topic/{id}": {
+      "get": {
+        "tags": ["subscribe-rest-controller"],
+        "operationId": "getTopic",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/subscribe/topic/{id}/subscribers": {
+      "get": {
+        "tags": ["subscribe-rest-controller"],
+        "operationId": "getSubscribers",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/security/governance/releases": {
+      "get": {
+        "tags": ["governance-release-rest-controller"],
+        "operationId": "listReleases",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/security/governance/release/{releaseId}": {
+      "get": {
+        "tags": ["governance-release-rest-controller"],
+        "operationId": "getRelease",
+        "parameters": [
+          {
+            "name": "releaseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/security/governance/approval/requests": {
+      "get": {
+        "tags": ["governance-approval-rest-controller"],
+        "operationId": "listRequests",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/security/governance/approval/request/{requestId}": {
+      "get": {
+        "tags": ["governance-approval-rest-controller"],
+        "operationId": "getRequest",
+        "parameters": [
+          {
+            "name": "requestId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["governance-approval-rest-controller"],
+        "operationId": "withdraw",
+        "parameters": [
+          {
+            "name": "requestId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "applicantId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/resource/{id}": {
+      "get": {
+        "tags": ["resource-rest-controller"],
+        "operationId": "getById_6",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["resource-rest-controller"],
+        "operationId": "delete_6",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "operatorId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/release/{id}": {
+      "get": {
+        "tags": ["release-rest-controller"],
+        "operationId": "getById_7",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/release/all": {
+      "get": {
+        "tags": ["release-rest-controller"],
+        "operationId": "listAll",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/platform/plugins/installed": {
+      "get": {
+        "tags": ["platform-plugin-rest-controller"],
+        "operationId": "listInstalled",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/platform/plugins/available": {
+      "get": {
+        "tags": ["platform-plugin-rest-controller"],
+        "operationId": "listAvailable",
+        "parameters": [
+          {
+            "name": "keyword",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/platform/index": {
+      "get": {
+        "tags": ["platform-index-controller"],
+        "operationId": "index_1",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/platform/health": {
+      "get": {
+        "tags": ["health-controller"],
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/governance/approvals/instances/{instanceId}": {
+      "get": {
+        "tags": ["approval-rest-controller"],
+        "operationId": "getInstance",
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/files/{id}": {
+      "get": {
+        "tags": ["file-rest-service"],
+        "operationId": "getFileById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/files/user/{userId}": {
+      "get": {
+        "tags": ["file-rest-service"],
+        "operationId": "listFilesByUserId",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "deleted",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/files/stats/{userId}": {
+      "get": {
+        "tags": ["file-rest-service"],
+        "operationId": "getUserFileStats",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/files/size/{userId}": {
+      "get": {
+        "tags": ["file-rest-service"],
+        "operationId": "sumUserFileSize",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "deleted",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/files/quota/{userId}": {
+      "get": {
+        "tags": ["file-rest-service"],
+        "operationId": "checkUserQuota",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "quotaSize",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/files/query": {
+      "get": {
+        "tags": ["file-rest-service"],
+        "operationId": "queryFiles",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/FileQueryRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/files/download-ticket/{ticketId}": {
+      "get": {
+        "tags": ["file-rest-service"],
+        "operationId": "downloadByTicket",
+        "parameters": [
+          {
+            "name": "ticketId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/files/count/{userId}": {
+      "get": {
+        "tags": ["file-rest-service"],
+        "operationId": "countUserFiles",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "deleted",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/config/{key}": {
+      "get": {
+        "tags": ["config-rest-controller"],
+        "operationId": "getByKey",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "GLOBAL"
+            }
+          },
+          {
+            "name": "tenantId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["config-rest-controller"],
+        "operationId": "delete_7",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "GLOBAL"
+            }
+          },
+          {
+            "name": "tenantId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/camel/topology/{routeId}": {
+      "get": {
+        "tags": ["topology-rest-controller"],
+        "operationId": "getTopology",
+        "parameters": [
+          {
+            "name": "routeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/camel/topology/{routeId}/traces": {
+      "get": {
+        "tags": ["topology-rest-controller"],
+        "operationId": "getTraces",
+        "parameters": [
+          {
+            "name": "routeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["topology-rest-controller"],
+        "operationId": "clearTraces",
+        "parameters": [
+          {
+            "name": "routeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/camel/topology/{routeId}/errors": {
+      "get": {
+        "tags": ["topology-rest-controller"],
+        "operationId": "getErrors",
+        "parameters": [
+          {
+            "name": "routeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/admin/info": {
+      "get": {
+        "tags": ["admin-ops-controller"],
+        "operationId": "systemInfo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/health": {
+      "get": {
+        "tags": ["admin-ops-controller"],
+        "operationId": "health_1",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/subscribe/topic/{topicId}/sub/{subscriberId}": {
+      "delete": {
+        "tags": ["subscribe-rest-controller"],
+        "operationId": "unsubscribe",
+        "parameters": [
+          {
+            "name": "topicId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subscriberId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/platform/plugins/{artifactId}": {
+      "delete": {
+        "tags": ["platform-plugin-rest-controller"],
+        "operationId": "uninstall",
+        "parameters": [
+          {
+            "name": "artifactId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/files/{id}/physical": {
+      "delete": {
+        "tags": ["file-rest-service"],
+        "operationId": "physicalDeleteFile",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/files/{id}/logical": {
+      "delete": {
+        "tags": ["file-rest-service"],
+        "operationId": "logicalDeleteFile",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/files/user/{userId}/physical": {
+      "delete": {
+        "tags": ["file-rest-service"],
+        "operationId": "physicalDeleteUserFiles",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/files/user/{userId}/logical": {
+      "delete": {
+        "tags": ["file-rest-service"],
+        "operationId": "logicalDeleteUserFiles",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
     }
-  }
+  },
+  "components": {
+    "schemas": {
+      "TaskUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "taskConfig": {
+            "type": "string"
+          },
+          "cronExpression": {
+            "type": "string"
+          },
+          "intervalMs": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "maxRetries": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "timeoutMs": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "realName": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "lastLoginAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "deleted": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "deletedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "avatar": {
+            "type": "string"
+          }
+        }
+      },
+      "Role": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "roleName": {
+            "type": "string"
+          },
+          "roleCode": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "Permission": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "permName": {
+            "type": "string"
+          },
+          "permCode": {
+            "type": "string"
+          },
+          "permType": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "sortOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "Organization": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "orgName": {
+            "type": "string"
+          },
+          "orgCode": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": "string"
+          },
+          "level": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "description": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "sortOrder": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "OrgPolicyDto": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "multiOrgEnabled": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ShellApp": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "label": {
+            "type": "string"
+          },
+          "iconSvg": {
+            "type": "string"
+          },
+          "renderer": {
+            "type": "string"
+          },
+          "preload": {
+            "type": "string"
+          },
+          "integratable": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "defaultEnabled": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sortOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "FlowUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "FlowXmlRequest": {
+        "type": "object",
+        "properties": {
+          "bpmnXml": {
+            "type": "string"
+          }
+        }
+      },
+      "PluginInstallRequest": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "enum": ["LOCAL", "FILE_STORAGE", "HTTP"]
+          },
+          "localPath": {
+            "type": "string"
+          },
+          "fileId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "storageFileName": {
+            "type": "string"
+          },
+          "originalFileName": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "checksumSha256": {
+            "type": "string"
+          },
+          "start": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PluginInstallResult": {
+        "type": "object",
+        "properties": {
+          "pf4jPluginId": {
+            "type": "string"
+          },
+          "localJarPath": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string",
+            "enum": ["LOCAL", "FILE_STORAGE", "HTTP"]
+          },
+          "started": {
+            "type": "boolean"
+          },
+          "inMemory": {
+            "type": "boolean"
+          },
+          "fileId": {
+            "type": "string"
+          }
+        }
+      },
+      "TaskCreateRequest": {
+        "type": "object",
+        "properties": {
+          "taskName": {
+            "type": "string"
+          },
+          "taskType": {
+            "type": "string"
+          },
+          "tenantId": {
+            "type": "string"
+          },
+          "orgId": {
+            "type": "string"
+          },
+          "taskConfig": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "cronExpression": {
+            "type": "string"
+          },
+          "intervalMs": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "triggerType": {
+            "type": "string"
+          },
+          "retryStrategy": {
+            "type": "string"
+          },
+          "maxRetries": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "timeoutMs": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "createdBy": {
+            "type": "string"
+          }
+        }
+      },
+      "ResourceMetadata": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "CAMEL_ROUTE",
+              "PLUGIN",
+              "TASK",
+              "CONFIG",
+              "DATA_SOURCE",
+              "API",
+              "APPLICATION"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["DRAFT", "VERSIONED", "ACTIVE", "DEPRECATED", "ARCHIVED"]
+          },
+          "tenantId": {
+            "type": "string"
+          },
+          "ownerId": {
+            "type": "string"
+          },
+          "versionId": {
+            "type": "string"
+          },
+          "labels": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string"
+          }
+        }
+      },
+      "FlowCreateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "tenantId": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "bpmnXml": {
+            "type": "string"
+          }
+        }
+      },
+      "FlowVersionCreateRequest": {
+        "type": "object",
+        "properties": {
+          "bpmnXml": {
+            "type": "string"
+          }
+        }
+      },
+      "FlowExecuteRequest": {
+        "type": "object",
+        "properties": {
+          "engineType": {
+            "type": "string"
+          },
+          "versionId": {
+            "type": "string"
+          },
+          "inputJson": {
+            "type": "string"
+          }
+        }
+      },
+      "FileDownloadLinkRequest": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "expireSeconds": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "singleUse": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ConfigItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["STRING", "NUMBER", "JSON", "ENCRYPTED"]
+          },
+          "scope": {
+            "type": "string",
+            "enum": ["GLOBAL", "TENANT", "APPLICATION"]
+          },
+          "tenantId": {
+            "type": "string"
+          },
+          "applicationId": {
+            "type": "string"
+          },
+          "group": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedBy": {
+            "type": "string"
+          }
+        }
+      },
+      "PluginDependency": {
+        "type": "object",
+        "properties": {
+          "pluginId": {
+            "type": "string"
+          },
+          "pluginVersionSupport": {
+            "type": "string"
+          },
+          "optional": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PluginInfo": {
+        "type": "object",
+        "properties": {
+          "pluginId": {
+            "type": "string"
+          },
+          "pluginDescription": {
+            "type": "string"
+          },
+          "pluginClass": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "requires": {
+            "type": "string"
+          },
+          "provider": {
+            "type": "string"
+          },
+          "license": {
+            "type": "string"
+          },
+          "dependencies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PluginDependency"
+            }
+          },
+          "pluginState": {
+            "type": "string",
+            "enum": [
+              "CREATED",
+              "DISABLED",
+              "RESOLVED",
+              "STARTED",
+              "STOPPED",
+              "FAILED",
+              "UNLOADED"
+            ]
+          },
+          "newVersion": {
+            "type": "string"
+          },
+          "removed": {
+            "type": "boolean"
+          },
+          "startingError": {
+            "type": "string"
+          }
+        }
+      },
+      "FileQueryRequest": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "originalFileName": {
+            "type": "string"
+          },
+          "deleted": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageNum": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "x-permit-all-policy": "startup-defaults-only"
 }

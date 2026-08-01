@@ -48,7 +48,8 @@
     "clean": "node ./scripts/clean.mjs",
     "generate:configs": "node ./scripts/generate-window-configs.mjs",
     "generate:manifest": "node ./scripts/generate-window-configs.mjs",
-    "generate:contracts": "node ./scripts/generate-contracts.mjs"
+    "generate:contracts": "node ./scripts/generate-contracts.mjs",
+    "generate:contracts:strict": "node ./scripts/generate-contracts.mjs --strict"
   },
   "devDependencies": {
     "@eslint-community/eslint-plugin-eslint-comments": "catalog:lint",
