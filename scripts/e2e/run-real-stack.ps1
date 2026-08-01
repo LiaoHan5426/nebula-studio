@@ -115,6 +115,59 @@ function Test-OwnedListener {
     return $false
 }
 
+function Get-DescendantProcessIds {
+    param([int]$ProcessId)
+    $processes = @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue)
+    $pending = [System.Collections.Generic.Queue[int]]::new()
+    $pending.Enqueue($ProcessId)
+    $descendants = [System.Collections.Generic.List[int]]::new()
+    while ($pending.Count -gt 0) {
+        $parentId = $pending.Dequeue()
+        foreach ($child in $processes | Where-Object { $_.ParentProcessId -eq $parentId }) {
+            $childId = [int]$child.ProcessId
+            $descendants.Add($childId)
+            $pending.Enqueue($childId)
+        }
+    }
+    return $descendants.ToArray()
+}
+
+function Stop-ProcessTree {
+    param([int]$ProcessId)
+    if (-not (Get-Process -Id $ProcessId -ErrorAction SilentlyContinue)) {
+        return
+    }
+    $processIds = @($ProcessId) + @(Get-DescendantProcessIds -ProcessId $ProcessId)
+    & taskkill /PID $ProcessId /T /F 2>$null | Out-Null
+    $deadline = [DateTime]::UtcNow.AddSeconds(15)
+    do {
+        $remaining = @($processIds | Where-Object { Get-Process -Id $_ -ErrorAction SilentlyContinue })
+        if ($remaining.Count -eq 0) {
+            return
+        }
+        Start-Sleep -Milliseconds 200
+    } while ([DateTime]::UtcNow -lt $deadline)
+    if ($remaining.Count -gt 0) {
+        throw "[real-stack] process tree still running after cleanup deadline: pids=$($remaining -join ',')"
+    }
+}
+
+function Stop-StartedService {
+    param([hashtable]$Service)
+    if (-not $Service.StartedByRun -or -not $Service.Process) {
+        return
+    }
+    $listenerOwned = $Service.ListenerPid -and
+        (Test-OwnedListener -Service $Service -ListenerPid $Service.ListenerPid)
+    if ($Service.ListenerPid -and -not $listenerOwned) {
+        Write-Warning "[real-stack] skipped unowned listener during cleanup: pid=$($Service.ListenerPid)"
+    }
+    Stop-ProcessTree -ProcessId $Service.Process.Id
+    if ($listenerOwned -and (Get-Process -Id $Service.ListenerPid -ErrorAction SilentlyContinue)) {
+        Stop-ProcessTree -ProcessId $Service.ListenerPid
+    }
+}
+
 if ($SkipExecution) {
     return
 }
@@ -123,7 +176,6 @@ if (-not $env:NEBULA_E2E_PASSWORD -or -not $env:NEBULA_E2E_GATEWAY_API_KEY) {
     throw "[real-stack] NEBULA_E2E_PASSWORD and NEBULA_E2E_GATEWAY_API_KEY must be supplied via the environment"
 }
 
-$started = [System.Collections.Generic.List[System.Diagnostics.Process]]::new()
 try {
     $requiresBackendBuild = $services | Where-Object { -not (Test-Health $_.Health) }
     if ($requiresBackendBuild) {
@@ -157,7 +209,6 @@ try {
             -RedirectStandardError $errorLogPath `
             -WindowStyle Hidden `
             -PassThru
-        $started.Add($process)
         $service.Process = $process
         $service.StartedByRun = $true
         Write-Host "[real-stack] starting $($service.Name), pid=$($process.Id)"
@@ -204,22 +255,7 @@ try {
 } finally {
     if (-not $KeepServices) {
         foreach ($service in $services) {
-            if ($service.StartedByRun -and $service.ListenerPid -and
-                (Test-OwnedListener -Service $service -ListenerPid $service.ListenerPid)) {
-                & taskkill /PID $service.ListenerPid /T /F 2>$null | Out-Null
-                Wait-Process -Id $service.ListenerPid -Timeout 10 -ErrorAction SilentlyContinue
-            } elseif ($service.StartedByRun -and $service.ListenerPid) {
-                Write-Warning "[real-stack] skipped unowned listener during cleanup: pid=$($service.ListenerPid)"
-            }
-        }
-        foreach ($process in $started) {
-            Wait-Process -Id $process.Id -Timeout 10 -ErrorAction SilentlyContinue
-            if (Get-Process -Id $process.Id -ErrorAction SilentlyContinue) {
-                Stop-Process -Id $process.Id -Force -ErrorAction SilentlyContinue
-                if (Get-Process -Id $process.Id -ErrorAction SilentlyContinue) {
-                    Write-Warning "[real-stack] process still running after cleanup: pid=$($process.Id)"
-                }
-            }
+            Stop-StartedService -Service $service
         }
     }
 }

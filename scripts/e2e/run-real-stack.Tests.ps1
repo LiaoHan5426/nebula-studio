@@ -20,4 +20,17 @@ Describe "run-real-stack process ownership" {
 
         (Test-OwnedListener -Service $service -ListenerPid 4242) | Should Be $false
     }
+
+    It "tree-kills the launcher when startup fails before a listener is captured" {
+        Mock Stop-ProcessTree {}
+        $service = @{
+            Name = "failed-service"
+            StartedByRun = $true
+            Process = [pscustomobject]@{ Id = 4343 }
+        }
+
+        Stop-StartedService -Service $service
+
+        Assert-MockCalled Stop-ProcessTree -Times 1 -ParameterFilter { $ProcessId -eq 4343 }
+    }
 }
