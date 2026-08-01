@@ -81,6 +81,42 @@ Describe "run-real-stack process ownership" {
         Assert-MockCalled Get-CimInstance -Times 0
     }
 
+    It "does not trust listener ancestry older than the launcher" {
+        Mock Test-ProcessIdentity { $true }
+        Mock Get-CimInstance {
+            [pscustomobject]@{
+                ProcessId = 4444
+                ParentProcessId = 4343
+                CreationDate = [datetime]"2026-08-01T00:00:00Z"
+            }
+        }
+        $service = @{
+            LauncherIdentity = @{
+                ProcessId = 4343
+                CreationDate = [datetime]"2026-08-01T00:01:00Z"
+            }
+        }
+
+        (Test-OwnedListener -Service $service -ListenerPid 4444) | Should Be $false
+    }
+
+    It "does not record descendants older than their verified parent" {
+        Mock Test-ProcessIdentity { $true }
+        Mock Get-CimInstance {
+            @([pscustomobject]@{
+                ProcessId = 4444
+                ParentProcessId = 4343
+                CreationDate = [datetime]"2026-08-01T00:00:00Z"
+            })
+        }
+        $launcher = @{
+            ProcessId = 4343
+            CreationDate = [datetime]"2026-08-01T00:01:00Z"
+        }
+
+        @(Get-DescendantProcessIdentities -Identity $launcher).Count | Should Be 0
+    }
+
     It "continues cleanup after one service fails" {
         Mock Stop-StartedService {
             if ($Service.Name -eq "first") { throw "stuck" }

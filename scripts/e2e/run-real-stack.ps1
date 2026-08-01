@@ -105,17 +105,22 @@ function Test-OwnedListener {
     }
     $launcherPid = $Service.LauncherIdentity.ProcessId
     $currentPid = $ListenerPid
+    $childCreationDate = $null
     while ($currentPid -gt 0) {
         if ($currentPid -eq $launcherPid) {
-            return $true
+            return -not $childCreationDate -or
+                $childCreationDate -ge $Service.LauncherIdentity.CreationDate
         }
         $current = Get-CimInstance Win32_Process -Filter "ProcessId = $currentPid" -ErrorAction SilentlyContinue
         if (-not $current) {
             return $false
         }
-        if ($current.ParentProcessId -eq $launcherPid) {
-            return $true
+        $currentCreationDate = [datetime]$current.CreationDate
+        if ($currentCreationDate -lt $Service.LauncherIdentity.CreationDate -or
+            ($childCreationDate -and $childCreationDate -lt $currentCreationDate)) {
+            return $false
         }
+        $childCreationDate = $currentCreationDate
         $currentPid = $current.ParentProcessId
     }
     return $false
@@ -148,18 +153,25 @@ function Get-DescendantProcessIdentities {
         return @()
     }
     $processes = @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue)
-    $pending = [System.Collections.Generic.Queue[int]]::new()
-    $pending.Enqueue($Identity.ProcessId)
+    $pending = [System.Collections.Queue]::new()
+    $pending.Enqueue($Identity)
+    $visited = [System.Collections.Generic.HashSet[int]]::new()
+    [void]$visited.Add($Identity.ProcessId)
     $descendants = [System.Collections.Generic.List[object]]::new()
     while ($pending.Count -gt 0) {
-        $parentId = $pending.Dequeue()
-        foreach ($child in $processes | Where-Object { $_.ParentProcessId -eq $parentId }) {
+        $parentIdentity = $pending.Dequeue()
+        foreach ($child in $processes | Where-Object { $_.ParentProcessId -eq $parentIdentity.ProcessId }) {
             $childId = [int]$child.ProcessId
-            $descendants.Add(@{
+            $childIdentity = @{
                 ProcessId = $childId
                 CreationDate = [datetime]$child.CreationDate
-            })
-            $pending.Enqueue($childId)
+            }
+            if ($childIdentity.CreationDate -lt $parentIdentity.CreationDate -or
+                -not $visited.Add($childId)) {
+                continue
+            }
+            $descendants.Add($childIdentity)
+            $pending.Enqueue($childIdentity)
         }
     }
     return $descendants.ToArray()

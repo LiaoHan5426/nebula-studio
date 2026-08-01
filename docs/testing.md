@@ -99,7 +99,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/e2e/run-real-stack
 
 脚本先通过 Maven reactor 安装三项服务所需模块，并在任一服务进程提前退出时立即失败。失败日志位于 `test-results/real-stack`，Playwright trace、截图和录像位于 `test-results/playwright`。
 
-当前实测状态（2026-08-01）：脚本从停止状态完成 142 模块定向构建，启动三个正式平台应用，通过 8090/8080/8081 健康检查、监控端点未认证 401、在线 OpenAPI 生成和 1 项无 Mock real-stack 测试，并在结束后只关闭本次启动且 PID 与创建时间身份一致的临时进程树。复用的用户服务不会被记录为脚本所有，也不会被终止；launcher 提前退出时会继续清理已记录的子进程，单项清理失败也不阻断后续服务，相关边界有 7 项 Pester 回归测试。
+当前实测状态（2026-08-01）：脚本从停止状态完成 142 模块定向构建，启动三个正式平台应用，通过 8090/8080/8081 健康检查、监控端点未认证 401、在线 OpenAPI 生成和 1 项无 Mock real-stack 测试，并在结束后只关闭本次启动且 PID、创建时间及 ancestry 时间顺序一致的临时进程树。复用的用户服务不会被记录为脚本所有，也不会被终止；launcher 提前退出时会继续清理已记录的子进程，单项清理失败也不阻断后续服务，相关边界有 9 项 Pester 回归测试。
 
 真实栈运行前会从在线 Platform Console OpenAPI 重新生成契约，并对生成文件执行 `git diff --exit-code`。因此后端字段变化必须先更新并提交前端契约，否则验收立即失败。
 
