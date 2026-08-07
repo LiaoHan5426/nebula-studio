@@ -24,7 +24,6 @@ verifyDepsBeforeRun: false
 ignoreWorkspaceRootCheck: true
 
 minimumReleaseAgeExclude:
-  - electron@42.3.1
   - xe-utils@4.0.11
 overrides:
   vite: 'catalog:vite'
@@ -45,11 +44,10 @@ catalogs:
   electron:
     '@electron-toolkit/preload': ^3.0.2
     '@electron-toolkit/utils': ^4.0.0
-    electron: ^43.0.0
-    electron-builder: ^26.15.3
+    electron: ^43.3.0
+    electron-builder: ^26.15.7
     electron-updater: ^6.8.9
     electron-vite: ^5.0.0
-    extract-zip: ^2.0.1
   editor:
     '@codemirror/commands': ^6.10.3
     '@codemirror/lang-html': ^6.4.11
@@ -191,6 +189,7 @@ catalogs:
 
 allowBuilds:
   '@parcel/watcher': true
+  electron: true
   electron-winstaller: true
   esbuild: true
   msw: true
