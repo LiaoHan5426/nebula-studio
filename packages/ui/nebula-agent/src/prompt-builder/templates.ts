@@ -1,7 +1,7 @@
 export type TemplateConfig = {
-  name: string;
   content: string;
   description?: string;
+  name: string;
 };
 
 export type TemplateRegistry = {

@@ -1,11 +1,13 @@
-import { authRequest, systemRequest } from '@/shared/api/client';
-import type { ApiResponse } from '@nebula-studio/api-client';
 import type {
   AuthMe,
   AuthMode,
   OrgPolicy,
   SwitchOrgResult,
 } from '@/shared/types';
+
+import type { ApiResponse } from '@nebula-studio/api-client';
+
+import { authRequest, systemRequest } from '@/shared/api/client';
 
 export const authModeApi = {
   getMode(): Promise<ApiResponse<AuthMode>> {

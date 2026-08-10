@@ -11,9 +11,9 @@ const SKIP_DIRS = new Set([
   '.DS_Store',
   '.git',
   '.idea',
-  '.vscode',
   '.trae',
   '.vite-hooks',
+  '.vscode',
   'agent-skills',
 ]);
 

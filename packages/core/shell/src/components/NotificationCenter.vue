@@ -1,28 +1,30 @@
 <script lang="ts">
 export interface ShellNotification {
-  id: string;
-  title: string;
-  content: string;
-  read?: boolean;
-  createdAt: number;
   actionLabel?: string;
-  viewId?: string;
+  content: string;
+  createdAt: number;
+  id: string;
   path?: string;
-  severity?: 'info' | 'success' | 'warning' | 'danger';
+  read?: boolean;
+  severity?: 'danger' | 'info' | 'success' | 'warning';
+  title: string;
+  viewId?: string;
 }
 </script>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue';
-import { resolveShellEventBus } from '@nebula-studio/app-shell';
 import type { ShellEventBus, ShellEventMap } from '@nebula-studio/app-shell';
+
+import { computed, onMounted, onUnmounted, ref } from 'vue';
+
+import { resolveShellEventBus } from '@nebula-studio/app-shell';
 import { NebulaButton, NebulaIcon } from '@nebula-studio/nebula-ui';
 
 const emit = defineEmits<{
   activate: [notification: ShellNotification];
 }>();
 
-const bus = ref<ShellEventBus | null>(null);
+const bus = ref<null | ShellEventBus>(null);
 const open = ref(false);
 const items = ref<ShellNotification[]>([]);
 let unsubscribe: (() => void) | null = null;

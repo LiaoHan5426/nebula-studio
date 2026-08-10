@@ -1,6 +1,7 @@
+import type { ApiClientConfig, ApiRequestOptions, ApiResponse } from './types';
+
 import { parseApiResponse } from './parseApiResponse';
 import { trackRequestProgress } from './requestProgress';
-import type { ApiClientConfig, ApiRequestOptions, ApiResponse } from './types';
 
 function mergeHeaders(
   base: Record<string, string>,

@@ -1,17 +1,19 @@
 import type { UserConfig } from 'vite';
+
 import type {
   NebulaManualChunkMeta,
   NebulaManualChunkRule,
   NebulaRendererChunksOptions,
 } from './types.ts';
-import { nebulaChunkRuleMarkdown } from './rules/markdown.ts';
+
 import {
   nebulaChunkRuleEditorFlow,
+  nebulaChunkRuleElectronShared,
   nebulaChunkRuleIntegrationDomain,
   nebulaChunkRuleShellCore,
   nebulaChunkRuleUiCore,
-  nebulaChunkRuleElectronShared,
 } from './rules/domainChunks.ts';
+import { nebulaChunkRuleMarkdown } from './rules/markdown.ts';
 import { nebulaChunkRuleVueEcosystem } from './rules/vueEcosystem.ts';
 import { nebulaChunkRuleVxe } from './rules/vxe.ts';
 

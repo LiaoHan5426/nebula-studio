@@ -6,12 +6,12 @@
  * so existing `@/shared/auth/session` imports continue to resolve.
  */
 export {
-  getAuthToken,
-  getAuthUsername,
-  getAuthRoles,
-  getAuthUserId,
-  setAuthSession,
   clearAuthSession,
-  hasValidAuthToken,
+  getAuthRoles,
+  getAuthToken,
+  getAuthUserId,
+  getAuthUsername,
   hasAuthenticatedSession,
+  hasValidAuthToken,
+  setAuthSession,
 } from '@nebula-studio/auth-provider/session';

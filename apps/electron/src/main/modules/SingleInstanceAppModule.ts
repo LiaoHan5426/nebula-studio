@@ -1,6 +1,7 @@
-import { app } from 'electron';
-import { is } from '@electron-toolkit/utils';
 import type { MainModule, MainModuleContext } from '../bootstrap/MainModule';
+
+import { is } from '@electron-toolkit/utils';
+import { app } from 'electron';
 
 export class SingleInstanceAppModule implements MainModule {
   readonly name = 'SingleInstanceApp';

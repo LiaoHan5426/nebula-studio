@@ -1,7 +1,12 @@
 <script setup lang="ts">
-import { DagEditor } from '@nebula-studio/nebula-dag-editor';
+import type { DagDefinitionRecord } from '@/shared/types';
+
 import type { DagDefinition } from '@nebula-studio/nebula-dag-editor';
 import type { PluginNodeSchema } from '@nebula-studio/nebula-low-render';
+
+import { computed, onMounted, ref } from 'vue';
+
+import { DagEditor } from '@nebula-studio/nebula-dag-editor';
 import {
   NebulaButton,
   NebulaPane,
@@ -9,18 +14,16 @@ import {
   NebulaTableColumn,
   NebulaTag,
 } from '@nebula-studio/nebula-ui';
-import { computed, onMounted, ref } from 'vue';
 
 import { loadDagNodeSchemas } from '@/features/flows/loadDagNodeSchemas';
 import { dagApi } from '@/features/monitor/api';
 import { interfaceApi } from '@/shared/api/integration';
 import { useTenant } from '@/shared/composables/useTenant';
-import type { DagDefinitionRecord } from '@/shared/types';
 import { InterfaceType, isApiSuccess } from '@/shared/types';
 
 const dags = ref<DagDefinitionRecord[]>([]);
 const loading = ref(false);
-const actionError = ref<string | null>(null);
+const actionError = ref<null | string>(null);
 const showEditor = ref(false);
 const editingDag = ref<DagDefinitionRecord | null>(null);
 const dagDefinition = ref<DagDefinition | string>({ nodes: {} });
@@ -174,9 +177,9 @@ function statusVariant(status?: string) {
           <NebulaButton variant="outline" @click="showEditor = false">
             取消
           </NebulaButton>
-          <NebulaButton variant="primary" @click="saveEditor"
-            >保存</NebulaButton
-          >
+          <NebulaButton variant="primary" @click="saveEditor">
+            保存
+          </NebulaButton>
         </div>
       </NebulaPane>
     </div>

@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import Demo from '@/components/Demo.vue';
-
 import progressBasicDemo from '@/examples/progress/ProgressBasic.vue?demo';
-import progressMultipleDemo from '@/examples/progress/ProgressMultiple.vue?demo';
 import progressDynamicDemo from '@/examples/progress/ProgressDynamic.vue?demo';
+import progressMultipleDemo from '@/examples/progress/ProgressMultiple.vue?demo';
 </script>
 
 <template>

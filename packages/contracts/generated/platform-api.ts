@@ -4,2510 +4,2404 @@
  */
 
 export interface paths {
-  '/api/task/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getById'];
-    put: operations['update'];
-    post?: never;
-    delete: operations['delete'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/users/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getById_1'];
-    put: operations['update_1'];
-    post?: never;
-    delete: operations['delete_1'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/users/{id}/status': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put: operations['updateStatus'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/users/{id}/roles': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['listRoles'];
-    put: operations['replaceRoles'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/users/{id}/organizations': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['listOrganizations'];
-    put: operations['replaceOrganizations'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/roles/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getById_2'];
-    put: operations['update_2'];
-    post?: never;
-    delete: operations['delete_2'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/roles/{id}/permissions': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getPermissions'];
-    put: operations['replacePermissions'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/permissions/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getById_3'];
-    put: operations['update_3'];
-    post?: never;
-    delete: operations['delete_3'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/permissions/{id}/status': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put: operations['updateStatus_1'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/organizations/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getById_4'];
-    put: operations['update_4'];
-    post?: never;
-    delete: operations['delete_4'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/org-policy': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getPolicy'];
-    put: operations['updatePolicy'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/apps/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getById_5'];
-    put: operations['update_5'];
-    post?: never;
-    delete: operations['delete_5'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/apps/{id}/status': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put: operations['updateStatus_2'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/apps/reorder': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put: operations['reorder'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/resource/{id}/status': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put: operations['updateStatus_3'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/flows/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getFlow'];
-    put: operations['updateFlow'];
-    post?: never;
-    delete: operations['deleteFlow'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/flows/{id}/xml': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getFlowXml'];
-    put: operations['updateFlowXml'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/files/{id}/restore': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put: operations['restoreFile'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/files/user/{userId}/restore': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put: operations['restoreUserFiles'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/platform/stop/{pluginId}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['stop'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/platform/start/{pluginId}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['start'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/platform/reload/{pluginId}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['reload'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/platform/reload-all': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['reloadAll'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/platform/install': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['install'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/monitor/api/sql/kill/{sqlId}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['killSql'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/monitor/api/slow-sql/threshold': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['setSlowSqlThreshold'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/monitor/api/reset': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['resetAllMetrics'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/monitor/api/reset/{dataSourceName}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['resetMetrics'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/task': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['list'];
-    put?: never;
-    post: operations['create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/task/{id}/trigger': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['trigger'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/task/instance/{instanceId}/retry': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['retry'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/users': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['create_1'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/users/{id}/reset-password': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['resetPassword'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/roles': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['list_1'];
-    put?: never;
-    post: operations['create_2'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/permissions': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['create_3'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/organizations': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['create_4'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/organizations/{id}/users/{userId}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['assignUser'];
-    delete: operations['removeUser'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/config/update': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['updateConfig'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/config/reload': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['reloadConfigs'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/apps': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['create_5'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/subscribe/topic': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['listTopics'];
-    put?: never;
-    post: operations['createTopic'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/subscribe/topic/{id}/sub': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['subscribe'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/subscribe/publish': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['publish'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/security/governance/release/{releaseId}/rollback': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['rollback'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/security/governance/release/deploy': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['deploy'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/security/governance/approval/request': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['submitRequest'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/security/governance/approval/decide': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['decide'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/resource': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['query'];
-    put?: never;
-    post: operations['register'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/release': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['listByResource'];
-    put?: never;
-    post: operations['create_6'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/release/{id}/rollback': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['rollback_1'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/release/{id}/deploy': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['deploy_1'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/release/{id}/approve': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['approve'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/platform/plugins/install': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['install_1'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/governance/approvals/tasks/{taskId}/reject': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['reject'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/governance/approvals/tasks/{taskId}/approve': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['approve_1'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/governance/approvals/instances': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['listInstances'];
-    put?: never;
-    post: operations['create_7'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/governance/approvals/instances/{instanceId}/submit': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['submit'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/governance/approvals/instances/{instanceId}/cancel': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['cancel'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/flows': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['listFlows'];
-    put?: never;
-    post: operations['createFlow'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/flows/{id}/versions': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['listVersions'];
-    put?: never;
-    post: operations['createVersion'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/flows/{id}/publish': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['publishFlow'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/flows/{id}/execute': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['executeFlow'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/files/{id}/download-link': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['createDownloadLink'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/files/upload': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['uploadFile'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/config': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['list_2'];
-    put?: never;
-    post: operations['save'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/task/{id}/status': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch: operations['changeStatus'];
-    trace?: never;
-  };
-  '/api/subscribe/topic/{topicId}/sub/{subscriberId}/resume': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch: operations['resume'];
-    trace?: never;
-  };
-  '/api/subscribe/topic/{topicId}/sub/{subscriberId}/pause': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch: operations['pause'];
-    trace?: never;
-  };
-  '/platform/status/{pluginId}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['status'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/platform/list': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['list_3'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/monitor': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['index'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/monitor/api/sql': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getSqlStats'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/monitor/api/slow-sql': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getSlowSqlList'];
-    put?: never;
-    post?: never;
-    delete: operations['clearAllSlowSql'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/monitor/api/slow-sql/{dataSourceName}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getSlowSqlList_1'];
-    put?: never;
-    post?: never;
-    delete: operations['clearSlowSql'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/monitor/api/slow-sql/stats': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getSlowSqlStats'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/monitor/api/pool': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getPoolStats'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/monitor/api/metrics': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getAllMetrics'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/monitor/api/metrics/{dataSourceName}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getMetrics'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/monitor/api/executing-sql': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getExecutingSqlList'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/monitor/api/executing-sql/by-datasource': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getExecutingSqlByDataSource'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/task/instance': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['list_4'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/task/instance/{instanceId}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['status_1'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/task/instance/{instanceId}/logs': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['logs'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/task/by-type': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getByType'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/task/by-trigger': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getByTriggerType'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/users/page': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['page'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/permissions/tree': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['tree'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/organizations/{id}/users': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['listUsers'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/organizations/users/{userId}/organizations': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['listUserOrganizations'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/organizations/tree': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['tree_1'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/logs/operations/page': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['operationsPage'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/logs/login/page': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['loginPage'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/logs/audit/page': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['auditPage'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/config/{key}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getConfig'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/config/{key}/{defaultValue}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getConfigWithDefault'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/config/type/{type}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getConfigsByType'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/config/all': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getAllConfigs'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/system/apps/page': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['page_1'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/subscribe/topic/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getTopic'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/subscribe/topic/{id}/subscribers': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getSubscribers'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/security/governance/releases': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['listReleases'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/security/governance/release/{releaseId}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getRelease'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/security/governance/approval/requests': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['listRequests'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/security/governance/approval/request/{requestId}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getRequest'];
-    put?: never;
-    post?: never;
-    delete: operations['withdraw'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/resource/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getById_6'];
-    put?: never;
-    post?: never;
-    delete: operations['delete_6'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/release/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getById_7'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/release/all': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['listAll'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/platform/plugins/installed': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['listInstalled'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/platform/plugins/available': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['listAvailable'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/platform/index': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['index_1'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/platform/health': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['health'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/governance/approvals/instances/{instanceId}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getInstance'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/files/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getFileById'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/files/user/{userId}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['listFilesByUserId'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/files/stats/{userId}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getUserFileStats'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/files/size/{userId}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['sumUserFileSize'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/files/quota/{userId}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['checkUserQuota'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/files/query': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['queryFiles'];
-    put?: never;
-    post?: never;
+  '/api/admin/health': {
     delete?: never;
-    options?: never;
+    get: operations['health_1'];
     head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/files/download-ticket/{ticketId}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['downloadByTicket'];
-    put?: never;
-    post?: never;
-    delete?: never;
     options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/files/count/{userId}': {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
       cookie?: never;
-    };
-    get: operations['countUserFiles'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/config/{key}': {
-    parameters: {
-      query?: never;
       header?: never;
       path?: never;
-      cookie?: never;
-    };
-    get: operations['getByKey'];
-    put?: never;
-    post?: never;
-    delete: operations['delete_7'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/camel/topology/{routeId}': {
-    parameters: {
       query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
     };
-    get: operations['getTopology'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
     patch?: never;
-    trace?: never;
-  };
-  '/api/camel/topology/{routeId}/traces': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getTraces'];
-    put?: never;
     post?: never;
-    delete: operations['clearTraces'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/camel/topology/{routeId}/errors': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getErrors'];
     put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
     trace?: never;
   };
   '/api/admin/info': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
+    delete?: never;
     get: operations['systemInfo'];
-    put?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
     post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/camel/topology/{routeId}': {
     delete?: never;
-    options?: never;
+    get: operations['getTopology'];
     head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/admin/health': {
+    options?: never;
     parameters: {
-      query?: never;
+      cookie?: never;
       header?: never;
       path?: never;
-      cookie?: never;
+      query?: never;
     };
-    get: operations['health_1'];
-    put?: never;
+    patch?: never;
     post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/camel/topology/{routeId}/errors': {
     delete?: never;
-    options?: never;
+    get: operations['getErrors'];
     head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/subscribe/topic/{topicId}/sub/{subscriberId}': {
+    options?: never;
     parameters: {
-      query?: never;
+      cookie?: never;
       header?: never;
       path?: never;
-      cookie?: never;
+      query?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete: operations['unsubscribe'];
-    options?: never;
-    head?: never;
     patch?: never;
+    post?: never;
+    put?: never;
     trace?: never;
   };
-  '/api/platform/plugins/{artifactId}': {
+  '/api/camel/topology/{routeId}/traces': {
+    delete: operations['clearTraces'];
+    get: operations['getTraces'];
+    head?: never;
+    options?: never;
     parameters: {
-      query?: never;
+      cookie?: never;
       header?: never;
       path?: never;
-      cookie?: never;
+      query?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete: operations['uninstall'];
-    options?: never;
-    head?: never;
     patch?: never;
+    post?: never;
+    put?: never;
     trace?: never;
   };
-  '/api/files/{id}/physical': {
+  '/api/config': {
+    delete?: never;
+    get: operations['list_2'];
+    head?: never;
+    options?: never;
     parameters: {
-      query?: never;
+      cookie?: never;
       header?: never;
       path?: never;
-      cookie?: never;
+      query?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete: operations['physicalDeleteFile'];
-    options?: never;
-    head?: never;
     patch?: never;
+    post: operations['save'];
+    put?: never;
     trace?: never;
   };
-  '/api/files/{id}/logical': {
+  '/api/config/{key}': {
+    delete: operations['delete_7'];
+    get: operations['getByKey'];
+    head?: never;
+    options?: never;
     parameters: {
-      query?: never;
+      cookie?: never;
       header?: never;
       path?: never;
-      cookie?: never;
+      query?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete: operations['logicalDeleteFile'];
-    options?: never;
-    head?: never;
     patch?: never;
+    post?: never;
+    put?: never;
     trace?: never;
   };
-  '/api/files/user/{userId}/physical': {
+  '/api/files/count/{userId}': {
+    delete?: never;
+    get: operations['countUserFiles'];
+    head?: never;
+    options?: never;
     parameters: {
-      query?: never;
+      cookie?: never;
       header?: never;
       path?: never;
-      cookie?: never;
+      query?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete: operations['physicalDeleteUserFiles'];
-    options?: never;
-    head?: never;
     patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/files/download-ticket/{ticketId}': {
+    delete?: never;
+    get: operations['downloadByTicket'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/files/query': {
+    delete?: never;
+    get: operations['queryFiles'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/files/quota/{userId}': {
+    delete?: never;
+    get: operations['checkUserQuota'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/files/size/{userId}': {
+    delete?: never;
+    get: operations['sumUserFileSize'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/files/stats/{userId}': {
+    delete?: never;
+    get: operations['getUserFileStats'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/files/upload': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['uploadFile'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/files/user/{userId}': {
+    delete?: never;
+    get: operations['listFilesByUserId'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
     trace?: never;
   };
   '/api/files/user/{userId}/logical': {
+    delete: operations['logicalDeleteUserFiles'];
+    get?: never;
+    head?: never;
+    options?: never;
     parameters: {
-      query?: never;
+      cookie?: never;
       header?: never;
       path?: never;
-      cookie?: never;
+      query?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete: operations['logicalDeleteUserFiles'];
-    options?: never;
-    head?: never;
     patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/files/user/{userId}/physical': {
+    delete: operations['physicalDeleteUserFiles'];
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/files/user/{userId}/restore': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put: operations['restoreUserFiles'];
+    trace?: never;
+  };
+  '/api/files/{id}': {
+    delete?: never;
+    get: operations['getFileById'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/files/{id}/download-link': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['createDownloadLink'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/files/{id}/logical': {
+    delete: operations['logicalDeleteFile'];
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/files/{id}/physical': {
+    delete: operations['physicalDeleteFile'];
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/files/{id}/restore': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put: operations['restoreFile'];
+    trace?: never;
+  };
+  '/api/flows': {
+    delete?: never;
+    get: operations['listFlows'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['createFlow'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/flows/{id}': {
+    delete: operations['deleteFlow'];
+    get: operations['getFlow'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put: operations['updateFlow'];
+    trace?: never;
+  };
+  '/api/flows/{id}/execute': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['executeFlow'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/flows/{id}/publish': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['publishFlow'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/flows/{id}/versions': {
+    delete?: never;
+    get: operations['listVersions'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['createVersion'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/flows/{id}/xml': {
+    delete?: never;
+    get: operations['getFlowXml'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put: operations['updateFlowXml'];
+    trace?: never;
+  };
+  '/api/governance/approvals/instances': {
+    delete?: never;
+    get: operations['listInstances'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['create_7'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/governance/approvals/instances/{instanceId}': {
+    delete?: never;
+    get: operations['getInstance'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/governance/approvals/instances/{instanceId}/cancel': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['cancel'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/governance/approvals/instances/{instanceId}/submit': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['submit'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/governance/approvals/tasks/{taskId}/approve': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['approve_1'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/governance/approvals/tasks/{taskId}/reject': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['reject'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/platform/health': {
+    delete?: never;
+    get: operations['health'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/platform/index': {
+    delete?: never;
+    get: operations['index_1'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/platform/plugins/available': {
+    delete?: never;
+    get: operations['listAvailable'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/platform/plugins/install': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['install_1'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/platform/plugins/installed': {
+    delete?: never;
+    get: operations['listInstalled'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/platform/plugins/{artifactId}': {
+    delete: operations['uninstall'];
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/release': {
+    delete?: never;
+    get: operations['listByResource'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['create_6'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/release/all': {
+    delete?: never;
+    get: operations['listAll'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/release/{id}': {
+    delete?: never;
+    get: operations['getById_7'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/release/{id}/approve': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['approve'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/release/{id}/deploy': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['deploy_1'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/release/{id}/rollback': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['rollback_1'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/resource': {
+    delete?: never;
+    get: operations['query'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['register'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/resource/{id}': {
+    delete: operations['delete_6'];
+    get: operations['getById_6'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/resource/{id}/status': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put: operations['updateStatus_3'];
+    trace?: never;
+  };
+  '/api/security/governance/approval/decide': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['decide'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/security/governance/approval/request': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['submitRequest'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/security/governance/approval/request/{requestId}': {
+    delete: operations['withdraw'];
+    get: operations['getRequest'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/security/governance/approval/requests': {
+    delete?: never;
+    get: operations['listRequests'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/security/governance/release/deploy': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['deploy'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/security/governance/release/{releaseId}': {
+    delete?: never;
+    get: operations['getRelease'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/security/governance/release/{releaseId}/rollback': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['rollback'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/security/governance/releases': {
+    delete?: never;
+    get: operations['listReleases'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/subscribe/publish': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['publish'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/subscribe/topic': {
+    delete?: never;
+    get: operations['listTopics'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['createTopic'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/subscribe/topic/{id}': {
+    delete?: never;
+    get: operations['getTopic'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/subscribe/topic/{id}/sub': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['subscribe'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/subscribe/topic/{id}/subscribers': {
+    delete?: never;
+    get: operations['getSubscribers'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/subscribe/topic/{topicId}/sub/{subscriberId}': {
+    delete: operations['unsubscribe'];
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/subscribe/topic/{topicId}/sub/{subscriberId}/pause': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch: operations['pause'];
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/subscribe/topic/{topicId}/sub/{subscriberId}/resume': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch: operations['resume'];
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/system/apps': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['create_5'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/system/apps/page': {
+    delete?: never;
+    get: operations['page_1'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/system/apps/reorder': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put: operations['reorder'];
+    trace?: never;
+  };
+  '/api/system/apps/{id}': {
+    delete: operations['delete_5'];
+    get: operations['getById_5'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put: operations['update_5'];
+    trace?: never;
+  };
+  '/api/system/apps/{id}/status': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put: operations['updateStatus_2'];
+    trace?: never;
+  };
+  '/api/system/config/all': {
+    delete?: never;
+    get: operations['getAllConfigs'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/system/config/reload': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['reloadConfigs'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/system/config/type/{type}': {
+    delete?: never;
+    get: operations['getConfigsByType'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/system/config/update': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['updateConfig'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/system/config/{key}': {
+    delete?: never;
+    get: operations['getConfig'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/system/config/{key}/{defaultValue}': {
+    delete?: never;
+    get: operations['getConfigWithDefault'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/system/logs/audit/page': {
+    delete?: never;
+    get: operations['auditPage'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/system/logs/login/page': {
+    delete?: never;
+    get: operations['loginPage'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/system/logs/operations/page': {
+    delete?: never;
+    get: operations['operationsPage'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/system/org-policy': {
+    delete?: never;
+    get: operations['getPolicy'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put: operations['updatePolicy'];
+    trace?: never;
+  };
+  '/api/system/organizations': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['create_4'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/system/organizations/tree': {
+    delete?: never;
+    get: operations['tree_1'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/system/organizations/users/{userId}/organizations': {
+    delete?: never;
+    get: operations['listUserOrganizations'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/system/organizations/{id}': {
+    delete: operations['delete_4'];
+    get: operations['getById_4'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put: operations['update_4'];
+    trace?: never;
+  };
+  '/api/system/organizations/{id}/users': {
+    delete?: never;
+    get: operations['listUsers'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/system/organizations/{id}/users/{userId}': {
+    delete: operations['removeUser'];
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['assignUser'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/system/permissions': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['create_3'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/system/permissions/tree': {
+    delete?: never;
+    get: operations['tree'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/system/permissions/{id}': {
+    delete: operations['delete_3'];
+    get: operations['getById_3'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put: operations['update_3'];
+    trace?: never;
+  };
+  '/api/system/permissions/{id}/status': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put: operations['updateStatus_1'];
+    trace?: never;
+  };
+  '/api/system/roles': {
+    delete?: never;
+    get: operations['list_1'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['create_2'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/system/roles/{id}': {
+    delete: operations['delete_2'];
+    get: operations['getById_2'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put: operations['update_2'];
+    trace?: never;
+  };
+  '/api/system/roles/{id}/permissions': {
+    delete?: never;
+    get: operations['getPermissions'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put: operations['replacePermissions'];
+    trace?: never;
+  };
+  '/api/system/users': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['create_1'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/system/users/page': {
+    delete?: never;
+    get: operations['page'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/system/users/{id}': {
+    delete: operations['delete_1'];
+    get: operations['getById_1'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put: operations['update_1'];
+    trace?: never;
+  };
+  '/api/system/users/{id}/organizations': {
+    delete?: never;
+    get: operations['listOrganizations'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put: operations['replaceOrganizations'];
+    trace?: never;
+  };
+  '/api/system/users/{id}/reset-password': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['resetPassword'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/system/users/{id}/roles': {
+    delete?: never;
+    get: operations['listRoles'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put: operations['replaceRoles'];
+    trace?: never;
+  };
+  '/api/system/users/{id}/status': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put: operations['updateStatus'];
+    trace?: never;
+  };
+  '/api/task': {
+    delete?: never;
+    get: operations['list'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['create'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/task/by-trigger': {
+    delete?: never;
+    get: operations['getByTriggerType'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/task/by-type': {
+    delete?: never;
+    get: operations['getByType'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/task/instance': {
+    delete?: never;
+    get: operations['list_4'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/task/instance/{instanceId}': {
+    delete?: never;
+    get: operations['status_1'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/task/instance/{instanceId}/logs': {
+    delete?: never;
+    get: operations['logs'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/task/instance/{instanceId}/retry': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['retry'];
+    put?: never;
+    trace?: never;
+  };
+  '/api/task/{id}': {
+    delete: operations['delete'];
+    get: operations['getById'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put: operations['update'];
+    trace?: never;
+  };
+  '/api/task/{id}/status': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch: operations['changeStatus'];
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/api/task/{id}/trigger': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['trigger'];
+    put?: never;
+    trace?: never;
+  };
+  '/monitor': {
+    delete?: never;
+    get: operations['index'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/monitor/api/executing-sql': {
+    delete?: never;
+    get: operations['getExecutingSqlList'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/monitor/api/executing-sql/by-datasource': {
+    delete?: never;
+    get: operations['getExecutingSqlByDataSource'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/monitor/api/metrics': {
+    delete?: never;
+    get: operations['getAllMetrics'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/monitor/api/metrics/{dataSourceName}': {
+    delete?: never;
+    get: operations['getMetrics'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/monitor/api/pool': {
+    delete?: never;
+    get: operations['getPoolStats'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/monitor/api/reset': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['resetAllMetrics'];
+    put?: never;
+    trace?: never;
+  };
+  '/monitor/api/reset/{dataSourceName}': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['resetMetrics'];
+    put?: never;
+    trace?: never;
+  };
+  '/monitor/api/slow-sql': {
+    delete: operations['clearAllSlowSql'];
+    get: operations['getSlowSqlList'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/monitor/api/slow-sql/stats': {
+    delete?: never;
+    get: operations['getSlowSqlStats'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/monitor/api/slow-sql/threshold': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['setSlowSqlThreshold'];
+    put?: never;
+    trace?: never;
+  };
+  '/monitor/api/slow-sql/{dataSourceName}': {
+    delete: operations['clearSlowSql'];
+    get: operations['getSlowSqlList_1'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/monitor/api/sql': {
+    delete?: never;
+    get: operations['getSqlStats'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/monitor/api/sql/kill/{sqlId}': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['killSql'];
+    put?: never;
+    trace?: never;
+  };
+  '/platform/install': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['install'];
+    put?: never;
+    trace?: never;
+  };
+  '/platform/list': {
+    delete?: never;
+    get: operations['list_3'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/platform/reload-all': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['reloadAll'];
+    put?: never;
+    trace?: never;
+  };
+  '/platform/reload/{pluginId}': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['reload'];
+    put?: never;
+    trace?: never;
+  };
+  '/platform/start/{pluginId}': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['start'];
+    put?: never;
+    trace?: never;
+  };
+  '/platform/status/{pluginId}': {
+    delete?: never;
+    get: operations['status'];
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post?: never;
+    put?: never;
+    trace?: never;
+  };
+  '/platform/stop/{pluginId}': {
+    delete?: never;
+    get?: never;
+    head?: never;
+    options?: never;
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    patch?: never;
+    post: operations['stop'];
+    put?: never;
     trace?: never;
   };
 }
 export type webhooks = Record<string, never>;
 export interface components {
+  headers: never;
+  parameters: never;
+  pathItems: never;
+  requestBodies: never;
+  responses: never;
   schemas: {
-    TaskUpdateRequest: {
-      taskConfig?: string;
-      cronExpression?: string;
-      /** Format: int64 */
-      intervalMs?: number;
-      priority?: string;
-      /** Format: int32 */
-      maxRetries?: number;
-      /** Format: int64 */
-      timeoutMs?: number;
-    };
-    User: {
+    ConfigItem: {
+      applicationId?: string;
+      group?: string;
       id?: string;
-      /** Format: date-time */
-      createdAt?: string;
+      key?: string;
+      /** @enum {string} */
+      scope?: 'APPLICATION' | 'GLOBAL' | 'TENANT';
+      tenantId?: string;
+      /** @enum {string} */
+      type?: 'ENCRYPTED' | 'JSON' | 'NUMBER' | 'STRING';
       /** Format: date-time */
       updatedAt?: string;
-      username?: string;
-      password?: string;
-      email?: string;
-      phone?: string;
-      realName?: string;
-      status?: string;
-      /** Format: date-time */
-      lastLoginAt?: string;
+      updatedBy?: string;
+      value?: string;
+    };
+    FileDownloadLinkRequest: {
+      /** Format: int32 */
+      expireSeconds?: number;
+      singleUse?: boolean;
+      userId?: string;
+    };
+    FileQueryRequest: {
       /** Format: int32 */
       deleted?: number;
-      /** Format: date-time */
-      deletedAt?: string;
-      avatar?: string;
-    };
-    Role: {
-      id?: string;
-      /** Format: date-time */
-      createdAt?: string;
-      /** Format: date-time */
-      updatedAt?: string;
-      roleName?: string;
-      roleCode?: string;
-      description?: string;
-      status?: string;
-    };
-    Permission: {
-      id?: string;
-      /** Format: date-time */
-      createdAt?: string;
-      /** Format: date-time */
-      updatedAt?: string;
-      permName?: string;
-      permCode?: string;
-      permType?: string;
-      parentId?: string;
-      description?: string;
+      originalFileName?: string;
       /** Format: int32 */
-      sortOrder?: number;
+      pageNum?: number;
+      /** Format: int32 */
+      pageSize?: number;
+      userId?: string;
+    };
+    FlowCreateRequest: {
+      bpmnXml?: string;
+      category?: string;
+      description?: string;
+      name?: string;
+      tenantId?: string;
+    };
+    FlowExecuteRequest: {
+      engineType?: string;
+      inputJson?: string;
+      versionId?: string;
+    };
+    FlowUpdateRequest: {
+      category?: string;
+      description?: string;
+      name?: string;
       status?: string;
+    };
+    FlowVersionCreateRequest: {
+      bpmnXml?: string;
+    };
+    FlowXmlRequest: {
+      bpmnXml?: string;
     };
     Organization: {
-      id?: string;
       /** Format: date-time */
       createdAt?: string;
-      /** Format: date-time */
-      updatedAt?: string;
-      orgName?: string;
-      orgCode?: string;
-      parentId?: string;
+      description?: string;
+      id?: string;
       /** Format: int32 */
       level?: number;
-      description?: string;
-      status?: string;
+      orgCode?: string;
+      orgName?: string;
+      parentId?: string;
       /** Format: int32 */
       sortOrder?: number;
+      status?: string;
+      /** Format: date-time */
+      updatedAt?: string;
     };
     OrgPolicyDto: {
       enabled?: boolean;
       multiOrgEnabled?: boolean;
     };
-    ShellApp: {
-      id?: string;
+    Permission: {
       /** Format: date-time */
       createdAt?: string;
-      /** Format: date-time */
-      updatedAt?: string;
-      label?: string;
-      iconSvg?: string;
-      renderer?: string;
-      preload?: string;
-      /** Format: int32 */
-      integratable?: number;
-      /** Format: int32 */
-      defaultEnabled?: number;
+      description?: string;
+      id?: string;
+      parentId?: string;
+      permCode?: string;
+      permName?: string;
+      permType?: string;
       /** Format: int32 */
       sortOrder?: number;
       status?: string;
-    };
-    FlowUpdateRequest: {
-      name?: string;
-      category?: string;
-      status?: string;
-      description?: string;
-    };
-    FlowXmlRequest: {
-      bpmnXml?: string;
-    };
-    PluginInstallRequest: {
-      /** @enum {string} */
-      source?: 'LOCAL' | 'FILE_STORAGE' | 'HTTP';
-      localPath?: string;
-      fileId?: string;
-      userId?: string;
-      storageFileName?: string;
-      originalFileName?: string;
-      url?: string;
-      checksumSha256?: string;
-      start?: boolean;
-    };
-    PluginInstallResult: {
-      pf4jPluginId?: string;
-      localJarPath?: string;
-      /** @enum {string} */
-      source?: 'LOCAL' | 'FILE_STORAGE' | 'HTTP';
-      started?: boolean;
-      inMemory?: boolean;
-      fileId?: string;
-    };
-    TaskCreateRequest: {
-      taskName?: string;
-      taskType?: string;
-      tenantId?: string;
-      orgId?: string;
-      taskConfig?: string;
-      priority?: string;
-      cronExpression?: string;
-      /** Format: int64 */
-      intervalMs?: number;
-      triggerType?: string;
-      retryStrategy?: string;
-      /** Format: int32 */
-      maxRetries?: number;
-      /** Format: int64 */
-      timeoutMs?: number;
-      createdBy?: string;
-    };
-    ResourceMetadata: {
-      id?: string;
-      name?: string;
-      description?: string;
-      /** @enum {string} */
-      type?:
-        | 'CAMEL_ROUTE'
-        | 'PLUGIN'
-        | 'TASK'
-        | 'CONFIG'
-        | 'DATA_SOURCE'
-        | 'API'
-        | 'APPLICATION';
-      /** @enum {string} */
-      status?: 'DRAFT' | 'VERSIONED' | 'ACTIVE' | 'DEPRECATED' | 'ARCHIVED';
-      tenantId?: string;
-      ownerId?: string;
-      versionId?: string;
-      labels?: {
-        [key: string]: string;
-      };
-      /** Format: date-time */
-      createdAt?: string;
       /** Format: date-time */
       updatedAt?: string;
-      createdBy?: string;
-    };
-    FlowCreateRequest: {
-      name?: string;
-      category?: string;
-      tenantId?: string;
-      description?: string;
-      bpmnXml?: string;
-    };
-    FlowVersionCreateRequest: {
-      bpmnXml?: string;
-    };
-    FlowExecuteRequest: {
-      engineType?: string;
-      versionId?: string;
-      inputJson?: string;
-    };
-    FileDownloadLinkRequest: {
-      userId?: string;
-      /** Format: int32 */
-      expireSeconds?: number;
-      singleUse?: boolean;
-    };
-    ConfigItem: {
-      id?: string;
-      key?: string;
-      value?: string;
-      /** @enum {string} */
-      type?: 'STRING' | 'NUMBER' | 'JSON' | 'ENCRYPTED';
-      /** @enum {string} */
-      scope?: 'GLOBAL' | 'TENANT' | 'APPLICATION';
-      tenantId?: string;
-      applicationId?: string;
-      group?: string;
-      /** Format: date-time */
-      updatedAt?: string;
-      updatedBy?: string;
     };
     PluginDependency: {
+      optional?: boolean;
       pluginId?: string;
       pluginVersionSupport?: string;
-      optional?: boolean;
     };
     PluginInfo: {
-      pluginId?: string;
-      pluginDescription?: string;
-      pluginClass?: string;
-      version?: string;
-      requires?: string;
-      provider?: string;
-      license?: string;
       dependencies?: components['schemas']['PluginDependency'][];
+      license?: string;
+      newVersion?: string;
+      pluginClass?: string;
+      pluginDescription?: string;
+      pluginId?: string;
       /** @enum {string} */
       pluginState?:
         | 'CREATED'
         | 'DISABLED'
+        | 'FAILED'
         | 'RESOLVED'
         | 'STARTED'
         | 'STOPPED'
-        | 'FAILED'
         | 'UNLOADED';
-      newVersion?: string;
+      provider?: string;
       removed?: boolean;
+      requires?: string;
       startingError?: string;
+      version?: string;
     };
-    FileQueryRequest: {
-      userId?: string;
+    PluginInstallRequest: {
+      checksumSha256?: string;
+      fileId?: string;
+      localPath?: string;
       originalFileName?: string;
+      /** @enum {string} */
+      source?: 'FILE_STORAGE' | 'HTTP' | 'LOCAL';
+      start?: boolean;
+      storageFileName?: string;
+      url?: string;
+      userId?: string;
+    };
+    PluginInstallResult: {
+      fileId?: string;
+      inMemory?: boolean;
+      localJarPath?: string;
+      pf4jPluginId?: string;
+      /** @enum {string} */
+      source?: 'FILE_STORAGE' | 'HTTP' | 'LOCAL';
+      started?: boolean;
+    };
+    ResourceMetadata: {
+      /** Format: date-time */
+      createdAt?: string;
+      createdBy?: string;
+      description?: string;
+      id?: string;
+      labels?: {
+        [key: string]: string;
+      };
+      name?: string;
+      ownerId?: string;
+      /** @enum {string} */
+      status?: 'ACTIVE' | 'ARCHIVED' | 'DEPRECATED' | 'DRAFT' | 'VERSIONED';
+      tenantId?: string;
+      /** @enum {string} */
+      type?:
+        | 'API'
+        | 'APPLICATION'
+        | 'CAMEL_ROUTE'
+        | 'CONFIG'
+        | 'DATA_SOURCE'
+        | 'PLUGIN'
+        | 'TASK';
+      /** Format: date-time */
+      updatedAt?: string;
+      versionId?: string;
+    };
+    Role: {
+      /** Format: date-time */
+      createdAt?: string;
+      description?: string;
+      id?: string;
+      roleCode?: string;
+      roleName?: string;
+      status?: string;
+      /** Format: date-time */
+      updatedAt?: string;
+    };
+    ShellApp: {
+      /** Format: date-time */
+      createdAt?: string;
+      /** Format: int32 */
+      defaultEnabled?: number;
+      iconSvg?: string;
+      id?: string;
+      /** Format: int32 */
+      integratable?: number;
+      label?: string;
+      preload?: string;
+      renderer?: string;
+      /** Format: int32 */
+      sortOrder?: number;
+      status?: string;
+      /** Format: date-time */
+      updatedAt?: string;
+    };
+    TaskCreateRequest: {
+      createdBy?: string;
+      cronExpression?: string;
+      /** Format: int64 */
+      intervalMs?: number;
+      /** Format: int32 */
+      maxRetries?: number;
+      orgId?: string;
+      priority?: string;
+      retryStrategy?: string;
+      taskConfig?: string;
+      taskName?: string;
+      taskType?: string;
+      tenantId?: string;
+      /** Format: int64 */
+      timeoutMs?: number;
+      triggerType?: string;
+    };
+    TaskUpdateRequest: {
+      cronExpression?: string;
+      /** Format: int64 */
+      intervalMs?: number;
+      /** Format: int32 */
+      maxRetries?: number;
+      priority?: string;
+      taskConfig?: string;
+      /** Format: int64 */
+      timeoutMs?: number;
+    };
+    User: {
+      avatar?: string;
+      /** Format: date-time */
+      createdAt?: string;
       /** Format: int32 */
       deleted?: number;
-      /** Format: int32 */
-      pageNum?: number;
-      /** Format: int32 */
-      pageSize?: number;
+      /** Format: date-time */
+      deletedAt?: string;
+      email?: string;
+      id?: string;
+      /** Format: date-time */
+      lastLoginAt?: string;
+      password?: string;
+      phone?: string;
+      realName?: string;
+      status?: string;
+      /** Format: date-time */
+      updatedAt?: string;
+      username?: string;
     };
   };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  getById: {
+  approve: {
     parameters: {
-      query?: never;
+      cookie?: never;
       header?: never;
       path: {
         id: string;
       };
-      cookie?: never;
+      query?: {
+        operatorId?: string;
+      };
     };
     requestBody?: never;
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
       };
     };
   };
-  update: {
+  approve_1: {
     parameters: {
-      query?: never;
+      cookie?: never;
       header?: never;
       path: {
-        id: string;
+        taskId: string;
       };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['TaskUpdateRequest'];
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  delete: {
-    parameters: {
       query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getById_1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  update_1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['User'];
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  delete_1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  updateStatus: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
     };
     requestBody: {
       content: {
@@ -2519,481 +2413,65 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
       };
     };
   };
-  listRoles: {
+  assignUser: {
     parameters: {
-      query?: never;
+      cookie?: never;
       header?: never;
       path: {
         id: string;
+        userId: string;
       };
-      cookie?: never;
+      query?: never;
     };
     requestBody?: never;
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
       };
     };
   };
-  replaceRoles: {
+  auditPage: {
     parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
       cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': {
-          [key: string]: string[];
-        };
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  listOrganizations: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  replaceOrganizations: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': {
-          [key: string]: unknown;
-        };
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getById_2: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  update_2: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['Role'];
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  delete_2: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getPermissions: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  replacePermissions: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': {
-          [key: string]: string[];
-        };
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getById_3: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  update_3: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['Permission'];
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  delete_3: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  updateStatus_1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': {
-          [key: string]: string;
-        };
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getById_4: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  update_4: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['Organization'];
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  delete_4: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getPolicy: {
-    parameters: {
-      query?: never;
       header?: never;
       path?: never;
-      cookie?: never;
+      query?: {
+        entityName?: string;
+        operationType?: string;
+        page?: number;
+        size?: number;
+      };
     };
     requestBody?: never;
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
       };
     };
   };
-  updatePolicy: {
+  cancel: {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
       cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['OrgPolicyDto'];
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getById_5: {
-    parameters: {
-      query?: never;
       header?: never;
       path: {
-        id: string;
+        instanceId: string;
       };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  update_5: {
-    parameters: {
       query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ShellApp'];
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  delete_5: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  updateStatus_2: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
     };
     requestBody: {
       content: {
@@ -3005,43 +2483,21 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
       };
     };
   };
-  reorder: {
+  changeStatus: {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
       cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ShellApp'][];
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  updateStatus_3: {
-    parameters: {
-      query?: never;
       header?: never;
       path: {
         id: string;
       };
-      cookie?: never;
+      query?: never;
     };
     requestBody: {
       content: {
@@ -3053,399 +2509,129 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
       };
     };
   };
-  getFlow: {
+  checkUserQuota: {
     parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
       cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  updateFlow: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['FlowUpdateRequest'];
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  deleteFlow: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getFlowXml: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  updateFlowXml: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['FlowXmlRequest'];
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  restoreFile: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  restoreUserFiles: {
-    parameters: {
-      query?: never;
       header?: never;
       path: {
         userId: string;
       };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  stop: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        pluginId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': {
-            [key: string]: unknown;
-          };
-        };
-      };
-    };
-  };
-  start: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        pluginId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': {
-            [key: string]: unknown;
-          };
-        };
-      };
-    };
-  };
-  reload: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        pluginId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': {
-            [key: string]: unknown;
-          };
-        };
-      };
-    };
-  };
-  reloadAll: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': {
-            [key: string]: unknown;
-          };
-        };
-      };
-    };
-  };
-  install: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['PluginInstallRequest'];
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': components['schemas']['PluginInstallResult'];
-        };
-      };
-    };
-  };
-  killSql: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        sqlId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': {
-            [key: string]: unknown;
-          };
-        };
-      };
-    };
-  };
-  setSlowSqlThreshold: {
-    parameters: {
       query: {
-        thresholdMs: number;
+        quotaSize: number;
       };
-      header?: never;
-      path?: never;
-      cookie?: never;
     };
     requestBody?: never;
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
-        };
-        content: {
-          '*/*': {
-            [key: string]: unknown;
-          };
         };
       };
     };
   };
-  resetAllMetrics: {
+  clearAllSlowSql: {
     parameters: {
-      query?: never;
+      cookie?: never;
       header?: never;
       path?: never;
-      cookie?: never;
+      query?: never;
     };
     requestBody?: never;
     responses: {
       /** @description OK */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           '*/*': {
             [key: string]: unknown;
           };
         };
+        headers: {
+          [name: string]: unknown;
+        };
       };
     };
   };
-  resetMetrics: {
+  clearSlowSql: {
     parameters: {
-      query?: never;
+      cookie?: never;
       header?: never;
       path: {
         dataSourceName: string;
       };
-      cookie?: never;
+      query?: never;
     };
     requestBody?: never;
     responses: {
       /** @description OK */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content: {
           '*/*': {
             [key: string]: unknown;
           };
         };
+        headers: {
+          [name: string]: unknown;
+        };
       };
     };
   };
-  list: {
+  clearTraces: {
     parameters: {
-      query?: {
-        tenantId?: string;
-      };
-      header?: never;
-      path?: never;
       cookie?: never;
+      header?: never;
+      path: {
+        routeId: string;
+      };
+      query?: never;
     };
     requestBody?: never;
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
         };
+      };
+    };
+  };
+  countUserFiles: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        userId: string;
+      };
+      query?: {
+        deleted?: number;
+      };
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
         content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
       };
     };
   };
   create: {
     parameters: {
-      query?: never;
+      cookie?: never;
       header?: never;
       path?: never;
-      cookie?: never;
+      query?: never;
     };
     requestBody: {
       content: {
@@ -3455,59 +2641,19 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
-      };
-    };
-  };
-  trigger: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  retry: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        instanceId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
       };
     };
   };
   create_1: {
     parameters: {
-      query?: never;
+      cookie?: never;
       header?: never;
       path?: never;
-      cookie?: never;
+      query?: never;
     };
     requestBody: {
       content: {
@@ -3517,63 +2663,19 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
-      };
-    };
-  };
-  resetPassword: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': {
-          [key: string]: string;
-        };
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  list_1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
       };
     };
   };
   create_2: {
     parameters: {
-      query?: never;
+      cookie?: never;
       header?: never;
       path?: never;
-      cookie?: never;
+      query?: never;
     };
     requestBody: {
       content: {
@@ -3583,19 +2685,19 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
       };
     };
   };
   create_3: {
     parameters: {
-      query?: never;
+      cookie?: never;
       header?: never;
       path?: never;
-      cookie?: never;
+      query?: never;
     };
     requestBody: {
       content: {
@@ -3605,19 +2707,19 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
       };
     };
   };
   create_4: {
     parameters: {
-      query?: never;
+      cookie?: never;
       header?: never;
       path?: never;
-      cookie?: never;
+      query?: never;
     };
     requestBody: {
       content: {
@@ -3627,103 +2729,19 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
-      };
-    };
-  };
-  assignUser: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-        userId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  removeUser: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-        userId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  updateConfig: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': {
-          [key: string]: string;
-        };
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  reloadConfigs: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
       };
     };
   };
   create_5: {
     parameters: {
-      query?: never;
+      cookie?: never;
       header?: never;
       path?: never;
-      cookie?: never;
+      query?: never;
     };
     requestBody: {
       content: {
@@ -3733,39 +2751,113 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
       };
     };
   };
-  listTopics: {
+  create_6: {
     parameters: {
-      query?: {
-        tenantId?: string;
-      };
+      cookie?: never;
       header?: never;
       path?: never;
-      cookie?: never;
+      query?: never;
     };
-    requestBody?: never;
+    requestBody: {
+      content: {
+        'application/json': {
+          [key: string]: string;
+        };
+      };
+    };
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
         };
+      };
+    };
+  };
+  create_7: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': {
+          [key: string]: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
         content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  createDownloadLink: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['FileDownloadLinkRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  createFlow: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['FlowCreateRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
       };
     };
   };
   createTopic: {
     parameters: {
-      query?: never;
+      cookie?: never;
       header?: never;
       path?: never;
-      cookie?: never;
+      query?: never;
     };
     requestBody: {
       content: {
@@ -3777,21 +2869,43 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
       };
     };
   };
-  subscribe: {
+  createVersion: {
     parameters: {
-      query?: never;
+      cookie?: never;
       header?: never;
       path: {
         id: string;
       };
+      query?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['FlowVersionCreateRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  decide: {
+    parameters: {
       cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
     };
     requestBody: {
       content: {
@@ -3803,19 +2917,1847 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
         };
+      };
+    };
+  };
+  delete: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
         content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  delete_1: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  delete_2: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  delete_3: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  delete_4: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  delete_5: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  delete_6: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: {
+        operatorId?: string;
+      };
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  delete_7: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        key: string;
+      };
+      query?: {
+        scope?: string;
+        tenantId?: string;
+      };
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  deleteFlow: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  deploy: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': {
+          [key: string]: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  deploy_1: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: {
+        operatorId?: string;
+      };
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  downloadByTicket: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        ticketId: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  executeFlow: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['FlowExecuteRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getAllConfigs: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getAllMetrics: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': {
+            [key: string]: unknown;
+          };
+        };
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getById: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getById_1: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getById_2: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getById_3: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getById_4: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getById_5: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getById_6: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getById_7: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getByKey: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        key: string;
+      };
+      query?: {
+        scope?: string;
+        tenantId?: string;
+      };
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getByTriggerType: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query: {
+        triggerType: string;
+      };
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getByType: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query: {
+        taskType: string;
+      };
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getConfig: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        key: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getConfigsByType: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        type: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getConfigWithDefault: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        defaultValue: string;
+        key: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getErrors: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        routeId: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getExecutingSqlByDataSource: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': {
+            [key: string]: unknown;
+          };
+        };
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getExecutingSqlList: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': {
+            [key: string]: unknown;
+          };
+        };
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getFileById: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getFlow: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getFlowXml: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getInstance: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        instanceId: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getMetrics: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        dataSourceName: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': {
+            [key: string]: unknown;
+          };
+        };
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getPermissions: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getPolicy: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getPoolStats: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': {
+            [key: string]: unknown;
+          };
+        };
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getRelease: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        releaseId: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getRequest: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        requestId: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getSlowSqlList: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': {
+            [key: string]: unknown;
+          };
+        };
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getSlowSqlList_1: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        dataSourceName: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': {
+            [key: string]: unknown;
+          };
+        };
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getSlowSqlStats: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': {
+            [key: string]: unknown;
+          };
+        };
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getSqlStats: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': {
+            [key: string]: unknown;
+          };
+        };
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getSubscribers: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getTopic: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getTopology: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        routeId: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getTraces: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        routeId: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  getUserFileStats: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        userId: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  health: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': {
+            [key: string]: unknown;
+          };
+        };
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  health_1: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': {
+            [key: string]: unknown;
+          };
+        };
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  index: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': string;
+        };
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  index_1: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  install: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PluginInstallRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['PluginInstallResult'];
+        };
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  install_1: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': {
+          [key: string]: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  killSql: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        sqlId: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': {
+            [key: string]: unknown;
+          };
+        };
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  list: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: {
+        tenantId?: string;
+      };
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  list_1: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  list_2: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: {
+        group?: string;
+        scope?: string;
+        tenantId?: string;
+      };
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  list_3: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['PluginInfo'][];
+        };
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  list_4: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: {
+        definitionId?: string;
+        tenantId?: string;
+      };
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  listAll: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: {
+        tenantId?: string;
+      };
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  listAvailable: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: {
+        keyword?: string;
+      };
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  listByResource: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query: {
+        resourceId: string;
+      };
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  listFilesByUserId: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        userId: string;
+      };
+      query?: {
+        deleted?: number;
+      };
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  listFlows: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: {
+        category?: string;
+        page?: number;
+        pageSize?: number;
+        status?: string;
+        tenantId?: string;
+      };
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  listInstalled: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  listInstances: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: {
+        tenantId?: string;
+      };
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  listOrganizations: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  listReleases: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: {
+        tenantId?: string;
+      };
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  listRequests: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: {
+        tenantId?: string;
+      };
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  listRoles: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  listTopics: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: {
+        tenantId?: string;
+      };
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  listUserOrganizations: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        userId: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  listUsers: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  listVersions: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  logicalDeleteFile: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  logicalDeleteUserFiles: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        userId: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  loginPage: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: {
+        page?: number;
+        size?: number;
+        username?: string;
+      };
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  logs: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        instanceId: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  operationsPage: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: {
+        level?: string;
+        module?: string;
+        page?: number;
+        size?: number;
+      };
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  page: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: {
+        keyword?: string;
+        page?: number;
+        size?: number;
+        status?: string;
+      };
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  page_1: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: {
+        keyword?: string;
+        page?: number;
+        size?: number;
+        status?: string;
+      };
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  pause: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        subscriberId: string;
+        topicId: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  physicalDeleteFile: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  physicalDeleteUserFiles: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        userId: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
       };
     };
   };
   publish: {
     parameters: {
-      query?: never;
+      cookie?: never;
       header?: never;
       path?: never;
-      cookie?: never;
+      query?: never;
     };
     requestBody: {
       content: {
@@ -3827,138 +4769,84 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
       };
     };
   };
-  rollback: {
+  publishFlow: {
     parameters: {
-      query?: {
-        operatorId?: string;
-      };
+      cookie?: never;
       header?: never;
       path: {
-        releaseId: string;
+        id: string;
       };
-      cookie?: never;
+      query?: never;
     };
     requestBody?: never;
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
-      };
-    };
-  };
-  deploy: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': {
-          [key: string]: string;
-        };
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  submitRequest: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': {
-          [key: string]: string;
-        };
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  decide: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': {
-          [key: string]: string;
-        };
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
       };
     };
   };
   query: {
     parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
       query?: {
-        type?: string;
-        status?: string;
-        tenantId?: string;
         keyword?: string;
         page?: number;
         size?: number;
+        status?: string;
+        tenantId?: string;
+        type?: string;
       };
-      header?: never;
-      path?: never;
-      cookie?: never;
     };
     requestBody?: never;
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
         };
+      };
+    };
+  };
+  queryFiles: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query: {
+        query: components['schemas']['FileQueryRequest'];
+      };
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
         content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
       };
     };
   };
   register: {
     parameters: {
-      query?: never;
+      cookie?: never;
       header?: never;
       path?: never;
-      cookie?: never;
+      query?: never;
     };
     requestBody: {
       content: {
@@ -3968,155 +4856,21 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
-      };
-    };
-  };
-  listByResource: {
-    parameters: {
-      query: {
-        resourceId: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  create_6: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': {
-          [key: string]: string;
-        };
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  rollback_1: {
-    parameters: {
-      query?: {
-        operatorId?: string;
-      };
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  deploy_1: {
-    parameters: {
-      query?: {
-        operatorId?: string;
-      };
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  approve: {
-    parameters: {
-      query?: {
-        operatorId?: string;
-      };
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  install_1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': {
-          [key: string]: string;
-        };
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
       };
     };
   };
   reject: {
     parameters: {
-      query?: never;
+      cookie?: never;
       header?: never;
       path: {
         taskId: string;
       };
-      cookie?: never;
+      query?: never;
     };
     requestBody: {
       content: {
@@ -4128,65 +4882,252 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
       };
     };
   };
-  approve_1: {
+  reload: {
     parameters: {
-      query?: never;
+      cookie?: never;
       header?: never;
       path: {
-        taskId: string;
+        pluginId: string;
       };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': {
-          [key: string]: string;
-        };
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  listInstances: {
-    parameters: {
-      query?: {
-        tenantId?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
+      query?: never;
     };
     requestBody?: never;
     responses: {
       /** @description OK */
       200: {
+        content: {
+          '*/*': {
+            [key: string]: unknown;
+          };
+        };
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
       };
     };
   };
-  create_7: {
+  reloadAll: {
     parameters: {
-      query?: never;
+      cookie?: never;
       header?: never;
       path?: never;
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': {
+            [key: string]: unknown;
+          };
+        };
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  reloadConfigs: {
+    parameters: {
       cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  removeUser: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+        userId: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  reorder: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ShellApp'][];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  replaceOrganizations: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': {
+          [key: string]: unknown;
+        };
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  replacePermissions: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': {
+          [key: string]: string[];
+        };
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  replaceRoles: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': {
+          [key: string]: string[];
+        };
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  resetAllMetrics: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': {
+            [key: string]: unknown;
+          };
+        };
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  resetMetrics: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        dataSourceName: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': {
+            [key: string]: unknown;
+          };
+        };
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  resetPassword: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
     };
     requestBody: {
       content: {
@@ -4198,21 +5139,284 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
         };
+      };
+    };
+  };
+  restoreFile: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
         content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  restoreUserFiles: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        userId: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  resume: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        subscriberId: string;
+        topicId: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  retry: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        instanceId: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  rollback: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        releaseId: string;
+      };
+      query?: {
+        operatorId?: string;
+      };
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  rollback_1: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: {
+        operatorId?: string;
+      };
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  save: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ConfigItem'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  setSlowSqlThreshold: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query: {
+        thresholdMs: number;
+      };
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': {
+            [key: string]: unknown;
+          };
+        };
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  start: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        pluginId: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': {
+            [key: string]: unknown;
+          };
+        };
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  status: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        pluginId: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': {
+            [key: string]: unknown;
+          };
+        };
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  status_1: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        instanceId: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  stop: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        pluginId: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': {
+            [key: string]: unknown;
+          };
+        };
+        headers: {
+          [name: string]: unknown;
+        };
       };
     };
   };
   submit: {
     parameters: {
-      query?: never;
+      cookie?: never;
       header?: never;
       path: {
         instanceId: string;
       };
-      cookie?: never;
+      query?: never;
     };
     requestBody?: {
       content: {
@@ -4224,21 +5428,19 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
       };
     };
   };
-  cancel: {
+  submitRequest: {
     parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        instanceId: string;
-      };
       cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
     };
     requestBody: {
       content: {
@@ -4250,179 +5452,532 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
       };
     };
   };
-  listFlows: {
+  subscribe: {
     parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': {
+          [key: string]: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  sumUserFileSize: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        userId: string;
+      };
       query?: {
-        page?: number;
-        pageSize?: number;
-        category?: string;
-        tenantId?: string;
-        status?: string;
+        deleted?: number;
       };
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  systemInfo: {
+    parameters: {
+      cookie?: never;
       header?: never;
       path?: never;
-      cookie?: never;
+      query?: never;
     };
     requestBody?: never;
     responses: {
       /** @description OK */
       200: {
+        content: {
+          '*/*': {
+            [key: string]: unknown;
+          };
+        };
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
       };
     };
   };
-  createFlow: {
+  tree: {
     parameters: {
-      query?: never;
+      cookie?: never;
       header?: never;
       path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['FlowCreateRequest'];
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  listVersions: {
-    parameters: {
       query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
     };
     requestBody?: never;
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
       };
     };
   };
-  createVersion: {
+  tree_1: {
     parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
       cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['FlowVersionCreateRequest'];
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  publishFlow: {
-    parameters: {
-      query?: never;
       header?: never;
-      path: {
-        id: string;
+      path?: never;
+      query?: {
+        parentId?: string;
       };
-      cookie?: never;
     };
     requestBody?: never;
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
       };
     };
   };
-  executeFlow: {
+  trigger: {
     parameters: {
-      query?: never;
+      cookie?: never;
       header?: never;
       path: {
         id: string;
       };
-      cookie?: never;
+      query?: never;
     };
-    requestBody?: {
-      content: {
-        'application/json': components['schemas']['FlowExecuteRequest'];
-      };
-    };
+    requestBody?: never;
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
       };
     };
   };
-  createDownloadLink: {
+  uninstall: {
     parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        artifactId: string;
+      };
       query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  unsubscribe: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        subscriberId: string;
+        topicId: string;
+      };
+      query?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  update: {
+    parameters: {
+      cookie?: never;
       header?: never;
       path: {
         id: string;
       };
-      cookie?: never;
+      query?: never;
     };
     requestBody: {
       content: {
-        'application/json': components['schemas']['FileDownloadLinkRequest'];
+        'application/json': components['schemas']['TaskUpdateRequest'];
       };
     };
     responses: {
       /** @description OK */
       200: {
+        content?: never;
         headers: {
           [name: string]: unknown;
         };
+      };
+    };
+  };
+  update_1: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['User'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
         content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  update_2: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Role'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  update_3: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Permission'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  update_4: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Organization'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  update_5: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ShellApp'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  updateConfig: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': {
+          [key: string]: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  updateFlow: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['FlowUpdateRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  updateFlowXml: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['FlowXmlRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  updatePolicy: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
+      query?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['OrgPolicyDto'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  updateStatus: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': {
+          [key: string]: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  updateStatus_1: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': {
+          [key: string]: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  updateStatus_2: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': {
+          [key: string]: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
+      };
+    };
+  };
+  updateStatus_3: {
+    parameters: {
+      cookie?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      query?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': {
+          [key: string]: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content?: never;
+        headers: {
+          [name: string]: unknown;
+        };
       };
     };
   };
   uploadFile: {
     parameters: {
+      cookie?: never;
+      header?: never;
+      path?: never;
       query?: {
         userId?: string;
       };
-      header?: never;
-      path?: never;
-      cookie?: never;
     };
     requestBody?: {
       content: {
@@ -4435,1587 +5990,32 @@ export interface operations {
     responses: {
       /** @description OK */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content?: never;
-      };
-    };
-  };
-  list_2: {
-    parameters: {
-      query?: {
-        scope?: string;
-        tenantId?: string;
-        group?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
-      };
-    };
-  };
-  save: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ConfigItem'];
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  changeStatus: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': {
-          [key: string]: string;
-        };
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  resume: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        topicId: string;
-        subscriberId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  pause: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        topicId: string;
-        subscriberId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  status: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        pluginId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': {
-            [key: string]: unknown;
-          };
-        };
-      };
-    };
-  };
-  list_3: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': components['schemas']['PluginInfo'][];
-        };
-      };
-    };
-  };
-  index: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': string;
-        };
-      };
-    };
-  };
-  getSqlStats: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': {
-            [key: string]: unknown;
-          };
-        };
-      };
-    };
-  };
-  getSlowSqlList: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': {
-            [key: string]: unknown;
-          };
-        };
-      };
-    };
-  };
-  clearAllSlowSql: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': {
-            [key: string]: unknown;
-          };
-        };
-      };
-    };
-  };
-  getSlowSqlList_1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        dataSourceName: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': {
-            [key: string]: unknown;
-          };
-        };
-      };
-    };
-  };
-  clearSlowSql: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        dataSourceName: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': {
-            [key: string]: unknown;
-          };
-        };
-      };
-    };
-  };
-  getSlowSqlStats: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': {
-            [key: string]: unknown;
-          };
-        };
-      };
-    };
-  };
-  getPoolStats: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': {
-            [key: string]: unknown;
-          };
-        };
-      };
-    };
-  };
-  getAllMetrics: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': {
-            [key: string]: unknown;
-          };
-        };
-      };
-    };
-  };
-  getMetrics: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        dataSourceName: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': {
-            [key: string]: unknown;
-          };
-        };
-      };
-    };
-  };
-  getExecutingSqlList: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': {
-            [key: string]: unknown;
-          };
-        };
-      };
-    };
-  };
-  getExecutingSqlByDataSource: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': {
-            [key: string]: unknown;
-          };
-        };
-      };
-    };
-  };
-  list_4: {
-    parameters: {
-      query?: {
-        definitionId?: string;
-        tenantId?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  status_1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        instanceId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  logs: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        instanceId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getByType: {
-    parameters: {
-      query: {
-        taskType: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getByTriggerType: {
-    parameters: {
-      query: {
-        triggerType: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  page: {
-    parameters: {
-      query?: {
-        page?: number;
-        size?: number;
-        keyword?: string;
-        status?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  tree: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  listUsers: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  listUserOrganizations: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        userId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  tree_1: {
-    parameters: {
-      query?: {
-        parentId?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  operationsPage: {
-    parameters: {
-      query?: {
-        page?: number;
-        size?: number;
-        level?: string;
-        module?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  loginPage: {
-    parameters: {
-      query?: {
-        page?: number;
-        size?: number;
-        username?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  auditPage: {
-    parameters: {
-      query?: {
-        page?: number;
-        size?: number;
-        operationType?: string;
-        entityName?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getConfig: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        key: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getConfigWithDefault: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        key: string;
-        defaultValue: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getConfigsByType: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        type: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getAllConfigs: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  page_1: {
-    parameters: {
-      query?: {
-        page?: number;
-        size?: number;
-        keyword?: string;
-        status?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getTopic: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getSubscribers: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  listReleases: {
-    parameters: {
-      query?: {
-        tenantId?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getRelease: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        releaseId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  listRequests: {
-    parameters: {
-      query?: {
-        tenantId?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getRequest: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        requestId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
       };
     };
   };
   withdraw: {
     parameters: {
-      query?: {
-        applicantId?: string;
-      };
+      cookie?: never;
       header?: never;
       path: {
         requestId: string;
       };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getById_6: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  delete_6: {
-    parameters: {
       query?: {
-        operatorId?: string;
+        applicantId?: string;
       };
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
     };
     requestBody?: never;
     responses: {
       /** @description OK */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
         content?: never;
-      };
-    };
-  };
-  getById_7: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
-      };
-    };
-  };
-  listAll: {
-    parameters: {
-      query?: {
-        tenantId?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  listInstalled: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  listAvailable: {
-    parameters: {
-      query?: {
-        keyword?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  index_1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  health: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': {
-            [key: string]: unknown;
-          };
-        };
-      };
-    };
-  };
-  getInstance: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        instanceId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getFileById: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  listFilesByUserId: {
-    parameters: {
-      query?: {
-        deleted?: number;
-      };
-      header?: never;
-      path: {
-        userId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getUserFileStats: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        userId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  sumUserFileSize: {
-    parameters: {
-      query?: {
-        deleted?: number;
-      };
-      header?: never;
-      path: {
-        userId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  checkUserQuota: {
-    parameters: {
-      query: {
-        quotaSize: number;
-      };
-      header?: never;
-      path: {
-        userId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  queryFiles: {
-    parameters: {
-      query: {
-        query: components['schemas']['FileQueryRequest'];
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  downloadByTicket: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        ticketId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  countUserFiles: {
-    parameters: {
-      query?: {
-        deleted?: number;
-      };
-      header?: never;
-      path: {
-        userId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getByKey: {
-    parameters: {
-      query?: {
-        scope?: string;
-        tenantId?: string;
-      };
-      header?: never;
-      path: {
-        key: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  delete_7: {
-    parameters: {
-      query?: {
-        scope?: string;
-        tenantId?: string;
-      };
-      header?: never;
-      path: {
-        key: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getTopology: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        routeId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getTraces: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        routeId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  clearTraces: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        routeId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getErrors: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        routeId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  systemInfo: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': {
-            [key: string]: unknown;
-          };
-        };
-      };
-    };
-  };
-  health_1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          '*/*': {
-            [key: string]: unknown;
-          };
-        };
-      };
-    };
-  };
-  unsubscribe: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        topicId: string;
-        subscriberId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  uninstall: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        artifactId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  physicalDeleteFile: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  logicalDeleteFile: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  physicalDeleteUserFiles: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        userId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  logicalDeleteUserFiles: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        userId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
       };
     };
   };

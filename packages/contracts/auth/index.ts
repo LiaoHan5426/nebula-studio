@@ -11,8 +11,8 @@ import type { ApiResponse } from '../common/index.ts';
 
 export interface OrgSummary {
   id: string;
-  orgName: string;
   orgCode: string;
+  orgName: string;
   primary?: boolean;
 }
 
@@ -25,27 +25,27 @@ export interface OrgPolicy {
 
 export interface AuthMode {
   authType: string;
-  orgEnabled: boolean;
   multiOrgEnabled: boolean;
+  orgEnabled: boolean;
 }
 
 // ==================== 当前用户 ====================
 
 export interface AuthMe {
-  username: string;
-  userId: string | number;
-  roles: string[];
-  currentOrgId?: string;
   currentOrgCode?: string;
+  currentOrgId?: string;
   currentOrgName?: string;
   organizations?: OrgSummary[];
+  roles: string[];
+  userId: number | string;
+  username: string;
 }
 
 // ==================== 登录 / 组织切换 ====================
 
 export interface AuthLoginRequest {
-  username: string;
   password: string;
+  username: string;
 }
 
 export interface AuthCompleteLoginRequest {
@@ -60,65 +60,65 @@ export type AuthApiResponse<T> = Omit<ApiResponse<T>, 'data'> & {
 };
 
 export interface BackendLoginResult {
-  token?: string;
-  username: string;
-  userId?: string | number;
-  roles?: string[];
-  needsOrgSelection?: boolean;
-  organizations?: OrgSummary[];
   currentOrgId?: string;
   currentOrgName?: string;
+  needsOrgSelection?: boolean;
+  organizations?: OrgSummary[];
+  roles?: string[];
+  token?: string;
+  userId?: number | string;
+  username: string;
 }
 
 export interface SwitchOrgResult {
-  token?: string;
-  currentOrgId?: string;
   currentOrgCode?: string;
+  currentOrgId?: string;
   currentOrgName?: string;
+  token?: string;
 }
 
 // ==================== 集成域登录（integration renderer 专用） ====================
 
 export interface IntegrationLoginResult {
-  token: string;
-  username: string;
-  userId: number;
   roles?: string[];
+  token: string;
+  userId: number;
+  username: string;
 }
 
 export interface AuthProfile {
-  username: string;
-  userId: number;
   roles: string[];
+  userId: number;
+  username: string;
 }
 
 // ==================== Electron IPC ====================
 
 export interface ElectronAuthSession {
-  user: string;
-  token?: string;
   roles?: string[];
+  token?: string;
+  user: string;
   userId?: string;
 }
 
 export interface ElectronAuthLoginPayload {
-  user: string;
   password: string;
+  user: string;
 }
 
 export type ElectronAuthLoginResult =
-  | ({ ok: true } & ElectronAuthSession)
-  | { ok: false; error: string };
+  | (ElectronAuthSession & { ok: true })
+  | { error: string; ok: false };
 
 export interface ElectronAuthEstablishSessionPayload extends ElectronAuthSession {
   token: string;
 }
 
 export interface ElectronAuthApi {
-  login(payload: ElectronAuthLoginPayload): Promise<ElectronAuthLoginResult>;
-  getSession(): Promise<ElectronAuthSession | null>;
   establishSession(
     payload: ElectronAuthEstablishSessionPayload,
   ): Promise<boolean>;
+  getSession(): Promise<ElectronAuthSession | null>;
+  login(payload: ElectronAuthLoginPayload): Promise<ElectronAuthLoginResult>;
   logout(): Promise<boolean | void>;
 }

@@ -1,8 +1,10 @@
-import { defineComponent, h } from 'vue';
 import type { PropType } from 'vue';
+
+import { defineComponent, h } from 'vue';
+
 import Draggable from 'vuedraggable';
 
-type ItemKeyFn<T> = (item: T) => string | number;
+type ItemKeyFn<T> = (item: T) => number | string;
 
 export const NebulaDrag = defineComponent({
   name: 'NebulaDrag',
@@ -12,7 +14,7 @@ export const NebulaDrag = defineComponent({
       default: () => [],
     },
     itemKey: {
-      type: [String, Function] as PropType<string | ItemKeyFn<unknown>>,
+      type: [String, Function] as PropType<ItemKeyFn<unknown> | string>,
       required: true,
     },
     tag: {
@@ -24,7 +26,7 @@ export const NebulaDrag = defineComponent({
       default: '',
     },
     group: {
-      type: [String, Object] as PropType<string | Record<string, unknown>>,
+      type: [String, Object] as PropType<Record<string, unknown> | string>,
       default: undefined,
     },
     disabled: {

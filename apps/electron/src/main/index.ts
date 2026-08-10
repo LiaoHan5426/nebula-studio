@@ -1,6 +1,7 @@
-import { app } from 'electron';
-import { electronApp, optimizer, is } from '@electron-toolkit/utils';
+import { electronApp, is, optimizer } from '@electron-toolkit/utils';
 import { bootstrapShellIntegratedApps } from '@nebula-studio-renderer/main/platform/integrated-apps';
+import { app } from 'electron';
+
 import { MainAppLauncher } from './bootstrap/MainAppLauncher';
 import { AppearanceSettingsModule } from './modules/AppearanceSettingsModule';
 import { ApplicationLogger } from './modules/ApplicationLogger';
@@ -10,8 +11,8 @@ import { ConfigManager } from './modules/ConfigManager';
 import { IpcAuthModule } from './modules/IpcAuthModule';
 import { IpcNotificationModule } from './modules/IpcNotificationModule';
 import { RuntimePluginManager } from './modules/RuntimePluginManager';
-import { SingleInstanceAppModule } from './modules/SingleInstanceAppModule';
 import { allowInternalOrigins } from './modules/security/BlockNotAllowedOrigins';
+import { SingleInstanceAppModule } from './modules/SingleInstanceAppModule';
 import { WindowManager } from './modules/window/WindowManager';
 import { WindowManagerModule } from './modules/window/WindowManagerModule';
 

@@ -1,3 +1,5 @@
+import type { AuthBootstrapOptions, AuthStrategy } from '../types';
+
 /**
  * StandaloneStrategy — 独立部署模式认证策略。
  *
@@ -11,7 +13,6 @@
  * - integration/src/features/auth/LoginPage.vue
  */
 import { hasValidAuthToken } from '@nebula-studio/auth-provider/session';
-import type { AuthBootstrapOptions, AuthStrategy } from '../types';
 
 export class StandaloneStrategy implements AuthStrategy {
   private _loginRoutePath = '/login';
@@ -31,14 +32,10 @@ export class StandaloneStrategy implements AuthStrategy {
     return true;
   }
 
-  dispose(): void {
-    // standalone 模式无需清理（router guard 随 app 生命周期结束）
-  }
-
   /** 供 router beforeEach 使用的守卫逻辑 */
   createRouterGuard(): (to: {
-    path: string;
     meta?: Record<string, unknown>;
+    path: string;
   }) => {
     authenticated: boolean;
     redirectTo?: string;
@@ -56,5 +53,9 @@ export class StandaloneStrategy implements AuthStrategy {
       }
       return { authenticated: true };
     };
+  }
+
+  dispose(): void {
+    // standalone 模式无需清理（router guard 随 app 生命周期结束）
   }
 }

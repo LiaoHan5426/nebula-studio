@@ -1,14 +1,16 @@
+import type { ApiResponse, PageResponse } from '@/shared/types';
+
+import type {
+  PluginCatalogItem,
+  PluginRecord,
+} from '@nebula-studio/contracts/integration';
+
 import {
   CONSOLE_BASE,
   consoleRequest,
   fetchUrl,
   parseApiResponse,
 } from '@/shared/api/client';
-import type { ApiResponse, PageResponse } from '@/shared/types';
-import type {
-  PluginCatalogItem,
-  PluginRecord,
-} from '@nebula-studio/contracts/integration';
 
 export type {
   PluginCatalogItem,

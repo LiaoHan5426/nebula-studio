@@ -1,14 +1,15 @@
+import type { EmbeddedShellWindowId } from '../common/shellPresentationConfig';
+
 import { UNHANDLED } from '@nebula-studio-electron/electron-bridge/vue';
 
 import { persistActiveViewPreference } from '../common/activeViewPreference';
 import { SHELL_ACTIVE_VIEW_STORAGE_KEY } from '../common/shellHostStorageKeys';
-import { getEmbeddedShellWindowIds } from '../common/shellPresentationConfig';
-import type { EmbeddedShellWindowId } from '../common/shellPresentationConfig';
 import {
   getDefaultEnabledShellIntegrableIds,
   isShellIntegrableAppId,
   listShellIntegrableAppIds,
 } from '../common/shellIntegration';
+import { getEmbeddedShellWindowIds } from '../common/shellPresentationConfig';
 
 type PreferenceIpcListener = (
   event: unknown,
@@ -22,16 +23,16 @@ const WEB_ENABLED_STORAGE_KEY = 'nebula-studio-shell-enabled-integrations';
  * 与 Electron 主进程行为对齐；**仅**在 `registerShellHostIpc: true` 时注册 IPC 通道。
  */
 export function createWebShellEmbeddedStateHandlers(options: {
-  registerShellHostIpc: boolean;
-  tryHandlePreferenceInvoke: (
-    channel: string,
-    args: unknown[],
-  ) => typeof UNHANDLED | unknown;
   preferenceOn: (channel: string, listener: PreferenceIpcListener) => void;
   preferenceRemoveListener: (
     channel: string,
     listener: PreferenceIpcListener,
   ) => void;
+  registerShellHostIpc: boolean;
+  tryHandlePreferenceInvoke: (
+    channel: string,
+    args: unknown[],
+  ) => typeof UNHANDLED | unknown;
 }) {
   const embeddedIds = getEmbeddedShellWindowIds();
 
@@ -60,7 +61,7 @@ export function createWebShellEmbeddedStateHandlers(options: {
 
   let enabledEmbeddedLoaded = false;
   let enabledEmbeddedViewOrder: EmbeddedShellWindowId[] = [];
-  let activeEmbeddedViewId: string | null = null;
+  let activeEmbeddedViewId: null | string = null;
 
   const ensureEnabledEmbeddedLoaded = (): void => {
     if (enabledEmbeddedLoaded) return;
@@ -206,25 +207,25 @@ export function createWebShellEmbeddedStateHandlers(options: {
     if (options.registerShellHostIpc) {
       if (channel === 'shell:get-state') return shellGetState();
       if (channel === 'shell:set-active-view') {
-        const raw = args[0] as { viewId?: string } | undefined;
+        const raw = args[0] as undefined | { viewId?: string };
         const viewId = raw?.viewId;
         if (typeof viewId !== 'string' || !viewId) return false;
         return shellSetActiveView(viewId);
       }
       if (channel === 'shell:enable-embedded-view') {
-        const raw = args[0] as { viewId?: string } | undefined;
+        const raw = args[0] as undefined | { viewId?: string };
         const viewId = raw?.viewId;
         if (typeof viewId !== 'string' || !viewId) return false;
         return shellEnableEmbeddedView(viewId);
       }
       if (channel === 'shell:disable-embedded-view') {
-        const raw = args[0] as { viewId?: string } | undefined;
+        const raw = args[0] as undefined | { viewId?: string };
         const viewId = raw?.viewId;
         if (typeof viewId !== 'string' || !viewId) return false;
         return shellDisableEmbeddedView(viewId);
       }
       if (channel === 'shell:reorder-embedded-views') {
-        const raw = args[0] as { orderedViewIds?: string[] } | undefined;
+        const raw = args[0] as undefined | { orderedViewIds?: string[] };
         if (!Array.isArray(raw?.orderedViewIds)) return false;
         return shellReorderEmbeddedViews(raw.orderedViewIds);
       }

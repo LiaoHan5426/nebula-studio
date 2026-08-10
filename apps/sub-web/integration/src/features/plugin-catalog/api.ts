@@ -1,8 +1,9 @@
+import type { PluginCatalogViewModel } from './types';
+
 import { pluginCatalogApi } from '@/features/plugin/api';
 import { isApiSuccess } from '@/shared/types';
 
 import { mapPluginCatalogItem } from './mappers';
-import type { PluginCatalogViewModel } from './types';
 
 export async function loadPluginCatalog(): Promise<PluginCatalogViewModel[]> {
   const response = await pluginCatalogApi.list();

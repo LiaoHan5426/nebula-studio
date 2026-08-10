@@ -1,23 +1,25 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { Input } from '../ui/input';
-import { cn } from '../../utils/cn';
-import { withTooltipAttrs } from '../../utils/tooltip';
 import type { TooltipPlacement } from '../../utils/tooltip';
 import type { NebulaFormControlProps } from '../form/types';
+
+import { computed } from 'vue';
+
+import { cn } from '../../utils/cn';
+import { withTooltipAttrs } from '../../utils/tooltip';
+import { Input } from '../ui/input';
 
 const props = withDefaults(
   defineProps<
     NebulaFormControlProps & {
-      modelValue?: string | number;
-      type?: 'text' | 'password' | 'email' | 'number' | 'tel' | 'url';
-      placeholder?: string;
-      disabled?: boolean;
-      readonly?: boolean;
       autocomplete?: string;
       class?: string;
+      disabled?: boolean;
+      modelValue?: number | string;
+      placeholder?: string;
+      readonly?: boolean;
       tooltip?: string;
       tooltipPlacement?: TooltipPlacement;
+      type?: 'email' | 'number' | 'password' | 'tel' | 'text' | 'url';
     }
   >(),
   {
@@ -40,9 +42,9 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  'update:modelValue': [value: string];
-  input: [event: Event];
   change: [event: Event];
+  input: [event: Event];
+  'update:modelValue': [value: string];
 }>();
 
 const inputValue = computed({

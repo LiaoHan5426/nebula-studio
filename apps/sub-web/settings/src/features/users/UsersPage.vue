@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import type { UserRecord } from '@/shared/api/system';
+
 import { onMounted, ref } from 'vue';
+
 import {
   NebulaButton,
   NebulaDialog,
@@ -11,10 +14,9 @@ import {
 } from '@nebula-studio/nebula-ui';
 
 import { usersApi } from '@/shared/api/system';
-import type { UserRecord } from '@/shared/api/system';
-import { isApiSuccess } from '@/shared/types';
-import { useConfirm } from '@/shared/composables/useConfirm';
 import EntityListPage from '@/shared/components/EntityListPage.vue';
+import { useConfirm } from '@/shared/composables/useConfirm';
+import { isApiSuccess } from '@/shared/types';
 
 const users = ref<UserRecord[]>([]);
 const loading = ref(false);
@@ -123,9 +125,9 @@ function openDetails(user: UserRecord) {
     :detail-subtitle="selected?.id || ''"
   >
     <template #actions>
-      <NebulaButton variant="primary" @click="openCreate"
-        >新建用户</NebulaButton
-      >
+      <NebulaButton variant="primary" @click="openCreate">
+        新建用户
+      </NebulaButton>
     </template>
     <template #filters>
       <NebulaInput

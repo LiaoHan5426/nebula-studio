@@ -1,6 +1,5 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
-
 import treeMenuBasicDemo from '@/examples/tree-menu/TreeMenuBasic.vue?demo';
 </script>
 

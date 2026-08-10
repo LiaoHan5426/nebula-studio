@@ -1,10 +1,11 @@
-import { consoleRequest } from '@/shared/api/client';
 import type {
   ApiResponse,
   PageResponse,
   SubscriptionConfig,
   TableSubscription,
 } from '@/shared/types';
+
+import { consoleRequest } from '@/shared/api/client';
 
 export interface SubscriptionRequestRecord {
   requestId: string;
@@ -143,10 +144,10 @@ export const subscriptionRequestApi = {
       maxCalls?: number;
       rateLimitMax?: number;
       rateLimitWindowSeconds?: number;
-      scheduleType?: string;
-      scheduleStartTime?: string;
       scheduleEndTime?: string;
+      scheduleStartTime?: string;
       scheduleTimezone?: string;
+      scheduleType?: string;
     } = {},
   ): Promise<ApiResponse<SubscriptionRequestRecord>> {
     const { approvedBy = 'admin', ...grantFields } = options;

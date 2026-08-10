@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { useRoute, RouterLink, RouterView } from 'vue-router';
+import { RouterLink, RouterView, useRoute } from 'vue-router';
+
 import { NebulaDocsLayout } from '@nebula-studio/nebula-layout';
-import '@/styles/doc-page.css';
+
 import { HELP_DOCUMENTS } from '@/content/productHelp';
+
+import '@/styles/doc-page.css';
 
 const route = useRoute();
 

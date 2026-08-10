@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+
 import {
   NebulaButton,
   NebulaDetailSection,
@@ -17,12 +18,12 @@ import {
 
 type PreviewState =
   | 'content'
-  | 'loading'
+  | 'disabled'
   | 'empty'
   | 'error'
-  | 'restricted'
+  | 'loading'
   | 'partial'
-  | 'disabled';
+  | 'restricted';
 
 const previewState = ref<PreviewState>('content');
 const keyword = ref('');
@@ -139,7 +140,7 @@ function handleSearch(value: string): void {
       role="status"
       aria-busy="true"
     >
-      <span v-for="index in 3" :key="index" />
+      <span v-for="index in 3" :key="index"></span>
       <p>正在加载资源…</p>
     </div>
 

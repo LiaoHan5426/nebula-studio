@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue';
-import { NebulaPane, NebulaButton } from '@nebula-studio/nebula-ui';
 
-type ThemeMode = 'light' | 'dark';
+import { NebulaButton, NebulaPane } from '@nebula-studio/nebula-ui';
+
+type ThemeMode = 'dark' | 'light';
 
 const currentTheme = ref<ThemeMode>('dark');
 const saving = ref(false);
@@ -83,8 +84,7 @@ onUnmounted(() => {
       </NebulaButton>
     </div>
     <p class="hint">
-      当前：<strong>{{ currentTheme === 'dark' ? '深色' : '浅色' }}</strong
-      >{{ saving ? '（保存中…）' : '' }}
+      当前：<strong>{{ currentTheme === 'dark' ? '深色' : '浅色' }}</strong>{{ saving ? '（保存中…）' : '' }}
     </p>
   </NebulaPane>
 </template>

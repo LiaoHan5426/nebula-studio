@@ -8,76 +8,76 @@
 // ==================== 用户 ====================
 
 export interface UserRecord {
-  id: string;
-  username: string;
+  avatar?: string;
+  createdAt?: string;
   email?: string;
+  id: string;
+  lastLoginAt?: string;
   phone?: string;
   realName?: string;
-  avatar?: string;
   status?: string;
-  createdAt?: string;
   updatedAt?: string;
-  lastLoginAt?: string;
+  username: string;
 }
 
 export interface UserInput {
-  username: string;
-  password?: string;
   email?: string;
+  password?: string;
   phone?: string;
   realName?: string;
   status?: string;
+  username: string;
 }
 
 // ==================== 角色 ====================
 
 export interface RoleRecord {
-  id: string;
-  roleName: string;
-  roleCode: string;
   description?: string;
+  id: string;
+  roleCode: string;
+  roleName: string;
   status?: string;
 }
 
 // ==================== 权限 ====================
 
 export interface PermissionNode {
-  id: string;
-  permName: string;
-  permCode: string;
-  permType?: string;
-  parentId?: string | null;
+  children?: PermissionNode[];
+  createdAt?: string;
   description?: string;
+  id: string;
+  parentId?: null | string;
+  permCode: string;
+  permName: string;
+  permType?: string;
   sortOrder?: number;
   status?: string;
-  createdAt?: string;
-  children?: PermissionNode[];
 }
 
 // ==================== 组织 ====================
 
 export interface OrganizationNode {
-  id: string;
-  orgName: string;
-  orgCode: string;
-  parentId?: string | null;
-  level?: number;
-  description?: string;
-  status?: string;
-  sortOrder?: number;
   children?: OrganizationNode[];
+  description?: string;
+  id: string;
+  level?: number;
+  orgCode: string;
+  orgName: string;
+  parentId?: null | string;
+  sortOrder?: number;
+  status?: string;
 }
 
 // ==================== Shell 应用 ====================
 
 export interface ShellAppRecord {
-  id: string;
-  label: string;
-  iconSvg?: string;
-  renderer?: string;
-  preload?: string;
-  integratable?: number;
   defaultEnabled?: number;
+  iconSvg?: string;
+  id: string;
+  integratable?: number;
+  label: string;
+  preload?: string;
+  renderer?: string;
   sortOrder?: number;
   status?: string;
 }
@@ -85,39 +85,39 @@ export interface ShellAppRecord {
 // ==================== 配置 ====================
 
 export interface ConfigItem {
-  id: string;
-  key: string;
-  value: string;
-  scope: string;
-  tenantId?: string;
-  group?: string;
-  type?: string;
+  createdAt?: string;
   defaultValue?: string;
-  inheritedValue?: string;
-  inheritedFrom?: string;
-  sensitive?: boolean;
+  group?: string;
+  id: string;
   impactScope?: string;
+  inheritedFrom?: string;
+  inheritedValue?: string;
+  key: string;
   schema?: {
-    type?: 'string' | 'number' | 'boolean' | 'json';
     description?: string;
     enum?: string[];
     restartRequired?: boolean;
     sensitive?: boolean;
+    type?: 'boolean' | 'json' | 'number' | 'string';
   };
-  createdAt?: string;
+  scope: string;
+  sensitive?: boolean;
+  tenantId?: string;
+  type?: string;
   updatedAt?: string;
+  value: string;
 }
 
 // ==================== 日志 ====================
 
 export interface LogRecord {
-  id?: string;
-  username?: string;
-  level?: string;
-  module?: string;
-  message?: string;
-  operationType?: string;
-  entityName?: string;
-  createdAt?: string;
   [key: string]: unknown;
+  createdAt?: string;
+  entityName?: string;
+  id?: string;
+  level?: string;
+  message?: string;
+  module?: string;
+  operationType?: string;
+  username?: string;
 }

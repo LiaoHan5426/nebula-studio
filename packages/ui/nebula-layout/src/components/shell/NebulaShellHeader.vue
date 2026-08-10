@@ -1,25 +1,26 @@
 <script setup lang="ts">
+import type { BreadcrumbSegment, NebulaThemeMode } from '../../types/layout';
+
 import { NebulaButton } from '@nebula-studio/nebula-ui';
 
 import NebulaBreadcrumb from '../chrome/NebulaBreadcrumb.vue';
 import NebulaUserMenu from '../chrome/NebulaUserMenu.vue';
-import type { BreadcrumbSegment, NebulaThemeMode } from '../../types/layout';
 
 defineProps<{
+  authUser?: string;
   breadcrumbs?: BreadcrumbSegment[];
+  showAuth?: boolean;
   showBreadcrumb?: boolean;
   theme?: NebulaThemeMode;
-  authUser?: string;
-  showAuth?: boolean;
 }>();
 
 const emit = defineEmits<{
-  'update:theme': [value: NebulaThemeMode];
-  openPreferences: [];
+  lockScreen: [];
   login: [];
   logout: [];
-  lockScreen: [];
+  openPreferences: [];
   refresh: [];
+  'update:theme': [value: NebulaThemeMode];
 }>();
 </script>
 
@@ -55,7 +56,7 @@ const emit = defineEmits<{
     </div>
 
     <div class="nebula-layout-shell__header-actions">
-      <slot name="actions" />
+      <slot name="actions"></slot>
 
       <button type="button" class="nebula-header-search" title="搜索 Ctrl K">
         <svg

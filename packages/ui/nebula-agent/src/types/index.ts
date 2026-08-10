@@ -1,14 +1,14 @@
 export type QueryResult = {
   columns: string[];
-  rows: Record<string, unknown>[];
   rowCount: number;
+  rows: Record<string, unknown>[];
 };
 
 export type DatabaseConfig = {
-  type: string;
-  host: string;
-  port: number;
   database: string;
-  username: string;
+  host: string;
   password: string;
+  port: number;
+  type: string;
+  username: string;
 };

@@ -1,14 +1,14 @@
 <script lang="ts">
 export interface NebulaStepItem {
+  description?: string;
   id: string;
   label: string;
-  description?: string;
-  state?: 'complete' | 'current' | 'pending' | 'error';
+  state?: 'complete' | 'current' | 'error' | 'pending';
 }
 </script>
 
 <script setup lang="ts">
-withDefaults(defineProps<{ steps: NebulaStepItem[]; label?: string }>(), {
+withDefaults(defineProps<{ label?: string; steps: NebulaStepItem[] }>(), {
   label: '流程步骤',
 });
 </script>

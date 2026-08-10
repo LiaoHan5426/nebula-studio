@@ -1,6 +1,6 @@
 import type { NavItem } from '@nebula-studio/nebula-layout';
 
-export type IntegrationSurface = 'portal' | 'provider' | 'admin';
+export type IntegrationSurface = 'admin' | 'portal' | 'provider';
 
 export const PORTAL_HOME = '/catalog';
 export const PLATFORM_ADMIN_HOME = '/manage';

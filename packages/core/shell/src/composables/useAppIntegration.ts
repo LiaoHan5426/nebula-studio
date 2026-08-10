@@ -5,56 +5,57 @@
  * 管理集成面板的打开/关闭、应用启用/隐藏、拖拽排序等状态。
  */
 import { computed, nextTick, ref } from 'vue';
+
 import {
   isShellIntegratableAppId,
   persistShellSurfacePreference,
 } from '@nebula-studio/app-shell';
 
 export interface UseAppIntegrationOptions {
+  /** 当前激活的视图 ID（响应式） */
+  activeViewId: { value: null | string };
   /** 可用视图 ID 列表（响应式） */
   availableViewIds: { value: string[] };
-  /** 可排序视图 ID 列表（响应式） */
-  sortableViewIds: { value: string[] };
-  /** 当前激活的视图 ID（响应式） */
-  activeViewId: { value: string | null };
-  /** 已加载的嵌入 ID 集合（响应式） */
-  loadedEmbedIds: { value: Set<string> };
+  /** 禁用嵌入视图 */
+  disableEmbeddedView: (viewId: string) => Promise<boolean>;
+  /** 嵌入加载视图 ID（响应式） */
+  embedLoadingViewId: { value: null | string };
   /** 嵌入就绪视图 ID 集合（响应式） */
   embedReadyViewIds: { value: Set<string> };
-  /** 嵌入加载视图 ID（响应式） */
-  embedLoadingViewId: { value: string | null };
+  /** 启用嵌入视图 */
+  enableEmbeddedView: (viewId: string) => Promise<boolean>;
+  /** 确保嵌入表面加载中 */
+  ensureEmbedSurfaceLoading: (viewId: null | string | undefined) => void;
+  /** 获取嵌入 iframe */
+  getEmbedIframe: (viewId: string) => HTMLIFrameElement | null;
+  /** 已加载的嵌入 ID 集合（响应式） */
+  loadedEmbedIds: { value: Set<string> };
+  /** 加载 Shell 状态 */
+  loadShellState: () => Promise<void>;
+  /** 重排嵌入视图 */
+  reorderEmbeddedViews: (orderedViewIds: string[]) => Promise<boolean>;
+  /** 报告 shell 视口 */
+  reportShellViewport: () => void;
+  /** 重置可集成嵌入 */
+  resetIntegrableEmbedOnLeave: (viewId: null | string) => void;
   /** 选中侧边栏项（响应式） */
   selectedSidebarItem: { value: string };
-  /** 根据当前嵌入视图同步侧栏高亮 */
-  syncSidebarSelection: (viewId: string | null) => void;
   /** 宿主桥接 */
   shellHost: ReturnType<
     typeof import('@nebula-studio/app-shell').getShellHostBridge
   >;
-  /** 是否使用 iframe 嵌入 */
-  usesIframeEmbed: boolean;
   /** 顶部像素偏移 */
   shellTopPx: number;
+  /** 可排序视图 ID 列表（响应式） */
+  sortableViewIds: { value: string[] };
   /** 切换嵌入视图 */
   switchEmbeddedView: (viewId: string) => Promise<void>;
-  /** 启用嵌入视图 */
-  enableEmbeddedView: (viewId: string) => Promise<boolean>;
-  /** 禁用嵌入视图 */
-  disableEmbeddedView: (viewId: string) => Promise<boolean>;
-  /** 重排嵌入视图 */
-  reorderEmbeddedViews: (orderedViewIds: string[]) => Promise<boolean>;
-  /** 加载 Shell 状态 */
-  loadShellState: () => Promise<void>;
-  /** 确保嵌入表面加载中 */
-  ensureEmbedSurfaceLoading: (viewId: string | null | undefined) => void;
+  /** 根据当前嵌入视图同步侧栏高亮 */
+  syncSidebarSelection: (viewId: null | string) => void;
   /** 尝试从已有 iframe 完成加载 */
   tryCompleteEmbedFromExistingFrame: (viewId: string) => void;
-  /** 重置可集成嵌入 */
-  resetIntegrableEmbedOnLeave: (viewId: string | null) => void;
-  /** 报告 shell 视口 */
-  reportShellViewport: () => void;
-  /** 获取嵌入 iframe */
-  getEmbedIframe: (viewId: string) => HTMLIFrameElement | null;
+  /** 是否使用 iframe 嵌入 */
+  usesIframeEmbed: boolean;
 }
 
 export function useAppIntegration(opts: UseAppIntegrationOptions) {

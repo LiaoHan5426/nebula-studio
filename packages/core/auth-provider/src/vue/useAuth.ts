@@ -1,6 +1,8 @@
-import { computed, ref, onMounted, onBeforeUnmount } from 'vue';
-import { globalAuthProvider } from '../index.ts';
 import type { AuthSession } from '../index.ts';
+
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+
+import { globalAuthProvider } from '../index.ts';
 
 /**
  * Reactive auth composable.

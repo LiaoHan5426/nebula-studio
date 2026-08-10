@@ -1,24 +1,27 @@
-import { computed, defineComponent, h, provide } from 'vue';
 import type { ComputedRef, InjectionKey, Ref } from 'vue';
-import { useRendererLocaleSync } from './useRendererLocaleSync.ts';
+
 import type { UseRendererLocaleSyncOptions } from './useRendererLocaleSync.ts';
-import { useRendererThemeSync } from './useRendererThemeSync.ts';
 import type { UseRendererThemeSyncOptions } from './useRendererThemeSync.ts';
 
-type ThemeMode = 'light' | 'dark';
-type AppMode = 'dev' | 'build';
+import { computed, defineComponent, h, provide } from 'vue';
+
+import { useRendererLocaleSync } from './useRendererLocaleSync.ts';
+import { useRendererThemeSync } from './useRendererThemeSync.ts';
+
+type ThemeMode = 'dark' | 'light';
+type AppMode = 'build' | 'dev';
 
 export interface RendererConfigContext {
-  theme: ReturnType<typeof useRendererThemeSync>['theme'];
   appMode: ReturnType<typeof useRendererThemeSync>['appMode'];
   isDark: ReturnType<typeof useRendererThemeSync>['isDark'];
+  locale: Ref<string>;
+  refreshAppMode: () => Promise<AppMode>;
+  setLocale: (next: string) => Promise<string>;
+  setTheme: (next: ThemeMode) => Promise<ThemeMode>;
+  theme: ReturnType<typeof useRendererThemeSync>['theme'];
   /** shadcn-vue 兼容的主题类名 ('dark' | '') */
   themeClass: ComputedRef<string>;
-  setTheme: (next: ThemeMode) => Promise<ThemeMode>;
   toggleTheme: () => Promise<ThemeMode>;
-  refreshAppMode: () => Promise<AppMode>;
-  locale: Ref<string>;
-  setLocale: (next: string) => Promise<string>;
 }
 
 export const rendererConfigKey: InjectionKey<RendererConfigContext> =

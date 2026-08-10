@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { NebulaSelect } from '@nebula-studio/nebula-ui';
+import type { PluginNodeSchema } from '../types/schema';
+
 import { computed, ref, watch } from 'vue';
 
-import type { PluginNodeSchema } from '../types/schema';
+import { NebulaSelect } from '@nebula-studio/nebula-ui';
 
 const props = withDefaults(
   defineProps<{
-    schema: PluginNodeSchema;
     modelValue?: Record<string, unknown>;
+    schema: PluginNodeSchema;
     showTitle?: boolean;
   }>(),
   {

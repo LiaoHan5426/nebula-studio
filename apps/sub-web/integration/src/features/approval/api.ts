@@ -1,10 +1,11 @@
-import { governanceRequest } from '@/shared/api/client';
 import type {
   ApiResponse,
   GovernanceApprovalDecision,
   GovernanceApprovalRequest,
   GovernanceRequest,
 } from '@/shared/types';
+
+import { governanceRequest } from '@/shared/api/client';
 
 export const approvalApi = {
   submitRequest(

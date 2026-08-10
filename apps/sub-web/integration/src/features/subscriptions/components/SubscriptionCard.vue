@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import type { TableSubscription } from '@/shared/types';
+
 import { NebulaButton, NebulaTag } from '@nebula-studio/nebula-ui';
 
 import { SubscribeType } from '@/shared/types';
-import type { TableSubscription } from '@/shared/types';
 
 import {
   cdcModeLabel,
@@ -12,19 +13,19 @@ import {
 } from '../mappers';
 
 defineProps<{
-  subscription: TableSubscription;
+  intervalNotice: null | string;
   pollingIntervalDraft: number;
   savingInterval: boolean;
-  intervalNotice: string | null;
+  subscription: TableSubscription;
 }>();
 
 const emit = defineEmits<{
   activate: [];
+  'apply-interval': [];
   deactivate: [];
-  watch: [];
   delete: [];
   'update:polling-interval': [value: number];
-  'apply-interval': [];
+  watch: [];
 }>();
 </script>
 

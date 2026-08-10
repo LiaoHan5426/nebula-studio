@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { Progress } from '../ui/progress';
+import type { TooltipPlacement } from '../../utils/tooltip';
+
 import { cn } from '../../utils/cn';
 import { withTooltipAttrs } from '../../utils/tooltip';
-import type { TooltipPlacement } from '../../utils/tooltip';
+import { Progress } from '../ui/progress';
 
 const props = withDefaults(
   defineProps<{
-    modelValue?: number;
-    max?: number;
     class?: string;
+    max?: number;
+    modelValue?: number;
     tooltip?: string;
     tooltipPlacement?: TooltipPlacement;
   }>(),

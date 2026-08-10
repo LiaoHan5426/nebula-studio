@@ -8,17 +8,17 @@ import {
 
 withDefaults(
   defineProps<{
-    title: string;
     description: string;
-    eyebrow?: string;
-    resultSummary?: string;
-    loading?: boolean;
-    empty?: boolean;
-    emptyTitle?: string;
-    emptyDescription?: string;
     detailOpen?: boolean;
-    detailTitle?: string;
     detailSubtitle?: string;
+    detailTitle?: string;
+    empty?: boolean;
+    emptyDescription?: string;
+    emptyTitle?: string;
+    eyebrow?: string;
+    loading?: boolean;
+    resultSummary?: string;
+    title: string;
   }>(),
   {
     eyebrow: 'Management',
@@ -45,16 +45,16 @@ defineEmits<{
       :title="title"
       :description="description"
     >
-      <template #actions><slot name="actions" /></template>
+      <template #actions><slot name="actions"></slot></template>
     </NebulaPageHeader>
 
     <NebulaFilterBar
       v-if="$slots.filters || resultSummary"
       :result-summary="resultSummary"
     >
-      <slot name="filters" />
+      <slot name="filters"></slot>
       <template v-if="$slots.filterActions" #actions>
-        <slot name="filterActions" />
+        <slot name="filterActions"></slot>
       </template>
     </NebulaFilterBar>
 
@@ -66,11 +66,11 @@ defineEmits<{
       :title="emptyTitle"
       :description="emptyDescription"
     >
-      <slot name="emptyAction" />
+      <slot name="emptyAction"></slot>
     </NebulaEmptyState>
-    <slot v-else />
+    <slot v-else></slot>
 
-    <slot name="footer" />
+    <slot name="footer"></slot>
 
     <NebulaDrawer
       :open="detailOpen"
@@ -79,13 +79,13 @@ defineEmits<{
       width="440px"
       @update:open="$emit('update:detailOpen', $event)"
     >
-      <slot name="detail" />
+      <slot name="detail"></slot>
       <template v-if="$slots.detailFooter" #footer>
-        <slot name="detailFooter" />
+        <slot name="detailFooter"></slot>
       </template>
     </NebulaDrawer>
 
-    <slot name="dialogs" />
+    <slot name="dialogs"></slot>
   </main>
 </template>
 

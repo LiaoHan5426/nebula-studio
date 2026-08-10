@@ -1,12 +1,15 @@
 <script lang="ts">
-import { cn } from '../../../utils/cn';
-import { AvatarRoot } from 'reka-ui';
 import type {
-  AvatarRootProps,
-  AvatarImageProps,
   AvatarFallbackProps,
+  AvatarImageProps,
+  AvatarRootProps,
 } from 'reka-ui';
+
 import type { HTMLAttributes } from 'vue';
+
+import { AvatarRoot } from 'reka-ui';
+
+import { cn } from '../../../utils/cn';
 
 export type AvatarProps = AvatarRootProps & {
   class?: HTMLAttributes['class'];
@@ -34,6 +37,6 @@ defineProps<AvatarProps>();
       )
     "
   >
-    <slot />
+    <slot></slot>
   </AvatarRoot>
 </template>

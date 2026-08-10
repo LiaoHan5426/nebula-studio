@@ -1,8 +1,9 @@
-import { ipcMain, nativeTheme } from 'electron';
-import { is } from '@electron-toolkit/utils';
 import type { MainModule, MainModuleContext } from '../bootstrap/MainModule';
 
-type ThemeMode = 'light' | 'dark';
+import { is } from '@electron-toolkit/utils';
+import { ipcMain, nativeTheme } from 'electron';
+
+type ThemeMode = 'dark' | 'light';
 
 function normalizeTheme(theme: unknown): ThemeMode {
   return theme === 'light' ? 'light' : 'dark';

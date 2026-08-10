@@ -1,3 +1,11 @@
+import type {
+  EmbeddedShellWindowId,
+  ShellAuthSessionPayload,
+} from '@nebula-studio/app-shell';
+import type { BreadcrumbSegment } from '@nebula-studio/nebula-layout';
+
+import { computed, ref, watch } from 'vue';
+
 /**
  * Shell 生命周期 composable。
  *
@@ -6,8 +14,6 @@
  * 并管理主题、标签、面包屑、认证会话、IPC 事件等。
  */
 import {
-  SHELL_SURFACE_WORKSPACE,
-  WEB_SHELL_EMBED_QUERY,
   clearWebAuthSession,
   getShellHostBridge,
   getShellIntegratedAppMeta,
@@ -15,35 +21,31 @@ import {
   isShellIntegrableAppId,
   isShellStandaloneSidebarApp,
   postShellEmbedReset,
+  SHELL_SURFACE_WORKSPACE,
   shellPresentationConfig,
+  WEB_SHELL_EMBED_QUERY,
   writeWebAuthSession,
 } from '@nebula-studio/app-shell';
-import type {
-  EmbeddedShellWindowId,
-  ShellAuthSessionPayload,
-} from '@nebula-studio/app-shell';
 import { ACCENT_PRESETS } from '@nebula-studio/nebula-layout';
-import type { BreadcrumbSegment } from '@nebula-studio/nebula-layout';
-import { computed, ref, watch } from 'vue';
 
 import { useAppIntegration } from './useAppIntegration.js';
 import { useEmbeddedViews } from './useEmbeddedViews.js';
 import { useShellAuthWaiter } from './useShellAuthWaiter.js';
 
-export type ThemeMode = 'light' | 'dark';
-export type AppMode = 'dev' | 'build';
+export type ThemeMode = 'dark' | 'light';
+export type AppMode = 'build' | 'dev';
 
 export interface UseAppLifecycleOptions {
-  getAuthSession: () => ShellAuthSessionPayload | null;
-  setAuthSession: (s: ShellAuthSessionPayload | null) => void;
+  getAuthSession: () => null | ShellAuthSessionPayload;
+  layoutPreferences: {
+    accentPreset: string;
+    collapsed: boolean;
+    themeMode: string;
+  };
   openLogin: () => Promise<void>;
   refreshAuthSession: () => Promise<void>;
   resetOrganizationSession: () => void;
-  layoutPreferences: {
-    themeMode: string;
-    accentPreset: string;
-    collapsed: boolean;
-  };
+  setAuthSession: (s: null | ShellAuthSessionPayload) => void;
 }
 
 export function useAppLifecycle(opts: UseAppLifecycleOptions) {
@@ -56,7 +58,7 @@ export function useAppLifecycle(opts: UseAppLifecycleOptions) {
   const theme = ref<ThemeMode>('dark');
   const availableViewIds = ref<string[]>([]);
   const dormantIntegrableIds = ref<string[]>([]);
-  const activeViewId = ref<string | null>(null);
+  const activeViewId = ref<null | string>(null);
   const selectedSidebarItem = ref('workspace');
   const activeViewPersistReady = ref(false);
   const sortableViewIds = ref<string[]>([]);
@@ -119,7 +121,7 @@ export function useAppLifecycle(opts: UseAppLifecycleOptions) {
     embedded.embedLoadTimeoutByViewId.set(viewId, timeout);
   }
 
-  function ensureEmbedSurfaceLoading(viewId: string | null | undefined): void {
+  function ensureEmbedSurfaceLoading(viewId: null | string | undefined): void {
     if (!viewId || embedded.embedReadyViewIds.value.has(viewId)) return;
     beginEmbedSurfaceLoading(viewId);
     if (!usesIframeEmbed) void completeEmbedSurfaceLoading(viewId);
@@ -131,7 +133,7 @@ export function useAppLifecycle(opts: UseAppLifecycleOptions) {
       void completeEmbedSurfaceLoading(viewId);
   }
 
-  function resetIntegrableEmbedOnLeave(viewId: string | null): void {
+  function resetIntegrableEmbedOnLeave(viewId: null | string): void {
     if (!usesIframeEmbed || !viewId || !isShellIntegrableAppId(viewId)) return;
     postShellEmbedReset(getEmbedIframe(viewId)?.contentWindow ?? null);
   }
@@ -172,7 +174,7 @@ export function useAppLifecycle(opts: UseAppLifecycleOptions) {
     );
   }
 
-  function syncSidebarSelection(viewId: string | null): void {
+  function syncSidebarSelection(viewId: null | string): void {
     if (!viewId) return;
     if (isShellStandaloneSidebarApp(viewId)) {
       selectedSidebarItem.value = viewId;
@@ -353,7 +355,7 @@ export function useAppLifecycle(opts: UseAppLifecycleOptions) {
   });
 
   // ─── Tag actions ───────────────────────────────────────
-  function rememberVisitedView(viewId: string | null): void {
+  function rememberVisitedView(viewId: null | string): void {
     if (!viewId || visitedViewIds.value.includes(viewId)) return;
     visitedViewIds.value = [...visitedViewIds.value, viewId];
   }
@@ -472,7 +474,7 @@ export function useAppLifecycle(opts: UseAppLifecycleOptions) {
 
   // ─── Auth session ──────────────────────────────────────
   function syncShellAuthSessionStorage(
-    payload: ShellAuthSessionPayload | null,
+    payload: null | ShellAuthSessionPayload,
   ): void {
     try {
       if (payload?.user?.trim()) {
@@ -508,7 +510,7 @@ export function useAppLifecycle(opts: UseAppLifecycleOptions) {
 
   const onAuthSessionChanged = (
     _e: unknown,
-    p: ShellAuthSessionPayload | null,
+    p: null | ShellAuthSessionPayload,
   ): void => {
     opts.setAuthSession(p);
     syncShellAuthSessionStorage(p);

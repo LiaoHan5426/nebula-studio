@@ -1,4 +1,5 @@
 import { WEB_SHELL_EMBED_QUERY } from '@nebula-studio/app-shell';
+
 import { nebulaEmbedBootEntries } from 'virtual:nebula-app-manifest';
 
 document.documentElement.dataset.platform = 'web';

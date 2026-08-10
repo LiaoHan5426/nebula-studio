@@ -1,6 +1,6 @@
 import {
-  shellPresentationConfig,
   modalRenderersConfig,
+  shellPresentationConfig,
 } from '@nebula-studio/app-shell/shell-config';
 
 /**

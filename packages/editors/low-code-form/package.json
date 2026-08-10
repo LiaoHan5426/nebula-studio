@@ -1,19 +1,19 @@
 {
   "name": "@nebula-studio/nebula-low-render",
   "version": "0.0.0",
-  "private": true,
   "description": "Schema-driven low-code form renderer for Nebula Studio.",
-  "author": "Liao Han <liaohan5426@gmail.com>",
-  "license": "UNLICENSED",
+  "private": true,
   "homepage": "https://github.com/LiaoHan5426/nebula-studio#readme",
+  "bugs": {
+    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LiaoHan5426/nebula-studio.git",
     "directory": "packages/editors/low-code-form"
   },
-  "bugs": {
-    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
-  },
+  "license": "UNLICENSED",
+  "author": "Liao Han <liaohan5426@gmail.com>",
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -25,8 +25,8 @@
     "./components/PluginNodeForm.vue": "./src/components/PluginNodeForm.vue"
   },
   "dependencies": {
-    "vue": "catalog:vue",
-    "@nebula-studio/nebula-ui": "workspace:^"
+    "@nebula-studio/nebula-ui": "workspace:^",
+    "vue": "catalog:vue"
   },
   "devDependencies": {
     "@nebula-studio-internal/tsconfig": "workspace:^",

@@ -1,4 +1,5 @@
 import { join } from 'node:path';
+
 import { _electron as electron, expect, test } from '@playwright/test';
 
 test('launch, preload capabilities, auth restoration and view switching', async ({
@@ -19,15 +20,15 @@ test('launch, preload capabilities, auth restoration and view switching', async 
       const nebulaWindow = window as Window & {
         api?: {
           auth?: {
-            getSession(): Promise<unknown>;
             establishSession(payload: {
-              user: string;
-              token: string;
               roles: string[];
+              token: string;
+              user: string;
             }): Promise<boolean>;
+            getSession(): Promise<unknown>;
           };
-          shell?: { openLogin(): Promise<boolean> };
           notify?: unknown;
+          shell?: { openLogin(): Promise<boolean> };
         };
       };
       return {
@@ -44,11 +45,11 @@ test('launch, preload capabilities, auth restoration and view switching', async 
           api: {
             auth: {
               establishSession(payload: {
-                user: string;
-                token: string;
                 roles: string[];
+                token: string;
+                user: string;
               }): Promise<boolean>;
-              getSession(): Promise<{ user?: string; roles?: string[] } | null>;
+              getSession(): Promise<null | { roles?: string[]; user?: string }>;
             };
           };
         }
@@ -73,11 +74,11 @@ test('launch, preload capabilities, auth restoration and view switching', async 
         window as Window & {
           api: {
             auth: {
-              getSession(): Promise<{
-                user?: string;
-                token?: string;
+              getSession(): Promise<null | {
                 roles?: string[];
-              } | null>;
+                token?: string;
+                user?: string;
+              }>;
             };
           };
         }
@@ -106,7 +107,7 @@ test('launch, preload capabilities, auth restoration and view switching', async 
       if (!target) return { target: null, activeViewId: null };
       await ipc.invoke('shell:set-active-view', { viewId: target });
       const after = (await ipc.invoke('shell:get-state')) as {
-        activeViewId: string | null;
+        activeViewId: null | string;
       };
       return { target, activeViewId: after.activeViewId };
     });

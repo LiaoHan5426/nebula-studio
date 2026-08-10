@@ -1,6 +1,6 @@
 export { useSubscriptionEvents } from './useSubscriptionEvents.js';
 export type {
-  SseEventRecord,
   SseConnectionState,
+  SseEventRecord,
   UseSubscriptionEventsOptions,
 } from './useSubscriptionEvents.js';

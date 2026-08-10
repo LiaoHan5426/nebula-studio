@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { Handle, Position } from '@vue-flow/core';
 import { computed } from 'vue';
 
+import { Handle, Position } from '@vue-flow/core';
+
 const props = defineProps<{
-  id: string;
   data: {
     label?: string;
     type?: string;
   };
+  id: string;
   selected?: boolean;
 }>();
 

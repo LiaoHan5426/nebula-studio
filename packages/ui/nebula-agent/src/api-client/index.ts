@@ -1,40 +1,40 @@
 export type ApiClientConfig = {
   baseURL: string;
-  timeout?: number;
   headers?: Record<string, string>;
+  timeout?: number;
 };
 
 export type QueryResult = {
   columns: string[];
-  rows: Record<string, unknown>[];
   rowCount: number;
+  rows: Record<string, unknown>[];
 };
 
 export type TableSchema = {
-  name: string;
   columns: Array<{
     name: string;
-    type: string;
     nullable: boolean;
     primaryKey: boolean;
+    type: string;
   }>;
+  name: string;
 };
 
 export type ExecuteSQLRequest = {
-  sql: string;
   encrypted?: boolean;
+  sql: string;
 };
 
 export type ExecuteSQLResponse = {
-  success: boolean;
   data?: QueryResult;
   error?: string;
+  success: boolean;
 };
 
 export type GetSchemaResponse = {
-  success: boolean;
   data?: TableSchema[];
   error?: string;
+  success: boolean;
 };
 
 export class ApiClient {
@@ -79,6 +79,20 @@ export class ApiClient {
     }
   }
 
+  formatSchemaForPrompt(schema: TableSchema[]): string {
+    return schema
+      .map((table) => {
+        const columns = table.columns
+          .map(
+            (col) =>
+              `    ${col.name} ${col.type}${col.primaryKey ? ' PRIMARY KEY' : ''}${col.nullable ? '' : ' NOT NULL'}`,
+          )
+          .join('\n');
+        return `TABLE ${table.name} (\n${columns}\n)`;
+      })
+      .join('\n\n');
+  }
+
   async getSchema(): Promise<GetSchemaResponse> {
     try {
       const response = await fetch(`${this.config.baseURL}/sql/schema`, {
@@ -100,19 +114,5 @@ export class ApiClient {
         error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
-  }
-
-  formatSchemaForPrompt(schema: TableSchema[]): string {
-    return schema
-      .map((table) => {
-        const columns = table.columns
-          .map(
-            (col) =>
-              `    ${col.name} ${col.type}${col.primaryKey ? ' PRIMARY KEY' : ''}${col.nullable ? '' : ' NOT NULL'}`,
-          )
-          .join('\n');
-        return `TABLE ${table.name} (\n${columns}\n)`;
-      })
-      .join('\n\n');
   }
 }

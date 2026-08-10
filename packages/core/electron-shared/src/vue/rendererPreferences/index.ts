@@ -1,12 +1,12 @@
 export { IPC_CHANNELS } from './ipcChannels.ts';
 export {
-  UNHANDLED,
   createWebPreferenceBridge,
   mergeWebPreferenceBridges,
+  UNHANDLED,
 } from './webPreferenceBridge.ts';
 export type {
+  CreateWebPreferenceBridgeOptions,
   WebIpcListener,
   WebPreferenceBridge,
   WebPreferenceChannels,
-  CreateWebPreferenceBridgeOptions,
 } from './webPreferenceBridge.ts';

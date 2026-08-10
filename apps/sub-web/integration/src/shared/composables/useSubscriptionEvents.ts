@@ -1,3 +1,8 @@
+import type {
+  SseConnectionState,
+  SseEventRecord,
+} from '@nebula-studio/sse-events';
+
 /**
  * SSE subscription events composable — delegates to `@nebula-studio/sse-events`.
  *
@@ -5,15 +10,11 @@
  * (INTEGRATION_BASE URL and auth token) so existing imports continue to work.
  */
 import { useSubscriptionEvents as useCoreSubscriptionEvents } from '@nebula-studio/sse-events';
-import type {
-  SseEventRecord,
-  SseConnectionState,
-} from '@nebula-studio/sse-events';
 
 import { CAMEL_SUBSCRIBE_BASE } from '@/shared/api/client';
 import { getAuthToken } from '@/shared/auth/session';
 
-export type { SseEventRecord, SseConnectionState };
+export type { SseConnectionState, SseEventRecord };
 
 export function useSubscriptionEvents() {
   return useCoreSubscriptionEvents({

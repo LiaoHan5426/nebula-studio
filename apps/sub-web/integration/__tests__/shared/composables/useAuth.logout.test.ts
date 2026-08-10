@@ -1,7 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-
 import { clearAuthSession, setAuthSession } from '@/shared/auth/session';
 import { useAuth } from '@/shared/composables/useAuth';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const { replace } = vi.hoisted(() => ({
   replace: vi.fn().mockResolvedValue(undefined),

@@ -8,15 +8,16 @@ import {
   DialogRoot,
   DialogTitle,
 } from 'reka-ui';
+
 import { cn } from '../../utils/cn';
 
 const props = withDefaults(
   defineProps<{
-    open?: boolean;
-    title?: string;
-    description?: string;
     class?: string;
     contentClass?: string;
+    description?: string;
+    open?: boolean;
+    title?: string;
   }>(),
   {
     open: false,
@@ -38,7 +39,7 @@ function handleOpenChange(open: boolean) {
 
 <template>
   <DialogRoot :open="props.open" @update:open="handleOpenChange">
-    <slot name="trigger" />
+    <slot name="trigger"></slot>
 
     <DialogPortal>
       <DialogOverlay
@@ -65,7 +66,7 @@ function handleOpenChange(open: boolean) {
           {{ description }}
         </DialogDescription>
 
-        <slot />
+        <slot></slot>
 
         <DialogClose
           class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"

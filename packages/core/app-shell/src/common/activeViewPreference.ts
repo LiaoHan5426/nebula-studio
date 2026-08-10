@@ -6,11 +6,11 @@ export const SHELL_SURFACE_WORKSPACE = '__workspace__';
 export const SHELL_SURFACE_INTEGRATION = '__integration__';
 
 export type ShellSurfacePreference =
-  | { kind: 'workspace' }
   | { kind: 'integration' }
-  | { kind: 'view'; viewId: string };
+  | { kind: 'view'; viewId: string }
+  | { kind: 'workspace' };
 
-export function readShellSurfacePreference(): ShellSurfacePreference | null {
+export function readShellSurfacePreference(): null | ShellSurfacePreference {
   try {
     const raw = window.sessionStorage.getItem(SHELL_ACTIVE_VIEW_STORAGE_KEY);
     if (raw === null) return null;
@@ -40,13 +40,13 @@ export function persistShellSurfacePreference(
   }
 }
 
-export function readActiveViewPreference(): string | null {
+export function readActiveViewPreference(): null | string {
   const surface = readShellSurfacePreference();
   if (!surface || surface.kind !== 'view') return null;
   return surface.viewId;
 }
 
-export function persistActiveViewPreference(viewId: string | null): void {
+export function persistActiveViewPreference(viewId: null | string): void {
   if (typeof viewId === 'string' && viewId.trim()) {
     persistShellSurfacePreference({ kind: 'view', viewId: viewId.trim() });
     return;

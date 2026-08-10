@@ -1,5 +1,6 @@
-import { apiRequest, executorFetch } from '@/shared/api/client';
 import type { ApiResponse } from '@nebula-studio/contracts/integration';
+
+import { apiRequest, executorFetch } from '@/shared/api/client';
 
 export interface ExecutorRouteView {
   routeId: string;
@@ -34,12 +35,12 @@ export async function gatewayRequest(
   tenantId: string,
   subPath: string,
   options: {
-    method?: string;
-    body?: unknown;
     apiKey?: string;
-    token?: string | null;
+    body?: unknown;
+    method?: string;
+    token?: null | string;
   } = {},
-): Promise<{ status: number; body: string }> {
+): Promise<{ body: string; status: number }> {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     'X-Tenant-Id': tenantId,
@@ -62,7 +63,7 @@ export async function gatewayRequest(
       body:
         options.body !== undefined &&
         options.body !== null &&
-        ['POST', 'PUT', 'PATCH'].includes(method)
+        ['PATCH', 'POST', 'PUT'].includes(method)
           ? JSON.stringify(options.body)
           : undefined,
     },

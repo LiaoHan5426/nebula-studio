@@ -10,8 +10,8 @@ export interface RoutableEdge {
 }
 
 export interface EdgePathOffsetOptions {
-  spread?: number;
   borderRadius?: number;
+  spread?: number;
 }
 
 function sortByTargetY<T extends RoutableEdge>(
@@ -38,8 +38,8 @@ export function applyEdgePathOffsets<T extends RoutableEdge>(
   options: EdgePathOffsetOptions = {},
 ): Array<
   T & {
-    type: 'smoothstep';
     pathOptions: { borderRadius: number; offset: number };
+    type: 'smoothstep';
   }
 > {
   const spread = options.spread ?? 20;

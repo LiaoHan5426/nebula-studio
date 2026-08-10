@@ -148,11 +148,11 @@ export function toResourceDetail(
 
 export function normalizeRequestStatus(status: string): AccessRequestStatus {
   const normalized = status.toUpperCase();
-  if (['APPROVED', 'ACTIVE'].includes(normalized)) return 'APPROVED';
-  if (['REJECTED', 'DENIED'].includes(normalized)) return 'REJECTED';
+  if (['ACTIVE', 'APPROVED'].includes(normalized)) return 'APPROVED';
+  if (['DENIED', 'REJECTED'].includes(normalized)) return 'REJECTED';
   if (['EXPIRED'].includes(normalized)) return 'EXPIRED';
-  if (['CANCELLED', 'CANCELED'].includes(normalized)) return 'CANCELLED';
-  if (['NEEDS_INFO', 'NEED_INFO', 'SUPPLEMENT'].includes(normalized)) {
+  if (['CANCELED', 'CANCELLED'].includes(normalized)) return 'CANCELLED';
+  if (['NEED_INFO', 'NEEDS_INFO', 'SUPPLEMENT'].includes(normalized)) {
     return 'NEEDS_INFO';
   }
   return 'PENDING';

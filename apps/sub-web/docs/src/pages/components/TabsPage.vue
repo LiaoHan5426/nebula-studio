@@ -1,6 +1,5 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
-
 import tabsBasicDemo from '@/examples/tabs/TabsBasic.vue?demo';
 import tabsDisabledDemo from '@/examples/tabs/TabsDisabled.vue?demo';
 </script>

@@ -13,7 +13,7 @@ export type {
   OrgSummary,
 } from '@nebula-studio/contracts/auth';
 
-function isResponseOk(body: { isSuccess?: boolean; code?: number }): boolean {
+function isResponseOk(body: { code?: number; isSuccess?: boolean }): boolean {
   return body.isSuccess === true || body.code === 200;
 }
 

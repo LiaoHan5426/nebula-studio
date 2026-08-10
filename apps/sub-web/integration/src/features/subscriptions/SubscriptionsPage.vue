@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { useSubscriptionsPage } from '@/features/subscription-manager';
+
 import SubscriptionCreateDialog from './components/SubscriptionCreateDialog.vue';
 import SubscriptionEventsPanel from './components/SubscriptionEventsPanel.vue';
 import SubscriptionsList from './components/SubscriptionsList.vue';
-import { useSubscriptionsPage } from '@/features/subscription-manager';
 
 const {
   subscriptions,

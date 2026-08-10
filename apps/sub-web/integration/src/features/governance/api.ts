@@ -1,4 +1,3 @@
-import { consoleRequest, governanceRequest } from '@/shared/api/client';
 import type {
   ApiResponse,
   GovernancePolicy,
@@ -8,6 +7,8 @@ import type {
   ResourceRecord,
   ResourceUpdateRequest,
 } from '@/shared/types';
+
+import { consoleRequest, governanceRequest } from '@/shared/api/client';
 
 export const governanceApi = {
   rateLimitList(

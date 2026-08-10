@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { NebulaButton } from '@nebula-studio/nebula-ui';
 import { computed } from 'vue';
+
+import { NebulaButton } from '@nebula-studio/nebula-ui';
 
 import { useLayoutContext } from '../../composables/useLayoutContext';
 import { useLayoutPreferences } from '../../composables/useLayoutPreferences';

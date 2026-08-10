@@ -1,20 +1,23 @@
 {
   "name": "@nebula-studio-internal/vite",
   "version": "0.0.0",
-  "private": true,
   "description": "Shared Vite and Electron Vite configuration for Nebula Studio.",
-  "author": "Liao Han <liaohan5426@gmail.com>",
-  "license": "UNLICENSED",
+  "private": true,
   "homepage": "https://github.com/LiaoHan5426/nebula-studio#readme",
+  "bugs": {
+    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LiaoHan5426/nebula-studio.git",
     "directory": "internal/vite"
   },
-  "bugs": {
-    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
-  },
+  "license": "UNLICENSED",
+  "author": "Liao Han <liaohan5426@gmail.com>",
   "type": "module",
+  "scripts": {
+    "test": "vp test run"
+  },
   "exports": {
     ".": {
       "types": "./src/index.ts",
@@ -36,9 +39,6 @@
       "types": "./src/electron/index.ts",
       "default": "./src/electron/index.ts"
     }
-  },
-  "scripts": {
-    "test": "vp test run"
   },
   "peerDependencies": {
     "electron-vite": "catalog:electron"

@@ -1,4 +1,4 @@
-import { watch, onUnmounted } from 'vue';
+import { onUnmounted, watch } from 'vue';
 
 /**
  * Body 滚动锁定 composable。

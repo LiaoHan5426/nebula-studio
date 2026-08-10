@@ -1,22 +1,25 @@
 import type { UserConfig } from 'vite';
+
+import type {
+  NebulaManualChunkMeta,
+  NebulaRendererChunksOptions,
+} from './chunks/types.ts';
+import type { NebulaRendererPluginSelection } from './nebulaRendererPlugins.ts';
+import type { NebulaRendererOnWarn } from './nebulaRendererWarnings.ts';
+
 import { mergeConfig } from 'vite';
-import { nebulaRendererChunkBuildPartial } from './chunks/index.ts';
+
 import {
   nebulaBuildNodeVersionDefine,
   nebulaMswDefine,
 } from '../env/nebulaBuildDefines.ts';
 import { nebulaClientDefinePlugin } from '../plugin/nebulaClientDefine.ts';
-import { nebulaRendererOptimizeDeps } from './nebulaRendererOptimizeDeps.ts';
 import { nebulaSubWebAliasPlugin } from '../plugin/nebulaSubWebAlias.ts';
+import { nebulaRendererChunkBuildPartial } from './chunks/index.ts';
+import { nebulaRendererOptimizeDeps } from './nebulaRendererOptimizeDeps.ts';
 import { resolveNebulaRendererPluginList } from './nebulaRendererPlugins.ts';
-import type { NebulaRendererPluginSelection } from './nebulaRendererPlugins.ts';
 import { nebulaRendererResolve } from './nebulaRendererResolve.ts';
 import { handleNebulaRendererWarning } from './nebulaRendererWarnings.ts';
-import type { NebulaRendererOnWarn } from './nebulaRendererWarnings.ts';
-import type {
-  NebulaManualChunkMeta,
-  NebulaRendererChunksOptions,
-} from './chunks/types.ts';
 
 /**
  * 供 `electron-vite` 的 `renderer` 使用。`build` 不直接沿用 `vite` 的 `UserConfig['build']`，
@@ -24,7 +27,7 @@ import type {
  */
 export type NebulaElectronRendererPatch = Pick<
   UserConfig,
-  'define' | 'plugins' | 'resolve' | 'optimizeDeps'
+  'define' | 'optimizeDeps' | 'plugins' | 'resolve'
 > & {
   build?: {
     rollupOptions?: {
@@ -40,13 +43,13 @@ export type NebulaElectronRendererPatch = Pick<
 };
 
 export interface NebulaElectronRendererOptions {
+  /** Renderer 产物 chunk 策略；默认开启，可用 `enabled: false` 关闭。 */
+  chunks?: NebulaRendererChunksOptions;
   /**
    * 内置插件集合，与 `createNebulaRendererViteConfig` 的 `plugins` 一致；默认仅 `vue`。
    * 需要 `webShell` 时传 `plugins: { builtins: ['vue', 'webShell'] }`。
    */
   plugins?: NebulaRendererPluginSelection;
-  /** Renderer 产物 chunk 策略；默认开启，可用 `enabled: false` 关闭。 */
-  chunks?: NebulaRendererChunksOptions;
 }
 
 /**

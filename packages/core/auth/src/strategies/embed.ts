@@ -1,3 +1,5 @@
+import type { AuthBootstrapOptions, AuthStrategy } from '../types';
+
 /**
  * EmbedStrategy — platform-embed 模式认证策略。
  *
@@ -9,22 +11,21 @@
  * 5. 监听 SHELL_AUTH_UNAUTHORIZED_EVENT 处理 401
  */
 import {
-  readParentShellAuthSession,
   isSurfaceEmbed,
+  readParentShellAuthSession,
   SHELL_AUTH_UNAUTHORIZED_EVENT,
 } from '@nebula-studio/app-shell';
-import {
-  setAuthSession,
-  hasValidAuthToken,
-  getAuthToken,
-} from '@nebula-studio/auth-provider/session';
 import { globalAuthProvider } from '@nebula-studio/auth-provider';
-import type { AuthBootstrapOptions, AuthStrategy } from '../types';
+import {
+  getAuthToken,
+  hasValidAuthToken,
+  setAuthSession,
+} from '@nebula-studio/auth-provider/session';
 
 export class EmbedStrategy implements AuthStrategy {
   private _allowShellLogin = true;
-  private _surfaceId: string | null = null;
   private _disposeListeners: Array<() => void> = [];
+  private _surfaceId: null | string = null;
 
   async bootstrap(options?: AuthBootstrapOptions): Promise<boolean> {
     this._allowShellLogin = options?.allowShellLogin ?? true;
@@ -52,8 +53,13 @@ export class EmbedStrategy implements AuthStrategy {
     this._disposeListeners = [];
   }
 
-  private isCurrentSurfaceEmbed(): boolean {
-    return this._surfaceId !== null && isSurfaceEmbed(this._surfaceId);
+  private applyShellSession(
+    user: string,
+    authToken: string,
+    userRoles: string[] = [],
+  ): void {
+    setAuthSession(user, authToken, userRoles);
+    globalAuthProvider.setSession({ user, token: authToken, roles: userRoles });
   }
 
   private async bootstrapAuthFromShell(): Promise<void> {
@@ -70,11 +76,11 @@ export class EmbedStrategy implements AuthStrategy {
         window.parent as unknown as {
           api?: {
             auth?: {
-              getSession?: () => Promise<{
-                user?: string;
-                token?: string;
+              getSession?: () => Promise<null | {
                 roles?: string[];
-              } | null>;
+                token?: string;
+                user?: string;
+              }>;
             };
           };
         }
@@ -88,35 +94,14 @@ export class EmbedStrategy implements AuthStrategy {
     }
   }
 
-  private async requestShellLoginIfNeeded(): Promise<void> {
-    await this.ensureAuthFromShell();
-    if (hasValidAuthToken()) return;
-
-    try {
-      const parentApi = (
-        window.parent as unknown as {
-          api?: { shell?: { openLogin?: () => Promise<void> } };
-        }
-      ).api;
-      await parentApi?.shell?.openLogin?.();
-    } catch {
-      /* ignore cross-frame access errors */
-    }
-  }
-
   private async ensureAuthFromShell(): Promise<void> {
     if (!this.isCurrentSurfaceEmbed()) return;
     if (getAuthToken()) return;
     await this.bootstrapAuthFromShell();
   }
 
-  private applyShellSession(
-    user: string,
-    authToken: string,
-    userRoles: string[] = [],
-  ): void {
-    setAuthSession(user, authToken, userRoles);
-    globalAuthProvider.setSession({ user, token: authToken, roles: userRoles });
+  private isCurrentSurfaceEmbed(): boolean {
+    return this._surfaceId !== null && isSurfaceEmbed(this._surfaceId);
   }
 
   private registerSessionChangeListeners(): void {
@@ -151,6 +136,22 @@ export class EmbedStrategy implements AuthStrategy {
           handler,
         );
       });
+    }
+  }
+
+  private async requestShellLoginIfNeeded(): Promise<void> {
+    await this.ensureAuthFromShell();
+    if (hasValidAuthToken()) return;
+
+    try {
+      const parentApi = (
+        window.parent as unknown as {
+          api?: { shell?: { openLogin?: () => Promise<void> } };
+        }
+      ).api;
+      await parentApi?.shell?.openLogin?.();
+    } catch {
+      /* ignore cross-frame access errors */
     }
   }
 }

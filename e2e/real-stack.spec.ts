@@ -2,9 +2,9 @@ import { expect, test } from '@playwright/test';
 
 type ApiEnvelope<T> = {
   code?: number;
-  isSuccess?: boolean;
   data?: T;
   error?: string;
+  isSuccess?: boolean;
 };
 
 type AuthSession = {

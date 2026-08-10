@@ -4,7 +4,7 @@ declare global {
   }
 }
 
-export type NebulaRuntimeMode = 'standalone' | 'platform-embed' | 'electron';
+export type NebulaRuntimeMode = 'electron' | 'platform-embed' | 'standalone';
 export type RuntimeMode = NebulaRuntimeMode;
 
 /**

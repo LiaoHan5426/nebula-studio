@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { NebulaTabs } from '@nebula-studio/nebula-ui';
 import type { NebulaTabItem } from '@nebula-studio/nebula-ui';
+
+import { ref } from 'vue';
+
+import { NebulaTabs } from '@nebula-studio/nebula-ui';
 
 const activeTab = ref('a');
 const tabs: NebulaTabItem[] = [

@@ -1,9 +1,10 @@
-import path from 'node:path';
 import type { Plugin } from 'vite';
+
+import path from 'node:path';
 
 const SUB_WEB_SEGMENT = `${path.sep}sub-web${path.sep}`;
 
-function subWebSrcRootFromImporter(importer: string): string | null {
+function subWebSrcRootFromImporter(importer: string): null | string {
   const normalized = path.normalize(importer);
   const idx = normalized.indexOf(SUB_WEB_SEGMENT);
   if (idx === -1) return null;

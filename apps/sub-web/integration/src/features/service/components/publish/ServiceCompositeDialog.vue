@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import type {
+  CompositeInterface,
+  OrchestrationType,
+  SubscriptionMode,
+} from '@/shared/types';
+
 import {
   NebulaButton,
   NebulaInput,
@@ -6,11 +12,6 @@ import {
   NebulaSelect,
 } from '@nebula-studio/nebula-ui';
 
-import type {
-  CompositeInterface,
-  OrchestrationType,
-  SubscriptionMode,
-} from '@/shared/types';
 import { InterfaceMethod } from '@/shared/types';
 
 import {
@@ -19,8 +20,8 @@ import {
 } from '../../publish/types';
 
 defineProps<{
-  open: boolean;
   form: Partial<CompositeInterface>;
+  open: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -99,9 +100,9 @@ const emit = defineEmits<{
         />
       </label>
       <div class="modal__actions">
-        <NebulaButton variant="outline" @click="emit('close')"
-          >取消</NebulaButton
-        >
+        <NebulaButton variant="outline" @click="emit('close')">
+          取消
+        </NebulaButton>
         <NebulaButton @click="emit('submit')">
           {{
             form.orchestrationType === 'DAG'

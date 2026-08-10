@@ -1,16 +1,15 @@
-import { describe, expect, it } from 'vitest';
-
 import {
-  PLATFORM_ADMIN_HOME,
-  PORTAL_HOME,
-  USER_MANAGE_HOME,
   expandedMenuForPath,
   homeForSurface,
+  PLATFORM_ADMIN_HOME,
   platformAdminNavItems,
+  PORTAL_HOME,
   portalNavItems,
   resolveIntegrationSurface,
+  USER_MANAGE_HOME,
 } from '@/app/navigation';
 import router from '@/router';
+import { describe, expect, it } from 'vitest';
 
 describe('integration navigation model', () => {
   it('uses role-specific landing pages', () => {

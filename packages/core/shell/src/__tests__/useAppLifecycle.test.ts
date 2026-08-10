@@ -4,6 +4,7 @@
  * Plan-11 Task 2: 测试视图切换 / 标签管理 / 偏好。
  */
 import { describe, expect, it, vi } from 'vitest';
+
 import { useAppLifecycle } from '../composables/useAppLifecycle.js';
 
 vi.mock('@nebula-studio/app-shell', () => ({

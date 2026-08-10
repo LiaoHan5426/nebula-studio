@@ -8,8 +8,8 @@ export async function parseApiResponse<T>(
     let message = `HTTP error! status: ${response.status}`;
     try {
       const errBody = (await response.json()) as {
-        message?: string;
         error?: string;
+        message?: string;
       };
       message = errBody.message ?? errBody.error ?? message;
     } catch {

@@ -3,22 +3,22 @@
  */
 
 export interface FlowDefinition {
+  bpmnXml?: string;
+  category?: string;
+  createdAt?: string;
+  currentVersionId?: string;
+  description?: string;
   id: string;
   name: string;
-  category?: string;
-  tenantId: string;
   status: string;
-  description?: string;
-  bpmnXml?: string;
-  currentVersionId?: string;
-  createdAt?: string;
+  tenantId: string;
   updatedAt?: string;
 }
 
 export interface FlowCreateRequest {
-  name: string;
-  category?: string;
-  tenantId: string;
-  description?: string;
   bpmnXml?: string;
+  category?: string;
+  description?: string;
+  name: string;
+  tenantId: string;
 }

@@ -1,19 +1,22 @@
 <script lang="ts" setup>
+import type { TooltipContentProps, TooltipRootProps } from 'reka-ui';
+
 import type { HTMLAttributes } from 'vue';
+
 import {
+  TooltipArrow,
+  TooltipContent,
+  TooltipPortal,
   TooltipProvider,
   TooltipRoot,
   TooltipTrigger,
-  TooltipContent,
-  TooltipArrow,
-  TooltipPortal,
 } from 'reka-ui';
-import type { TooltipRootProps, TooltipContentProps } from 'reka-ui';
+
 import { cn } from '../../../utils/cn';
 
 defineProps<
-  TooltipRootProps &
-    TooltipContentProps & {
+  TooltipContentProps &
+    TooltipRootProps & {
       class?: HTMLAttributes['class'];
       content?: string;
     }
@@ -24,7 +27,7 @@ defineProps<
   <TooltipProvider>
     <TooltipRoot v-bind="$props">
       <TooltipTrigger as-child>
-        <slot />
+        <slot></slot>
       </TooltipTrigger>
       <TooltipPortal>
         <TooltipContent

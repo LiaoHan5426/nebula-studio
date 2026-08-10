@@ -1,18 +1,19 @@
 <script setup lang="ts">
-import { Checkbox } from '../ui/checkbox';
-import { cn } from '../../utils/cn';
-import { useBooleanModel } from '../../composables/useBooleanModel';
-import { withTooltipAttrs } from '../../utils/tooltip';
 import type { TooltipPlacement } from '../../utils/tooltip';
 import type { NebulaFormControlProps } from '../form/types';
+
+import { useBooleanModel } from '../../composables/useBooleanModel';
+import { cn } from '../../utils/cn';
+import { withTooltipAttrs } from '../../utils/tooltip';
+import { Checkbox } from '../ui/checkbox';
 
 const props = withDefaults(
   defineProps<
     NebulaFormControlProps & {
-      modelValue?: boolean;
-      label?: string;
-      disabled?: boolean;
       class?: string;
+      disabled?: boolean;
+      label?: string;
+      modelValue?: boolean;
       tooltip?: string;
       tooltipPlacement?: TooltipPlacement;
     }
@@ -34,9 +35,9 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  'update:modelValue': [value: boolean];
   blur: [event: FocusEvent];
   focus: [event: FocusEvent];
+  'update:modelValue': [value: boolean];
 }>();
 
 const model = useBooleanModel(
@@ -72,7 +73,7 @@ const model = useBooleanModel(
     <span v-if="props.label" class="text-sm font-medium">
       {{ props.label }}
     </span>
-    <slot />
+    <slot></slot>
   </label>
 </template>
 

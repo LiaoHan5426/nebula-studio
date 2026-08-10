@@ -1,12 +1,15 @@
 <script lang="ts" setup>
+import type { ScrollAreaRootProps } from 'reka-ui';
+
 import type { HTMLAttributes } from 'vue';
+
 import {
   ScrollAreaRoot,
-  ScrollAreaViewport,
   ScrollAreaScrollbar,
   ScrollAreaThumb,
+  ScrollAreaViewport,
 } from 'reka-ui';
-import type { ScrollAreaRootProps } from 'reka-ui';
+
 import { cn } from '../../../utils/cn';
 
 defineProps<ScrollAreaRootProps & { class?: HTMLAttributes['class'] }>();
@@ -18,7 +21,7 @@ defineProps<ScrollAreaRootProps & { class?: HTMLAttributes['class'] }>();
     :class="cn('relative overflow-hidden', $attrs.class as string)"
   >
     <ScrollAreaViewport class="h-full w-full rounded-[inherit]">
-      <slot />
+      <slot></slot>
     </ScrollAreaViewport>
     <ScrollAreaScrollbar
       orientation="vertical"

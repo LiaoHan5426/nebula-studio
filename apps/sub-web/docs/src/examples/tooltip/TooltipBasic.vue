@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NebulaTooltip, NebulaButton } from '@nebula-studio/nebula-ui';
+import { NebulaButton, NebulaTooltip } from '@nebula-studio/nebula-ui';
 </script>
 
 <template>

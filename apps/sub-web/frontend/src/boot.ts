@@ -1,15 +1,18 @@
-import '@nebula-studio/nebula-ui';
-import '@nebula-studio/nebula-layout';
-import '@nebula-studio-internal/tailwind/electron';
+import type { RuntimeMode } from '@nebula-studio/runtime';
+
 import {
   redirectShellToWebLogin,
   resolveShellEventBus,
   shouldRedirectUnauthenticatedWebShell,
 } from '@nebula-studio/app-shell';
+import '@nebula-studio/nebula-layout';
+import '@nebula-studio/nebula-ui';
 import { bootMicroApp, detectRuntimeMode } from '@nebula-studio/runtime';
-import type { RuntimeMode } from '@nebula-studio/runtime';
-import { bootstrapShellIntegratedApps } from './platform/integratedApps';
+
 import AppComponent from './App.vue';
+import { bootstrapShellIntegratedApps } from './platform/integratedApps';
+
+import '@nebula-studio-internal/tailwind/electron';
 
 /**
  * Frontend (Shell) 子应用统一启动入口。

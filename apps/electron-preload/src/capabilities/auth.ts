@@ -1,8 +1,9 @@
-import { electronAPI } from '@electron-toolkit/preload';
 import type {
   ElectronAuthApi,
   ElectronAuthLoginResult,
 } from '@nebula-studio/contracts/auth';
+
+import { electronAPI } from '@electron-toolkit/preload';
 
 /**
  * 统一 Auth 能力模块。
@@ -11,7 +12,7 @@ import type {
  */
 export function createAuthCapability(): ElectronAuthApi {
   return {
-    async login(payload: { user: string; password: string }) {
+    async login(payload: { password: string; user: string }) {
       const r = (await electronAPI.ipcRenderer.invoke(
         'auth:login',
         payload,

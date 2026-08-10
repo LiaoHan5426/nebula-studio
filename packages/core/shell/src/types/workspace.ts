@@ -1,41 +1,41 @@
 export type WorkspaceItemTone =
-  | 'neutral'
+  | 'danger'
   | 'info'
+  | 'neutral'
   | 'success'
-  | 'warning'
-  | 'danger';
+  | 'warning';
 
 export interface WorkspaceLink {
-  id: string;
-  title: string;
   description?: string;
-  viewId?: string;
-  path?: string;
   icon?: string;
-  tone?: WorkspaceItemTone;
+  id: string;
   meta?: string;
+  path?: string;
+  title: string;
+  tone?: WorkspaceItemTone;
+  viewId?: string;
 }
 
 export interface WorkspaceSummary {
-  id: 'requests' | 'tasks' | 'incidents' | 'resources';
-  label: string;
-  value: number;
-  description: string;
-  tone?: WorkspaceItemTone;
   action?: WorkspaceLink;
+  description: string;
+  id: 'incidents' | 'requests' | 'resources' | 'tasks';
+  label: string;
+  tone?: WorkspaceItemTone;
+  value: number;
 }
 
 export interface WorkspaceModel {
-  recent: WorkspaceLink[];
-  summaries: WorkspaceSummary[];
   commonResources: WorkspaceLink[];
   quickActions: WorkspaceLink[];
+  recent: WorkspaceLink[];
+  summaries: WorkspaceSummary[];
 }
 
-export type GlobalSearchKind = 'app' | 'resource' | 'document' | 'action';
+export type GlobalSearchKind = 'action' | 'app' | 'document' | 'resource';
 
 export interface GlobalSearchItem extends WorkspaceLink {
-  kind: GlobalSearchKind;
   keywords?: string[];
+  kind: GlobalSearchKind;
   roles?: string[];
 }

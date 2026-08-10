@@ -1,7 +1,10 @@
 <script lang="ts" setup>
-import type { HTMLAttributes } from 'vue';
-import { RadioGroupRoot, useForwardPropsEmits } from 'reka-ui';
 import type { RadioGroupRootEmits, RadioGroupRootProps } from 'reka-ui';
+
+import type { HTMLAttributes } from 'vue';
+
+import { RadioGroupRoot, useForwardPropsEmits } from 'reka-ui';
+
 import { cn } from '../../../utils/cn';
 
 interface RadioGroupProps extends RadioGroupRootProps {
@@ -18,6 +21,6 @@ const forwarded = useForwardPropsEmits(props, emits);
     v-bind="forwarded"
     :class="cn('grid gap-2', $attrs.class as string)"
   >
-    <slot />
+    <slot></slot>
   </RadioGroupRoot>
 </template>

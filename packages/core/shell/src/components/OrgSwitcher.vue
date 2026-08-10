@@ -11,16 +11,16 @@ export interface OrgOption {
 }
 
 defineProps<{
-  /** 是否启用组织功能 */
-  enabled: boolean;
-  /** 组织选项列表 */
-  options: OrgOption[];
-  /** 当前选中的组织 ID */
-  currentOrgId: string;
-  /** 是否正在加载 */
-  loading: boolean;
   /** 是否可切换组织 */
   canSwitch: boolean;
+  /** 当前选中的组织 ID */
+  currentOrgId: string;
+  /** 是否启用组织功能 */
+  enabled: boolean;
+  /** 是否正在加载 */
+  loading: boolean;
+  /** 组织选项列表 */
+  options: OrgOption[];
 }>();
 
 const emit = defineEmits<{

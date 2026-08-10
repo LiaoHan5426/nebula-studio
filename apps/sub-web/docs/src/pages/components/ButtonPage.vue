@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import Demo from '@/components/Demo.vue';
-
 import buttonBasicDemo from '@/examples/button/ButtonBasic.vue?demo';
 import buttonDisabledDemo from '@/examples/button/ButtonDisabled.vue?demo';
 import buttonIconDemo from '@/examples/button/ButtonIcon.vue?demo';

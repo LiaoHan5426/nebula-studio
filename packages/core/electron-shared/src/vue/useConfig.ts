@@ -1,4 +1,5 @@
 import { inject } from 'vue';
+
 import { rendererConfigKey } from './ConfigProvider.ts';
 
 export function useConfig() {

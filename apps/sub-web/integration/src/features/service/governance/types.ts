@@ -1,4 +1,4 @@
-export type GovernanceTab = 'rateLimit' | 'circuitBreaker' | 'whitelist';
+export type GovernanceTab = 'circuitBreaker' | 'rateLimit' | 'whitelist';
 
 export interface RuleRow {
   ruleId: string;

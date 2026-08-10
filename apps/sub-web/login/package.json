@@ -1,41 +1,41 @@
 {
   "name": "@nebula-studio-renderer/login",
   "version": "0.0.0",
-  "private": true,
   "description": "Nebula Studio authentication renderer.",
-  "author": "Liao Han <liaohan5426@gmail.com>",
-  "license": "UNLICENSED",
+  "private": true,
   "homepage": "https://github.com/LiaoHan5426/nebula-studio#readme",
+  "bugs": {
+    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LiaoHan5426/nebula-studio.git",
     "directory": "apps/sub-web/login"
   },
-  "bugs": {
-    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
-  },
+  "license": "UNLICENSED",
+  "author": "Liao Han <liaohan5426@gmail.com>",
   "type": "module",
-  "exports": {
-    "./app": "./src/App.vue",
-    "./boot": "./src/boot.ts"
-  },
   "scripts": {
     "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false",
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview"
   },
+  "exports": {
+    "./app": "./src/App.vue",
+    "./boot": "./src/boot.ts"
+  },
   "dependencies": {
+    "@nebula-studio-electron/electron-bridge": "workspace:^",
     "@nebula-studio-internal/tailwind": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
+    "@nebula-studio/auth-provider": "workspace:^",
     "@nebula-studio/contracts": "workspace:^",
+    "@nebula-studio/msw": "workspace:^",
     "@nebula-studio/nebula-layout": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
-    "vue": "catalog:vue",
     "@nebula-studio/runtime": "workspace:^",
-    "@nebula-studio/msw": "workspace:^",
-    "@nebula-studio-electron/electron-bridge": "workspace:^",
-    "@nebula-studio/auth-provider": "workspace:^"
+    "vue": "catalog:vue"
   },
   "devDependencies": {
     "@electron-toolkit/preload": "catalog:electron",

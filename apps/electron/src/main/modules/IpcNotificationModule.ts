@@ -1,14 +1,17 @@
-import { ipcMain, Notification } from 'electron';
-import appConfig from '../../../app.config';
-import type { MainModule, MainModuleContext } from '../bootstrap/MainModule';
 import type {
   AppNotifyLevel,
   AppNotifyPayload,
   AppNotifyResponsePayload,
   AppNotifyType,
-  NotifySource,
   NotifyBridgePayload,
+  NotifySource,
 } from '@nebula-studio-electron/electron-bridge';
+
+import type { MainModule, MainModuleContext } from '../bootstrap/MainModule';
+
+import { ipcMain, Notification } from 'electron';
+
+import appConfig from '../../../app.config';
 
 export class IpcNotificationModule implements MainModule {
   readonly name = 'IpcNotification';
@@ -70,7 +73,7 @@ export class IpcNotificationModule implements MainModule {
 
     const handleSystemNotify = (
       source: NotifySource,
-      payload: { title: string; body: string },
+      payload: { body: string; title: string },
     ) => {
       if (!Notification.isSupported()) {
         context.logger.warn(
@@ -132,7 +135,7 @@ export class IpcNotificationModule implements MainModule {
     );
     ipcMain.handle(
       'notify:system',
-      (_, req: NotifyBridgePayload<{ title: string; body: string }>) => {
+      (_, req: NotifyBridgePayload<{ body: string; title: string }>) => {
         const source = resolveSource(req?.source);
         if (!source) {
           context.logger.warn('[notify:system] Invalid source.');
@@ -143,7 +146,7 @@ export class IpcNotificationModule implements MainModule {
     );
     ipcMain.handle(
       'notify:bridge:system',
-      (_, req: NotifyBridgePayload<{ title: string; body: string }>) => {
+      (_, req: NotifyBridgePayload<{ body: string; title: string }>) => {
         const source = resolveSource(req?.source);
         if (!source) {
           context.logger.warn('[notify:bridge:system] Invalid source.');

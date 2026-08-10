@@ -1,6 +1,7 @@
 import type { CreateNebulaRendererViteConfigOptions } from './config/createNebulaRendererViteConfig.ts';
-import { createNebulaRendererViteConfig } from './config/createNebulaRendererViteConfig.ts';
 import type { DefineNebulaElectronViteConfigOptions } from './electron/defineNebulaElectronViteConfig.ts';
+
+import { createNebulaRendererViteConfig } from './config/createNebulaRendererViteConfig.ts';
 
 export type DefineNebulaWebConfigOptions =
   CreateNebulaRendererViteConfigOptions & {
@@ -13,8 +14,8 @@ export type DefineNebulaElectronConfigOptions =
   };
 
 export type DefineNebulaConfigOptions =
-  | DefineNebulaWebConfigOptions
-  | DefineNebulaElectronConfigOptions;
+  | DefineNebulaElectronConfigOptions
+  | DefineNebulaWebConfigOptions;
 
 type NebulaRendererConfigReturn = ReturnType<
   typeof createNebulaRendererViteConfig

@@ -1,20 +1,21 @@
-import { inject, provide, computed, ref } from 'vue';
 import type { ComputedRef, InjectionKey, Ref } from 'vue';
+
+import { computed, inject, provide, ref } from 'vue';
 
 export interface LayoutSidebarState {
   collapsed: Ref<boolean>;
-  pinned: Ref<boolean>;
+  effectiveExpanded: ComputedRef<boolean>;
   expandOnHover: Ref<boolean>;
   hoverExpanded: Ref<boolean>;
-  effectiveExpanded: ComputedRef<boolean>;
-  toggleCollapsed: () => void;
-  togglePinned: () => void;
   onSidebarEnter: () => void;
   onSidebarLeave: () => void;
+  pinned: Ref<boolean>;
+  toggleCollapsed: () => void;
+  togglePinned: () => void;
 }
 
 export interface LayoutContext {
-  mode: 'shell' | 'admin' | 'content';
+  mode: 'admin' | 'content' | 'shell';
   sidebar: LayoutSidebarState;
 }
 
@@ -38,8 +39,8 @@ export function tryUseLayoutContext(): LayoutContext | null {
 
 export function createSidebarState(options: {
   collapsed: Ref<boolean>;
-  pinned: Ref<boolean>;
   expandOnHover: Ref<boolean>;
+  pinned: Ref<boolean>;
 }): LayoutSidebarState {
   const hoverExpanded = ref(false);
   let hoverLeaveTimer: number | undefined;

@@ -1,12 +1,12 @@
-export type CodeEditorWordWrap = 'off' | 'on' | 'wordWrapColumn' | 'bounded';
+export type CodeEditorWordWrap = 'bounded' | 'off' | 'on' | 'wordWrapColumn';
 
 export interface CodeEditorOptions {
-  fontSize?: number;
-  tabSize?: number;
-  minimap?: boolean;
-  lineNumbers?: boolean;
-  wordWrap?: CodeEditorWordWrap;
   automaticLayout?: boolean;
+  fontSize?: number;
+  lineNumbers?: boolean;
+  minimap?: boolean;
+  tabSize?: number;
+  wordWrap?: CodeEditorWordWrap;
 }
 
 export interface CodeEditorReadyPayload {
@@ -15,7 +15,7 @@ export interface CodeEditorReadyPayload {
 }
 
 export interface CodeEditorError {
-  message: string;
   cause?: unknown;
+  message: string;
   provider: 'monaco';
 }

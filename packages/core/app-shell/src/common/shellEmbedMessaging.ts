@@ -15,16 +15,16 @@ export type ShellEmbedResetAckPayload = {
 };
 
 export type ShellEmbedNavigatePayload = {
-  type: typeof SHELL_EMBED_NAVIGATE_MESSAGE;
   path: string;
+  type: typeof SHELL_EMBED_NAVIGATE_MESSAGE;
 };
 
 export type ShellEmbedPageMetaPayload = {
-  type: typeof SHELL_EMBED_PAGE_META_MESSAGE;
   appId: string;
+  helpKey?: string;
   path: string;
   title?: string;
-  helpKey?: string;
+  type: typeof SHELL_EMBED_PAGE_META_MESSAGE;
 };
 
 export function isShellEmbedResetPayload(
@@ -100,7 +100,7 @@ export function installShellEmbedResetListener(
 
 /** 宿主壳：通知已挂载的子应用 iframe 回到首页（无需整页重载） */
 export function postShellEmbedReset(
-  contentWindow: Window | null | undefined,
+  contentWindow: null | undefined | Window,
   targetOrigin: string = window.location.origin,
 ): void {
   contentWindow?.postMessage(createShellEmbedResetPayload(), targetOrigin);
@@ -122,7 +122,7 @@ export function installShellEmbedNavigationListener(
 
 /** 宿主壳：导航已挂载的子应用，不重载 iframe。 */
 export function postShellEmbedNavigate(
-  contentWindow: Window | null | undefined,
+  contentWindow: null | undefined | Window,
   path: string,
   targetOrigin: string = window.location.origin,
 ): void {

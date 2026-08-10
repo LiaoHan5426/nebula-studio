@@ -1,23 +1,24 @@
 <script setup lang="ts">
-import { NebulaButton, NebulaPane } from '@nebula-studio/nebula-ui';
-
-import { SubscribeType } from '@/shared/types';
 import type { DataSourceConfig } from '@/shared/types';
 
 import type { CreateFormDraft, SubscriptionFormState } from '../types';
 
+import { NebulaButton, NebulaPane } from '@nebula-studio/nebula-ui';
+
+import { SubscribeType } from '@/shared/types';
+
 defineProps<{
-  open: boolean;
-  form: SubscriptionFormState;
   createDraft: CreateFormDraft;
   dataSources: DataSourceConfig[];
+  form: SubscriptionFormState;
+  open: boolean;
 }>();
 
 const emit = defineEmits<{
   close: [];
   submit: [];
-  'update:form': [value: SubscriptionFormState];
   'update:create-draft': [value: CreateFormDraft];
+  'update:form': [value: SubscriptionFormState];
 }>();
 </script>
 
@@ -142,9 +143,9 @@ const emit = defineEmits<{
         </label>
       </template>
       <div class="modal__actions">
-        <NebulaButton variant="outline" @click="emit('close')"
-          >取消</NebulaButton
-        >
+        <NebulaButton variant="outline" @click="emit('close')">
+          取消
+        </NebulaButton>
         <NebulaButton @click="emit('submit')">创建</NebulaButton>
       </div>
     </NebulaPane>

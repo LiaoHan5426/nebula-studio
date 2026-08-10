@@ -7,45 +7,45 @@
  */
 
 export type PluginStatus =
-  | 'UPLOADED'
-  | 'INSTALLED'
-  | 'TESTED'
-  | 'FAILED'
-  | 'PENDING_REVIEW'
   | 'ACTIVE'
+  | 'FAILED'
   | 'INACTIVE'
+  | 'INSTALLED'
+  | 'PENDING_REVIEW'
+  | 'TESTED'
+  | 'UPLOADED'
   | (string & {});
 
 export interface PluginRecord {
+  activatedAt?: string;
+  connectorId?: string;
+  createdAt: string;
+  createdBy?: string;
+  description?: string;
+  installedAt?: string;
+  metadata?: Record<string, unknown>;
+  pf4jPluginId?: string;
+  pluginCategory?: string;
+  pluginFilePath?: string;
+  pluginFileSize?: number;
   pluginId: string;
   pluginName: string;
   pluginVersion: string;
-  pluginFilePath?: string;
-  pluginFileSize?: number;
   status: PluginStatus;
   tenantId?: string;
-  createdBy?: string;
-  metadata?: Record<string, unknown>;
-  description?: string;
-  installedAt?: string;
-  activatedAt?: string;
   testedAt?: string;
   testResult?: Record<string, unknown>;
   transitioning: boolean;
-  pluginCategory?: string;
-  connectorId?: string;
-  pf4jPluginId?: string;
-  createdAt: string;
   updatedAt: string;
 }
 
 export interface PluginCatalogItem {
+  configSchema?: Record<string, unknown>;
+  connectorId?: string;
+  label?: string;
+  nodeSchema?: Record<string, unknown>;
+  pluginCategory?: string;
   pluginId: string;
   pluginName: string;
   pluginVersion: string;
-  connectorId?: string;
-  pluginCategory?: string;
-  label?: string;
-  configSchema?: Record<string, unknown>;
-  nodeSchema?: Record<string, unknown>;
 }

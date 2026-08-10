@@ -1,11 +1,11 @@
-/// <reference types="vite/client" />
-/// <reference types="@nebula-studio/nebula-ui/env" />
+// / <reference types="vite/client" />
+// / <reference types="@nebula-studio/nebula-ui/env" />
 
 declare module '@nebula-studio/nebula-flow-editor/components/BpmnEditor.vue' {
   import type { DefineComponent } from 'vue';
   const component: DefineComponent<{
-    xml?: string;
     mode?: 'default' | 'integration';
+    xml?: string;
   }>;
   export default component;
 }
@@ -13,13 +13,13 @@ declare module '@nebula-studio/nebula-flow-editor/components/BpmnEditor.vue' {
 declare module '@nebula-studio/nebula-flow-editor/components/IntegrationBpmnEditor.vue' {
   import type { DefineComponent } from 'vue';
   const component: DefineComponent<{
-    xml?: string;
     atomicInterfaces?: Array<{
+      endpointUri?: string;
       interfaceId: string;
       interfaceName: string;
-      endpointUri?: string;
       method?: string;
     }>;
+    xml?: string;
   }>;
   export default component;
 }
@@ -33,7 +33,7 @@ interface ImportMeta {
 }
 
 interface Window {
-  __NEBULA_RUNTIME_MODE__?: 'standalone' | 'platform-embed' | 'electron';
+  __NEBULA_RUNTIME_MODE__?: 'electron' | 'platform-embed' | 'standalone';
   __NEBULA_EMBED_SURFACE__?: string;
   electron: {
     ipcRenderer: {

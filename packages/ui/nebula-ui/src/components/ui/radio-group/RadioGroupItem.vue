@@ -1,15 +1,17 @@
 <script lang="ts" setup>
 import type { HTMLAttributes } from 'vue';
+
 import {
-  RadioGroupItem as RadioGroupItemRoot,
   RadioGroupIndicator,
+  RadioGroupItem as RadioGroupItemRoot,
 } from 'reka-ui';
+
 import { cn } from '../../../utils/cn';
 
 defineProps<{
-  value: string;
-  disabled?: boolean;
   class?: HTMLAttributes['class'];
+  disabled?: boolean;
+  value: string;
 }>();
 </script>
 
@@ -25,7 +27,7 @@ defineProps<{
     "
   >
     <RadioGroupIndicator class="flex items-center justify-center">
-      <div class="h-2.5 w-2.5 rounded-full bg-primary" />
+      <div class="h-2.5 w-2.5 rounded-full bg-primary"></div>
     </RadioGroupIndicator>
   </RadioGroupItemRoot>
 </template>

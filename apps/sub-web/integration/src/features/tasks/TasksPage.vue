@@ -1,17 +1,19 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { NebulaButton, NebulaPane, NebulaTag } from '@nebula-studio/nebula-ui';
-
-import { taskApi } from '@/shared/api/taskApi';
-import { useTenant } from '@/shared/composables/useTenant';
-import { isApiSuccess } from '@nebula-studio/api-client';
 import type {
   TaskCreateRequest,
   TaskDefinition,
   TaskUpdateRequest,
 } from '@nebula-studio/contracts/integration';
+
+import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+import { isApiSuccess } from '@nebula-studio/api-client';
 import { TaskStatus, TaskType } from '@nebula-studio/contracts/integration';
+import { NebulaButton, NebulaPane, NebulaTag } from '@nebula-studio/nebula-ui';
+
+import { taskApi } from '@/shared/api/taskApi';
+import { useTenant } from '@/shared/composables/useTenant';
 
 const { currentTenantId } = useTenant();
 const router = useRouter();
@@ -20,7 +22,7 @@ const tasks = ref<TaskDefinition[]>([]);
 const loading = ref(false);
 const showCreate = ref(false);
 const showEdit = ref(false);
-const editingTask = ref<TaskDefinition | null>(null);
+const editingTask = ref<null | TaskDefinition>(null);
 
 const CRON_PRESETS = [
   { label: '每分钟', value: '0 * * * *' },
@@ -132,9 +134,9 @@ function taskTypeLabel(type: string) {
   <div class="page">
     <NebulaPane title="任务调度" description="创建定时任务并管理执行状态">
       <div class="page__toolbar">
-        <NebulaButton variant="primary" @click="showCreate = true"
-          >新建任务</NebulaButton
-        >
+        <NebulaButton variant="primary" @click="showCreate = true">
+          新建任务
+        </NebulaButton>
         <NebulaButton variant="outline" @click="loadTasks">刷新</NebulaButton>
         <NebulaButton
           variant="outline"
@@ -162,9 +164,9 @@ function taskTypeLabel(type: string) {
                 · {{ task.triggerType }}
               </p>
             </div>
-            <NebulaTag :variant="statusVariant(task.status)">{{
-              task.status
-            }}</NebulaTag>
+            <NebulaTag :variant="statusVariant(task.status)">
+              {{ task.status }}
+            </NebulaTag>
           </div>
           <div v-if="task.payload" class="page__payload">
             <code>{{ task.payload }}</code>
@@ -240,15 +242,15 @@ function taskTypeLabel(type: string) {
             v-model="form.payload"
             placeholder="JSON 格式的任务数据"
             rows="3"
-          />
+          ></textarea>
         </label>
         <div class="modal__actions">
-          <NebulaButton variant="outline" @click="showCreate = false"
-            >取消</NebulaButton
-          >
-          <NebulaButton variant="primary" @click="handleCreate"
-            >创建</NebulaButton
-          >
+          <NebulaButton variant="outline" @click="showCreate = false">
+            取消
+          </NebulaButton>
+          <NebulaButton variant="primary" @click="handleCreate">
+            创建
+          </NebulaButton>
         </div>
       </NebulaPane>
     </div>
@@ -266,15 +268,15 @@ function taskTypeLabel(type: string) {
         </label>
         <label class="field">
           <span>负载内容 (Payload)</span>
-          <textarea v-model="editForm.payload" rows="3" />
+          <textarea v-model="editForm.payload" rows="3"></textarea>
         </label>
         <div class="modal__actions">
-          <NebulaButton variant="outline" @click="showEdit = false"
-            >取消</NebulaButton
-          >
-          <NebulaButton variant="primary" @click="handleEdit"
-            >保存</NebulaButton
-          >
+          <NebulaButton variant="outline" @click="showEdit = false">
+            取消
+          </NebulaButton>
+          <NebulaButton variant="primary" @click="handleEdit">
+            保存
+          </NebulaButton>
         </div>
       </NebulaPane>
     </div>

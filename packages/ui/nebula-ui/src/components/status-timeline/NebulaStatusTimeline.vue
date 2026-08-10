@@ -1,10 +1,10 @@
 <script lang="ts">
 export interface NebulaTimelineItem {
-  id: string;
-  title: string;
   description?: string;
+  id: string;
+  state?: 'complete' | 'current' | 'error' | 'pending';
   timestamp?: string;
-  state?: 'complete' | 'current' | 'pending' | 'error';
+  title: string;
 }
 </script>
 
@@ -23,7 +23,7 @@ withDefaults(defineProps<{ items: NebulaTimelineItem[]; label?: string }>(), {
       :class="`is-${item.state ?? 'pending'}`"
       :aria-current="item.state === 'current' ? 'step' : undefined"
     >
-      <span class="nebula-status-timeline__marker" aria-hidden="true" />
+      <span class="nebula-status-timeline__marker" aria-hidden="true"></span>
       <div class="nebula-status-timeline__content">
         <div class="nebula-status-timeline__heading">
           <strong>{{ item.title }}</strong>

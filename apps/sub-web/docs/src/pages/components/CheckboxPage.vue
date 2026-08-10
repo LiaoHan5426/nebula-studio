@@ -1,6 +1,5 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
-
 import checkboxBasicDemo from '@/examples/checkbox/CheckboxBasic.vue?demo';
 </script>
 

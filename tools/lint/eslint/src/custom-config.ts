@@ -8,11 +8,16 @@ const restrictedImportIgnores = [
 ];
 
 const customConfig: Linter.Config[] = [
-  // shadcn-ui 内部组件是自动生成的，不做太多限制
+  // UI / editor 组件库：可选 props 常无默认值；测试文件允许多组件
   {
-    files: ['packages/nebula-ui/**/**'],
+    files: [
+      'packages/ui/**/**',
+      'packages/editors/**/**',
+      'apps/sub-web/docs/**/**',
+    ],
     rules: {
       'vue/require-default-prop': 'off',
+      'vue/one-component-per-file': 'off',
     },
   },
   {

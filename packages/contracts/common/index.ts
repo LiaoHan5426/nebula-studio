@@ -1,6 +1,6 @@
 export type {
   ApiResponse,
   MybatisPage,
-  PageResult,
   PageResponse,
+  PageResult,
 } from './api.ts';

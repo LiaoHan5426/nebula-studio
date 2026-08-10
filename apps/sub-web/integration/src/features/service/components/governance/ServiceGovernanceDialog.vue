@@ -1,11 +1,4 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import {
-  NebulaButton,
-  NebulaInput,
-  NebulaSelect,
-} from '@nebula-studio/nebula-ui';
-
 import type { ApiInterface } from '@/shared/types';
 
 import type {
@@ -16,22 +9,30 @@ import type {
   WhitelistForm,
 } from '../../governance/types';
 
+import { computed } from 'vue';
+
+import {
+  NebulaButton,
+  NebulaInput,
+  NebulaSelect,
+} from '@nebula-studio/nebula-ui';
+
 const props = defineProps<{
-  open: boolean;
   activeTab: GovernanceTab;
-  title: string;
-  rateLimitForm: RateLimitForm;
   circuitForm: CircuitForm;
-  whitelistForm: WhitelistForm;
-  manageableServices: ApiInterface[];
   editingCircuit: CircuitBreakerRow | null;
+  manageableServices: ApiInterface[];
+  open: boolean;
+  rateLimitForm: RateLimitForm;
+  title: string;
+  whitelistForm: WhitelistForm;
 }>();
 
 const emit = defineEmits<{
   close: [];
   submit: [];
-  'update:rateLimitForm': [value: RateLimitForm];
   'update:circuitForm': [value: CircuitForm];
+  'update:rateLimitForm': [value: RateLimitForm];
   'update:whitelistForm': [value: WhitelistForm];
 }>();
 
@@ -238,13 +239,13 @@ const whitelistServiceOptions = computed(
                 whitelistIps: ($event.target as HTMLTextAreaElement).value,
               })
             "
-          />
+          ></textarea>
         </label>
       </div>
       <div class="modal-card__actions">
-        <NebulaButton variant="outline" @click="emit('close')"
-          >取消</NebulaButton
-        >
+        <NebulaButton variant="outline" @click="emit('close')">
+          取消
+        </NebulaButton>
         <NebulaButton @click="emit('submit')">保存</NebulaButton>
       </div>
     </div>

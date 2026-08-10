@@ -1,19 +1,20 @@
+import type { ShellHostBridge } from '../common/shellHostBridge';
+
 import {
   persistActiveViewPreference,
   persistShellSurfacePreference,
 } from '../common/activeViewPreference';
 import { isElectronIframeEmbedPresentation } from '../common/shellPresentationConfig';
-import type { ShellHostBridge } from '../common/shellHostBridge';
 
 // `window.electron` 由 preload 脚本通过 contextBridge 注入，
 // 各子应用的 env.d.ts 已声明完整类型（ElectronAPI），此处仅做最小断言。
 const electronWindow = window as unknown as Window & {
+  api: { auth: { logout(): Promise<void> } };
   electron: {
     ipcRenderer: {
       invoke(channel: string, ...args: unknown[]): Promise<unknown>;
     };
   };
-  api: { auth: { logout(): Promise<void> } };
 };
 
 /** 已废弃：集成层显隐改由 `nebula-shell-active-view` 驱动，启动时删除以免误判 */
@@ -51,7 +52,7 @@ export function createElectronShellHostBridge(): ShellHostBridge {
       }
     },
 
-    resolveInitialIntegrationOpen(activeViewId: string | null): boolean {
+    resolveInitialIntegrationOpen(activeViewId: null | string): boolean {
       /* 不以 localStorage 为准：冷启动主进程无选中子应用 ⇒ 进入应用集成 */
       const id = typeof activeViewId === 'string' ? activeViewId.trim() : '';
       return !id;

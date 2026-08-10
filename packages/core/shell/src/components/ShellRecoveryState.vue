@@ -1,22 +1,23 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+
 import { NebulaButton, NebulaIcon } from '@nebula-studio/nebula-ui';
 
 export type ShellRecoveryKind =
-  | 'offline'
   | 'load-error'
-  | 'session-expired'
-  | 'permission-changed';
+  | 'offline'
+  | 'permission-changed'
+  | 'session-expired';
 
 const props = defineProps<{
-  kind: ShellRecoveryKind;
   appLabel?: string;
+  kind: ShellRecoveryKind;
 }>();
 
 const emit = defineEmits<{
-  retry: [];
-  login: [];
   back: [];
+  login: [];
+  retry: [];
 }>();
 
 const content = computed(() => {
@@ -29,19 +30,19 @@ const content = computed(() => {
         description: `网络恢复后可重新加载${label}，已打开的工作台仍可继续浏览。`,
         action: '重新检测',
       };
-    case 'session-expired':
-      return {
-        icon: 'lock',
-        title: '会话已过期',
-        description: `重新登录后会返回${label}，无需重新查找入口。`,
-        action: '重新登录',
-      };
     case 'permission-changed':
       return {
         icon: 'shield-alert',
         title: '访问权限已发生变化',
         description: `你目前无法继续访问${label}。可返回工作台选择其他任务。`,
         action: '返回工作台',
+      };
+    case 'session-expired':
+      return {
+        icon: 'lock',
+        title: '会话已过期',
+        description: `重新登录后会返回${label}，无需重新查找入口。`,
+        action: '重新登录',
       };
     default:
       return {

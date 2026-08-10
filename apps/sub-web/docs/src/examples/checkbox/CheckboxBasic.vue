@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+
 import { NebulaCheckbox } from '@nebula-studio/nebula-ui';
 
 const checked = ref(false);

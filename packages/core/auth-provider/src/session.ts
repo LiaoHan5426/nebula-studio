@@ -1,5 +1,6 @@
-import { globalAuthProvider } from './index.ts';
 import type { AuthSession } from './types.ts';
+
+import { globalAuthProvider } from './index.ts';
 
 /**
  * Imperative auth session helpers for sub-web apps.
@@ -18,12 +19,12 @@ import type { AuthSession } from './types.ts';
 // ---------------------------------------------------------------------------
 
 /** Return the current auth token, or `null` if not authenticated. */
-export function getAuthToken(): string | null {
+export function getAuthToken(): null | string {
   return globalAuthProvider.getSession()?.token ?? null;
 }
 
 /** Return the current username, or `null`. */
-export function getAuthUsername(): string | null {
+export function getAuthUsername(): null | string {
   return globalAuthProvider.getSession()?.user ?? null;
 }
 
@@ -33,7 +34,7 @@ export function getAuthRoles(): string[] {
 }
 
 /** Return the current userId, or `null`. */
-export function getAuthUserId(): string | null {
+export function getAuthUserId(): null | string {
   return globalAuthProvider.getSession()?.userId ?? null;
 }
 
@@ -52,7 +53,7 @@ export function setAuthSession(
   user: string,
   authToken: string,
   roles: string[] = [],
-  userId?: string | number | null,
+  userId?: null | number | string,
 ): void {
   const session: AuthSession = {
     user,

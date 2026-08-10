@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { cn } from '../../../utils/cn';
 import type { HTMLAttributes } from 'vue';
+
+import { cn } from '../../../utils/cn';
 
 const props = defineProps<{
   class?: HTMLAttributes['class'];
@@ -15,5 +16,5 @@ const props = defineProps<{
         props.class,
       )
     "
-  />
+  ></textarea>
 </template>

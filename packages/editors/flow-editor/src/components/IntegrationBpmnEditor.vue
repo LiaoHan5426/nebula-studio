@@ -4,9 +4,9 @@ import { computed } from 'vue';
 import BpmnEditor from './BpmnEditor.vue';
 
 export interface AtomicInterfaceOption {
+  endpointUri?: string;
   interfaceId: string;
   interfaceName: string;
-  endpointUri?: string;
   method?: string;
 }
 
@@ -14,11 +14,11 @@ defineProps<{
   atomicInterfaces?: AtomicInterfaceOption[];
 }>();
 
-const xml = defineModel<string>('xml');
-
 const emit = defineEmits<{
   (e: 'changed'): void;
 }>();
+
+const xml = defineModel<string>('xml');
 
 const hints = computed(() => [
   '从左侧调色板拖拽 Service Task 编排原子接口调用',

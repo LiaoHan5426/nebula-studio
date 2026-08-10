@@ -1,20 +1,20 @@
 import type { EmbeddedShellWindowId } from './shellPresentationConfig';
 
 export interface ShellIntegratedAppMeta {
-  id: EmbeddedShellWindowId;
-  label: string;
-  description?: string;
-  category?: 'workspace' | 'product' | 'support' | 'settings';
-  helpKey?: string;
-  searchKeywords?: string[];
-  roles?: string[];
-  returnTo?: string;
-  iconSvg: string;
+  category?: 'product' | 'settings' | 'support' | 'workspace';
   defaultEnabled?: boolean;
+  description?: string;
+  helpKey?: string;
+  iconSvg: string;
+  id: EmbeddedShellWindowId;
   /** 为 false 时仅作为嵌入子应用（如侧栏「设置」），不出现在「应用集成」网格 */
   integratable?: boolean;
+  label: string;
   /** 打开该嵌入视图前需 Shell 登录态（含 JWT） */
   requiresAuth?: boolean;
+  returnTo?: string;
+  roles?: string[];
+  searchKeywords?: string[];
 }
 
 export type ShellIntegratedAppRegistry = Partial<

@@ -1,8 +1,11 @@
 <script lang="ts" setup>
-import { cn } from '../../../utils/cn';
-import type { HTMLAttributes } from 'vue';
-import { Label } from 'reka-ui';
 import type { LabelProps } from 'reka-ui';
+
+import type { HTMLAttributes } from 'vue';
+
+import { Label } from 'reka-ui';
+
+import { cn } from '../../../utils/cn';
 
 const props = defineProps<LabelProps & { class?: HTMLAttributes['class'] }>();
 </script>
@@ -17,6 +20,6 @@ const props = defineProps<LabelProps & { class?: HTMLAttributes['class'] }>();
       )
     "
   >
-    <slot />
+    <slot></slot>
   </Label>
 </template>

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { GovernanceTab } from './governance/types';
+
 import {
   NebulaButton,
   NebulaPane,
@@ -8,7 +10,6 @@ import {
 import ServiceGovernanceDialog from './components/governance/ServiceGovernanceDialog.vue';
 import ServiceGovernanceTables from './components/governance/ServiceGovernanceTables.vue';
 import { useServiceGovernance } from './composables/useServiceGovernance';
-import type { GovernanceTab } from './governance/types';
 
 const {
   activeTab,
@@ -56,9 +57,9 @@ const {
             class="governance-toolbar__tenant-select"
           />
         </div>
-        <NebulaButton variant="outline" @click="loadCurrentTab"
-          >刷新</NebulaButton
-        >
+        <NebulaButton variant="outline" @click="loadCurrentTab">
+          刷新
+        </NebulaButton>
         <NebulaButton
           variant="primary"
           :disabled="!selectedTenantId"

@@ -1,9 +1,8 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
-
 import tableBasicDemo from '@/examples/table/TableBasic.vue?demo';
-import tableStripeDemo from '@/examples/table/TableStripe.vue?demo';
 import tablePaginationDemo from '@/examples/table/TablePagination.vue?demo';
+import tableStripeDemo from '@/examples/table/TableStripe.vue?demo';
 </script>
 
 <template>

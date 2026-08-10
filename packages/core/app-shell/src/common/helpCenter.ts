@@ -80,7 +80,7 @@ export const HELP_TOPICS: readonly HelpTopic[] = [
   { key: 'docs.', path: '/help', title: '帮助中心' },
 ] as const;
 
-export function resolveHelpTopic(helpKey?: string | null): HelpTopic {
+export function resolveHelpTopic(helpKey?: null | string): HelpTopic {
   if (!helpKey) return DEFAULT_HELP_TOPIC;
   return (
     HELP_TOPICS.find((topic) => topic.key === helpKey) ??
@@ -91,14 +91,14 @@ export function resolveHelpTopic(helpKey?: string | null): HelpTopic {
   );
 }
 
-export type TaskGuideId = 'first-login' | 'first-request' | 'first-publish';
+export type TaskGuideId = 'first-login' | 'first-publish' | 'first-request';
 
 export interface TaskGuide {
-  id: TaskGuideId;
-  title: string;
+  action?: { path: string; viewId: string };
   description: string;
   helpPath: string;
-  action?: { viewId: string; path: string };
+  id: TaskGuideId;
+  title: string;
 }
 
 export const TASK_GUIDES: readonly TaskGuide[] = [

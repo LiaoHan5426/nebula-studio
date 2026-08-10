@@ -1,6 +1,9 @@
-import { createRouter, createWebHistory } from 'vue-router';
 import type { RouteRecordRaw } from 'vue-router';
+
+import { createRouter, createWebHistory } from 'vue-router';
+
 import { defineExperiencePageMeta } from '@nebula-studio/nebula-layout';
+
 import DocsLayout from '@/layouts/DocsLayout.vue';
 
 function applyDocsExperienceMeta(records: RouteRecordRaw[]): RouteRecordRaw[] {

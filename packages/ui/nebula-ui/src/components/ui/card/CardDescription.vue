@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { cn } from '../../../utils/cn';
 import type { HTMLAttributes } from 'vue';
+
+import { cn } from '../../../utils/cn';
 
 const props = defineProps<{
   class?: HTMLAttributes['class'];
@@ -9,6 +10,6 @@ const props = defineProps<{
 
 <template>
   <p :class="cn('text-sm text-muted-foreground', props.class)">
-    <slot />
+    <slot></slot>
   </p>
 </template>

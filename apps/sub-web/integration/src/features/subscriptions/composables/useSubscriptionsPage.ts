@@ -1,10 +1,13 @@
+import type { DataSourceConfig, TableSubscription } from '@/shared/types';
+
+import type { CreateFormDraft, SubscriptionFormState } from '../types';
+
 import { computed, onMounted, ref } from 'vue';
 
 import { subscriptionApi } from '@/features/subscription/api';
 import { dataSourceApi } from '@/shared/api/integration';
 import { useSubscriptionEvents } from '@/shared/composables/useSubscriptionEvents';
 import { useTenant } from '@/shared/composables/useTenant';
-import type { DataSourceConfig, TableSubscription } from '@/shared/types';
 import { isApiSuccess } from '@/shared/types';
 
 import {
@@ -17,7 +20,6 @@ import {
   DEFAULT_SUBSCRIPTION_FORM,
   POLLING_INTERVAL_UPDATE_NOTICE,
 } from '../types';
-import type { CreateFormDraft, SubscriptionFormState } from '../types';
 
 export function useSubscriptionsPage() {
   const { currentTenantId } = useTenant();
@@ -26,14 +28,14 @@ export function useSubscriptionsPage() {
   const dataSources = ref<DataSourceConfig[]>([]);
   const loading = ref(false);
   const showCreate = ref(false);
-  const selectedSubId = ref<string | null>(null);
+  const selectedSubId = ref<null | string>(null);
 
   const form = ref<SubscriptionFormState>({ ...DEFAULT_SUBSCRIPTION_FORM });
   const createDraft = ref<CreateFormDraft>({ ...DEFAULT_CREATE_DRAFT });
 
   const pollingIntervalDrafts = ref<Record<string, number>>({});
-  const savingIntervalId = ref<string | null>(null);
-  const intervalNotice = ref<string | null>(null);
+  const savingIntervalId = ref<null | string>(null);
+  const intervalNotice = ref<null | string>(null);
 
   const { events, connectionState, error, connect, disconnect, clearEvents } =
     useSubscriptionEvents();

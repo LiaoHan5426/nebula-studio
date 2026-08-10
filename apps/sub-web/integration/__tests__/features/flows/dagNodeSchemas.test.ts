@@ -1,11 +1,10 @@
-import { describe, expect, it } from 'vitest';
-
 import {
   buildNodeSchemasFromCatalog,
   isDagOrchestrationPlugin,
   readPluginNodeFields,
   withAtomicInterfaceOptions,
 } from '@/features/flows/dagNodeSchemas';
+import { describe, expect, it } from 'vitest';
 
 describe('dag node schemas', () => {
   it('reads plugin config fields from catalog schema', () => {

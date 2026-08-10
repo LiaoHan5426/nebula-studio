@@ -1,7 +1,16 @@
-import { computed, onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import type {
+  ApiInterface,
+  CompositeInterface,
+  DagDefinitionRecord,
+} from '@/shared/types';
+
 import type { DagDefinition } from '@nebula-studio/nebula-dag-editor';
 import type { PluginNodeSchema } from '@nebula-studio/nebula-low-render';
+
+import type { PublishForm, ServiceTab } from '../publish/types';
+
+import { computed, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 import { approvalApi } from '@/features/approval/api';
 import { loadDagNodeSchemas } from '@/features/flows/loadDagNodeSchemas';
@@ -9,11 +18,6 @@ import { dagApi } from '@/features/monitor/api';
 import { interfaceApi } from '@/shared/api/integration';
 import { getAuthUserId } from '@/shared/auth/session';
 import { useAuth } from '@/shared/composables/useAuth';
-import type {
-  ApiInterface,
-  CompositeInterface,
-  DagDefinitionRecord,
-} from '@/shared/types';
 import {
   InterfaceStatus,
   InterfaceType,
@@ -27,7 +31,6 @@ import {
   createDefaultCompositeForm,
   isDagComposite,
 } from '../publish/mappers';
-import type { PublishForm, ServiceTab } from '../publish/types';
 
 export function useServicePublish() {
   const services = ref<ApiInterface[]>([]);

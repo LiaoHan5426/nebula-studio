@@ -1,14 +1,16 @@
 <script setup lang="ts">
+import type {
+  Connector,
+  DatabaseConfig,
+  DataSourceConfig,
+  ProtocolConfig,
+} from '@/shared/types';
+
 import { onMounted, ref } from 'vue';
+
 import { NebulaButton, NebulaPane, NebulaTag } from '@nebula-studio/nebula-ui';
 
 import { connectorApi, dataSourceApi } from '@/shared/api/integration';
-import type {
-  Connector,
-  DataSourceConfig,
-  DatabaseConfig,
-  ProtocolConfig,
-} from '@/shared/types';
 import { ConnectorType, isApiSuccess } from '@/shared/types';
 
 const dataSources = ref<DataSourceConfig[]>([]);
@@ -17,7 +19,7 @@ const loading = ref(false);
 const showCreate = ref(false);
 const showEdit = ref(false);
 const editing = ref<DataSourceConfig | null>(null);
-const testNotice = ref<string | null>(null);
+const testNotice = ref<null | string>(null);
 
 const form = ref({
   name: '',
@@ -139,12 +141,12 @@ async function handleTest(id: string) {
   <div class="page">
     <NebulaPane title="数据源管理" description="基于连接器创建与管理数据源">
       <div class="page__toolbar">
-        <NebulaButton variant="primary" @click="openCreate"
-          >新建数据源</NebulaButton
-        >
-        <NebulaButton variant="outline" @click="loadDataSources"
-          >刷新</NebulaButton
-        >
+        <NebulaButton variant="primary" @click="openCreate">
+          新建数据源
+        </NebulaButton>
+        <NebulaButton variant="outline" @click="loadDataSources">
+          刷新
+        </NebulaButton>
       </div>
       <p v-if="testNotice" class="page__notice">{{ testNotice }}</p>
 
@@ -172,17 +174,21 @@ async function handleTest(id: string) {
             </NebulaTag>
           </div>
           <div class="page__actions">
-            <NebulaButton variant="outline" @click="openEdit(ds)"
-              >编辑</NebulaButton
+            <NebulaButton variant="outline" @click="openEdit(ds)">
+              编辑
+            </NebulaButton>
+            <NebulaButton
+              variant="outline"
+              @click="handleTest(ds.dataSourceId)"
             >
-            <NebulaButton variant="outline" @click="handleTest(ds.dataSourceId)"
-              >测试</NebulaButton
-            >
+              测试
+            </NebulaButton>
             <NebulaButton
               variant="outline"
               @click="handleDelete(ds.dataSourceId)"
-              >删除</NebulaButton
             >
+              删除
+            </NebulaButton>
           </div>
         </article>
       </div>
@@ -194,9 +200,7 @@ async function handleTest(id: string) {
       @click.self="showCreate = false"
     >
       <NebulaPane title="新建数据源" class="modal">
-        <label class="field"
-          ><span>名称</span><input v-model="form.name"
-        /></label>
+        <label class="field"><span>名称</span><input v-model="form.name" /></label>
         <label class="field">
           <span>连接器</span>
           <select v-model="form.connectorId" class="field__select">
@@ -212,32 +216,20 @@ async function handleTest(id: string) {
         <template
           v-if="selectedConnector()?.connectorType !== ConnectorType.PROTOCOL"
         >
-          <label class="field"
-            ><span>主机</span><input v-model="form.host"
-          /></label>
-          <label class="field"
-            ><span>端口</span><input v-model.number="form.port" type="number"
-          /></label>
-          <label class="field"
-            ><span>数据库</span><input v-model="form.database"
-          /></label>
-          <label class="field"
-            ><span>用户名</span><input v-model="form.username"
-          /></label>
-          <label class="field"
-            ><span>密码</span><input v-model="form.password" type="password"
-          /></label>
+          <label class="field"><span>主机</span><input v-model="form.host" /></label>
+          <label class="field"><span>端口</span><input v-model.number="form.port" type="number" /></label>
+          <label class="field"><span>数据库</span><input v-model="form.database" /></label>
+          <label class="field"><span>用户名</span><input v-model="form.username" /></label>
+          <label class="field"><span>密码</span><input v-model="form.password" type="password" /></label>
         </template>
-        <label v-else class="field"
-          ><span>端点 URI</span><input v-model="form.endpointUri"
-        /></label>
+        <label v-else class="field"><span>端点 URI</span><input v-model="form.endpointUri" /></label>
         <div class="modal__actions">
-          <NebulaButton variant="outline" @click="showCreate = false"
-            >取消</NebulaButton
-          >
-          <NebulaButton variant="primary" @click="handleCreate"
-            >创建</NebulaButton
-          >
+          <NebulaButton variant="outline" @click="showCreate = false">
+            取消
+          </NebulaButton>
+          <NebulaButton variant="primary" @click="handleCreate">
+            创建
+          </NebulaButton>
         </div>
       </NebulaPane>
     </div>
@@ -248,36 +240,23 @@ async function handleTest(id: string) {
       @click.self="showEdit = false"
     >
       <NebulaPane title="编辑数据源" class="modal">
-        <label class="field"
-          ><span>名称</span><input v-model="editing.name"
-        /></label>
+        <label class="field"><span>名称</span><input v-model="editing.name" /></label>
         <template v-if="'host' in editing.config">
-          <label class="field"
-            ><span>主机</span
-            ><input v-model="(editing.config as DatabaseConfig).host"
-          /></label>
-          <label class="field"
-            ><span>端口</span
-            ><input
+          <label class="field"><span>主机</span><input v-model="(editing.config as DatabaseConfig).host" /></label>
+          <label class="field"><span>端口</span><input
               v-model.number="(editing.config as DatabaseConfig).port"
               type="number"
           /></label>
-          <label class="field"
-            ><span>数据库</span
-            ><input v-model="(editing.config as DatabaseConfig).database"
-          /></label>
+          <label class="field"><span>数据库</span><input v-model="(editing.config as DatabaseConfig).database" /></label>
         </template>
-        <label v-else class="field"
-          ><span>端点</span
-          ><input v-model="(editing.config as ProtocolConfig).endpointUri"
-        /></label>
+        <label v-else class="field"><span>端点</span><input v-model="(editing.config as ProtocolConfig).endpointUri" /></label>
         <div class="modal__actions">
-          <NebulaButton variant="outline" @click="showEdit = false"
-            >取消</NebulaButton
-          >
-          <NebulaButton variant="primary" @click="handleUpdate"
-            >保存</NebulaButton
-          >
+          <NebulaButton variant="outline" @click="showEdit = false">
+            取消
+          </NebulaButton>
+          <NebulaButton variant="primary" @click="handleUpdate">
+            保存
+          </NebulaButton>
         </div>
       </NebulaPane>
     </div>

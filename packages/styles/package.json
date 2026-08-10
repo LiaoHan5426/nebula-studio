@@ -1,19 +1,19 @@
 {
   "name": "@nebula-studio/styles",
   "version": "0.0.0",
-  "private": true,
   "description": "Shared design tokens and global styles for Nebula Studio.",
-  "author": "Liao Han <liaohan5426@gmail.com>",
-  "license": "UNLICENSED",
+  "private": true,
   "homepage": "https://github.com/LiaoHan5426/nebula-studio#readme",
+  "bugs": {
+    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LiaoHan5426/nebula-studio.git",
     "directory": "packages/styles"
   },
-  "bugs": {
-    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
-  },
+  "license": "UNLICENSED",
+  "author": "Liao Han <liaohan5426@gmail.com>",
   "type": "module",
   "sideEffects": [
     "**/*.css"

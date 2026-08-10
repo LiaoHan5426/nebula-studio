@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { AuthorizeRow } from '../../authorize/types';
+
 import {
   NebulaButton,
   NebulaTable,
@@ -7,12 +9,11 @@ import {
 } from '@nebula-studio/nebula-ui';
 
 import { publishVariant } from '../../authorize/mappers';
-import type { AuthorizeRow } from '../../authorize/types';
 
 defineProps<{
-  rows: AuthorizeRow[];
+  actingId: null | string;
   loading: boolean;
-  actingId: string | null;
+  rows: AuthorizeRow[];
 }>();
 
 const emit = defineEmits<{
@@ -97,9 +98,7 @@ const emit = defineEmits<{
             >
               撤销
             </NebulaButton>
-            <span v-if="row.wildcardAccess" class="action-btns__hint"
-              >通配 *</span
-            >
+            <span v-if="row.wildcardAccess" class="action-btns__hint">通配 *</span>
           </div>
         </template>
       </NebulaTableColumn>

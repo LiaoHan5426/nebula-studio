@@ -1,8 +1,11 @@
-import '@nebula-studio-internal/tailwind/electron';
-import { bootMicroApp, detectRuntimeMode } from '@nebula-studio/runtime';
 import type { RuntimeMode } from '@nebula-studio/runtime';
+
+import { bootMicroApp, detectRuntimeMode } from '@nebula-studio/runtime';
+
 import AppComponent from './App.vue';
 import router from './router';
+
+import '@nebula-studio-internal/tailwind/electron';
 
 /**
  * Settings 子应用统一启动入口。

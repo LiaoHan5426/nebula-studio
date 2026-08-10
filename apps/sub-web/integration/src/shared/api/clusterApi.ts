@@ -1,9 +1,10 @@
-import { clusterRequest } from '@/shared/api/client';
 import type {
   ApiResponse,
   ClusterNode,
   ClusterNodeRegisterRequest,
 } from '@nebula-studio/contracts/integration';
+
+import { clusterRequest } from '@/shared/api/client';
 
 export const clusterApi = {
   listNodes(status?: string): Promise<ApiResponse<ClusterNode[]>> {

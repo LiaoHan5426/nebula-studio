@@ -1,43 +1,43 @@
 {
   "name": "@nebula-studio-renderer/docs",
   "version": "0.0.0",
-  "private": true,
   "description": "Nebula Studio UI component documentation renderer.",
-  "author": "Liao Han <liaohan5426@gmail.com>",
-  "license": "UNLICENSED",
+  "private": true,
   "homepage": "https://github.com/LiaoHan5426/nebula-studio#readme",
+  "bugs": {
+    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LiaoHan5426/nebula-studio.git",
     "directory": "apps/sub-web/docs"
   },
-  "bugs": {
-    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
-  },
+  "license": "UNLICENSED",
+  "author": "Liao Han <liaohan5426@gmail.com>",
   "type": "module",
-  "exports": {
-    "./app": "./src/App.vue",
-    "./boot": "./src/boot.ts"
-  },
   "scripts": {
     "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false",
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview"
   },
+  "exports": {
+    "./app": "./src/App.vue",
+    "./boot": "./src/boot.ts"
+  },
   "dependencies": {
-    "@vee-validate/zod": "catalog:form",
+    "@nebula-studio-electron/electron-bridge": "workspace:^",
     "@nebula-studio-internal/tailwind": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
     "@nebula-studio/nebula-layout": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
-    "@nebula-studio/styles": "workspace:^",
-    "vue": "catalog:vue",
-    "vue-router": "catalog:vue",
     "@nebula-studio/runtime": "workspace:^",
-    "@nebula-studio-electron/electron-bridge": "workspace:^",
+    "@nebula-studio/styles": "workspace:^",
+    "@vee-validate/zod": "catalog:form",
     "markdown-it": "catalog:markdown",
     "shiki": "catalog:markdown",
+    "vue": "catalog:vue",
+    "vue-router": "catalog:vue",
     "zod": "catalog:form"
   },
   "devDependencies": {
@@ -45,7 +45,7 @@
     "@nebula-studio-internal/tsconfig": "workspace:^",
     "@nebula-studio-internal/vite": "workspace:^",
     "@nebula-studio/types": "workspace:^",
-    "@types/markdown-it": "^14.1.2",
+    "@types/markdown-it": "catalog:",
     "typescript": "catalog:types",
     "vite": "catalog:vite",
     "vite-plus": "catalog:vite",

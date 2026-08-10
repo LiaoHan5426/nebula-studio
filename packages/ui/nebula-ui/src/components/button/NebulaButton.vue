@@ -1,27 +1,29 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { Button } from '../ui/button';
+import type { TooltipPlacement } from '../../utils/tooltip';
 import type { ButtonVariants } from '../ui/button';
+
+import { computed } from 'vue';
+
 import { cn } from '../../utils/cn';
 import { withTooltipAttrs } from '../../utils/tooltip';
-import type { TooltipPlacement } from '../../utils/tooltip';
+import { Button } from '../ui/button';
 
-type NebulaVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
+type NebulaVariant = 'ghost' | 'outline' | 'primary' | 'secondary';
 
 const props = withDefaults(
   defineProps<{
-    type?: string;
-    variant?: NebulaVariant;
+    active?: boolean;
+    ariaLabel?: string;
+    class?: string;
+    disabled?: boolean;
     /** 图标按钮模式：使用 size="icon" 并自动设置紧凑尺寸 */
     icon?: boolean;
-    active?: boolean;
     size?: ButtonVariants['size'];
-    disabled?: boolean;
-    class?: string;
     title?: string;
-    ariaLabel?: string;
     tooltip?: string;
     tooltipPlacement?: TooltipPlacement;
+    type?: string;
+    variant?: NebulaVariant;
   }>(),
   {
     type: 'button',
@@ -78,6 +80,6 @@ const resolvedSize = computed(() => (props.icon ? 'icon' : props.size));
     :aria-label="ariaLabel || title || undefined"
     @click="$emit('click', $event)"
   >
-    <slot />
+    <slot></slot>
   </Button>
 </template>

@@ -1,8 +1,9 @@
 import { computed, defineComponent, h, ref, Teleport } from 'vue';
-import { cn } from '../../utils/cn';
-import NebulaButton from '../button/NebulaButton.vue';
+
 import { useBodyScrollLock } from '../../composables/useBodyScrollLock';
 import { useOverlayDismiss } from '../../composables/useOverlayDismiss';
+import { cn } from '../../utils/cn';
+import NebulaButton from '../button/NebulaButton.vue';
 
 const placementClasses = {
   left: 'nebula-drawer--left',
@@ -29,7 +30,7 @@ export const NebulaDrawer = defineComponent({
       default: '380px',
     },
     placement: {
-      type: String as () => 'right' | 'left',
+      type: String as () => 'left' | 'right',
       default: 'right',
     },
     class: {

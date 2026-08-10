@@ -1,11 +1,13 @@
 <script lang="ts" setup>
 import type { HTMLAttributes } from 'vue';
+
 import { TabsContent as TabsContentRoot } from 'reka-ui';
+
 import { cn } from '../../../utils/cn';
 
 defineProps<{
-  value: string;
   class?: HTMLAttributes['class'];
+  value: string;
 }>();
 </script>
 
@@ -19,6 +21,6 @@ defineProps<{
       )
     "
   >
-    <slot />
+    <slot></slot>
   </TabsContentRoot>
 </template>

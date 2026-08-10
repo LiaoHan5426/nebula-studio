@@ -78,6 +78,7 @@ const javascript: OxlintConfig = {
           '__NEBULA_SHELL_EVENT_BUS__',
           '__NEBULA_MSW_ENABLED__',
           '__NEBULA_MSW_BASE_PATH__',
+          '__NEBULA_EMBED_SURFACE__',
         ],
       },
     ],

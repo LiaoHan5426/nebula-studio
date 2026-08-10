@@ -30,6 +30,12 @@ jobs:
       - name: Check formatting, lint, and types
         run: vp check
 
+      - name: ESLint complementary rules
+        run: vp exec eslint . --cache
+
+      - name: Stylelint
+        run: vp exec stylelint "**/*.{css,scss,vue}" --allow-empty-input --ignore-pattern "**/out/**" --ignore-pattern "**/dist/**" --ignore-pattern "**/dev-dist/**"
+
       - name: Run unit tests
         run: vp run test
 

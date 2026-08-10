@@ -1,4 +1,17 @@
 <script setup lang="ts">
+import type {
+  EmbeddedShellWindowId,
+  ShellAuthSessionPayload,
+  ShellEmbedPageMetaPayload,
+} from '@nebula-studio/app-shell';
+import type {
+  GlobalSearchItem,
+  WorkspaceLink,
+  WorkspaceModel,
+} from '@nebula-studio/nebula-shell';
+
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+
 /**
  * App.vue — Shell 组装层。
  *
@@ -11,11 +24,6 @@ import {
   isShellIntegrableAppId,
   isShellStandaloneSidebarApp,
   postShellEmbedNavigate,
-} from '@nebula-studio/app-shell';
-import type {
-  EmbeddedShellWindowId,
-  ShellAuthSessionPayload,
-  ShellEmbedPageMetaPayload,
 } from '@nebula-studio/app-shell';
 import {
   NebulaShellLayout,
@@ -30,15 +38,9 @@ import {
   PersonalWorkspace,
   useAppLifecycle,
 } from '@nebula-studio/nebula-shell';
-import type {
-  GlobalSearchItem,
-  WorkspaceLink,
-  WorkspaceModel,
-} from '@nebula-studio/nebula-shell';
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 
-import { useOrganization } from '@/shared/composables/useOrganization';
 import TaskGuidePanel from '@/components/TaskGuidePanel.vue';
+import { useOrganization } from '@/shared/composables/useOrganization';
 
 // ─── Organization ────────────────────────────────────────
 const {
@@ -53,7 +55,7 @@ const {
 } = useOrganization();
 
 // ─── Auth session ────────────────────────────────────────
-const authSession = ref<ShellAuthSessionPayload | null>(null);
+const authSession = ref<null | ShellAuthSessionPayload>(null);
 
 // ─── Layout preferences ─────────────────────────────────
 const { preferences: layoutPreferences } = useLayoutPreferences();
@@ -140,7 +142,7 @@ const {
 // 自动根据 windows.json 中 `integratable: false` 推导独立侧边栏应用列表。
 const commandPaletteOpen = ref(false);
 const taskGuideOpen = ref(false);
-const activePageMeta = ref<ShellEmbedPageMetaPayload | null>(null);
+const activePageMeta = ref<null | ShellEmbedPageMetaPayload>(null);
 const currentHelpKey = computed(
   () =>
     activePageMeta.value?.helpKey ??
@@ -461,8 +463,8 @@ async function activateWorkspaceLink(item: WorkspaceLink): Promise<void> {
 }
 
 async function navigateFromTaskGuide(target: {
-  viewId: string;
   path: string;
+  viewId: string;
 }): Promise<void> {
   await activateWorkspaceLink({
     id: `task-guide-${target.viewId}`,
@@ -592,7 +594,7 @@ async function handleLogin(): Promise<void> {
           <span
             class="nebula-layout-nav-item__icon"
             v-html="getShellIntegratedAppMeta(appId).iconSvg"
-          />
+          ></span>
           <span class="nebula-layout-nav-item__label">{{
             getShellIntegratedAppMeta(appId).label
           }}</span>

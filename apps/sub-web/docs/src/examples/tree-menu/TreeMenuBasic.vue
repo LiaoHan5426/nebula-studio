@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { NebulaTreeMenu } from '@nebula-studio/nebula-ui';
 import type { NebulaTreeNode } from '@nebula-studio/nebula-ui';
+
+import { ref } from 'vue';
+
+import { NebulaTreeMenu } from '@nebula-studio/nebula-ui';
 
 const activeValue = ref('node-1-1');
 const treeData: NebulaTreeNode[] = [

@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { NebulaAvatar } from '@nebula-studio/nebula-ui';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 
+import { NebulaAvatar } from '@nebula-studio/nebula-ui';
+
 const props = defineProps<{
-  user?: string;
-  email?: string;
   avatarSrc?: string;
+  email?: string;
+  user?: string;
 }>();
 
 const emit = defineEmits<{
-  logout: [];
   lockScreen: [];
+  logout: [];
   profile: [];
 }>();
 
@@ -78,7 +79,7 @@ onUnmounted(() => {
   window.removeEventListener('scroll', updatePosition, true);
 });
 
-function onMenuAction(action: 'profile' | 'lockScreen' | 'logout') {
+function onMenuAction(action: 'lockScreen' | 'logout' | 'profile') {
   if (action === 'profile') emit('profile');
   if (action === 'lockScreen') emit('lockScreen');
   if (action === 'logout') emit('logout');
@@ -128,7 +129,7 @@ function onMenuAction(action: 'profile' | 'lockScreen' | 'logout') {
           </div>
         </div>
 
-        <div class="nebula-dropdown__divider" role="separator" />
+        <div class="nebula-dropdown__divider" role="separator"></div>
         <button
           type="button"
           class="nebula-dropdown__item"
@@ -145,7 +146,7 @@ function onMenuAction(action: 'profile' | 'lockScreen' | 'logout') {
         >
           <span class="nebula-dropdown__item-main">文档</span>
         </button>
-        <div class="nebula-dropdown__divider" role="separator" />
+        <div class="nebula-dropdown__divider" role="separator"></div>
         <button
           type="button"
           class="nebula-dropdown__item"

@@ -3,9 +3,9 @@
  */
 
 export interface CamelTopologyData {
-  routeId: string;
-  nodes: TopologyNodeData[];
   edges: TopologyEdgeData[];
+  nodes: TopologyNodeData[];
+  routeId: string;
 }
 
 export interface TopologyNodeData {
@@ -15,24 +15,24 @@ export interface TopologyNodeData {
 }
 
 export interface TopologyEdgeData {
+  label?: string;
   source: string;
   target: string;
-  label?: string;
 }
 
 export interface TopologyTrace {
-  id: string;
-  routeId: string;
-  timestamp: string;
   duration: number;
-  status: string;
+  id: string;
   payload?: Record<string, unknown>;
+  routeId: string;
+  status: string;
+  timestamp: string;
 }
 
 export interface TopologyError {
   id: string;
-  routeId: string;
   message: string;
-  timestamp: string;
+  routeId: string;
   stackTrace?: string;
+  timestamp: string;
 }

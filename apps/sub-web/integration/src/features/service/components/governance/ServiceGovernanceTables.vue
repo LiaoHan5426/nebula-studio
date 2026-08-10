@@ -1,13 +1,4 @@
 <script setup lang="ts">
-import {
-  NebulaButton,
-  NebulaInput,
-  NebulaSelect,
-  NebulaTable,
-  NebulaTableColumn,
-  NebulaTag,
-} from '@nebula-studio/nebula-ui';
-
 import type {
   CircuitBreakerRow,
   GovernanceTab,
@@ -15,20 +6,27 @@ import type {
   WhitelistRow,
 } from '../../governance/types';
 
+import {
+  NebulaButton,
+  NebulaTable,
+  NebulaTableColumn,
+  NebulaTag,
+} from '@nebula-studio/nebula-ui';
+
 defineProps<{
   activeTab: GovernanceTab;
+  circuitBreakers: CircuitBreakerRow[];
   loading: boolean;
   rules: RuleRow[];
-  circuitBreakers: CircuitBreakerRow[];
   whitelistRules: WhitelistRow[];
 }>();
 
 const emit = defineEmits<{
-  editRateLimit: [row: RuleRow];
   editCircuit: [row: CircuitBreakerRow];
+  editRateLimit: [row: RuleRow];
   editWhitelist: [row: WhitelistRow];
-  offlineRateLimit: [row: RuleRow];
   offlineCircuit: [row: CircuitBreakerRow];
+  offlineRateLimit: [row: RuleRow];
   offlineWhitelist: [row: WhitelistRow];
 }>();
 </script>
@@ -137,14 +135,14 @@ const emit = defineEmits<{
     >
       <NebulaTableColumn field="ruleName" title="规则名称" min-width="140" />
       <NebulaTableColumn field="interfaceId" title="服务 ID" min-width="140">
-        <template #default="{ row }">{{
-          row.interfaceId || '（租户级）'
-        }}</template>
+        <template #default="{ row }">
+          {{ row.interfaceId || '（租户级）' }}
+        </template>
       </NebulaTableColumn>
       <NebulaTableColumn title="IP 列表" min-width="180">
-        <template #default="{ row }">{{
-          row.whitelistIps.join(', ') || '-'
-        }}</template>
+        <template #default="{ row }">
+          {{ row.whitelistIps.join(', ') || '-' }}
+        </template>
       </NebulaTableColumn>
       <NebulaTableColumn field="status" title="状态" width="100">
         <template #default="{ row }">

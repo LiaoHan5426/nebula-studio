@@ -1,5 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
+
 import { app } from 'electron';
 import { parse, stringify } from 'yaml';
 
@@ -8,7 +9,7 @@ interface LogConfig {
   dir?: string;
 }
 
-type ThemeMode = 'light' | 'dark';
+type ThemeMode = 'dark' | 'light';
 
 interface UiConfig {
   theme?: ThemeMode;
@@ -21,8 +22,8 @@ interface NebulaConfig {
 }
 
 export class ConfigManager {
-  readonly #filePath: string;
   #cache: NebulaConfig = {};
+  readonly #filePath: string;
 
   constructor(fileName = 'nebula.config.yaml') {
     this.#filePath = this.#resolveConfigPath(fileName);
@@ -33,9 +34,10 @@ export class ConfigManager {
     return (this.#cache as ConfigShape)[key] as T | undefined;
   }
 
-  set(key: string, value: unknown): void {
-    (this.#cache as ConfigShape)[key] = value;
-    this.#save();
+  getLocale(): string {
+    const raw = this.#cache.ui?.locale;
+    if (typeof raw === 'string' && raw.trim()) return raw.trim();
+    return 'zh-CN';
   }
 
   getLogDir(): string | undefined {
@@ -48,31 +50,13 @@ export class ConfigManager {
     return undefined;
   }
 
-  setLogDir(dir: string): void {
-    const normalized = dir.trim();
-    this.#cache.log = {
-      ...this.#cache.log,
-      dir: normalized,
-    };
-    this.#save();
-  }
-
   getTheme(): ThemeMode {
     return this.#cache.ui?.theme === 'light' ? 'light' : 'dark';
   }
 
-  setTheme(theme: ThemeMode): void {
-    this.#cache.ui = {
-      ...this.#cache.ui,
-      theme,
-    };
+  set(key: string, value: unknown): void {
+    (this.#cache as ConfigShape)[key] = value;
     this.#save();
-  }
-
-  getLocale(): string {
-    const raw = this.#cache.ui?.locale;
-    if (typeof raw === 'string' && raw.trim()) return raw.trim();
-    return 'zh-CN';
   }
 
   setLocale(locale: string): void {
@@ -84,6 +68,23 @@ export class ConfigManager {
     this.#save();
   }
 
+  setLogDir(dir: string): void {
+    const normalized = dir.trim();
+    this.#cache.log = {
+      ...this.#cache.log,
+      dir: normalized,
+    };
+    this.#save();
+  }
+
+  setTheme(theme: ThemeMode): void {
+    this.#cache.ui = {
+      ...this.#cache.ui,
+      theme,
+    };
+    this.#save();
+  }
+
   #load(): void {
     try {
       const raw = readFileSync(this.#filePath, 'utf-8');
@@ -91,11 +92,6 @@ export class ConfigManager {
     } catch {
       this.#cache = {};
     }
-  }
-
-  #save(): void {
-    mkdirSync(dirname(this.#filePath), { recursive: true });
-    writeFileSync(this.#filePath, stringify(this.#cache), 'utf-8');
   }
 
   #resolveConfigPath(fileName: string): string {
@@ -117,5 +113,10 @@ export class ConfigManager {
 
     const existing = candidates.find((p) => existsSync(p));
     return existing ?? installConfigPath;
+  }
+
+  #save(): void {
+    mkdirSync(dirname(this.#filePath), { recursive: true });
+    writeFileSync(this.#filePath, stringify(this.#cache), 'utf-8');
   }
 }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+
 import {
   NebulaButton,
   NebulaEmptyState,
@@ -17,7 +18,7 @@ interface SummaryMetric {
   label: string;
   value: number | string;
   hint: string;
-  tone: 'default' | 'warning' | 'danger';
+  tone: 'danger' | 'default' | 'warning';
 }
 
 const route = useRoute();
@@ -104,7 +105,7 @@ async function load(): Promise<void> {
   if (requests.status === 'fulfilled' && isApiSuccess(requests.value)) {
     pendingRequestCount.value = (requests.value.data.items ?? []).filter(
       (item) =>
-        ['PENDING', 'PENDING_REVIEW', 'NEEDS_INFO'].includes(item.status),
+        ['NEEDS_INFO', 'PENDING', 'PENDING_REVIEW'].includes(item.status),
     ).length;
   } else partial.value = true;
   loading.value = false;
@@ -158,9 +159,9 @@ onMounted(load);
             <span>Next actions</span>
             <h2>{{ admin ? '治理待办' : '提供方待办' }}</h2>
           </div>
-          <NebulaTag
-            >{{ pendingRequestCount + pendingPluginCount }} 项</NebulaTag
-          >
+          <NebulaTag>
+            {{ pendingRequestCount + pendingPluginCount }} 项
+          </NebulaTag>
         </header>
         <div class="action-list">
           <button

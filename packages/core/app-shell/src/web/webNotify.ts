@@ -50,7 +50,7 @@ export function createWebNotifyApi(scope: string) {
         });
         return null;
       },
-      system: async (payload: { title: string; body: string }) => {
+      system: async (payload: { body: string; title: string }) => {
         const NotificationCtor = globalThis.Notification;
         if (!NotificationCtor) {
           throw new Error(

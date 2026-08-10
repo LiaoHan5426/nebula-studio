@@ -1,20 +1,26 @@
 {
   "name": "@nebula-studio/nebula-code-editor",
   "version": "0.0.0",
-  "private": true,
   "description": "Provider-neutral, lazy-loaded code editor facade for Nebula Studio.",
-  "author": "Liao Han <liaohan5426@gmail.com>",
-  "license": "UNLICENSED",
+  "private": true,
   "homepage": "https://github.com/LiaoHan5426/nebula-studio#readme",
+  "bugs": {
+    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LiaoHan5426/nebula-studio.git",
     "directory": "packages/editors/code-editor"
   },
-  "bugs": {
-    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
-  },
+  "license": "UNLICENSED",
+  "author": "Liao Han <liaohan5426@gmail.com>",
   "type": "module",
+  "scripts": {
+    "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false",
+    "test": "vp test run",
+    "build": "vite build",
+    "check:bundle": "node ./scripts/check-bundle-budget.mjs"
+  },
   "sideEffects": false,
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -27,12 +33,6 @@
       "types": "./src/providers/monaco/index.ts",
       "default": "./src/providers/monaco/index.ts"
     }
-  },
-  "scripts": {
-    "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false",
-    "test": "vp test run",
-    "build": "vite build",
-    "check:bundle": "node ./scripts/check-bundle-budget.mjs"
   },
   "peerDependencies": {
     "vue": "catalog:vue"

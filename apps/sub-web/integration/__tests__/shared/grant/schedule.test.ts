@@ -1,9 +1,8 @@
-import { describe, expect, it } from 'vitest';
-
 import {
   formatGrantScheduleLabel,
   isOutsideGrantSchedule,
 } from '@/shared/grant/schedule';
+import { describe, expect, it } from 'vitest';
 
 describe('grant schedule', () => {
   it('formats always-on schedules', () => {

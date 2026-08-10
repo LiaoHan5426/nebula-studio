@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import type { RoleRecord } from '@/shared/api/system';
+
 import { onMounted, ref } from 'vue';
+
 import {
   NebulaButton,
   NebulaDialog,
@@ -11,10 +14,9 @@ import {
 } from '@nebula-studio/nebula-ui';
 
 import { rolesApi } from '@/shared/api/system';
-import type { RoleRecord } from '@/shared/api/system';
-import { isApiSuccess } from '@/shared/types';
-import { useConfirm } from '@/shared/composables/useConfirm';
 import EntityListPage from '@/shared/components/EntityListPage.vue';
+import { useConfirm } from '@/shared/composables/useConfirm';
+import { isApiSuccess } from '@/shared/types';
 
 const roles = ref<RoleRecord[]>([]);
 const loading = ref(false);
@@ -104,9 +106,9 @@ function openDetails(role: RoleRecord) {
     :detail-subtitle="selected?.roleCode || ''"
   >
     <template #actions>
-      <NebulaButton variant="primary" @click="openCreate"
-        >新建角色</NebulaButton
-      >
+      <NebulaButton variant="primary" @click="openCreate">
+        新建角色
+      </NebulaButton>
       <NebulaButton variant="secondary" @click="loadRoles">刷新</NebulaButton>
     </template>
 
@@ -129,9 +131,9 @@ function openDetails(role: RoleRecord) {
             <NebulaButton variant="ghost" @click="openDetails(row)">
               详情
             </NebulaButton>
-            <NebulaButton variant="ghost" @click="removeRole(row)"
-              >删除</NebulaButton
-            >
+            <NebulaButton variant="ghost" @click="removeRole(row)">
+              删除
+            </NebulaButton>
           </template>
         </NebulaTableColumn>
       </NebulaTable>

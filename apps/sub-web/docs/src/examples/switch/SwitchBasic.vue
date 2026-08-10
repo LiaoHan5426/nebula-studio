@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+
 import { NebulaSwitch } from '@nebula-studio/nebula-ui';
 
 const switchValue = ref(false);

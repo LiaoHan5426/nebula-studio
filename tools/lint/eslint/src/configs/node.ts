@@ -22,8 +22,16 @@ export async function node(): Promise<Linter.Config[]> {
               '@nebula-studio-internal/vite',
               'vitest',
               'vite',
+              '@vitejs/plugin-vue',
+              '@vitejs/plugin-vue-jsx',
               '@vue/test-utils',
               '@playwright/test',
+              'electron',
+              '@electron-toolkit/preload',
+              'vue-router',
+              'vxe-pc-ui',
+              'vxe-table',
+              'vue',
             ],
           },
         ],
@@ -60,6 +68,24 @@ export async function node(): Promise<Linter.Config[]> {
       },
     },
     {
+      // Electron / Vite / e2e 常用 process/Buffer 全局；preload 无独立 package.json
+      files: [
+        'apps/electron/**/**',
+        'apps/electron-preload/**/**',
+        'apps/web/**/**',
+        'e2e/**/**',
+        '**/*.config.?([cm])[jt]s?(x)',
+        '**/vite.config.?([cm])[jt]s?(x)',
+        '**/vitest.config.?([cm])[jt]s?(x)',
+        '**/electron.vite.config.?([cm])[jt]s?(x)',
+      ],
+      rules: {
+        'n/no-extraneous-import': 'off',
+        'n/prefer-global/buffer': 'off',
+        'n/prefer-global/process': 'off',
+      },
+    },
+    {
       files: ['**/**/playwright.config.ts'],
       rules: {
         'n/prefer-global/buffer': 'off',
@@ -70,9 +96,18 @@ export async function node(): Promise<Linter.Config[]> {
       files: [
         'scripts/**/*.?([cm])[jt]s?(x)',
         'internal/**/*.?([cm])[jt]s?(x)',
+        'tools/**/*.?([cm])[jt]s?(x)',
+        'packages/**/*.?([cm])[jt]s?(x)',
       ],
       rules: {
         'n/prefer-global/process': 'off',
+      },
+    },
+    {
+      // 类型包 / 桥接包：ambient 或 peer 依赖，不强制逐项写入 package.json
+      files: ['packages/types/**/**', 'packages/core/electron-shared/**/**'],
+      rules: {
+        'n/no-extraneous-import': 'off',
       },
     },
   ];

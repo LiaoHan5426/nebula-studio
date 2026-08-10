@@ -1,18 +1,19 @@
-import { computed, ref } from 'vue';
-
-import { resourceApi } from '@/shared/api/integration';
 import type {
   ResourceCreateRequest,
   ResourceQueryParams,
   ResourceRecord,
   ResourceUpdateRequest,
 } from '@/shared/types';
+
+import { computed, ref } from 'vue';
+
+import { resourceApi } from '@/shared/api/integration';
 import { isApiSuccess } from '@/shared/types';
 
 export function useResources() {
   const resources = ref<ResourceRecord[]>([]);
   const loading = ref(false);
-  const error = ref<string | null>(null);
+  const error = ref<null | string>(null);
   const total = ref(0);
   const currentPage = ref(1);
   const pageSize = ref(20);
@@ -45,7 +46,7 @@ export function useResources() {
 
   async function loadResource(
     resourceId: string,
-  ): Promise<ResourceRecord | null> {
+  ): Promise<null | ResourceRecord> {
     loading.value = true;
     error.value = null;
     try {
@@ -65,7 +66,7 @@ export function useResources() {
 
   async function createResource(
     data: ResourceCreateRequest,
-  ): Promise<ResourceRecord | null> {
+  ): Promise<null | ResourceRecord> {
     loading.value = true;
     error.value = null;
     try {
@@ -88,7 +89,7 @@ export function useResources() {
   async function updateResource(
     resourceId: string,
     data: ResourceUpdateRequest,
-  ): Promise<ResourceRecord | null> {
+  ): Promise<null | ResourceRecord> {
     loading.value = true;
     error.value = null;
     try {

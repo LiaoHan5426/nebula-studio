@@ -1,15 +1,15 @@
 {
   "extends": "@nebula-studio-internal/tsconfig/web.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
   "include": [
     "index.html",
     "src/env.d.ts",
     "src/**/*",
     "src/**/*.vue",
     "__tests__/**/*"
-  ],
-  "compilerOptions": {
-    "paths": {
-      "@/*": ["./src/*"]
-    }
-  }
+  ]
 }

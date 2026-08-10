@@ -1,17 +1,19 @@
-import {
-  formatGrantScheduleLabel,
-  isOutsideGrantSchedule,
-} from '@/shared/grant/schedule';
-import type { GrantScheduleType } from '@/shared/grant/schedule';
 import type {
   AuthorizeInterfaceOptions,
   InterfaceGrantRecord,
   TenantRecord,
 } from '@/features/tenant/api';
+import type { GrantScheduleType } from '@/shared/grant/schedule';
 import type { ApiInterface } from '@/shared/types';
-import { InterfaceStatus, InterfaceType } from '@/shared/types';
 
 import type { AuthorizeRow, GrantForm } from './types';
+
+import {
+  formatGrantScheduleLabel,
+  isOutsideGrantSchedule,
+} from '@/shared/grant/schedule';
+import { InterfaceStatus, InterfaceType } from '@/shared/types';
+
 import { DEFAULT_GRANT_FORM } from './types';
 
 export function formatExpires(grant?: InterfaceGrantRecord) {
@@ -48,7 +50,7 @@ export function publishVariant(status: string) {
   return 'default';
 }
 
-export function formatAllowedSummary(tenant: TenantRecord | null) {
+export function formatAllowedSummary(tenant: null | TenantRecord) {
   if (!tenant) return '-';
   const allowed = tenant.allowedInterfaces;
   if (!allowed || allowed.length === 0) return '未授权任何服务';
@@ -133,10 +135,10 @@ export function grantFormFromRow(row?: AuthorizeRow): GrantForm {
 export function mapAuthorizeRow(
   intf: ApiInterface,
   context: {
-    wildcard: boolean;
-    allowedSet: Set<string> | null;
+    allowedSet: null | Set<string>;
+    currentUserId: null | string | undefined;
     grant?: InterfaceGrantRecord;
-    currentUserId: string | null | undefined;
+    wildcard: boolean;
   },
 ): AuthorizeRow {
   const { wildcard, allowedSet, grant, currentUserId } = context;

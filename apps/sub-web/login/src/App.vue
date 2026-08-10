@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import type { BackendLoginResult } from '@nebula-studio/app-shell';
+
+import type { AuthFailure, AuthFlowStep } from './authFlow';
+
+import { computed, nextTick, ref, watch } from 'vue';
+
 import {
   completeLoginWithOrg,
   isSafeAuthReturnUrl,
@@ -6,7 +12,6 @@ import {
   loginWithBackendAuth,
   writeWebAuthSession,
 } from '@nebula-studio/app-shell';
-import type { BackendLoginResult } from '@nebula-studio/app-shell';
 import { NebulaAuthLayout } from '@nebula-studio/nebula-layout';
 import {
   NebulaButton,
@@ -14,10 +19,8 @@ import {
   NebulaInput,
   NebulaSelect,
 } from '@nebula-studio/nebula-ui';
-import { computed, nextTick, ref, watch } from 'vue';
 
 import { classifyAuthFailure, readAuthEntryContext } from './authFlow';
-import type { AuthFailure, AuthFlowStep } from './authFlow';
 
 const RECENT_ORG_KEY = 'nebula-auth-recent-org';
 const user = ref('');
@@ -126,9 +129,9 @@ async function finishLogin(result: BackendLoginResult): Promise<void> {
     api?: {
       auth?: {
         establishSession?: (payload: {
-          user: string;
-          token: string;
           roles?: string[];
+          token: string;
+          user: string;
           userId?: string;
         }) => Promise<boolean>;
       };

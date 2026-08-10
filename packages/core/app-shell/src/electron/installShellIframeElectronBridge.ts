@@ -1,8 +1,8 @@
-type ThemeMode = 'light' | 'dark';
+type ThemeMode = 'dark' | 'light';
 
 type ShellParentWindow = Window & {
-  electron?: ShellElectronBridge;
   api?: Record<string, unknown>;
+  electron?: ShellElectronBridge;
 };
 
 type ShellIframeApiHost = {

@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { NebulaAnchor } from '@nebula-studio/nebula-ui';
 import type { NebulaAnchorItem } from '@nebula-studio/nebula-ui';
+
+import { NebulaAnchor } from '@nebula-studio/nebula-ui';
 
 const items: NebulaAnchorItem[] = [
   { id: 'basic', label: '基础用法' },

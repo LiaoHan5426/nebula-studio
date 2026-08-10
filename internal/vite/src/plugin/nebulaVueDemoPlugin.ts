@@ -1,5 +1,6 @@
-import { readFileSync } from 'node:fs';
 import type { Plugin } from 'vite';
+
+import { readFileSync } from 'node:fs';
 
 const DEMO_QUERY = '?demo';
 const DEMO_SUFFIX = '.vue?demo';

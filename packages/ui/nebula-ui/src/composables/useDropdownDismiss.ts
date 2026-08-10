@@ -1,11 +1,12 @@
-import { onMounted, onUnmounted } from 'vue';
 import type { Ref } from 'vue';
 
+import { onMounted, onUnmounted } from 'vue';
+
 export interface UseDropdownDismissOptions {
-  triggerRef: Ref<HTMLElement | null>;
   menuRef: Ref<HTMLElement | null>;
-  open: () => boolean;
   onClose: () => void;
+  open: () => boolean;
+  triggerRef: Ref<HTMLElement | null>;
 }
 
 /**

@@ -1,4 +1,5 @@
 import type { NebulaManualChunkRule } from '../types.ts';
+
 import { nebulaChunkNormalizeId } from '../pathUtils.ts';
 
 export const nebulaChunkRuleShellCore: NebulaManualChunkRule = (id) => {

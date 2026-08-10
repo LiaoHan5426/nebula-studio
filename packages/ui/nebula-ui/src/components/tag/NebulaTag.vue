@@ -1,19 +1,21 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { Badge, badgeVariants } from '../ui/badge';
+import type { TooltipPlacement } from '../../utils/tooltip';
 import type { BadgeVariants } from '../ui/badge';
+
+import { computed } from 'vue';
+
 import { cn } from '../../utils/cn';
 import { withTooltipAttrs } from '../../utils/tooltip';
-import type { TooltipPlacement } from '../../utils/tooltip';
+import { Badge, badgeVariants } from '../ui/badge';
 
-type NebulaVariant = 'default' | 'success' | 'warning' | 'danger' | 'info';
+type NebulaVariant = 'danger' | 'default' | 'info' | 'success' | 'warning';
 
 const props = withDefaults(
   defineProps<{
-    variant?: NebulaVariant;
     class?: string;
     tooltip?: string;
     tooltipPlacement?: TooltipPlacement;
+    variant?: NebulaVariant;
   }>(),
   {
     variant: 'default',
@@ -41,6 +43,6 @@ const shadcnVariant = computed((): BadgeVariants['variant'] => {
     :class="cn(badgeVariants({ variant: shadcnVariant }), props.class)"
     v-bind="withTooltipAttrs('', '', props.tooltip, props.tooltipPlacement)"
   >
-    <slot />
+    <slot></slot>
   </Badge>
 </template>

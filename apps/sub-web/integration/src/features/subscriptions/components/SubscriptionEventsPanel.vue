@@ -1,18 +1,19 @@
 <script setup lang="ts">
-import { NebulaButton, NebulaPane, NebulaTag } from '@nebula-studio/nebula-ui';
-
 import type {
   SseConnectionState,
   SseEventRecord,
 } from '@/shared/composables/useSubscriptionEvents';
+
 import type { StatusVariant } from '../types';
 
+import { NebulaButton, NebulaPane, NebulaTag } from '@nebula-studio/nebula-ui';
+
 defineProps<{
-  selectedSubId: string;
-  description: string;
   connectionState: SseConnectionState;
-  error: string | null;
+  description: string;
+  error: null | string;
   events: SseEventRecord[];
+  selectedSubId: string;
   statusLabel: string;
   statusVariant: StatusVariant;
 }>();
@@ -67,8 +68,7 @@ const emit = defineEmits<{
       v-for="ev in events"
       :key="ev.id + ev.receivedAt"
       class="subscription-events__event"
-      >{{ ev.data }}</pre
-    >
+      >{{ ev.data }}</pre>
   </NebulaPane>
 </template>
 

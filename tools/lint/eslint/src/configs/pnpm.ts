@@ -31,7 +31,8 @@ export async function pnpm(): Promise<Linter.Config[]> {
       },
       rules: {
         'pnpm/yaml-no-duplicate-catalog-item': 'error',
-        'pnpm/yaml-no-unused-catalog-item': 'error',
+        // Catalogs may reserve shared versions for future packages
+        'pnpm/yaml-no-unused-catalog-item': 'off',
       },
     },
   ];

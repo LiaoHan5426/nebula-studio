@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
 import type { NebulaTabItem } from './types';
+
+import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
 
 const props = withDefaults(
   defineProps<{
-    modelValue?: string;
-    tabs?: NebulaTabItem[];
     class?: string;
     listClass?: string;
+    modelValue?: string;
+    tabs?: NebulaTabItem[];
   }>(),
   {
     modelValue: '',
@@ -38,6 +39,6 @@ const emit = defineEmits<{
         {{ tab.label }}
       </TabsTrigger>
     </TabsList>
-    <slot />
+    <slot></slot>
   </Tabs>
 </template>

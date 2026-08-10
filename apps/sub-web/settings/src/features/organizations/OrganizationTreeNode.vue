@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { NebulaButton } from '@nebula-studio/nebula-ui';
-
 import type { OrganizationNode } from '@/shared/api/system';
+
+import { NebulaButton } from '@nebula-studio/nebula-ui';
 
 defineProps<{
   node: OrganizationNode;

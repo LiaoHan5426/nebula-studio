@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ButtonGroup } from '../ui/button-group';
 import { cn } from '../../utils/cn';
+import { ButtonGroup } from '../ui/button-group';
 
 const props = defineProps<{
-  orientation?: 'horizontal' | 'vertical';
   class?: string;
+  orientation?: 'horizontal' | 'vertical';
 }>();
 </script>
 
@@ -13,6 +13,6 @@ const props = defineProps<{
     :orientation="orientation"
     :class="cn('items-stretch', props.class)"
   >
-    <slot />
+    <slot></slot>
   </ButtonGroup>
 </template>

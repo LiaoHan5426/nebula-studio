@@ -1,24 +1,26 @@
 <script setup lang="ts">
+import type { TaskGuide, TaskGuideId } from '@nebula-studio/app-shell';
+
 import { computed, ref, watch } from 'vue';
+
+import {
+  readTaskGuideState,
+  resolveHelpTopic,
+  TASK_GUIDES,
+  writeTaskGuideState,
+} from '@nebula-studio/app-shell';
 import {
   NebulaButton,
   NebulaDialog,
   NebulaTag,
 } from '@nebula-studio/nebula-ui';
-import {
-  TASK_GUIDES,
-  readTaskGuideState,
-  resolveHelpTopic,
-  writeTaskGuideState,
-} from '@nebula-studio/app-shell';
-import type { TaskGuide, TaskGuideId } from '@nebula-studio/app-shell';
 
 const props = defineProps<{
   authenticated: boolean;
   helpKey?: string;
 }>();
 const emit = defineEmits<{
-  navigate: [target: { viewId: string; path: string }];
+  navigate: [target: { path: string; viewId: string }];
 }>();
 
 const open = defineModel<boolean>('open', { default: false });

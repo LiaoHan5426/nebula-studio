@@ -1,6 +1,8 @@
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, ref } from 'vue';
+
 import { afterEach, describe, expect, it } from 'vitest';
+
 import NebulaButton from '../button/NebulaButton.vue';
 import NebulaCheckbox from '../checkbox/NebulaCheckbox.vue';
 import { NebulaDrawer } from '../drawer/NebulaDrawer';

@@ -1,5 +1,3 @@
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
-import { toToastItem } from '../index.ts';
 import type {
   AppNotifyLevel,
   AppNotifyPayload,
@@ -7,6 +5,10 @@ import type {
   NotifyClient,
   ToastItem,
 } from '../index.ts';
+
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+
+import { toToastItem } from '../index.ts';
 
 function resolveNotifyClient(): NotifyClient {
   const w = globalThis as { api?: { notify?: NotifyClient } };
@@ -23,7 +25,7 @@ export function useElectronNotify(
   client: NotifyClient = resolveNotifyClient(),
 ) {
   const toasts = ref<ToastItem[]>([]);
-  const detailModalToast = ref<ToastItem | null>(null);
+  const detailModalToast = ref<null | ToastItem>(null);
   const responseLogs = ref<string[]>([]);
   let toastId = 1;
   let disposeNotifyListener: (() => void) | undefined;
@@ -67,8 +69,8 @@ export function useElectronNotify(
   };
 
   const sendSystemNotification = async (payload: {
-    title: string;
     body: string;
+    title: string;
   }) => {
     await client.system(payload);
   };

@@ -1,21 +1,22 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 import type { NebulaFormControlProps } from '../form/types';
 
+import { computed } from 'vue';
+
 type DatePickerType = 'date' | 'datetime' | 'datetimerange';
-type DatePickerValue = string | [string, string] | null;
+type DatePickerValue = [string, string] | null | string;
 
 defineOptions({ name: 'NebulaDatePicker' });
 
 const props = withDefaults(
   defineProps<
     NebulaFormControlProps & {
-      modelValue?: DatePickerValue;
-      type?: DatePickerType;
-      placeholder?: string;
       disabled?: boolean;
-      min?: string;
       max?: string;
+      min?: string;
+      modelValue?: DatePickerValue;
+      placeholder?: string;
+      type?: DatePickerType;
     }
   >(),
   {
@@ -35,10 +36,10 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  'update:modelValue': [value: DatePickerValue];
-  change: [value: DatePickerValue];
   blur: [event: FocusEvent];
+  change: [value: DatePickerValue];
   focus: [event: FocusEvent];
+  'update:modelValue': [value: DatePickerValue];
 }>();
 
 const nativeType = computed(() =>

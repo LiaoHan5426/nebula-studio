@@ -1,6 +1,5 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
-
 import drawerBasicDemo from '@/examples/drawer/DrawerBasic.vue?demo';
 import drawerLeftDemo from '@/examples/drawer/DrawerLeft.vue?demo';
 </script>

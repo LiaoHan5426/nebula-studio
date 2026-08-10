@@ -1,7 +1,8 @@
 <script lang="ts">
-import { badgeVariants } from './types';
 import type { BadgeVariants } from './types';
+
 import { cn } from '../../../utils/cn';
+import { badgeVariants } from './types';
 </script>
 
 <script setup lang="ts">
@@ -12,6 +13,6 @@ defineProps<{
 
 <template>
   <div :class="cn(badgeVariants({ variant }), $attrs.class as string)">
-    <slot />
+    <slot></slot>
   </div>
 </template>

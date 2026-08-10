@@ -1,6 +1,8 @@
+import type { Plugin, ProxyOptions } from 'vite';
+
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import type { Plugin, ProxyOptions } from 'vite';
+
 import { getNebulaAppManifest } from './nebulaWorkspaceManifestPlugin.ts';
 
 export interface NebulaProxyDiscoveryOptions {

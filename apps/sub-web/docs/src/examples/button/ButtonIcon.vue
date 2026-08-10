@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+
 import { NebulaButton } from '@nebula-studio/nebula-ui';
 
 const loading = ref(false);

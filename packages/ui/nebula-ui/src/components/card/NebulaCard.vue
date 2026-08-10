@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import {
   Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
 } from '../ui/card';
 
 const props = withDefaults(
   defineProps<{
-    title?: string;
-    description?: string;
     class?: string;
     contentClass?: string;
+    description?: string;
+    title?: string;
   }>(),
   {
     title: '',
@@ -31,10 +31,10 @@ const props = withDefaults(
       <CardDescription v-if="description">{{ description }}</CardDescription>
     </CardHeader>
     <CardContent :class="props.contentClass">
-      <slot />
+      <slot></slot>
     </CardContent>
     <CardFooter v-if="$slots.footer">
-      <slot name="footer" />
+      <slot name="footer"></slot>
     </CardFooter>
   </Card>
 </template>

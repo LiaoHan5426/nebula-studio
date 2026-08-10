@@ -3,9 +3,9 @@ import { computed, onMounted } from 'vue';
 import { RouterView, useRoute } from 'vue-router';
 
 import AppLayout from '@/app/AppLayout.vue';
-import { useTenant } from '@/shared/composables/useTenant';
 import { hasValidAuthToken } from '@/shared/auth/session';
 import { syncAuthProfile } from '@/shared/composables/useAuth';
+import { useTenant } from '@/shared/composables/useTenant';
 
 const route = useRoute();
 const isLoginPage = computed(() => route.path === '/login');

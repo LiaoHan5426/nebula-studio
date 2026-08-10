@@ -1,5 +1,5 @@
 export interface NebulaTabItem {
-  value: string;
-  label: string;
   disabled?: boolean;
+  label: string;
+  value: string;
 }

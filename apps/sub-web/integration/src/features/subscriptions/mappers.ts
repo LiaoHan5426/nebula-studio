@@ -1,16 +1,18 @@
-import { SubscribeType } from '@/shared/types';
 import type {
   PageResponse,
   SubscriptionConfig,
   TableSubscription,
 } from '@/shared/types';
 
-import { DEFAULT_POLLING_INTERVAL_MS } from './types';
 import type {
   CreateFormDraft,
   StatusVariant,
   SubscriptionFormState,
 } from './types';
+
+import { SubscribeType } from '@/shared/types';
+
+import { DEFAULT_POLLING_INTERVAL_MS } from './types';
 
 export function mapSubscriptionList(
   data:

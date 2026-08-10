@@ -1,15 +1,17 @@
-import { computed, defineComponent, h, ref, watch } from 'vue';
 import type { PropType, VNode } from 'vue';
+
+import { computed, defineComponent, h, ref, watch } from 'vue';
+
 import NebulaButton from '../button/NebulaButton.vue';
 import { NebulaPane } from '../pane/NebulaPane';
 
 export interface NebulaTreeNode {
+  children?: NebulaTreeNode[];
+  disabled?: boolean;
+  icon?: string;
   key: string;
   title: string;
   value?: string;
-  icon?: string;
-  disabled?: boolean;
-  children?: NebulaTreeNode[];
 }
 
 function groupKeys(nodes: NebulaTreeNode[]): string[] {

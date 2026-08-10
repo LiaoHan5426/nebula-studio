@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+
 import { NebulaDatePicker } from '@nebula-studio/nebula-ui';
 
 const rangeValue = ref<[string, string] | null>(null);

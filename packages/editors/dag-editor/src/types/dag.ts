@@ -4,13 +4,13 @@ export interface DagNodePosition {
 }
 
 export interface DagNodeConfig {
-  type: string;
-  name?: string;
   config?: Record<string, unknown>;
-  upstream?: string[];
   downstream?: string[];
+  name?: string;
   /** Canvas position; persisted in dagDefinition JSON for reload. */
   position?: DagNodePosition;
+  type: string;
+  upstream?: string[];
 }
 
 export interface DagDefinition {

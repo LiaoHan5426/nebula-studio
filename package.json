@@ -2,21 +2,21 @@
   "$schema": "https://json.schemastore.org/package.json",
   "name": "nebula-studio",
   "version": "0.0.0",
-  "private": true,
   "description": "Nebula Studio desktop and web workspace for integration development and platform management.",
-  "author": "Liao Han <liaohan5426@gmail.com>",
-  "license": "UNLICENSED",
+  "private": true,
   "homepage": "https://github.com/LiaoHan5426/nebula-studio#readme",
+  "bugs": {
+    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LiaoHan5426/nebula-studio.git"
   },
-  "bugs": {
-    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
-  },
+  "license": "UNLICENSED",
+  "author": "Liao Han <liaohan5426@gmail.com>",
   "type": "module",
   "scripts": {
-    "ready": "vp fmt && vp lint --threads 2 && vp run test && vp run build && vp run check:editors",
+    "ready": "vp fmt && vp run lint --threads 2 && vp run test && vp run build && vp run check:editors",
     "build": "vp run -r build",
     "build:unpack": "vp run electron#build:unpack",
     "pack:win": "vp run electron#pack:win",
@@ -33,8 +33,9 @@
     "cap": "vp run mobile#cap",
     "check": "vp check --fix",
     "lint:ox": "vp lint --fix --threads=2",
+    "lint:eslint": "vp exec eslint . --fix --cache",
     "lint:style": "vp exec stylelint \"**/*.{css,scss,vue}\" --fix --allow-empty-input --ignore-pattern \"**/out/**\" --ignore-pattern \"**/dist/**\" --ignore-pattern \"**/dev-dist/**\"",
-    "lint": "vp run lint:ox && vp run lint:style",
+    "lint": "vp run lint:ox && vp run lint:eslint && vp run lint:style",
     "test": "vp run -r test",
     "test:e2e": "vp run test:e2e:mock",
     "test:e2e:mock": "vp exec playwright test --project=mock-regression",
@@ -52,7 +53,7 @@
     "generate:contracts:strict": "node ./scripts/generate-contracts.mjs --strict"
   },
   "devDependencies": {
-    "@eslint-community/eslint-plugin-eslint-comments": "catalog:lint",
+    "@nebula-studio-internal/eslint": "workspace:^",
     "@nebula-studio-internal/oxfmt": "workspace:^",
     "@nebula-studio-internal/oxlint": "workspace:^",
     "@nebula-studio-internal/stylelint": "workspace:^",
@@ -63,11 +64,10 @@
     "@vitejs/plugin-vue-jsx": "catalog:vite",
     "ajv": "catalog:",
     "cross-env": "catalog:utils",
-    "eslint-plugin-better-tailwindcss": "catalog:lint",
-    "eslint-plugin-command": "catalog:lint",
+    "eslint": "catalog:lint",
     "esno": "catalog:utils",
     "happy-dom": "catalog:vite",
-    "openapi-typescript": "^7.13.0",
+    "openapi-typescript": "catalog:",
     "tailwindcss": "catalog:style",
     "unconfig": "catalog:utils",
     "vite-plus": "catalog:vite",

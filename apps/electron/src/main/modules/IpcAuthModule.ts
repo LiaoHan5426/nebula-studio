@@ -1,4 +1,3 @@
-import { BrowserWindow, ipcMain, net } from 'electron';
 import type {
   AuthApiResponse,
   AuthLoginRequest,
@@ -7,7 +6,10 @@ import type {
   ElectronAuthLoginPayload,
   ElectronAuthSession,
 } from '@nebula-studio/contracts/auth';
+
 import type { MainModule, MainModuleContext } from '../bootstrap/MainModule';
+
+import { BrowserWindow, ipcMain, net } from 'electron';
 
 /**
  * 认证 IPC 模块：管理登录会话状态和认证相关 IPC 通信。
@@ -23,8 +25,8 @@ export class IpcAuthModule implements MainModule {
   readonly name = 'IpcAuth';
 
   #authSession: ElectronAuthSession | null = null;
-  #windowManager: MainModuleContext['windowManager'] | null = null;
   #backendBaseUrl = 'http://localhost:8080';
+  #windowManager: MainModuleContext['windowManager'] | null = null;
 
   setup(context: MainModuleContext): void {
     this.#windowManager = context.windowManager;
@@ -122,8 +124,8 @@ export class IpcAuthModule implements MainModule {
     username: string,
     password?: string,
   ): Promise<
-    | { ok: true; username: string; token?: string }
-    | { ok: false; error: string }
+    | { error: string; ok: false }
+    | { ok: true; token?: string; username: string }
   > {
     try {
       const response = await net.fetch(

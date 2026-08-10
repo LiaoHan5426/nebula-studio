@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { NebulaButton, NebulaPane } from '@nebula-studio/nebula-ui';
-import IntegrationBpmnEditor from '@nebula-studio/nebula-flow-editor/components/IntegrationBpmnEditor.vue';
-
 import type { ApiInterface } from '@/shared/types';
 
+import IntegrationBpmnEditor from '@nebula-studio/nebula-flow-editor/components/IntegrationBpmnEditor.vue';
+import { NebulaButton, NebulaPane } from '@nebula-studio/nebula-ui';
+
 defineProps<{
+  atomicInterfaces: ApiInterface[];
   open: boolean;
   xml: string;
-  atomicInterfaces: ApiInterface[];
 }>();
 
 const emit = defineEmits<{
@@ -29,9 +29,9 @@ const emit = defineEmits<{
         />
       </div>
       <div class="modal__actions">
-        <NebulaButton variant="outline" @click="emit('close')"
-          >取消</NebulaButton
-        >
+        <NebulaButton variant="outline" @click="emit('close')">
+          取消
+        </NebulaButton>
         <NebulaButton @click="emit('submit')">保存流程</NebulaButton>
       </div>
     </NebulaPane>

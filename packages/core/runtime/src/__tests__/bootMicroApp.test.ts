@@ -1,11 +1,13 @@
-import { assert, describe, it, expect, vi, beforeEach } from 'vitest';
+import { installWebPresentation } from '@nebula-studio/app-shell';
+
+import { bootSubApp } from '@nebula-studio-electron/electron-bridge/vue';
+import { assert, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import {
-  bootMicroApp,
   __resetActiveMicroAppHandleForTests,
+  bootMicroApp,
 } from '../bootMicroApp';
 import { detectRuntimeMode } from '../detectMode';
-import { installWebPresentation } from '@nebula-studio/app-shell';
-import { bootSubApp } from '@nebula-studio-electron/electron-bridge/vue';
 
 // Mock 外部依赖（vitest 自动提升 vi.mock 到模块顶部）
 vi.mock('@nebula-studio/app-shell', () => ({

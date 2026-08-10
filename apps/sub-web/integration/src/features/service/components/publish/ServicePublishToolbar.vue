@@ -1,20 +1,21 @@
 <script setup lang="ts">
+import type { ServiceTab } from '../../publish/types';
+
 import { NebulaButton } from '@nebula-studio/nebula-ui';
 
-import type { ServiceTab } from '../../publish/types';
 import { SERVICE_TAB_LABELS } from '../../publish/types';
 
 defineProps<{
   activeTab: ServiceTab;
-  totalCount: number;
   atomicCount: number;
   compositeCount: number;
+  totalCount: number;
 }>();
 
 const emit = defineEmits<{
-  'update:activeTab': [tab: ServiceTab];
   createComposite: [];
   refresh: [];
+  'update:activeTab': [tab: ServiceTab];
 }>();
 
 function tabCount(
@@ -49,9 +50,9 @@ function tabCount(
       <NebulaButton variant="primary" @click="emit('createComposite')">
         新建组合服务
       </NebulaButton>
-      <NebulaButton variant="outline" @click="emit('refresh')"
-        >刷新</NebulaButton
-      >
+      <NebulaButton variant="outline" @click="emit('refresh')">
+        刷新
+      </NebulaButton>
     </div>
   </div>
 </template>

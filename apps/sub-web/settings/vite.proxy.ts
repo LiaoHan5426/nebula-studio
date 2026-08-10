@@ -1,4 +1,5 @@
 import type { ProxyOptions } from 'vite';
+
 import { standardApiProxy } from '@nebula-studio-internal/vite';
 
 /**

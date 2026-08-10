@@ -7,6 +7,16 @@ const overrides: OxlintConfig = {
       rules: {
         'import/no-unassigned-import': 'off',
         'typescript/triple-slash-reference': 'off',
+        'unicorn/no-empty-file': 'off',
+      },
+    },
+    {
+      // These @typescript-eslint rules previously did not apply to .vue
+      // (old ESLint glob excluded .vue). Vue props often use empty interfaces.
+      files: ['*.vue', '**/*.vue'],
+      rules: {
+        'typescript/no-empty-object-type': 'off',
+        'typescript/no-unsafe-function-type': 'off',
       },
     },
     {

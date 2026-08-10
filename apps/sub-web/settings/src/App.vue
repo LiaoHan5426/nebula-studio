@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
+
 import ConfirmDialog from '@/shared/components/ConfirmDialog.vue';
 </script>
 

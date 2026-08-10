@@ -14,13 +14,13 @@ withDefaults(
 <template>
   <section class="nebula-filter-bar" :aria-label="label">
     <div class="nebula-filter-bar__controls">
-      <slot />
+      <slot></slot>
     </div>
     <p v-if="resultSummary" class="nebula-filter-bar__summary" role="status">
       {{ resultSummary }}
     </p>
     <div v-if="$slots.actions" class="nebula-filter-bar__actions">
-      <slot name="actions" />
+      <slot name="actions"></slot>
     </div>
   </section>
 </template>

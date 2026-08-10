@@ -1,33 +1,32 @@
 <script setup lang="ts">
-import '@vue-flow/core/dist/style.css';
-import '@vue-flow/core/dist/theme-default.css';
-import '@vue-flow/controls/dist/style.css';
+import type { EditorEdge, EditorNode } from '../composables/useDagEditor';
 
 import { Background } from '@vue-flow/background';
 import { Controls } from '@vue-flow/controls';
 import { ConnectionMode, VueFlow } from '@vue-flow/core';
-import type { EditorEdge, EditorNode } from '../composables/useDagEditor';
 
-const nodes = defineModel<EditorNode[]>('nodes', { required: true });
-const edges = defineModel<EditorEdge[]>('edges', { required: true });
+import '@vue-flow/core/dist/style.css';
+import '@vue-flow/core/dist/theme-default.css';
+import '@vue-flow/controls/dist/style.css';
 
 defineProps<{
-  nodeTypes: Record<string, unknown>;
+  bindCanvasRef: (el: HTMLElement | null) => void;
   defaultEdgeOptions: Record<string, unknown>;
   fitViewOnInit: boolean;
-  bindCanvasRef: (el: HTMLElement | null) => void;
+  nodeTypes: Record<string, unknown>;
 }>();
-
 const emit = defineEmits<{
-  nodeClick: [nodeId: string];
   edgeClick: [edgeId: string];
-  paneClick: [];
-  nodesDelete: [deletedNodes: Array<{ id: string }>];
   edgesDelete: [deletedEdges: Array<{ id: string }>];
-  nodeDragStop: [];
-  keydown: [event: KeyboardEvent];
   init: [];
+  keydown: [event: KeyboardEvent];
+  nodeClick: [nodeId: string];
+  nodeDragStop: [];
+  nodesDelete: [deletedNodes: Array<{ id: string }>];
+  paneClick: [];
 }>();
+const nodes = defineModel<EditorNode[]>('nodes', { required: true });
+const edges = defineModel<EditorEdge[]>('edges', { required: true });
 </script>
 
 <template>

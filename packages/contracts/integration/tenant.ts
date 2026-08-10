@@ -3,7 +3,7 @@
  */
 
 export interface TenantContext {
+  allowedConnectors: string[];
   tenantId: string;
   tenantName: string;
-  allowedConnectors: string[];
 }

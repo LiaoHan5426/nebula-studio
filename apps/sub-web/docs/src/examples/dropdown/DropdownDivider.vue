@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import {
-  NebulaDropdown,
-  NebulaDropdownItem,
-  NebulaDropdownDivider,
   NebulaButton,
+  NebulaDropdown,
+  NebulaDropdownDivider,
+  NebulaDropdownItem,
 } from '@nebula-studio/nebula-ui';
 </script>
 

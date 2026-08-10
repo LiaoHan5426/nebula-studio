@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { NebulaThemeMode } from '../../types/layout';
+
 import { useLayoutPreferences } from '../../composables/useLayoutPreferences';
 import { ACCENT_PRESETS } from '../../types/layout';
 
@@ -13,7 +14,7 @@ const emit = defineEmits<{
 
 const { preferences } = useLayoutPreferences();
 
-function setThemeMode(mode: 'light' | 'dark' | 'system') {
+function setThemeMode(mode: 'dark' | 'light' | 'system') {
   preferences.themeMode = mode;
   if (mode === 'system') {
     const prefersDark = window.matchMedia(
@@ -77,7 +78,7 @@ function applyAccent(id: string) {
         <span
           class="appearance-tab__swatch"
           :style="{ background: `hsl(${preset.primary})` }"
-        />
+        ></span>
         <span>{{ preset.label }}</span>
       </button>
     </div>

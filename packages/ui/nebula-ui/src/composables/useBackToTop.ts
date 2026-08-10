@@ -1,14 +1,14 @@
 import { ref } from 'vue';
 
 export interface UseBackToTopOptions {
-  enabled: () => boolean;
-  mode: () => 'inline' | 'float';
-  threshold: () => number;
   behavior: () => ScrollBehavior;
+  enabled: () => boolean;
+  mode: () => 'float' | 'inline';
   scrollRoot: () => string;
+  threshold: () => number;
 }
 
-type ScrollRoot = Window | HTMLElement;
+type ScrollRoot = HTMLElement | Window;
 
 function getScrollTop(root: ScrollRoot): number {
   if (root === window) {

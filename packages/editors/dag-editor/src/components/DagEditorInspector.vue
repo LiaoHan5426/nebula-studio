@@ -1,11 +1,8 @@
 <script setup lang="ts">
-import { NebulaButton } from '@nebula-studio/nebula-ui';
-import { PluginNodeForm } from '@nebula-studio/nebula-low-render';
 import type { PluginNodeSchema } from '@nebula-studio/nebula-low-render';
 
-const selectedConfig = defineModel<Record<string, unknown>>('selectedConfig', {
-  required: true,
-});
+import { PluginNodeForm } from '@nebula-studio/nebula-low-render';
+import { NebulaButton } from '@nebula-studio/nebula-ui';
 
 defineProps<{
   selectedNodeLabel: string;
@@ -15,6 +12,10 @@ defineProps<{
 const emit = defineEmits<{
   deleteNode: [];
 }>();
+
+const selectedConfig = defineModel<Record<string, unknown>>('selectedConfig', {
+  required: true,
+});
 </script>
 
 <template>

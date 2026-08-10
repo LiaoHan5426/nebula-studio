@@ -1,25 +1,20 @@
 {
   "name": "@nebula-studio-renderer/settings",
   "version": "0.0.0",
-  "private": true,
   "description": "Nebula Studio platform settings renderer.",
-  "author": "Liao Han <liaohan5426@gmail.com>",
-  "license": "UNLICENSED",
+  "private": true,
   "homepage": "https://github.com/LiaoHan5426/nebula-studio#readme",
+  "bugs": {
+    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LiaoHan5426/nebula-studio.git",
     "directory": "apps/sub-web/settings"
   },
-  "bugs": {
-    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
-  },
+  "license": "UNLICENSED",
+  "author": "Liao Han <liaohan5426@gmail.com>",
   "type": "module",
-  "exports": {
-    "./app": "./src/App.vue",
-    "./router": "./src/router/index.ts",
-    "./boot": "./src/boot.ts"
-  },
   "scripts": {
     "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false",
     "test": "vp test run",
@@ -27,7 +22,13 @@
     "build": "vite build",
     "preview": "vite preview"
   },
+  "exports": {
+    "./app": "./src/App.vue",
+    "./router": "./src/router/index.ts",
+    "./boot": "./src/boot.ts"
+  },
   "dependencies": {
+    "@nebula-studio-electron/electron-bridge": "workspace:^",
     "@nebula-studio-internal/tailwind": "workspace:^",
     "@nebula-studio/api-client": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
@@ -35,11 +36,10 @@
     "@nebula-studio/contracts": "workspace:^",
     "@nebula-studio/nebula-layout": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
+    "@nebula-studio/runtime": "workspace:^",
     "@nebula-studio/use-confirm": "workspace:^",
     "vue": "catalog:vue",
-    "vue-router": "catalog:vue",
-    "@nebula-studio/runtime": "workspace:^",
-    "@nebula-studio-electron/electron-bridge": "workspace:^"
+    "vue-router": "catalog:vue"
   },
   "devDependencies": {
     "@electron-toolkit/preload": "catalog:electron",

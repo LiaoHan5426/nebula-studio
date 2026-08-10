@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import type { ExecutorRouteView } from '@/shared/api/executorApi';
+
 import { onMounted, ref } from 'vue';
+
 import {
   NebulaButton,
   NebulaPane,
@@ -9,7 +12,6 @@ import {
 } from '@nebula-studio/nebula-ui';
 
 import { executorRoutesApi } from '@/shared/api/executorApi';
-import type { ExecutorRouteView } from '@/shared/api/executorApi';
 import { isApiSuccess } from '@/shared/types';
 
 const routes = ref<ExecutorRouteView[]>([]);

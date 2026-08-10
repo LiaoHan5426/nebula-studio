@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import type { TenantRecord } from '@/features/tenant/api';
+
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+
 import {
   NebulaButton,
   NebulaPane,
@@ -10,7 +13,6 @@ import {
 } from '@nebula-studio/nebula-ui';
 
 import { tenantApi } from '@/features/tenant/api';
-import type { TenantRecord } from '@/features/tenant/api';
 import { getAuthUserId } from '@/shared/auth/session';
 import { useAuth } from '@/shared/composables/useAuth';
 import { isApiSuccess } from '@/shared/types';
@@ -46,7 +48,7 @@ const router = useRouter();
 const { isPlatformAdmin, username } = useAuth();
 const tenants = ref<TenantRecord[]>([]);
 const loading = ref(false);
-const pendingDeleteTenant = ref<TenantRecord | null>(null);
+const pendingDeleteTenant = ref<null | TenantRecord>(null);
 const showFormDialog = ref(false);
 const formMode = ref<TenantFormMode>('create');
 const saving = ref(false);
@@ -125,7 +127,7 @@ function openEdit(tenant: TenantRecord) {
     description: String((tenant as { description?: string }).description ?? ''),
     status: tenant.status ?? 'ACTIVE',
     authType:
-      (tenant.authConfig as { authType?: string } | undefined)?.authType ??
+      (tenant.authConfig as undefined | { authType?: string })?.authType ??
       'API_KEY',
   };
   showFormDialog.value = true;
@@ -208,9 +210,9 @@ async function confirmDelete() {
   <div class="page">
     <NebulaPane :title="pageTitle" :description="pageDescription">
       <div class="page__toolbar">
-        <NebulaButton variant="primary" @click="openCreate"
-          >新增租户</NebulaButton
-        >
+        <NebulaButton variant="primary" @click="openCreate">
+          新增租户
+        </NebulaButton>
         <NebulaButton variant="outline" @click="loadTenants">刷新</NebulaButton>
       </div>
 
@@ -385,12 +387,12 @@ async function confirmDelete() {
           }}」吗？此操作不可恢复。
         </p>
         <div class="modal__actions">
-          <NebulaButton variant="outline" @click="cancelDelete"
-            >取消</NebulaButton
-          >
-          <NebulaButton variant="primary" @click="confirmDelete"
-            >删除</NebulaButton
-          >
+          <NebulaButton variant="outline" @click="cancelDelete">
+            取消
+          </NebulaButton>
+          <NebulaButton variant="primary" @click="confirmDelete">
+            删除
+          </NebulaButton>
         </div>
       </NebulaPane>
     </div>

@@ -1,15 +1,15 @@
 export type GrantScheduleType =
   | 'ALWAYS'
   | 'DAILY'
-  | 'WEEKDAY'
-  | 'WEEKEND'
+  | 'FRI'
   | 'MON'
+  | 'SAT'
+  | 'SUN'
+  | 'THU'
   | 'TUE'
   | 'WED'
-  | 'THU'
-  | 'FRI'
-  | 'SAT'
-  | 'SUN';
+  | 'WEEKDAY'
+  | 'WEEKEND';
 
 export interface GrantScheduleOption {
   value: GrantScheduleType;
@@ -44,10 +44,10 @@ const DAY_LABELS: Record<string, string> = {
 };
 
 export function formatGrantScheduleLabel(
-  scheduleType?: string | null,
-  scheduleStartTime?: string | null,
-  scheduleEndTime?: string | null,
-  scheduleLabel?: string | null,
+  scheduleType?: null | string,
+  scheduleStartTime?: null | string,
+  scheduleEndTime?: null | string,
+  scheduleLabel?: null | string,
 ): string {
   if (scheduleLabel) return scheduleLabel;
   if (!scheduleType || scheduleType === 'ALWAYS') return '不限时段';
@@ -67,24 +67,24 @@ function matchesDayPattern(scheduleType: string, day: number): boolean {
   switch (scheduleType) {
     case 'DAILY':
       return true;
-    case 'WEEKDAY':
-      return day >= 1 && day <= 5;
-    case 'WEEKEND':
-      return day === 6 || day === 0;
-    case 'MON':
-      return day === 1;
-    case 'TUE':
-      return day === 2;
-    case 'WED':
-      return day === 3;
-    case 'THU':
-      return day === 4;
     case 'FRI':
       return day === 5;
+    case 'MON':
+      return day === 1;
     case 'SAT':
       return day === 6;
     case 'SUN':
       return day === 0;
+    case 'THU':
+      return day === 4;
+    case 'TUE':
+      return day === 2;
+    case 'WED':
+      return day === 3;
+    case 'WEEKDAY':
+      return day >= 1 && day <= 5;
+    case 'WEEKEND':
+      return day === 6 || day === 0;
     default:
       return false;
   }
@@ -104,9 +104,9 @@ function isWithinTimeWindow(
 
 /** 客户端预览：当前是否处于授权服务时间段外 */
 export function isOutsideGrantSchedule(
-  scheduleType?: string | null,
-  scheduleStartTime?: string | null,
-  scheduleEndTime?: string | null,
+  scheduleType?: null | string,
+  scheduleStartTime?: null | string,
+  scheduleEndTime?: null | string,
   timezone = 'Asia/Shanghai',
 ): boolean {
   if (!scheduleType || scheduleType === 'ALWAYS') return false;

@@ -1,19 +1,19 @@
 export type AuthFlowStep =
   | 'credentials'
-  | 'organization'
+  | 'failure'
   | 'mfa'
+  | 'organization'
   | 'recovery'
-  | 'success'
-  | 'failure';
+  | 'success';
 
 export type AuthFailureKind =
-  | 'invalid-credentials'
   | 'account-locked'
+  | 'invalid-credentials'
+  | 'mfa-required'
   | 'network'
+  | 'permission-changed'
   | 'service'
   | 'session-expired'
-  | 'permission-changed'
-  | 'mfa-required'
   | 'unknown';
 
 export interface AuthFailure {

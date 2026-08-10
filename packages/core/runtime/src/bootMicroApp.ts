@@ -1,18 +1,22 @@
+import type { App } from 'vue';
+
+import type { BootMicroAppOptions } from './index';
+
 import {
   installShellEmbedNavigationListener,
   installWebPresentation,
   postShellEmbedPageMeta,
   wireShellEventBus,
 } from '@nebula-studio/app-shell';
+
 import { bootSubApp } from '@nebula-studio-electron/electron-bridge/vue';
-import type { App } from 'vue';
+
 import { detectRuntimeMode } from './detectMode';
-import type { BootMicroAppOptions } from './index';
 
 export interface MicroAppHandle {
   app: App;
-  unmount(): void;
   dispose(): void;
+  unmount(): void;
 }
 
 let activeHandle: MicroAppHandle | null = null;

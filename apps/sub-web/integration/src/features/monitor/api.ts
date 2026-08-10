@@ -1,17 +1,18 @@
-import { consoleRequest, monitorRequest } from '@/shared/api/client';
 import type {
   ApiResponse,
   DagDefinitionRecord,
   PageResponse,
 } from '@/shared/types';
 
+import { consoleRequest, monitorRequest } from '@/shared/api/client';
+
 export const monitorApi = {
   callLogs(
     params: {
-      tenantId?: string;
       page?: number;
       pageSize?: number;
       status?: string;
+      tenantId?: string;
     } = {},
   ): Promise<ApiResponse<PageResponse<Record<string, unknown>>>> {
     const query = new URLSearchParams();

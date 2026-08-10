@@ -1,9 +1,9 @@
 {
   "extends": "@nebula-studio-internal/tsconfig/base.json",
   "compilerOptions": {
-    "moduleResolution": "Bundler",
+    "target": "ESNext",
     "module": "ESNext",
-    "target": "ESNext"
+    "moduleResolution": "Bundler"
   },
   "include": ["src/**/*.ts"]
 }

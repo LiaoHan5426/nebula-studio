@@ -1,14 +1,15 @@
 <script lang="ts">
-import { buttonVariants } from './types';
 import type { ButtonVariants } from './types';
+
 import { cn } from '../../../utils/cn';
+import { buttonVariants } from './types';
 </script>
 
 <script setup lang="ts">
 defineProps<{
-  variant?: ButtonVariants['variant'];
-  size?: ButtonVariants['size'];
   as?: string;
+  size?: ButtonVariants['size'];
+  variant?: ButtonVariants['variant'];
 }>();
 </script>
 
@@ -19,7 +20,7 @@ defineProps<{
     :data-ui-size="size ?? 'default'"
     :class="cn('nebula-button-control', buttonVariants({ variant, size }))"
   >
-    <slot />
+    <slot></slot>
   </component>
 </template>
 

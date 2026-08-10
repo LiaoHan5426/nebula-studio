@@ -1,9 +1,10 @@
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+
 import { IPC_CHANNELS } from './rendererPreferences/ipcChannels.ts';
 import { setupRendererThemeSync } from './setupRendererThemeSync.ts';
 
-type ThemeMode = 'light' | 'dark';
-type AppMode = 'dev' | 'build';
+type ThemeMode = 'dark' | 'light';
+type AppMode = 'build' | 'dev';
 
 interface ThemeChangePayload {
   theme?: ThemeMode;

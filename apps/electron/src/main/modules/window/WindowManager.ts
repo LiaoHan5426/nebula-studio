@@ -1,21 +1,27 @@
+import type { WebContents } from 'electron';
+
+import type { EmbeddedShellWindowId } from '@nebula-studio/app-shell';
+
+import type { EmbeddedWindowId } from '../../windowRegistry';
+import type { AbstractSecurityRule } from '../security/AbstractSecurityRule';
+
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { BrowserView, BrowserWindow, ipcMain, shell } from 'electron';
-import type { WebContents } from 'electron';
-import { is } from '@electron-toolkit/utils';
+
 import {
   getDefaultEnabledShellIntegrableIds,
   listShellIntegrableAppIds,
 } from '@nebula-studio/app-shell/shell-integration';
-import type { EmbeddedShellWindowId } from '@nebula-studio/app-shell';
-import icon from '../../../../resources/icon.png?asset';
+
+import { is } from '@electron-toolkit/utils';
+import { BrowserView, BrowserWindow, ipcMain, shell } from 'electron';
+
 import appConfig from '../../../../app.config';
+import icon from '../../../../resources/icon.png?asset';
 import {
   listEmbeddedWindowIds,
   resolveRendererEntry,
 } from '../../windowRegistry';
-import type { EmbeddedWindowId } from '../../windowRegistry';
-import type { AbstractSecurityRule } from '../security/AbstractSecurityRule';
 
 type WindowId = keyof typeof appConfig.windows;
 
@@ -64,7 +70,7 @@ function devRendererBaseUrl(): string | undefined {
 
 function loadRendererContents(
   contents: WebContents,
-  windowId: WindowId | keyof typeof appConfig.modalRenderers,
+  windowId: keyof typeof appConfig.modalRenderers | WindowId,
 ): void {
   resolveRendererEntry(windowId);
   if (is.dev) {
@@ -81,25 +87,169 @@ function loadRendererContents(
 }
 
 export class WindowManager {
-  readonly #securityRules: AbstractSecurityRule[];
-  readonly #shellViewportBoundsByShellContents = new WeakMap<
-    WebContents,
-    { x: number; y: number; width: number; height: number }
-  >();
+  #activeEmbeddedViewId: EmbeddedWindowId | null = null;
+  /** 为 false 时收起所有 BrowserView，便于壳层 HTML 展示全屏覆盖层（如应用集成界面）。 */
+  #embeddedContentVisible = true;
+  #embeddedViewsById = new Map<EmbeddedWindowId, BrowserView>();
+  #enabledEmbeddedViewOrder: EmbeddedWindowId[] = [];
+  #loginWindow: BrowserWindow | null = null;
+  #mainWindow: BrowserWindow | null = null;
   readonly #relayoutEmbeddedViewsByShellWindow = new WeakMap<
     BrowserWindow,
     () => void
   >();
-  #embeddedViewsById = new Map<EmbeddedWindowId, BrowserView>();
-  #enabledEmbeddedViewOrder: EmbeddedWindowId[] = [];
-  #activeEmbeddedViewId: EmbeddedWindowId | null = null;
-  /** 为 false 时收起所有 BrowserView，便于壳层 HTML 展示全屏覆盖层（如应用集成界面）。 */
-  #embeddedContentVisible = true;
-  #mainWindow: BrowserWindow | null = null;
-  #loginWindow: BrowserWindow | null = null;
+  readonly #securityRules: AbstractSecurityRule[];
+  readonly #shellViewportBoundsByShellContents = new WeakMap<
+    WebContents,
+    { height: number; width: number; x: number; y: number }
+  >();
 
   constructor(securityRules: AbstractSecurityRule[] = []) {
     this.#securityRules = securityRules;
+  }
+
+  broadcast(channel: string, payload: unknown = null): void {
+    this.#mainWindow?.webContents.send(channel, payload);
+    for (const view of this.#embeddedViewsById.values()) {
+      view.webContents.send(channel, payload);
+    }
+  }
+
+  createShellWindow(): BrowserWindow {
+    const cfg = appConfig.windows.main;
+    if (!cfg) throw new Error('Main window config not found');
+    const win = new BrowserWindow({
+      title: '',
+      width: 960,
+      height: 720,
+      minWidth: 1100,
+      minHeight: 720,
+      show: false,
+      autoHideMenuBar: true,
+      ...resolveTitleBarOptions(),
+      ...(process.platform === 'linux' ? { icon } : {}),
+      webPreferences: rendererWebPreferences(cfg.preload),
+    });
+    this.#mainWindow = win;
+    this.#applySecurityRules(win.webContents);
+    loadRendererContents(win.webContents, 'main');
+
+    const embeddedViews = new Map<EmbeddedWindowId, BrowserView>();
+    const relayoutEmbedded = (): void => {
+      if (!usesBrowserViewEmbed()) return;
+      this.#layoutEmbeddedBrowserViews(win, embeddedViews);
+    };
+    this.#relayoutEmbeddedViewsByShellWindow.set(win, relayoutEmbedded);
+
+    if (usesBrowserViewEmbed()) {
+      for (const id of listEmbeddedWindowIds()) {
+        const wcfg = resolveRendererEntry(id);
+        const view = new BrowserView({
+          webPreferences: {
+            ...rendererWebPreferences(wcfg.preload as string),
+            session: win.webContents.session,
+            // 子应用切走时尺寸为 0 会触发 Chromium 节流；关闭后可即时恢复显示
+            backgroundThrottling: false,
+          },
+        });
+        this.#applySecurityRules(view.webContents);
+        loadRendererContents(view.webContents, id);
+        embeddedViews.set(id, view);
+      }
+      this.#embeddedViewsById = embeddedViews;
+    } else {
+      this.#embeddedViewsById = new Map();
+    }
+    this.#enabledEmbeddedViewOrder = this.#initialEnabledEmbeddedViewOrder();
+    // 与 Web 侧「无 nebula-shell-active-view 先展示应用集成」一致，不预选中首个 BrowserView
+    this.#activeEmbeddedViewId = null;
+
+    if (is.dev) {
+      win.webContents.once('did-finish-load', () => {
+        win.webContents.openDevTools({ mode: 'right' });
+        relayoutEmbedded();
+      });
+    }
+
+    win.on('resize', relayoutEmbedded);
+    win.on('ready-to-show', () => {
+      relayoutEmbedded();
+      win.show();
+    });
+    win.on('closed', () => {
+      if (this.#mainWindow === win) {
+        this.#mainWindow = null;
+      }
+      this.#embeddedViewsById = new Map();
+      this.#enabledEmbeddedViewOrder = [];
+      this.#activeEmbeddedViewId = null;
+    });
+
+    win.webContents.setWindowOpenHandler((details) => {
+      shell.openExternal(details.url);
+      return { action: 'deny' };
+    });
+
+    return win;
+  }
+
+  focusMainWindow(): void {
+    if (!this.#mainWindow) {
+      return;
+    }
+    if (this.#mainWindow.isMinimized()) {
+      this.#mainWindow.restore();
+    }
+    this.#mainWindow.focus();
+  }
+
+  getActiveEmbeddedViewId(): EmbeddedWindowId | null {
+    return this.#activeEmbeddedViewId;
+  }
+
+  getAvailableEmbeddedViewIds(): EmbeddedWindowId[] {
+    return [...this.#enabledEmbeddedViewOrder];
+  }
+
+  getMainWindow(): BrowserWindow | null {
+    return this.#mainWindow;
+  }
+
+  openLoginModal(): void {
+    if (this.#loginWindow && !this.#loginWindow.isDestroyed()) {
+      this.#loginWindow.focus();
+      return;
+    }
+    const parent = this.#mainWindow;
+    if (!parent) return;
+
+    const { preload } = resolveRendererEntry('login');
+    const win = new BrowserWindow({
+      parent,
+      modal: true,
+      width: 420,
+      height: 560,
+      show: false,
+      autoHideMenuBar: true,
+      resizable: false,
+      maximizable: false,
+      minimizable: false,
+      fullscreenable: false,
+      ...resolveTitleBarOptions(),
+      webPreferences: rendererWebPreferences(preload),
+    });
+    this.#applySecurityRules(win.webContents);
+    loadRendererContents(win.webContents, 'login');
+    win.once('ready-to-show', () => {
+      win.show();
+    });
+    win.on('closed', () => {
+      this.#loginWindow = null;
+      // 登录窗口关闭时通知渲染进程，由 IpcAuthModule 判断会话状态
+      this.#mainWindow?.webContents.send('auth:login-dismissed');
+      this.broadcast('auth:login-dismissed');
+    });
+    this.#loginWindow = win;
   }
 
   registerCoreIpc(): void {
@@ -108,10 +258,10 @@ export class WindowManager {
       (
         event,
         payload: {
+          height?: number;
+          width?: number;
           x?: number;
           y?: number;
-          width?: number;
-          height?: number;
         },
       ) => {
         if (!usesBrowserViewEmbed()) return;
@@ -274,120 +424,6 @@ export class WindowManager {
     );
   }
 
-  createShellWindow(): BrowserWindow {
-    const cfg = appConfig.windows.main;
-    if (!cfg) throw new Error('Main window config not found');
-    const win = new BrowserWindow({
-      title: '',
-      width: 960,
-      height: 720,
-      minWidth: 1100,
-      minHeight: 720,
-      show: false,
-      autoHideMenuBar: true,
-      ...resolveTitleBarOptions(),
-      ...(process.platform === 'linux' ? { icon } : {}),
-      webPreferences: rendererWebPreferences(cfg.preload),
-    });
-    this.#mainWindow = win;
-    this.#applySecurityRules(win.webContents);
-    loadRendererContents(win.webContents, 'main');
-
-    const embeddedViews = new Map<EmbeddedWindowId, BrowserView>();
-    const relayoutEmbedded = (): void => {
-      if (!usesBrowserViewEmbed()) return;
-      this.#layoutEmbeddedBrowserViews(win, embeddedViews);
-    };
-    this.#relayoutEmbeddedViewsByShellWindow.set(win, relayoutEmbedded);
-
-    if (usesBrowserViewEmbed()) {
-      for (const id of listEmbeddedWindowIds()) {
-        const wcfg = resolveRendererEntry(id);
-        const view = new BrowserView({
-          webPreferences: {
-            ...rendererWebPreferences(wcfg.preload as string),
-            session: win.webContents.session,
-            // 子应用切走时尺寸为 0 会触发 Chromium 节流；关闭后可即时恢复显示
-            backgroundThrottling: false,
-          },
-        });
-        this.#applySecurityRules(view.webContents);
-        loadRendererContents(view.webContents, id);
-        embeddedViews.set(id, view);
-      }
-      this.#embeddedViewsById = embeddedViews;
-    } else {
-      this.#embeddedViewsById = new Map();
-    }
-    this.#enabledEmbeddedViewOrder = this.#initialEnabledEmbeddedViewOrder();
-    // 与 Web 侧「无 nebula-shell-active-view 先展示应用集成」一致，不预选中首个 BrowserView
-    this.#activeEmbeddedViewId = null;
-
-    if (is.dev) {
-      win.webContents.once('did-finish-load', () => {
-        win.webContents.openDevTools({ mode: 'right' });
-        relayoutEmbedded();
-      });
-    }
-
-    win.on('resize', relayoutEmbedded);
-    win.on('ready-to-show', () => {
-      relayoutEmbedded();
-      win.show();
-    });
-    win.on('closed', () => {
-      if (this.#mainWindow === win) {
-        this.#mainWindow = null;
-      }
-      this.#embeddedViewsById = new Map();
-      this.#enabledEmbeddedViewOrder = [];
-      this.#activeEmbeddedViewId = null;
-    });
-
-    win.webContents.setWindowOpenHandler((details) => {
-      shell.openExternal(details.url);
-      return { action: 'deny' };
-    });
-
-    return win;
-  }
-
-  getMainWindow(): BrowserWindow | null {
-    return this.#mainWindow;
-  }
-
-  focusMainWindow(): void {
-    if (!this.#mainWindow) {
-      return;
-    }
-    if (this.#mainWindow.isMinimized()) {
-      this.#mainWindow.restore();
-    }
-    this.#mainWindow.focus();
-  }
-
-  getAvailableEmbeddedViewIds(): EmbeddedWindowId[] {
-    return [...this.#enabledEmbeddedViewOrder];
-  }
-
-  #initialEnabledEmbeddedViewOrder(): EmbeddedWindowId[] {
-    const integratable = new Set<string>(listShellIntegrableAppIds());
-    const defaultOn = new Set<string>(getDefaultEnabledShellIntegrableIds());
-    const next: EmbeddedWindowId[] = [];
-    for (const id of listEmbeddedWindowIds()) {
-      if (!integratable.has(id)) {
-        next.push(id);
-      } else if (defaultOn.has(id)) {
-        next.push(id);
-      }
-    }
-    return next;
-  }
-
-  getActiveEmbeddedViewId(): EmbeddedWindowId | null {
-    return this.#activeEmbeddedViewId;
-  }
-
   setActiveEmbeddedView(viewId: EmbeddedWindowId): boolean {
     if (!this.#enabledEmbeddedViewOrder.includes(viewId)) return false;
     if (usesBrowserViewEmbed()) {
@@ -403,55 +439,31 @@ export class WindowManager {
     return true;
   }
 
-  broadcast(channel: string, payload: unknown = null): void {
-    this.#mainWindow?.webContents.send(channel, payload);
-    for (const view of this.#embeddedViewsById.values()) {
-      view.webContents.send(channel, payload);
-    }
-  }
-
-  openLoginModal(): void {
-    if (this.#loginWindow && !this.#loginWindow.isDestroyed()) {
-      this.#loginWindow.focus();
-      return;
-    }
-    const parent = this.#mainWindow;
-    if (!parent) return;
-
-    const { preload } = resolveRendererEntry('login');
-    const win = new BrowserWindow({
-      parent,
-      modal: true,
-      width: 420,
-      height: 560,
-      show: false,
-      autoHideMenuBar: true,
-      resizable: false,
-      maximizable: false,
-      minimizable: false,
-      fullscreenable: false,
-      ...resolveTitleBarOptions(),
-      webPreferences: rendererWebPreferences(preload),
-    });
-    this.#applySecurityRules(win.webContents);
-    loadRendererContents(win.webContents, 'login');
-    win.once('ready-to-show', () => {
-      win.show();
-    });
-    win.on('closed', () => {
-      this.#loginWindow = null;
-      // 登录窗口关闭时通知渲染进程，由 IpcAuthModule 判断会话状态
-      this.#mainWindow?.webContents.send('auth:login-dismissed');
-      this.broadcast('auth:login-dismissed');
-    });
-    this.#loginWindow = win;
-  }
-
   #applyEmbeddedContentVisible(visible: boolean): void {
     this.#embeddedContentVisible = visible;
     if (this.#mainWindow) {
       this.#relayoutEmbeddedViewsByShellWindow.get(this.#mainWindow)?.();
     }
+  }
+
+  #applySecurityRules(contents: WebContents): void {
+    for (const rule of this.#securityRules) {
+      rule.applyRule(contents);
+    }
+  }
+
+  #initialEnabledEmbeddedViewOrder(): EmbeddedWindowId[] {
+    const integratable = new Set<string>(listShellIntegrableAppIds());
+    const defaultOn = new Set<string>(getDefaultEnabledShellIntegrableIds());
+    const next: EmbeddedWindowId[] = [];
+    for (const id of listEmbeddedWindowIds()) {
+      if (!integratable.has(id)) {
+        next.push(id);
+      } else if (defaultOn.has(id)) {
+        next.push(id);
+      }
+    }
+    return next;
   }
 
   #layoutEmbeddedBrowserViews(
@@ -495,12 +507,6 @@ export class WindowManager {
 
     if (topView) {
       win.setTopBrowserView(topView);
-    }
-  }
-
-  #applySecurityRules(contents: WebContents): void {
-    for (const rule of this.#securityRules) {
-      rule.applyRule(contents);
     }
   }
 }

@@ -1,16 +1,16 @@
 <script setup lang="ts">
+import type { AuthorizeRow, GrantForm } from '../../authorize/types';
+
 import { NebulaButton } from '@nebula-studio/nebula-ui';
 
 import { GRANT_SCHEDULE_OPTIONS } from '@/shared/grant/schedule';
 
-import type { AuthorizeRow, GrantForm } from '../../authorize/types';
-
 defineProps<{
-  open: boolean;
-  title: string;
-  target: AuthorizeRow | null;
+  actingId: null | string;
   form: GrantForm;
-  actingId: string | null;
+  open: boolean;
+  target: AuthorizeRow | null;
+  title: string;
 }>();
 
 const emit = defineEmits<{

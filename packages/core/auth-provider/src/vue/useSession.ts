@@ -1,9 +1,11 @@
-import { computed, ref, onMounted, onBeforeUnmount } from 'vue';
-import { globalAuthProvider } from '../index.ts';
 import type { AuthSession } from '../types.ts';
+
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+
+import { globalAuthProvider } from '../index.ts';
 import {
-  getAuthToken,
   getAuthRoles,
+  getAuthToken,
   getAuthUserId,
   getAuthUsername,
   hasValidAuthToken,

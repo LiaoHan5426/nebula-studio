@@ -13,7 +13,7 @@ declare const __NEBULA_MSW_ENABLED__: boolean;
  */
 declare const __NEBULA_MSW_BASE_PATH__: string;
 
-type NebulaRuntimeMode = 'standalone' | 'platform-embed' | 'electron';
+type NebulaRuntimeMode = 'electron' | 'platform-embed' | 'standalone';
 
 interface Window {
   __NEBULA_RUNTIME_MODE__?: NebulaRuntimeMode;

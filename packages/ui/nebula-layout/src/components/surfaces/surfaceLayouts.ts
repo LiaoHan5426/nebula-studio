@@ -1,13 +1,14 @@
+import type { ExperienceSurface } from '../../types/layout';
+
 import { defineComponent, h } from 'vue';
 
 import NebulaSurfaceLayout from './NebulaSurfaceLayout.vue';
-import type { ExperienceSurface } from '../../types/layout';
 
 function createSurfaceLayout(
   name: string,
   surface: Extract<
     ExperienceSurface,
-    'portal' | 'provider' | 'settings' | 'docs'
+    'docs' | 'portal' | 'provider' | 'settings'
   >,
 ) {
   return defineComponent({

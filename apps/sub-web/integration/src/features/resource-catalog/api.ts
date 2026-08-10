@@ -1,3 +1,7 @@
+import type { ApiResponse } from '@/shared/types';
+
+import type { AccessRequestDraft, ResourceSummaryViewModel } from './types';
+
 import { pluginCatalogApi } from '@/features/plugin/api';
 import { subscriptionRequestApi } from '@/features/subscription/api';
 import {
@@ -5,7 +9,6 @@ import {
   interfaceApi,
   resourceApi,
 } from '@/shared/api/integration';
-import type { ApiResponse } from '@/shared/types';
 import { isApiSuccess } from '@/shared/types';
 
 import {
@@ -15,7 +18,6 @@ import {
   mapManagedResource,
   mapPluginResource,
 } from './mappers';
-import type { AccessRequestDraft, ResourceSummaryViewModel } from './types';
 
 export interface CatalogLoadResult {
   items: ResourceSummaryViewModel[];

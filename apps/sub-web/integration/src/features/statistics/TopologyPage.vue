@@ -1,15 +1,17 @@
 <script setup lang="ts">
+import type {
+  TopologyError,
+  TopologyTrace,
+} from '@nebula-studio/contracts/integration';
+
 import { onMounted, ref, watch } from 'vue';
+
 import { NebulaButton, NebulaPane, NebulaTag } from '@nebula-studio/nebula-ui';
 
 import { monitorApi } from '@/features/monitor/api';
 import { camelTopologyApi } from '@/shared/api/topologyApi';
 import { useTenant } from '@/shared/composables/useTenant';
 import { isApiSuccess } from '@/shared/types';
-import type {
-  TopologyError,
-  TopologyTrace,
-} from '@nebula-studio/contracts/integration';
 
 // 通用拓扑视图模型（来自 monitorApi.topologyNodes，返回 Record<string, unknown>[]）
 // 与 contracts/integration/topology 的 TopologyNodeData 不同：
@@ -17,7 +19,7 @@ import type {
 interface TopologyNode {
   id: string;
   name: string;
-  type: 'tenant' | 'service' | 'plugin' | 'datasource';
+  type: 'datasource' | 'plugin' | 'service' | 'tenant';
   x?: number;
   y?: number;
 }
@@ -38,7 +40,7 @@ const routeId = ref('');
 const routeInput = ref('');
 const traces = ref<TopologyTrace[]>([]);
 const errors = ref<TopologyError[]>([]);
-const activeTab = ref<'topology' | 'traces' | 'errors'>('topology');
+const activeTab = ref<'errors' | 'topology' | 'traces'>('topology');
 const tracesLoading = ref(false);
 
 onMounted(() => {
@@ -169,9 +171,9 @@ function getNodeColor(type: TopologyNode['type']): string {
         <NebulaButton variant="primary" @click="handleLoadRoute">
           查询路由
         </NebulaButton>
-        <NebulaButton variant="outline" @click="handleRefresh"
-          >刷新</NebulaButton
-        >
+        <NebulaButton variant="outline" @click="handleRefresh">
+          刷新
+        </NebulaButton>
       </div>
 
       <div class="topology-page__content">
@@ -230,8 +232,8 @@ function getNodeColor(type: TopologyNode['type']): string {
               :key="node.id"
               class="topology-node"
               :style="{
-                left: node.x + 'px',
-                top: node.y + 'px',
+                left: `${node.x}px`,
+                top: `${node.y}px`,
                 borderColor: getNodeColor(node.type),
               }"
             >

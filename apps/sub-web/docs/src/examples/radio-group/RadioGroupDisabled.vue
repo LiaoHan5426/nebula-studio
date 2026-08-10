@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { NebulaRadioGroup } from '@nebula-studio/nebula-ui';
 import type { NebulaRadioOption } from '@nebula-studio/nebula-ui';
+
+import { ref } from 'vue';
+
+import { NebulaRadioGroup } from '@nebula-studio/nebula-ui';
 
 const selected = ref('a');
 const options: NebulaRadioOption[] = [

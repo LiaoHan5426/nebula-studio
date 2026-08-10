@@ -1,4 +1,5 @@
 import type { PluginOption } from 'vite';
+
 import { nebulaVue } from '../plugin/nebulaVue.ts';
 import { nebulaWebShellPlugin } from '../plugin/nebulaWebShell.ts';
 

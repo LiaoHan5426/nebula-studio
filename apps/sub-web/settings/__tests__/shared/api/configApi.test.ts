@@ -1,6 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-
 import { configApi } from '@/shared/api/configApi';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const { configRequest } = vi.hoisted(() => ({
   configRequest: vi.fn(),

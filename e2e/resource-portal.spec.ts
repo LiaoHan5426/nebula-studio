@@ -22,15 +22,15 @@ test.describe('resource discovery and access request portal', () => {
     page,
   }) => {
     let submittedRequest:
+      | undefined
       | {
-          requestId: string;
           interfaceId: string;
-          requestType: string;
-          status: string;
           reason: string;
           requestConfig: Record<string, unknown>;
-        }
-      | undefined;
+          requestId: string;
+          requestType: string;
+          status: string;
+        };
 
     await page.route(/^https?:\/\/[^/]+\/api\//, async (route) => {
       const request = route.request();
@@ -90,9 +90,9 @@ test.describe('resource discovery and access request portal', () => {
       ) {
         const payload = request.postDataJSON() as {
           interfaceId: string;
-          requestType: string;
           reason: string;
           requestConfig: Record<string, unknown>;
+          requestType: string;
         };
         submittedRequest = {
           requestId: 'request-e2e',

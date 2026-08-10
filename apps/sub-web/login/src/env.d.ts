@@ -1,6 +1,7 @@
-/// <reference types="vite/client" />
+// / <reference types="vite/client" />
 
 import type { ElectronAPI } from '@electron-toolkit/preload';
+
 import type { ElectronAuthApi } from '@nebula-studio/contracts/auth';
 
 type ShellApi = {
@@ -11,10 +12,10 @@ declare global {
   interface Window {
     electron: ElectronAPI;
     api: {
-      scope: string;
-      notify: unknown;
-      settings?: unknown;
       auth: ElectronAuthApi;
+      notify: unknown;
+      scope: string;
+      settings?: unknown;
       shell: ShellApi;
     };
   }

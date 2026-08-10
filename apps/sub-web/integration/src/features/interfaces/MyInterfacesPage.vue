@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import type { ApiInterface } from '@/shared/types';
+
 import { computed, onMounted, ref } from 'vue';
+
 import {
   NebulaButton,
   NebulaPane,
@@ -11,11 +14,10 @@ import {
 import { tenantApi } from '@/features/tenant/api';
 import { interfaceApi } from '@/shared/api/integration';
 import { useTenant } from '@/shared/composables/useTenant';
-import type { ApiInterface } from '@/shared/types';
 import { isApiSuccess } from '@/shared/types';
 
 const services = ref<ApiInterface[]>([]);
-const allowedIds = ref<string[] | null>(null);
+const allowedIds = ref<null | string[]>(null);
 const loading = ref(false);
 const { currentTenantId } = useTenant();
 
@@ -65,9 +67,9 @@ function serviceTypeLabel(item: ApiInterface) {
       description="当前租户已授权且已发布的服务，供对接方查阅网关路径与鉴权方式"
     >
       <div class="page__toolbar">
-        <NebulaButton variant="outline" @click="loadServices"
-          >刷新</NebulaButton
-        >
+        <NebulaButton variant="outline" @click="loadServices">
+          刷新
+        </NebulaButton>
       </div>
 
       <div class="page__table-wrap">

@@ -1,56 +1,56 @@
 export type AppNotifyType = 'message' | 'notification';
-export type AppNotifyLevel = 'success' | 'info' | 'warning' | 'danger';
+export type AppNotifyLevel = 'danger' | 'info' | 'success' | 'warning';
 export type NotifySource = string;
 
 export interface AppNotifyDetailChoice {
   key: string;
   label: string;
-  variant?: 'primary' | 'default' | 'danger';
+  variant?: 'danger' | 'default' | 'primary';
 }
 
 export type AppNotifyDetail =
   | {
-      title: string;
+      choices?: AppNotifyDetailChoice[];
       content: string;
       mode: 'choice';
-      choices?: AppNotifyDetailChoice[];
+      title: string;
     }
   | {
-      title: string;
+      confirmText?: string;
       content: string;
       mode: 'ack';
-      confirmText?: string;
+      title: string;
     };
 
 export interface AppNotifyPayload {
-  type: AppNotifyType;
-  level: AppNotifyLevel;
-  title?: string;
-  message: string;
-  showCloseButton?: boolean;
-  durationMs?: number;
-  requestId?: string;
   detail?: AppNotifyDetail;
+  durationMs?: number;
+  level: AppNotifyLevel;
+  message: string;
+  requestId?: string;
+  showCloseButton?: boolean;
+  title?: string;
+  type: AppNotifyType;
 }
 
 export interface AppNotifyResponsePayload {
-  requestId: string;
   action: string;
+  requestId: string;
 }
 
 export interface NotifyBridgePayload<T> {
-  source: NotifySource;
   payload: T;
+  source: NotifySource;
 }
 
 export interface NotifyClient {
-  app(payload: AppNotifyPayload): Promise<string | null>;
-  system(payload: { title: string; body: string }): Promise<unknown>;
+  app(payload: AppNotifyPayload): Promise<null | string>;
   onApp(listener: (payload: AppNotifyPayload) => void): () => void;
-  respond(payload: AppNotifyResponsePayload): Promise<void>;
   onAppResponse(
     listener: (payload: AppNotifyResponsePayload) => void,
   ): () => void;
+  respond(payload: AppNotifyResponsePayload): Promise<void>;
+  system(payload: { body: string; title: string }): Promise<unknown>;
 }
 
 export interface ToastItem extends AppNotifyPayload {

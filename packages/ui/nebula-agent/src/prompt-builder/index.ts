@@ -1,10 +1,10 @@
 import type { SQLPromptParams } from './sql/builder';
 
-export type AgentType = 'sql' | 'chart' | 'code';
+export type AgentType = 'chart' | 'code' | 'sql';
 
 export type PromptParams = {
-  sql?: SQLPromptParams;
   [key: string]: unknown;
+  sql?: SQLPromptParams;
 };
 
 export async function buildPrompt(
@@ -12,14 +12,6 @@ export async function buildPrompt(
   params: PromptParams,
 ): Promise<string> {
   switch (agent) {
-    case 'sql': {
-      const { buildSQLPrompt } = await import('./sql/builder');
-      const sqlParams = params.sql;
-      if (!sqlParams) {
-        throw new Error('SQL prompt params are required');
-      }
-      return buildSQLPrompt('', sqlParams);
-    }
     case 'chart': {
       const template = await import('./templates');
       const chartTemplate = template.getTemplateContent('sql-chart');
@@ -27,6 +19,14 @@ export async function buildPrompt(
         throw new Error('Chart prompt template not found');
       }
       return chartTemplate;
+    }
+    case 'sql': {
+      const { buildSQLPrompt } = await import('./sql/builder');
+      const sqlParams = params.sql;
+      if (!sqlParams) {
+        throw new Error('SQL prompt params are required');
+      }
+      return buildSQLPrompt('', sqlParams);
     }
     case 'code':
       throw new Error('Code agent prompt not implemented');

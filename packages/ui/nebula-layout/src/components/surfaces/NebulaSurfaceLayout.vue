@@ -1,22 +1,22 @@
 <script setup lang="ts">
-import { computed, useSlots } from 'vue';
-
 import type {
   ContentWidth,
   ExperienceDensity,
   ExperienceSurface,
 } from '../../types/layout';
 
+import { computed, useSlots } from 'vue';
+
 const props = withDefaults(
   defineProps<{
-    surface: Exclude<ExperienceSurface, 'auth' | 'shell'>;
-    density?: ExperienceDensity;
     contentWidth?: ContentWidth;
-    title?: string;
+    density?: ExperienceDensity;
     description?: string;
-    eyebrow?: string;
     embedded?: boolean;
+    eyebrow?: string;
     navigationLabel?: string;
+    surface: Exclude<ExperienceSurface, 'auth' | 'shell'>;
+    title?: string;
   }>(),
   {
     density: 'comfortable',
@@ -54,7 +54,7 @@ const hasHeading = computed(
       class="nebula-experience-layout__navigation"
       :aria-label="navigationLabel"
     >
-      <slot name="navigation" />
+      <slot name="navigation"></slot>
     </aside>
 
     <section class="nebula-experience-layout__main">
@@ -71,13 +71,13 @@ const hasHeading = computed(
           </p>
         </slot>
         <div v-if="$slots.actions" class="nebula-experience-layout__actions">
-          <slot name="actions" />
+          <slot name="actions"></slot>
         </div>
       </header>
 
       <main class="nebula-experience-layout__content">
         <div class="nebula-experience-layout__content-inner">
-          <slot />
+          <slot></slot>
         </div>
       </main>
     </section>

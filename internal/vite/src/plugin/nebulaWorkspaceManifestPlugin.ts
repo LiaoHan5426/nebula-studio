@@ -1,11 +1,14 @@
-import { fileURLToPath } from 'node:url';
 import type { Plugin } from 'vite';
+
+import type { NebulaAppManifest } from '../config/windowsManifest.ts';
+
+import { fileURLToPath } from 'node:url';
+
 import {
   buildAppManifest,
   findMonorepoRoot,
   loadWindowsConfig,
 } from '../config/windowsManifest.ts';
-import type { NebulaAppManifest } from '../config/windowsManifest.ts';
 
 export const NEBULA_APP_MANIFEST_VIRTUAL_ID = 'virtual:nebula-app-manifest';
 const RESOLVED_MANIFEST_ID = `\0${NEBULA_APP_MANIFEST_VIRTUAL_ID}`;
@@ -70,8 +73,8 @@ export function nebulaWorkspaceManifestPlugin(
 }
 
 export function resolveSubAppRoot(configModuleUrl: string | URL): {
-  root: string;
   appDir: string;
+  root: string;
 } {
   const appDir = fileURLToPath(new URL('.', configModuleUrl));
   return { root: appDir, appDir };

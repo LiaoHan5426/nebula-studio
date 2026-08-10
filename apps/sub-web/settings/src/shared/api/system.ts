@@ -1,5 +1,5 @@
-import { authRequest, systemRequest } from '@/shared/api/client';
 import type { ApiResponse, PageResult } from '@/shared/types';
+
 import type {
   AuthMe,
   AuthMode,
@@ -14,6 +14,8 @@ import type {
   UserInput,
   UserRecord,
 } from '@nebula-studio/contracts/system';
+
+import { authRequest, systemRequest } from '@/shared/api/client';
 
 export type {
   AuthMe,
@@ -31,7 +33,7 @@ export type {
 } from '@nebula-studio/contracts/system';
 
 function buildQuery(
-  params: Record<string, string | number | undefined>,
+  params: Record<string, number | string | undefined>,
 ): string {
   const query = new URLSearchParams();
   for (const [key, value] of Object.entries(params)) {
@@ -46,9 +48,9 @@ function buildQuery(
 export const usersApi = {
   page(
     params: {
+      keyword?: string;
       page?: number;
       size?: number;
-      keyword?: string;
       status?: string;
     } = {},
   ): Promise<ApiResponse<PageResult<UserRecord>>> {
@@ -232,9 +234,9 @@ export const orgPolicyApi = {
 export const appsApi = {
   page(
     params: {
+      keyword?: string;
       page?: number;
       size?: number;
-      keyword?: string;
       status?: string;
     } = {},
   ): Promise<ApiResponse<PageResult<ShellAppRecord>>> {
@@ -278,11 +280,11 @@ export const appsApi = {
 export const logsApi = {
   loginPage(
     params: {
+      endTime?: string;
       page?: number;
       size?: number;
-      username?: string;
       startTime?: string;
-      endTime?: string;
+      username?: string;
     } = {},
   ): Promise<ApiResponse<PageResult<LogRecord>>> {
     return systemRequest(`/logs/login/page${buildQuery(params)}`);
@@ -290,12 +292,12 @@ export const logsApi = {
 
   operationsPage(
     params: {
-      page?: number;
-      size?: number;
+      endTime?: string;
       level?: string;
       module?: string;
+      page?: number;
+      size?: number;
       startTime?: string;
-      endTime?: string;
     } = {},
   ): Promise<ApiResponse<PageResult<LogRecord>>> {
     return systemRequest(`/logs/operations/page${buildQuery(params)}`);
@@ -303,12 +305,12 @@ export const logsApi = {
 
   auditPage(
     params: {
+      endTime?: string;
+      entityName?: string;
+      operationType?: string;
       page?: number;
       size?: number;
-      operationType?: string;
-      entityName?: string;
       startTime?: string;
-      endTime?: string;
     } = {},
   ): Promise<ApiResponse<PageResult<LogRecord>>> {
     return systemRequest(`/logs/audit/page${buildQuery(params)}`);

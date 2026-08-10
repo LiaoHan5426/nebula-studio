@@ -1,21 +1,21 @@
 import { onUnmounted, ref } from 'vue';
 
 export interface SseEventRecord {
-  id: string;
-  event: string;
   data: string;
+  event: string;
+  id: string;
   receivedAt: string;
 }
 
-export type SseConnectionState = 'idle' | 'connecting' | 'connected' | 'error';
+export type SseConnectionState = 'connected' | 'connecting' | 'error' | 'idle';
 
 export interface UseSubscriptionEventsOptions {
   /** Base URL for SSE endpoint, e.g. 'http://localhost:8080' */
   baseUrl: string;
-  /** Returns the current auth token */
-  getAuthToken: () => string | null;
   /** Connection timeout in ms (default 10000) */
   connectTimeoutMs?: number;
+  /** Returns the current auth token */
+  getAuthToken: () => null | string;
 }
 
 const READY_STATE_POLL_MS = 200;
@@ -23,7 +23,7 @@ const READY_STATE_POLL_MAX = 25;
 
 function markConnected(
   connectionState: { value: SseConnectionState },
-  error: { value: string | null },
+  error: { value: null | string },
 ) {
   connectionState.value = 'connected';
   error.value = null;
@@ -34,7 +34,7 @@ export function useSubscriptionEvents(options: UseSubscriptionEventsOptions) {
 
   const events = ref<SseEventRecord[]>([]);
   const connectionState = ref<SseConnectionState>('idle');
-  const error = ref<string | null>(null);
+  const error = ref<null | string>(null);
 
   let source: EventSource | null = null;
   let openListener: (() => void) | null = null;
@@ -42,9 +42,9 @@ export function useSubscriptionEvents(options: UseSubscriptionEventsOptions) {
   let errorListener: (() => void) | null = null;
   let connectedListener: ((ev: Event) => void) | null = null;
   let subscriptionEventListener: ((ev: Event) => void) | null = null;
-  let readyStateTimer: ReturnType<typeof setTimeout> | null = null;
-  let connectTimeoutTimer: ReturnType<typeof setTimeout> | null = null;
-  let readyStatePollTimer: ReturnType<typeof setInterval> | null = null;
+  let readyStateTimer: null | ReturnType<typeof setTimeout> = null;
+  let connectTimeoutTimer: null | ReturnType<typeof setTimeout> = null;
+  let readyStatePollTimer: null | ReturnType<typeof setInterval> = null;
   let disconnecting = false;
 
   function clearTimers() {

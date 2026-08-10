@@ -2,9 +2,9 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "@nebula-studio-internal/tsconfig/node.json",
   "compilerOptions": {
-    "noEmit": true,
     "rootDir": "src",
-    "allowImportingTsExtensions": true
+    "allowImportingTsExtensions": true,
+    "noEmit": true
   },
   "include": ["src/**/*.ts"]
 }

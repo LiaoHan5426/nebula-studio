@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import type { VersionSnapshot } from '@/shared/types';
+
 import { onMounted, ref } from 'vue';
+
 import {
   NebulaButton,
   NebulaInput,
@@ -7,14 +10,14 @@ import {
   NebulaTable,
   NebulaTableColumn,
 } from '@nebula-studio/nebula-ui';
+
 import { versionApi } from '@/features/version/api';
-import type { VersionSnapshot } from '@/shared/types';
 
 const snapshots = ref<VersionSnapshot[]>([]);
 const loading = ref(false);
 const resourceId = ref('');
-const selectedSnapshot = ref<VersionSnapshot | null>(null);
-const rollbackTarget = ref<VersionSnapshot | null>(null);
+const selectedSnapshot = ref<null | VersionSnapshot>(null);
+const rollbackTarget = ref<null | VersionSnapshot>(null);
 
 function formatTime(iso: string): string {
   if (!iso) return '-';
@@ -83,9 +86,9 @@ onMounted(() => {
           class="version-page__search"
           @keydown.enter="loadSnapshots"
         />
-        <NebulaButton variant="primary" @click="loadSnapshots"
-          >查询</NebulaButton
-        >
+        <NebulaButton variant="primary" @click="loadSnapshots">
+          查询
+        </NebulaButton>
       </div>
 
       <div class="page__table-wrap">

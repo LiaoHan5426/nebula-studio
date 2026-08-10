@@ -3,7 +3,7 @@ import { ref } from 'vue';
 
 import { NebulaButton } from '@nebula-studio/nebula-ui/components';
 
-const activeTab = ref<'subscriptions' | 'interfaces'>('interfaces');
+const activeTab = ref<'interfaces' | 'subscriptions'>('interfaces');
 const xmlContent = ref<string>('');
 const showPreview = ref(false);
 

@@ -1,13 +1,14 @@
-import {
-  GENERATED_SHELL_CONFIG,
-  GENERATED_ELECTRON_EMBEDDED_PRESENTATION,
-  GENERATED_WINDOWS,
-  GENERATED_MODAL_RENDERERS,
-  GENERATED_DISPLAY_ORDER,
-} from './_generated-windows';
 import type { GeneratedWindowId } from './_generated-windows';
 
-export type ElectronEmbeddedPresentation = 'iframe' | 'browser-view';
+import {
+  GENERATED_DISPLAY_ORDER,
+  GENERATED_ELECTRON_EMBEDDED_PRESENTATION,
+  GENERATED_MODAL_RENDERERS,
+  GENERATED_SHELL_CONFIG,
+  GENERATED_WINDOWS,
+} from './_generated-windows';
+
+export type ElectronEmbeddedPresentation = 'browser-view' | 'iframe';
 
 /**
  * 与 Electron 壳层布局一致的**可序列化**配置（不含 `import.meta` / 主进程路径）。
@@ -46,6 +47,6 @@ export const WEB_SHELL_EMBED_QUERY = 'embed' as const;
 
 // Re-export generated types for downstream consumers
 export type {
-  GeneratedWindowEntry,
   GeneratedModalRendererEntry,
+  GeneratedWindowEntry,
 } from './_generated-windows';

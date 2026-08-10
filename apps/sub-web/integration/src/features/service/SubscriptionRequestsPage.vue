@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import type { SubscriptionRequestRecord } from '@/features/subscription/api';
+
 import { onMounted, ref } from 'vue';
+
 import {
   NebulaButton,
   NebulaInput,
@@ -11,15 +14,14 @@ import {
 } from '@nebula-studio/nebula-ui';
 
 import { subscriptionRequestApi } from '@/features/subscription/api';
-import type { SubscriptionRequestRecord } from '@/features/subscription/api';
 import { GRANT_SCHEDULE_OPTIONS } from '@/shared/grant/schedule';
 import { isApiSuccess } from '@/shared/types';
 
 const requests = ref<SubscriptionRequestRecord[]>([]);
 const loading = ref(false);
 const statusFilter = ref('PENDING');
-const approveTarget = ref<SubscriptionRequestRecord | null>(null);
-const rejectTarget = ref<SubscriptionRequestRecord | null>(null);
+const approveTarget = ref<null | SubscriptionRequestRecord>(null);
+const rejectTarget = ref<null | SubscriptionRequestRecord>(null);
 const rejectReason = ref('');
 const grantForm = ref({
   expiresAt: '',
@@ -137,9 +139,9 @@ function formatTime(value?: string) {
           class="status-filter"
           @change="loadRequests"
         />
-        <NebulaButton variant="outline" @click="loadRequests"
-          >刷新</NebulaButton
-        >
+        <NebulaButton variant="outline" @click="loadRequests">
+          刷新
+        </NebulaButton>
       </div>
 
       <div class="page__table-wrap">

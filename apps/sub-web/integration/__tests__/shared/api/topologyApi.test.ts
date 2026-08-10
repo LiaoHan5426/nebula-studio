@@ -1,6 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-
 import { camelTopologyApi } from '@/shared/api/topologyApi';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const { topologyRequest } = vi.hoisted(() => ({
   topologyRequest: vi.fn(),

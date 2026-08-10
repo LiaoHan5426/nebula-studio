@@ -1,11 +1,11 @@
 import type { PluginCatalogItem } from '@nebula-studio/contracts/integration';
 
 export type PluginSchemaFieldType =
-  | 'text'
-  | 'number'
   | 'boolean'
+  | 'number'
   | 'password'
-  | 'select';
+  | 'select'
+  | 'text';
 
 export interface PluginSchemaField {
   key: string;

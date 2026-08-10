@@ -1,10 +1,11 @@
-import { apiRequest, FLOWS_BASE } from '@/shared/api/client';
 import type {
   ApiResponse,
   FlowCreateRequest,
   FlowDefinition,
   MybatisPage,
 } from '@/shared/types';
+
+import { apiRequest, FLOWS_BASE } from '@/shared/api/client';
 
 function request<T>(
   endpoint: string,
@@ -16,11 +17,11 @@ function request<T>(
 export const flowsApi = {
   list(
     params: {
+      category?: string;
       page?: number;
       pageSize?: number;
-      category?: string;
-      tenantId?: string;
       status?: string;
+      tenantId?: string;
     } = {},
   ): Promise<ApiResponse<MybatisPage<FlowDefinition>>> {
     const query = new URLSearchParams(

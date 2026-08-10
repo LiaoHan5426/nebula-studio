@@ -1,19 +1,19 @@
 {
   "name": "@nebula-studio/types",
   "version": "0.0.0",
-  "private": true,
   "description": "Ambient typings for workspace side-effect imports and deps without types in exports (via tsconfig `compilerOptions.types`).",
-  "author": "Liao Han <liaohan5426@gmail.com>",
-  "license": "UNLICENSED",
+  "private": true,
   "homepage": "https://github.com/LiaoHan5426/nebula-studio#readme",
+  "bugs": {
+    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LiaoHan5426/nebula-studio.git",
     "directory": "packages/types"
   },
-  "bugs": {
-    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
-  },
+  "license": "UNLICENSED",
+  "author": "Liao Han <liaohan5426@gmail.com>",
   "types": "./index.d.ts",
   "exports": {
     ".": {

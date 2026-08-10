@@ -1,12 +1,12 @@
+import adminGettingStarted from '@/docs/product/admin-getting-started.md?raw';
+import approvals from '@/docs/product/approvals.md?raw';
+import connectResource from '@/docs/product/connect-resource.md?raw';
 import consumerGettingStarted from '@/docs/product/consumer-getting-started.md?raw';
 import consumerSignIn from '@/docs/product/consumer-sign-in.md?raw';
 import findRequest from '@/docs/product/find-request.md?raw';
-import connectResource from '@/docs/product/connect-resource.md?raw';
+import pluginConfiguration from '@/docs/product/plugin-configuration.md?raw';
 import providerGettingStarted from '@/docs/product/provider-getting-started.md?raw';
 import publishResource from '@/docs/product/publish-resource.md?raw';
-import adminGettingStarted from '@/docs/product/admin-getting-started.md?raw';
-import approvals from '@/docs/product/approvals.md?raw';
-import pluginConfiguration from '@/docs/product/plugin-configuration.md?raw';
 import settings from '@/docs/product/settings.md?raw';
 import troubleshooting from '@/docs/product/troubleshooting.md?raw';
 import componentGuidelines from '@/docs/reference/component-guidelines.md?raw';
@@ -15,7 +15,7 @@ export interface HelpDocument {
   id: string;
   title: string;
   description: string;
-  audience: '消费者' | '提供方' | '管理员' | '开发者';
+  audience: '开发者' | '提供方' | '消费者' | '管理员';
   path: string;
   updatedAt: string;
   source: string;

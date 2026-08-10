@@ -1,20 +1,22 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { CodeEditor } from 'monaco-editor-vue3';
-
-import { normalizeCodeEditorOptions } from '../../options';
 import type {
   CodeEditorError,
   CodeEditorOptions,
   CodeEditorReadyPayload,
 } from '../../types';
 
+import { computed, ref } from 'vue';
+
+import { CodeEditor } from 'monaco-editor-vue3';
+
+import { normalizeCodeEditorOptions } from '../../options';
+
 const props = withDefaults(
   defineProps<{
-    modelValue?: string;
     language?: string;
-    readonly?: boolean;
+    modelValue?: string;
     options?: CodeEditorOptions;
+    readonly?: boolean;
   }>(),
   {
     modelValue: '',
@@ -25,9 +27,9 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  'update:modelValue': [value: string];
-  ready: [payload: CodeEditorReadyPayload];
   error: [error: CodeEditorError];
+  ready: [payload: CodeEditorReadyPayload];
+  'update:modelValue': [value: string];
 }>();
 
 const failed = ref<CodeEditorError>();

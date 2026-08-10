@@ -1,18 +1,18 @@
 {
   "extends": "@nebula-studio-internal/tsconfig/web.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "skipLibCheck": true
+  },
   "include": [
     "index.html",
     "src/env.d.ts",
     "src/**/*",
     "src/**/*.vue",
     "__tests__/**/*"
-  ],
-  "compilerOptions": {
-    "skipLibCheck": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "paths": {
-      "@/*": ["./src/*"]
-    }
-  }
+  ]
 }

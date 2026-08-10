@@ -1,4 +1,5 @@
 import type { BrowserWindow } from 'electron';
+
 import type { ConfigManager } from '../ConfigManager';
 
 interface WindowBoundsState {
@@ -17,11 +18,6 @@ export class WindowStateManager {
     this.#configManager = configManager;
   }
 
-  getMainWindowBounds(): WindowBoundsState | undefined {
-    return this.#configManager.get<WindowStateSchema>('windowState')
-      ?.mainWindowBounds;
-  }
-
   bindMainWindowPersist(win: BrowserWindow): void {
     const saveBounds = (): void => {
       const { width, height } = win.getBounds();
@@ -31,5 +27,10 @@ export class WindowStateManager {
       this.#configManager.set('windowState', state);
     };
     win.on('resize', saveBounds);
+  }
+
+  getMainWindowBounds(): undefined | WindowBoundsState {
+    return this.#configManager.get<WindowStateSchema>('windowState')
+      ?.mainWindowBounds;
   }
 }

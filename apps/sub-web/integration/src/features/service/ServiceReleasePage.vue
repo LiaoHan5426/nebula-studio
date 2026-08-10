@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import type { ReleaseRecord } from '@/shared/types';
+
 import { onMounted, ref } from 'vue';
+
 import {
   NebulaButton,
   NebulaPane,
@@ -9,7 +12,6 @@ import {
 } from '@nebula-studio/nebula-ui';
 
 import { releaseApi } from '@/features/release/api';
-import type { ReleaseRecord } from '@/shared/types';
 
 const releases = ref<ReleaseRecord[]>([]);
 const loading = ref(false);
@@ -82,9 +84,9 @@ onMounted(loadReleases);
   <div class="page">
     <NebulaPane title="发布管理" description="查看服务发布记录并执行部署或回滚">
       <div class="page__toolbar">
-        <NebulaButton variant="outline" @click="loadReleases"
-          >刷新</NebulaButton
-        >
+        <NebulaButton variant="outline" @click="loadReleases">
+          刷新
+        </NebulaButton>
       </div>
 
       <div class="page__table-wrap">

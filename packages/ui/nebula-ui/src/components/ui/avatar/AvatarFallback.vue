@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { cn } from '../../../utils/cn';
-import { AvatarFallback } from 'reka-ui';
 import type { AvatarFallbackProps } from 'reka-ui';
+
 import type { HTMLAttributes } from 'vue';
+
+import { AvatarFallback } from 'reka-ui';
+
+import { cn } from '../../../utils/cn';
 
 defineProps<AvatarFallbackProps & { class?: HTMLAttributes['class'] }>();
 </script>
@@ -17,6 +20,6 @@ defineProps<AvatarFallbackProps & { class?: HTMLAttributes['class'] }>();
       )
     "
   >
-    <slot />
+    <slot></slot>
   </AvatarFallback>
 </template>

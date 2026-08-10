@@ -1,19 +1,19 @@
 import type { QueryResult } from '../types';
 
-export type ChartType = 'bar' | 'line' | 'pie' | 'scatter' | 'table' | 'area';
+export type ChartType = 'area' | 'bar' | 'line' | 'pie' | 'scatter' | 'table';
 
 export type ColumnInfo = {
-  name: string;
-  type: 'string' | 'number' | 'date' | 'boolean';
   isNumeric: boolean;
+  name: string;
+  type: 'boolean' | 'date' | 'number' | 'string';
 };
 
 export type ChartRecommendation = {
   chartType: ChartType;
   reason: string;
+  series?: string[];
   xAxis?: string;
   yAxis?: string[];
-  series?: string[];
 };
 
 export class ChartSelector {

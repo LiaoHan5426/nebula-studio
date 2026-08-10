@@ -1,12 +1,15 @@
 <script setup lang="ts">
+import type { SettingsAccess } from '@/shared/auth/access';
+
 import { computed } from 'vue';
 import { RouterLink, RouterView, useRoute } from 'vue-router';
+
 import {
   NebulaSettingsLayout,
   useShellHosted,
 } from '@nebula-studio/nebula-layout';
+
 import { canAccessSettings } from '@/shared/auth/access';
-import type { SettingsAccess } from '@/shared/auth/access';
 
 const route = useRoute();
 const { isShellHosted } = useShellHosted();
@@ -14,7 +17,7 @@ const { isShellHosted } = useShellHosted();
 interface SettingsNavGroup {
   label: string;
   access: SettingsAccess;
-  items: Array<{ to: string; label: string; access?: SettingsAccess }>;
+  items: Array<{ access?: SettingsAccess; label: string; to: string }>;
 }
 
 const allGroups: SettingsNavGroup[] = [

@@ -3,7 +3,8 @@
  *
  * Plan-11 Task 2: 测试 iframe src 构建 / 加载状态。
  */
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { useEmbeddedViews } from '../composables/useEmbeddedViews.js';
 
 vi.mock('@nebula-studio/app-shell', () => ({

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 withDefaults(
   defineProps<{
-    title: string;
     description?: string;
-    typeLabel?: string;
-    provider?: string;
     interactive?: boolean;
+    provider?: string;
+    title: string;
+    typeLabel?: string;
   }>(),
   {
     description: '',
@@ -28,20 +28,20 @@ withDefaults(
         </span>
         <h2>{{ title }}</h2>
       </div>
-      <slot name="status" />
+      <slot name="status"></slot>
     </header>
     <p v-if="description" class="nebula-resource-card__description">
       {{ description }}
     </p>
     <div v-if="$slots.metadata || provider" class="nebula-resource-card__meta">
       <span v-if="provider">提供方：{{ provider }}</span>
-      <slot name="metadata" />
+      <slot name="metadata"></slot>
     </div>
     <div v-if="$slots.tags" class="nebula-resource-card__tags">
-      <slot name="tags" />
+      <slot name="tags"></slot>
     </div>
     <footer v-if="$slots.actions" class="nebula-resource-card__actions">
-      <slot name="actions" />
+      <slot name="actions"></slot>
     </footer>
   </article>
 </template>

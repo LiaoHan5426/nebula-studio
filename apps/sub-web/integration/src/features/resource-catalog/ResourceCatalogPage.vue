@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import type {
+  CatalogQuery,
+  ResourceAvailability,
+  ResourceKind,
+  ResourceSummaryViewModel,
+} from './types';
+
 import {
   computed,
   onBeforeUnmount,
@@ -8,6 +15,7 @@ import {
   watch,
 } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+
 import {
   NebulaButton,
   NebulaEmptyState,
@@ -17,9 +25,9 @@ import {
   NebulaTag,
 } from '@nebula-studio/nebula-ui';
 
-import { useTenant } from '@/shared/composables/useTenant';
-import { getAuthUserId } from '@/shared/auth/session';
 import { subscriptionRequestApi } from '@/features/subscription/api';
+import { getAuthUserId } from '@/shared/auth/session';
+import { useTenant } from '@/shared/composables/useTenant';
 import { isApiSuccess } from '@/shared/types';
 
 import { loadResourceCatalog } from './api';
@@ -31,12 +39,6 @@ import {
   trackPortalEvent,
 } from './storage';
 import { DEFAULT_CATALOG_QUERY } from './types';
-import type {
-  CatalogQuery,
-  ResourceAvailability,
-  ResourceKind,
-  ResourceSummaryViewModel,
-} from './types';
 
 const PAGE_SIZE = 9;
 const route = useRoute();
@@ -58,20 +60,20 @@ function queryFromRoute(): CatalogQuery {
   const sort = String(route.query.sort || 'RELEVANCE');
   return {
     keyword: String(route.query.keyword || ''),
-    kind: ['API', 'TABLE', 'CONNECTOR'].includes(kind)
+    kind: ['API', 'CONNECTOR', 'TABLE'].includes(kind)
       ? (kind as ResourceKind)
       : '',
     tag: String(route.query.tag || ''),
     provider: String(route.query.provider || ''),
     availability: [
-      'AVAILABLE',
       'APPROVAL_REQUIRED',
-      'UNAVAILABLE',
+      'AVAILABLE',
       'OFFLINE',
+      'UNAVAILABLE',
     ].includes(availability)
       ? (availability as ResourceAvailability)
       : '',
-    sort: ['RELEVANCE', 'UPDATED', 'NAME'].includes(sort)
+    sort: ['NAME', 'RELEVANCE', 'UPDATED'].includes(sort)
       ? (sort as CatalogQuery['sort'])
       : 'RELEVANCE',
     page: Math.max(1, Number(route.query.page || 1)),
@@ -203,7 +205,7 @@ async function load(): Promise<void> {
         const requestResponse = await subscriptionRequestApi.listByUser(userId);
         if (isApiSuccess(requestResponse)) {
           pendingRequestCount.value = requestResponse.data.filter((request) =>
-            ['PENDING', 'PENDING_REVIEW', 'NEEDS_INFO'].includes(
+            ['NEEDS_INFO', 'PENDING', 'PENDING_REVIEW'].includes(
               request.status,
             ),
           ).length;
@@ -278,18 +280,10 @@ onBeforeUnmount(() => clearTimeout(querySyncTimer));
         />
       </label>
       <div class="hero-stats">
-        <span
-          ><strong>{{ items.length }}</strong> 项可发现资源</span
-        >
-        <span
-          ><strong>{{ favorites.length }}</strong> 项收藏</span
-        >
-        <span
-          ><strong>{{ recentItems.length }}</strong> 项最近访问</span
-        >
-        <span
-          ><strong>{{ pendingRequestCount }}</strong> 项申请待处理</span
-        >
+        <span><strong>{{ items.length }}</strong> 项可发现资源</span>
+        <span><strong>{{ favorites.length }}</strong> 项收藏</span>
+        <span><strong>{{ recentItems.length }}</strong> 项最近访问</span>
+        <span><strong>{{ pendingRequestCount }}</strong> 项申请待处理</span>
       </div>
     </section>
 
@@ -374,7 +368,7 @@ onBeforeUnmount(() => clearTimeout(querySyncTimer));
       </p>
 
       <div v-if="loading" class="resource-grid" aria-label="正在加载资源">
-        <div v-for="index in 6" :key="index" class="resource-skeleton" />
+        <div v-for="index in 6" :key="index" class="resource-skeleton"></div>
       </div>
       <NebulaEmptyState
         v-else-if="error"
@@ -424,9 +418,9 @@ onBeforeUnmount(() => clearTimeout(querySyncTimer));
             <p>{{ resource.description }}</p>
           </button>
           <div class="resource-tags">
-            <NebulaTag>{{
-              availabilityLabel(resource.availability)
-            }}</NebulaTag>
+            <NebulaTag>
+              {{ availabilityLabel(resource.availability) }}
+            </NebulaTag>
             <NebulaTag v-for="tag in resource.tags.slice(0, 2)" :key="tag">
               {{ tag }}
             </NebulaTag>

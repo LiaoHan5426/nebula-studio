@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import type {
+  BreadcrumbSegment,
+  NebulaThemeMode,
+  ShellTagItem,
+} from '../../types/layout';
+
 import { computed, ref, toRef } from 'vue';
 
 import {
@@ -6,26 +12,21 @@ import {
   provideLayoutContext,
 } from '../../composables/useLayoutContext';
 import { useLayoutPreferences } from '../../composables/useLayoutPreferences';
+import NebulaPreferencesDrawer from '../preferences/NebulaPreferencesDrawer.vue';
 import NebulaShellHeader from './NebulaShellHeader.vue';
 import NebulaShellSidebarFooter from './NebulaShellSidebarFooter.vue';
 import NebulaShellTagsBar from './NebulaShellTagsBar.vue';
-import NebulaPreferencesDrawer from '../preferences/NebulaPreferencesDrawer.vue';
-import type {
-  BreadcrumbSegment,
-  ShellTagItem,
-  NebulaThemeMode,
-} from '../../types/layout';
 
 const props = withDefaults(
   defineProps<{
+    activeTagKey?: string;
+    authUser?: string;
     breadcrumbs?: BreadcrumbSegment[];
+    showAuth?: boolean;
     showBreadcrumb?: boolean;
     showTagsBar?: boolean;
     tags?: ShellTagItem[];
-    activeTagKey?: string;
     theme?: NebulaThemeMode;
-    authUser?: string;
-    showAuth?: boolean;
   }>(),
   {
     showBreadcrumb: true,
@@ -36,19 +37,19 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  'update:theme': [value: NebulaThemeMode];
+  contentFullscreenChange: [value: boolean];
+  lockScreen: [];
   login: [];
   logout: [];
-  lockScreen: [];
   refresh: [];
   tagActivate: [key: string];
   tagClose: [key: string];
-  tagsCloseLeft: [];
-  tagsCloseRight: [];
-  tagsCloseOthers: [];
   tagsCloseAll: [];
+  tagsCloseLeft: [];
+  tagsCloseOthers: [];
+  tagsCloseRight: [];
   tagsRefresh: [];
-  contentFullscreenChange: [value: boolean];
+  'update:theme': [value: NebulaThemeMode];
 }>();
 
 const preferencesOpen = defineModel<boolean>('preferencesOpen', {
@@ -138,10 +139,10 @@ function onThemeUpdate(theme: NebulaThemeMode) {
       @mouseleave="sidebar.onSidebarLeave()"
     >
       <div class="nebula-layout-shell__sidebar-brand">
-        <slot name="sidebar-brand" :expanded="sidebarExpanded" />
+        <slot name="sidebar-brand" :expanded="sidebarExpanded"></slot>
       </div>
       <nav class="nebula-layout-shell__sidebar-nav" aria-label="主导航">
-        <slot name="sidebar" :expanded="sidebarExpanded" />
+        <slot name="sidebar" :expanded="sidebarExpanded"></slot>
       </nav>
       <NebulaShellSidebarFooter />
     </aside>
@@ -162,7 +163,7 @@ function onThemeUpdate(theme: NebulaThemeMode) {
         @refresh="emit('refresh')"
       >
         <template #actions>
-          <slot name="header-actions" />
+          <slot name="header-actions"></slot>
         </template>
       </NebulaShellHeader>
 
@@ -181,7 +182,7 @@ function onThemeUpdate(theme: NebulaThemeMode) {
           @refresh="emit('tagsRefresh')"
           @fullscreen="toggleContentFullscreen"
         />
-        <slot />
+        <slot></slot>
       </div>
     </div>
 

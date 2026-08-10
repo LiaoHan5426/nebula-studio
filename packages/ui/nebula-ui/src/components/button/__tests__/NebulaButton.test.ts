@@ -1,5 +1,7 @@
-import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
+
+import { describe, expect, it } from 'vitest';
+
 import NebulaButton from '../NebulaButton.vue';
 
 describe('nebula-button', () => {

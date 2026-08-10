@@ -1,7 +1,7 @@
 import type { Highlighter } from 'shiki';
 
 let highlighter: Highlighter | null = null;
-let highlighterPromise: Promise<Highlighter> | null = null;
+let highlighterPromise: null | Promise<Highlighter> = null;
 
 /**
  * 获取 Shiki 高亮器实例（真正的模块级单例）。

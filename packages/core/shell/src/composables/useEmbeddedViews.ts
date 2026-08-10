@@ -1,3 +1,7 @@
+import type { EmbeddedShellWindowId } from '@nebula-studio/app-shell';
+
+import { computed, ref } from 'vue';
+
 /**
  * 嵌入视图状态管理 composable。
  *
@@ -5,12 +9,10 @@
  * 管理 iframe 嵌入的 URL 构建、加载状态、生命周期。
  */
 import {
-  WEB_SHELL_EMBED_QUERY,
   getEmbeddedShellWindowIds,
   getShellHostBridge,
+  WEB_SHELL_EMBED_QUERY,
 } from '@nebula-studio/app-shell';
-import type { EmbeddedShellWindowId } from '@nebula-studio/app-shell';
-import { computed, ref } from 'vue';
 
 export interface EmbeddedViewsOptions {
   /** 集成面板是否打开 */
@@ -51,7 +53,7 @@ export function useEmbeddedViews(opts: EmbeddedViewsOptions) {
   const loadedEmbedIds = ref<Set<string>>(new Set());
   /** 已完成首次渲染的子应用 */
   const embedReadyViewIds = ref<Set<string>>(new Set());
-  const embedLoadingViewId = ref<string | null>(null);
+  const embedLoadingViewId = ref<null | string>(null);
 
   const EMBED_SURFACE_MIN_LOADING_MS = 320;
   const EMBED_SURFACE_LOAD_TIMEOUT_MS = 12_000;

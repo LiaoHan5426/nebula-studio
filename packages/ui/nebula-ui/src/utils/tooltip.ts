@@ -1,27 +1,27 @@
 import { cn } from './cn';
 
-export type TooltipPlacement = 'top' | 'bottom' | 'left' | 'right' | 'auto';
+export type TooltipPlacement = 'auto' | 'bottom' | 'left' | 'right' | 'top';
 export type ResolvedTooltipPlacement = Exclude<TooltipPlacement, 'auto'>;
 
 const TOOLTIP_OFFSET = 10;
 const VIEWPORT_PADDING = 8;
 
 type FloatingTooltipState = {
-  root: HTMLDivElement;
   arrow: HTMLDivElement;
+  root: HTMLDivElement;
 };
 type ActiveTooltipState = {
-  target: HTMLElement;
   content: string;
   preferred: TooltipPlacement;
+  target: HTMLElement;
 };
 
 let floatingTooltipState: FloatingTooltipState | null = null;
 let activeTooltipState: ActiveTooltipState | null = null;
-let autoUpdateFrameId: number | null = null;
+let autoUpdateFrameId: null | number = null;
 let listenersBound = false;
-let hideTimerId: number | null = null;
-let closeAnimationTimerId: number | null = null;
+let hideTimerId: null | number = null;
+let closeAnimationTimerId: null | number = null;
 
 function updateFloatingTooltipPosition(): void {
   if (!activeTooltipState || typeof window === 'undefined') return;
@@ -59,8 +59,8 @@ function ensureFloatingTooltip(): FloatingTooltipState {
 }
 
 function measureTooltipSize(content: string): {
-  width: number;
   height: number;
+  width: number;
 } {
   if (typeof window === 'undefined' || typeof document === 'undefined') {
     return { width: 220, height: 36 };
@@ -136,7 +136,7 @@ function clamp(n: number, min: number, max: number): number {
 function getTooltipPosition(
   target: HTMLElement,
   placement: ResolvedTooltipPlacement,
-  tooltipSize: { width: number; height: number },
+  tooltipSize: { height: number; width: number },
 ): { left: number; top: number } {
   const rect = target.getBoundingClientRect();
   const leftCenter = rect.left + rect.width / 2 - tooltipSize.width / 2;

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { NebulaDialog, NebulaButton } from '@nebula-studio/nebula-ui';
+
+import { NebulaButton, NebulaDialog } from '@nebula-studio/nebula-ui';
 
 const dialogOpen = ref(false);
 </script>
@@ -15,15 +16,16 @@ const dialogOpen = ref(false);
     >
       <p>这里是对话框的内容区域。</p>
       <div style="margin-top: 16px; text-align: right">
-        <NebulaButton variant="ghost" @click="dialogOpen = false"
-          >取消</NebulaButton
-        >
+        <NebulaButton variant="ghost" @click="dialogOpen = false">
+          取消
+        </NebulaButton>
         <NebulaButton
           variant="primary"
           style="margin-left: 8px"
           @click="dialogOpen = false"
-          >确定</NebulaButton
         >
+          确定
+        </NebulaButton>
       </div>
     </NebulaDialog>
   </div>

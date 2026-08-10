@@ -1,12 +1,13 @@
 <script setup lang="ts">
+import type { PluginSchemaField } from './types';
+
 import { reactive, watch } from 'vue';
+
 import {
   NebulaInput,
   NebulaSelect,
   NebulaSwitch,
 } from '@nebula-studio/nebula-ui';
-
-import type { PluginSchemaField } from './types';
 
 const props = defineProps<{
   fields: PluginSchemaField[];

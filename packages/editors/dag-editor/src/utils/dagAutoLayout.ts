@@ -5,9 +5,9 @@ export interface DagLayoutEdge {
 
 export interface DagAutoLayoutOptions {
   columnWidth?: number;
-  rowHeight?: number;
   originX?: number;
   originY?: number;
+  rowHeight?: number;
 }
 
 const DEFAULT_COLUMN_WIDTH = 196;

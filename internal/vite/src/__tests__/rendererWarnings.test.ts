@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+
 import { handleNebulaRendererWarning } from '../config/nebulaRendererWarnings';
 
 describe('handleNebulaRendererWarning', () => {

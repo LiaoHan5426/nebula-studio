@@ -1,16 +1,18 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
-import { cn } from '../../../utils/cn';
 import type { HTMLAttributes } from 'vue';
+
+import { computed } from 'vue';
+
+import { cn } from '../../../utils/cn';
 
 const props = withDefaults(
   defineProps<{
-    modelValue?: string | number;
-    type?: 'text' | 'password' | 'email' | 'number' | 'tel' | 'url';
-    placeholder?: string;
-    disabled?: boolean;
-    readonly?: boolean;
     class?: HTMLAttributes['class'];
+    disabled?: boolean;
+    modelValue?: number | string;
+    placeholder?: string;
+    readonly?: boolean;
+    type?: 'email' | 'number' | 'password' | 'tel' | 'text' | 'url';
   }>(),
   {
     modelValue: '',

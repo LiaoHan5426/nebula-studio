@@ -1,7 +1,7 @@
 export { createUseTenant } from './useTenant.js';
 export type {
-  TenantRecord,
   ApiResponse,
   TenantApiAdapter,
+  TenantRecord,
   UseTenantOptions,
 } from './useTenant.js';

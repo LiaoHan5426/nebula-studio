@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import type { PluginCatalogViewModel } from './types';
+
 import { computed, onMounted, ref } from 'vue';
+
 import {
   NebulaButton,
   NebulaDrawer,
@@ -15,7 +18,6 @@ import { pluginApi } from '@/features/plugin/api';
 
 import { loadPluginCatalog } from './api';
 import PluginSchemaForm from './PluginSchemaForm.vue';
-import type { PluginCatalogViewModel } from './types';
 
 const items = ref<PluginCatalogViewModel[]>([]);
 const loading = ref(true);
@@ -104,7 +106,7 @@ onMounted(load);
     </NebulaFilterBar>
 
     <div v-if="loading" class="plugin-grid">
-      <div v-for="index in 6" :key="index" class="plugin-skeleton" />
+      <div v-for="index in 6" :key="index" class="plugin-skeleton"></div>
     </div>
     <NebulaEmptyState
       v-else-if="error"

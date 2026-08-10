@@ -3,7 +3,8 @@
  *
  * Plan-11 Task 2: 测试认证等待 / 超时 / 清除场景。
  */
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { useShellAuthWaiter } from '../composables/useShellAuthWaiter.js';
 
 // Mock @nebula-studio/app-shell
@@ -21,7 +22,7 @@ vi.mock('@nebula-studio/app-shell', () => ({
 function createOpts(
   overrides?: Partial<Parameters<typeof useShellAuthWaiter>[0]>,
 ) {
-  let session: { user: string; token?: string } | null = null;
+  let session: null | { token?: string; user: string } = null;
   return {
     getAuthSession: vi.fn(() => session),
     setAuthSession: vi.fn((s: any) => {

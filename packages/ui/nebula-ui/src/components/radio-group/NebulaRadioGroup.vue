@@ -1,18 +1,19 @@
 <script setup lang="ts">
-import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
+import type { TooltipPlacement } from '../../utils/tooltip';
+import type { NebulaFormControlProps } from '../form/types';
+import type { NebulaRadioOption } from './types';
+
 import { cn } from '../../utils/cn';
 import { withTooltipAttrs } from '../../utils/tooltip';
-import type { TooltipPlacement } from '../../utils/tooltip';
-import type { NebulaRadioOption } from './types';
-import type { NebulaFormControlProps } from '../form/types';
+import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 
 const props = withDefaults(
   defineProps<
     NebulaFormControlProps & {
+      class?: string;
+      disabled?: boolean;
       modelValue?: string;
       options?: NebulaRadioOption[];
-      disabled?: boolean;
-      class?: string;
       tooltip?: string;
       tooltipPlacement?: TooltipPlacement;
     }
@@ -34,10 +35,10 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  'update:modelValue': [value: string];
-  change: [value: string];
   blur: [event: FocusEvent];
+  change: [value: string];
   focus: [event: FocusEvent];
+  'update:modelValue': [value: string];
 }>();
 
 function updateValue(value: string): void {

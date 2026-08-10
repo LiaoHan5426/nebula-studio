@@ -10,129 +10,129 @@ export enum InterfaceType {
 }
 
 export enum InterfaceMethod {
+  DELETE = 'DELETE',
   GET = 'GET',
+  PATCH = 'PATCH',
   POST = 'POST',
   PUT = 'PUT',
-  DELETE = 'DELETE',
-  PATCH = 'PATCH',
 }
 
 export enum InterfaceStatus {
   ACTIVE = 'ACTIVE',
-  INACTIVE = 'INACTIVE',
   DRAFT = 'DRAFT',
+  INACTIVE = 'INACTIVE',
   PENDING_REVIEW = 'PENDING_REVIEW',
 }
 
 export enum InterfaceAuthType {
-  NONE = 'NONE',
   API_KEY = 'API_KEY',
-  OAUTH2 = 'OAUTH2',
   JWT = 'JWT',
+  NONE = 'NONE',
+  OAUTH2 = 'OAUTH2',
 }
 
 export interface AuthConfig {
-  authType: InterfaceAuthType;
-  apiKeyHeader?: string;
+  allowedTenants: string[];
   apiKey?: string;
+  apiKeyHeader?: string;
+  authType: InterfaceAuthType;
   oauth2ClientId?: string;
   oauth2Scope?: string;
-  allowedTenants: string[];
 }
 
 export interface SchemaField {
-  name: string;
-  type: string;
-  required: boolean;
   description: string;
+  name: string;
+  required: boolean;
+  type: string;
 }
 
 export interface InterfaceSchema {
-  type: string;
   fields: Record<string, SchemaField>;
+  type: string;
 }
 
-export type SubscriptionMode = 'OPEN' | 'APPROVAL';
+export type SubscriptionMode = 'APPROVAL' | 'OPEN';
 export type OrchestrationType = 'ATOMIC' | 'BPMN' | 'DAG';
 
 export interface InterfaceOrchestrationMeta {
-  subscriptionMode?: SubscriptionMode;
-  orchestrationType?: OrchestrationType;
-  flowDefinitionId?: string;
   dagDefinitionId?: string;
+  flowDefinitionId?: string;
+  orchestrationType?: OrchestrationType;
   publishedAt?: string;
+  subscriptionMode?: SubscriptionMode;
 }
 
 export interface AtomicInterface extends InterfaceOrchestrationMeta {
-  interfaceId: string;
-  tenantId: string;
+  authConfig: AuthConfig;
+  connectorId: string;
+  createdAt: string;
   createdBy?: string;
+  endpointUri: string;
+  interfaceId: string;
   interfaceName: string;
   interfaceType: InterfaceType.ATOMIC;
-  endpointUri: string;
-  method: InterfaceMethod;
-  authConfig: AuthConfig;
-  status: InterfaceStatus;
-  createdAt: string;
   lastModifiedAt: string;
-  connectorId: string;
+  method: InterfaceMethod;
   requestMapping: Record<string, string>;
-  responseMapping: Record<string, string>;
   requestSchema: InterfaceSchema;
+  responseMapping: Record<string, string>;
   responseSchema: InterfaceSchema;
+  status: InterfaceStatus;
+  tenantId: string;
 }
 
 export enum StepType {
+  AGGREGATE = 'AGGREGATE',
   CALL = 'CALL',
-  TRANSFORM = 'TRANSFORM',
   CONDITION = 'CONDITION',
   LOOP = 'LOOP',
-  AGGREGATE = 'AGGREGATE',
+  TRANSFORM = 'TRANSFORM',
 }
 
 export interface ErrorHandling {
-  onError: string;
   fallbackInterfaceId?: string;
+  onError: string;
   retryCount: number;
   retryDelayMs: number;
 }
 
 export interface InterfaceStep {
-  order: number;
-  interfaceId: string;
-  stepType: StepType;
-  inputMapping: string;
-  outputMapping: string;
   errorHandling: ErrorHandling;
+  inputMapping: string;
+  interfaceId: string;
+  order: number;
+  outputMapping: string;
+  stepType: StepType;
 }
 
 export interface CompositeInterface extends InterfaceOrchestrationMeta {
-  interfaceId: string;
-  tenantId: string;
+  authConfig: AuthConfig;
+  createdAt: string;
   createdBy?: string;
+  endpointUri: string;
+  flowExpression: string;
+  interfaceId: string;
   interfaceName: string;
   interfaceType: InterfaceType.COMPOSITE;
-  endpointUri: string;
-  method: InterfaceMethod;
-  authConfig: AuthConfig;
-  status: InterfaceStatus;
-  createdAt: string;
   lastModifiedAt: string;
+  method: InterfaceMethod;
+  status: InterfaceStatus;
   steps: InterfaceStep[];
-  flowExpression: string;
+  tenantId: string;
 }
 
 export interface DagDefinitionRecord {
-  id: string;
-  dagName: string;
-  tenantId?: string;
-  version?: number;
-  status?: string;
+  createdAt?: string;
   createdBy?: string;
   dagDefinition?: string;
+  dagName: string;
+  id: string;
   nodeConfigs?: string;
-  createdAt?: string;
+  status?: string;
+  tenantId?: string;
   updatedAt?: string;
+  version?: number;
 }
 
 export type ApiInterface = AtomicInterface | CompositeInterface;

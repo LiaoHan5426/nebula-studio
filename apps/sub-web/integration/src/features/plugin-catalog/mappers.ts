@@ -1,12 +1,13 @@
 import type { PluginCatalogItem } from '@nebula-studio/contracts/integration';
 import type { PluginNodeSchema } from '@nebula-studio/nebula-low-render';
 
+import type { PluginCatalogViewModel } from './types';
+
 import {
   readNodeKind,
   readPluginConfigFields,
   readPluginNodeFields,
 } from './schema';
-import type { PluginCatalogViewModel } from './types';
 
 export function mapPluginCatalogItem(
   item: PluginCatalogItem,
@@ -35,7 +36,7 @@ export function mapPluginCatalogItem(
 export function isDagOrchestrationPlugin(
   item: Pick<
     PluginCatalogItem,
-    'connectorId' | 'configSchema' | 'nodeSchema' | 'pluginCategory'
+    'configSchema' | 'connectorId' | 'nodeSchema' | 'pluginCategory'
   >,
 ): boolean {
   return Boolean(item.connectorId || item.nodeSchema || item.configSchema);

@@ -1,19 +1,19 @@
 {
   "name": "@nebula-studio/web",
   "version": "0.0.0",
-  "private": true,
   "description": "Nebula Studio browser host and embedded renderer entry points.",
-  "author": "Liao Han <liaohan5426@gmail.com>",
-  "license": "UNLICENSED",
+  "private": true,
   "homepage": "https://github.com/LiaoHan5426/nebula-studio#readme",
+  "bugs": {
+    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LiaoHan5426/nebula-studio.git",
     "directory": "apps/web"
   },
-  "bugs": {
-    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
-  },
+  "license": "UNLICENSED",
+  "author": "Liao Han <liaohan5426@gmail.com>",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -21,6 +21,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@nebula-studio-electron/electron-bridge": "workspace:^",
     "@nebula-studio-internal/tailwind": "workspace:^",
     "@nebula-studio-renderer/docs": "workspace:^",
     "@nebula-studio-renderer/integration": "workspace:^",
@@ -28,11 +29,10 @@
     "@nebula-studio-renderer/main": "workspace:^",
     "@nebula-studio-renderer/settings": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
+    "@nebula-studio/auth-provider": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
     "marked": "catalog:markdown",
-    "vue": "catalog:vue",
-    "@nebula-studio-electron/electron-bridge": "workspace:^",
-    "@nebula-studio/auth-provider": "workspace:^"
+    "vue": "catalog:vue"
   },
   "devDependencies": {
     "@nebula-studio-internal/tsconfig": "workspace:^",

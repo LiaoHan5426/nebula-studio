@@ -1,10 +1,9 @@
-import { integrationRequest } from '@/shared/api/client';
 import type {
   ApiInterface,
   ApiResponse,
   Connector,
-  DataSourceConfig,
   DatabaseConfig,
+  DataSourceConfig,
   MybatisPage,
   PageResponse,
   ProtocolConfig,
@@ -14,6 +13,8 @@ import type {
   ResourceUpdateRequest,
   ValidationResult,
 } from '@/shared/types';
+
+import { integrationRequest } from '@/shared/api/client';
 
 function request<T>(
   endpoint: string,
@@ -33,11 +34,11 @@ export const interfaceApi = {
 
   list(
     params: {
+      interfaceType?: string;
       page?: number;
       pageSize?: number;
-      interfaceType?: string;
-      status?: string;
       scope?: 'authorizable';
+      status?: string;
     } = {},
   ): Promise<ApiResponse<PageResponse<ApiInterface>>> {
     const query = new URLSearchParams(
@@ -147,18 +148,18 @@ export const dataSourceApi = {
   },
 };
 
-export { subscriptionApi } from '@/features/subscription/api';
-export { tenantApi } from '@/features/tenant/api';
-export { pluginApi } from '@/features/plugin/api';
-export { subscriptionRequestApi } from '@/features/subscription/api';
-export { monitorApi } from '@/features/monitor/api';
 export { governanceApi } from '@/features/governance/api';
+export { monitorApi } from '@/features/monitor/api';
+export { pluginApi } from '@/features/plugin/api';
+export { subscriptionApi } from '@/features/subscription/api';
+export { subscriptionRequestApi } from '@/features/subscription/api';
+export { tenantApi } from '@/features/tenant/api';
+
+export { clusterApi } from '@/shared/api/clusterApi';
 
 export { gatewayRequest } from '@/shared/api/executorApi';
-
-export { taskApi } from '@/shared/api/taskApi';
-export { clusterApi } from '@/shared/api/clusterApi';
 export { camelSubscribeApi } from '@/shared/api/subscribeApi';
+export { taskApi } from '@/shared/api/taskApi';
 export { camelTopologyApi } from '@/shared/api/topologyApi';
 
 // ==================== Resource API ====================

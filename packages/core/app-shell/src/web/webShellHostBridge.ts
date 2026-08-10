@@ -1,8 +1,9 @@
+import type { ShellHostBridge } from '../common/shellHostBridge';
+
 import {
   persistShellSurfacePreference,
   readShellSurfacePreference,
 } from '../common/activeViewPreference';
-import type { ShellHostBridge } from '../common/shellHostBridge';
 
 const LEGACY_SHELL_INTEGRATION_OPEN_WEB_KEY =
   'nebula-shell-integration-open-web';
@@ -41,7 +42,7 @@ export function createWebShellHostBridge(): ShellHostBridge {
       }
     },
 
-    resolveInitialIntegrationOpen(_activeViewId: string | null): boolean {
+    resolveInitialIntegrationOpen(_activeViewId: null | string): boolean {
       const surface = readShellSurfacePreference();
       if (surface === null) return false;
       return surface.kind === 'integration';

@@ -2,8 +2,8 @@
 /**
  * Migrate docs demo pages from dual .vue + .vue?raw imports to .vue?demo.
  */
-import { readFileSync, writeFileSync, readdirSync, statSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));

@@ -1,3 +1,5 @@
+import { fileURLToPath } from 'node:url';
+
 import {
   createNebulaApiProxy,
   defineNebulaConfig,
@@ -5,7 +7,6 @@ import {
   nebulaVueDemoPlugin,
   nebulaWorkspaceManifestPlugin,
 } from '@nebula-studio-internal/vite';
-import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
 

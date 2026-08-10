@@ -1,18 +1,23 @@
 <script setup lang="ts">
-import { Tooltip } from '../ui/tooltip';
 import type { TooltipContentProps } from 'reka-ui';
+
+import { Tooltip } from '../ui/tooltip';
 
 type TooltipPlacement = TooltipContentProps['side'];
 
-defineProps<{
+const props = defineProps<{
+  class?: string;
   content: string;
   placement?: TooltipPlacement;
-  class?: string;
 }>();
 </script>
 
 <template>
-  <Tooltip :content="content" :side="placement || 'top'" :class="class">
-    <slot />
+  <Tooltip
+    :content="props.content"
+    :side="props.placement || 'top'"
+    :class="props.class"
+  >
+    <slot></slot>
   </Tooltip>
 </template>

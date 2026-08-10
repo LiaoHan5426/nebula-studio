@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+
 import { NebulaIcon, PRESET_ICONS } from '@nebula-studio/nebula-ui';
 
 const query = ref('');

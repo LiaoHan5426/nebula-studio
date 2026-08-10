@@ -1,24 +1,17 @@
 import { appendFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
+
 import { app } from 'electron';
 
-type LogLevel = 'INFO' | 'WARN' | 'ERROR';
+type LogLevel = 'ERROR' | 'INFO' | 'WARN';
 
 export class ApplicationLogger {
-  readonly #logFilePath: string;
   readonly #configuredLogDir?: string;
+  readonly #logFilePath: string;
 
   constructor(options?: { configuredLogDir?: string }) {
     this.#configuredLogDir = options?.configuredLogDir;
     this.#logFilePath = this.#resolveWritableLogPath();
-  }
-
-  info(message: string): void {
-    this.#write('INFO', message);
-  }
-
-  warn(message: string): void {
-    this.#write('WARN', message);
   }
 
   error(message: string, error?: unknown): void {
@@ -30,22 +23,12 @@ export class ApplicationLogger {
     return this.#logFilePath;
   }
 
-  #write(level: LogLevel, message: string): void {
-    const line = `${new Date().toISOString()} [${level}] ${message}\n`;
-    if (level === 'ERROR') {
-      console.error(`[main] ${message}`);
-    } else if (level === 'WARN') {
-      console.warn(`[main] ${message}`);
-    } else {
-      console.info(`[main] ${message}`);
-    }
+  info(message: string): void {
+    this.#write('INFO', message);
+  }
 
-    try {
-      appendFileSync(this.#logFilePath, line, 'utf-8');
-    } catch (error) {
-      // Final fallback to console only; avoid crash when filesystem is unavailable.
-      console.error('[main] Failed writing log file.', error);
-    }
+  warn(message: string): void {
+    this.#write('WARN', message);
   }
 
   #resolveWritableLogPath(): string {
@@ -99,5 +82,23 @@ export class ApplicationLogger {
       return `${error.name}: ${error.message}\n${error.stack ?? ''}`.trimEnd();
     }
     return typeof error === 'string' ? error : JSON.stringify(error);
+  }
+
+  #write(level: LogLevel, message: string): void {
+    const line = `${new Date().toISOString()} [${level}] ${message}\n`;
+    if (level === 'ERROR') {
+      console.error(`[main] ${message}`);
+    } else if (level === 'WARN') {
+      console.warn(`[main] ${message}`);
+    } else {
+      console.info(`[main] ${message}`);
+    }
+
+    try {
+      appendFileSync(this.#logFilePath, line, 'utf-8');
+    } catch (error) {
+      // Final fallback to console only; avoid crash when filesystem is unavailable.
+      console.error('[main] Failed writing log file.', error);
+    }
   }
 }

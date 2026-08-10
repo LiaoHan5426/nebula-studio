@@ -1,6 +1,5 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
-
 import selectBasicDemo from '@/examples/select/SelectBasic.vue?demo';
 import selectDisabledDemo from '@/examples/select/SelectDisabled.vue?demo';
 </script>

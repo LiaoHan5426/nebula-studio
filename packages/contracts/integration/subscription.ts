@@ -10,71 +10,71 @@ export enum SubscribeType {
 
 export enum SubscriptionStatus {
   ACTIVE = 'ACTIVE',
+  ERROR = 'ERROR',
   INACTIVE = 'INACTIVE',
   SUSPENDED = 'SUSPENDED',
-  ERROR = 'ERROR',
 }
 
 export interface PollingConfig {
   intervalMs: number;
   lastModifiedColumn: string;
-  pollingQuery?: string | null;
+  pollingQuery?: null | string;
 }
 
 export interface CdcConfig {
   debeziumConnector: string;
+  debeziumEnabled?: boolean;
   kafkaTopic?: string;
   snapshotMode: string;
-  debeziumEnabled?: boolean;
   tables?: string[];
 }
 
 export interface SubscriptionConfig {
-  dataSourceId: string;
-  tableName: string;
-  subscribeType: SubscribeType;
-  pollingConfig?: PollingConfig;
   cdcConfig?: CdcConfig;
   columns: string[];
+  dataSourceId: string;
   eventTypes: string[];
+  pollingConfig?: PollingConfig;
+  subscribeType: SubscribeType;
+  tableName: string;
 }
 
 export interface TableSubscription {
-  subscriptionId: string;
-  tenantId: string;
-  dataSourceId: string;
-  tableName: string;
-  subscribeType: SubscribeType;
-  status: SubscriptionStatus;
-  createdAt: string;
   config: SubscriptionConfig;
+  createdAt: string;
+  dataSourceId: string;
+  status: SubscriptionStatus;
+  subscribeType: SubscribeType;
+  subscriptionId: string;
+  tableName: string;
+  tenantId: string;
 }
 
 export interface SubscriptionEvent {
   id: string;
-  type: string;
-  timestamp: string;
   payload: unknown;
+  timestamp: string;
+  type: string;
 }
 
 export interface CamelSubscriptionCreateRequest {
-  dataSourceId: string;
-  tableName: string;
-  subscribeType: string;
-  pollingConfig?: Record<string, unknown>;
   cdcConfig?: Record<string, unknown>;
   columns?: string[];
+  dataSourceId: string;
   eventTypes?: string[];
+  pollingConfig?: Record<string, unknown>;
+  subscribeType: string;
+  tableName: string;
 }
 
 export interface SubscriptionRequestRecord {
-  id: string;
-  subscriptionId: string;
-  requestType: string;
-  status: string;
-  reason?: string;
-  requestedBy?: string;
   approvedBy?: string;
   createdAt?: string;
+  id: string;
+  reason?: string;
+  requestedBy?: string;
+  requestType: string;
+  status: string;
+  subscriptionId: string;
   updatedAt?: string;
 }

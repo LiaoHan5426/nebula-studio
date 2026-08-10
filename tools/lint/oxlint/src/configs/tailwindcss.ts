@@ -1,9 +1,9 @@
+import type { OxlintConfig } from 'oxlint';
+
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { getPackageSync } from '@nebula-studio-internal/node';
-import type { OxlintConfig } from 'oxlint';
-
 import eslintPluginBetterTailwindcss from 'eslint-plugin-better-tailwindcss';
 import { getDefaultSelectors } from 'eslint-plugin-better-tailwindcss/defaults';
 import { SelectorKind } from 'eslint-plugin-better-tailwindcss/types';

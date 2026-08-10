@@ -1,7 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-
 import router from '@/router';
 import { clearAuthSession, setAuthSession } from '@/shared/auth/session';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/shared/composables/useShellEmbed', () => ({
   isIntegrationShellEmbed: () => false,

@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import type { GovernanceRequest } from '@/shared/types';
+
 import { onMounted, ref } from 'vue';
+
 import {
   NebulaButton,
   NebulaPane,
@@ -9,7 +12,6 @@ import {
 } from '@nebula-studio/nebula-ui';
 
 import { approvalApi } from '@/features/approval/api';
-import type { GovernanceRequest } from '@/shared/types';
 
 const requests = ref<GovernanceRequest[]>([]);
 const loading = ref(false);
@@ -89,9 +91,9 @@ onMounted(loadRequests);
   <div class="page">
     <NebulaPane title="审批管理" description="处理服务发布与治理相关的审批请求">
       <div class="page__toolbar">
-        <NebulaButton variant="outline" @click="loadRequests"
-          >刷新</NebulaButton
-        >
+        <NebulaButton variant="outline" @click="loadRequests">
+          刷新
+        </NebulaButton>
       </div>
 
       <div class="page__table-wrap">

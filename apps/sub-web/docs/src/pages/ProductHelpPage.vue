@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
+
 import { NebulaTag } from '@nebula-studio/nebula-ui';
 
 import MarkdownPage from '@/components/MarkdownPage.vue';
 import {
+  getHelpDocument,
   HELP_DOCUMENTS,
   HELP_VERSION,
-  getHelpDocument,
 } from '@/content/productHelp';
 
 const route = useRoute();
@@ -70,7 +71,7 @@ const headings = computed(() =>
         <span>上一篇</span>
         <strong>{{ previous.title }}</strong>
       </RouterLink>
-      <span v-else />
+      <span v-else></span>
       <RouterLink v-if="next" :to="next.path">
         <span>下一篇</span>
         <strong>{{ next.title }}</strong>

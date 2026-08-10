@@ -1,6 +1,8 @@
-import { defineComponent, h } from 'vue';
-import { withTooltipAttrs } from '../../utils/tooltip';
 import type { TooltipPlacement } from '../../utils/tooltip';
+
+import { defineComponent, h } from 'vue';
+
+import { withTooltipAttrs } from '../../utils/tooltip';
 
 export const NebulaPane = defineComponent({
   name: 'NebulaPane',

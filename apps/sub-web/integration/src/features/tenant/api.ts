@@ -1,22 +1,23 @@
-import { consoleRequest } from '@/shared/api/client';
-import type { ApiResponse, PageResponse, TenantContext } from '@/shared/types';
 import type { GrantScheduleType } from '@/shared/grant/schedule';
+import type { ApiResponse, PageResponse, TenantContext } from '@/shared/types';
+
+import { consoleRequest } from '@/shared/api/client';
 
 export interface InterfaceGrantRecord {
   grantId: string;
   tenantId: string;
   interfaceId: string;
   grantedBy?: string;
-  expiresAt?: string | null;
-  maxCalls?: number | null;
+  expiresAt?: null | string;
+  maxCalls?: null | number;
   callCount?: number;
-  rateLimitMax?: number | null;
-  rateLimitWindowSeconds?: number | null;
-  scheduleType?: GrantScheduleType | string | null;
-  scheduleStartTime?: string | null;
-  scheduleEndTime?: string | null;
-  scheduleTimezone?: string | null;
-  scheduleLabel?: string | null;
+  rateLimitMax?: null | number;
+  rateLimitWindowSeconds?: null | number;
+  scheduleType?: GrantScheduleType | null | string;
+  scheduleStartTime?: null | string;
+  scheduleEndTime?: null | string;
+  scheduleTimezone?: null | string;
+  scheduleLabel?: null | string;
   status?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -36,14 +37,14 @@ export interface TenantRecord {
 }
 
 export interface AuthorizeInterfaceOptions {
-  expiresAt?: string | null;
-  maxCalls?: number | null;
-  rateLimitMax?: number | null;
-  rateLimitWindowSeconds?: number | null;
-  scheduleType?: GrantScheduleType | string | null;
-  scheduleStartTime?: string | null;
-  scheduleEndTime?: string | null;
-  scheduleTimezone?: string | null;
+  expiresAt?: null | string;
+  maxCalls?: null | number;
+  rateLimitMax?: null | number;
+  rateLimitWindowSeconds?: null | number;
+  scheduleType?: GrantScheduleType | null | string;
+  scheduleStartTime?: null | string;
+  scheduleEndTime?: null | string;
+  scheduleTimezone?: null | string;
 }
 
 export const tenantApi = {

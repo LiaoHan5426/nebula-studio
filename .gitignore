@@ -29,6 +29,9 @@ node_modules
 *.sln
 *.sw?
 
+# ESLint
+.eslintcache
+
 # AI agent worktrees
 .claude/worktrees/
 .cursor

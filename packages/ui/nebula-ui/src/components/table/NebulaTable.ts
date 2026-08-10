@@ -1,9 +1,12 @@
-import { computed, defineComponent, h } from 'vue';
 import type { PropType } from 'vue';
+
+import { computed, defineComponent, h } from 'vue';
+
 import { VxeTable } from 'vxe-table';
+
 import { cn } from '../../utils/cn';
 
-type NebulaTableDragMode = 'none' | 'row' | 'column' | 'both';
+type NebulaTableDragMode = 'both' | 'column' | 'none' | 'row';
 
 const dragModeClasses: Record<NebulaTableDragMode, string> = {
   none: 'nebula-table--drag-none',
@@ -20,7 +23,7 @@ export const NebulaTable = defineComponent({
       default: () => [],
     },
     border: {
-      type: [Boolean, String] as PropType<boolean | 'full' | 'inner' | 'outer'>,
+      type: [Boolean, String] as PropType<'full' | 'inner' | 'outer' | boolean>,
       default: true,
     },
     stripe: {
@@ -32,15 +35,15 @@ export const NebulaTable = defineComponent({
       default: false,
     },
     size: {
-      type: String as PropType<'mini' | 'small' | 'medium'>,
+      type: String as PropType<'medium' | 'mini' | 'small'>,
       default: 'small',
     },
     height: {
-      type: [String, Number] as PropType<string | number>,
+      type: [String, Number] as PropType<number | string>,
       default: undefined,
     },
     maxHeight: {
-      type: [String, Number] as PropType<string | number>,
+      type: [String, Number] as PropType<number | string>,
       default: undefined,
     },
     rowConfig: {

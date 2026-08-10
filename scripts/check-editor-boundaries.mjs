@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -10,7 +10,7 @@ const failures = [];
 function visit(directory) {
   if (!existsSync(directory)) return;
   for (const entry of readdirSync(directory, { withFileTypes: true })) {
-    if (['node_modules', 'dist', 'dev-dist'].includes(entry.name)) continue;
+    if (['dev-dist', 'dist', 'node_modules'].includes(entry.name)) continue;
     const path = join(directory, entry.name);
     if (entry.isDirectory()) visit(path);
     if (entry.isFile() && entry.name === 'package.json') {

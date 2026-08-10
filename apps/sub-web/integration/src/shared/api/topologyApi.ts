@@ -1,10 +1,11 @@
-import { topologyRequest } from '@/shared/api/client';
 import type {
   ApiResponse,
   CamelTopologyData,
   TopologyError,
   TopologyTrace,
 } from '@nebula-studio/contracts/integration';
+
+import { topologyRequest } from '@/shared/api/client';
 
 export const camelTopologyApi = {
   getTopology(routeId: string): Promise<ApiResponse<CamelTopologyData>> {

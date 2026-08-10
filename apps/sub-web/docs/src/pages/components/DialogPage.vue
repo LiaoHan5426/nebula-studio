@@ -1,6 +1,5 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
-
 import dialogBasicDemo from '@/examples/dialog/DialogBasic.vue?demo';
 import dialogConfirmDemo from '@/examples/dialog/DialogConfirm.vue?demo';
 </script>

@@ -1,12 +1,14 @@
-import {
-  LAYOUT_PREFERENCES_STORAGE_KEY,
-  getLayoutHostMode,
-  isWebShellHost,
-} from '@nebula-studio/app-shell';
+import type { LayoutPreferences } from '../types/layout';
+
 import { reactive, watch } from 'vue';
 
-import { DEFAULT_LAYOUT_PREFERENCES, ACCENT_PRESETS } from '../types/layout';
-import type { LayoutPreferences } from '../types/layout';
+import {
+  getLayoutHostMode,
+  isWebShellHost,
+  LAYOUT_PREFERENCES_STORAGE_KEY,
+} from '@nebula-studio/app-shell';
+
+import { ACCENT_PRESETS, DEFAULT_LAYOUT_PREFERENCES } from '../types/layout';
 
 function resolveLayoutPreferencesStorageKey(): string {
   if (typeof window === 'undefined') return LAYOUT_PREFERENCES_STORAGE_KEY;

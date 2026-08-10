@@ -1,9 +1,8 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
-
 import paginationBasicDemo from '@/examples/pagination/PaginationBasic.vue?demo';
-import paginationSizesDemo from '@/examples/pagination/PaginationSizes.vue?demo';
 import paginationLayoutDemo from '@/examples/pagination/PaginationLayout.vue?demo';
+import paginationSizesDemo from '@/examples/pagination/PaginationSizes.vue?demo';
 </script>
 
 <template>

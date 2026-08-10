@@ -1,4 +1,5 @@
 import Mustache from 'mustache';
+
 import { getTemplateContent, registerTemplate } from '../templates';
 
 export type SQLPromptParams = {
@@ -29,7 +30,7 @@ export async function buildSQLPrompt(
   });
 }
 
-async function tryLoadFromFile(promptsDir: string): Promise<string | null> {
+async function tryLoadFromFile(promptsDir: string): Promise<null | string> {
   if (!promptsDir) {
     return null;
   }
@@ -54,11 +55,11 @@ function isElectronEnvironment(): boolean {
   const windowWithHost = window as unknown as {
     __NEBULA_PRESENTATION_HOST__?: string;
   };
-  const host = windowWithHost['__NEBULA_PRESENTATION_HOST__'];
+  const host = windowWithHost.__NEBULA_PRESENTATION_HOST__;
   return host !== 'web';
 }
 
-async function loadFromWeb(templatePath: string): Promise<string | null> {
+async function loadFromWeb(templatePath: string): Promise<null | string> {
   try {
     const url = new URL(templatePath, import.meta.url);
     const response = await fetch(url);
@@ -77,7 +78,7 @@ async function loadFromWeb(templatePath: string): Promise<string | null> {
   }
 }
 
-async function loadFromElectron(templatePath: string): Promise<string | null> {
+async function loadFromElectron(templatePath: string): Promise<null | string> {
   try {
     const windowWithElectron = window as unknown as {
       electron?: {

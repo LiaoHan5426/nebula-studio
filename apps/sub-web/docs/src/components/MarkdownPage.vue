@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+
 import { renderMarkdown } from '@/utils/markdown';
 
 const props = defineProps<{
@@ -22,5 +23,5 @@ watch(
 </script>
 
 <template>
-  <article class="markdown-body" v-html="renderedHtml" />
+  <article class="markdown-body" v-html="renderedHtml"></article>
 </template>

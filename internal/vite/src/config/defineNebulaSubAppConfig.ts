@@ -1,26 +1,29 @@
-import { fileURLToPath } from 'node:url';
 import type { Plugin } from 'vite';
-import { createNebulaRendererViteConfig } from './createNebulaRendererViteConfig.ts';
-import { createNebulaApiProxy } from '../proxy/createNebulaApiProxy.ts';
+
 import type {
   CreateNebulaApiProxyOptions,
   NebulaApiProxyPreset,
 } from '../proxy/createNebulaApiProxy.ts';
+
+import { fileURLToPath } from 'node:url';
+
 import { resolveSubAppRoot } from '../plugin/nebulaWorkspaceManifestPlugin.ts';
+import { createNebulaApiProxy } from '../proxy/createNebulaApiProxy.ts';
+import { createNebulaRendererViteConfig } from './createNebulaRendererViteConfig.ts';
 
 export interface DefineNebulaSubAppConfigOptions {
-  /** Vite config module URL (`import.meta.url` from the sub-app vite.config.ts). */
-  configModuleUrl: string | URL;
   /** Sub-app directory name under apps/sub-web (e.g. integration). */
   appId: string;
+  /** Vite config module URL (`import.meta.url` from the sub-app vite.config.ts). */
+  configModuleUrl: string | URL;
   /** Dev server port. */
   devPort?: number;
-  /** Proxy preset; set false to disable dev proxy. */
-  proxyPreset?: NebulaApiProxyPreset | false;
-  /** Options forwarded to createNebulaApiProxy when proxyPreset is set. */
-  proxyOptions?: Omit<CreateNebulaApiProxyOptions, 'preset'>;
   /** Extra Vite plugins appended to the sub-app config. */
   plugins?: Plugin[];
+  /** Options forwarded to createNebulaApiProxy when proxyPreset is set. */
+  proxyOptions?: Omit<CreateNebulaApiProxyOptions, 'preset'>;
+  /** Proxy preset; set false to disable dev proxy. */
+  proxyPreset?: false | NebulaApiProxyPreset;
 }
 
 export function defineNebulaSubAppConfig(

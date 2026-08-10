@@ -1,12 +1,15 @@
+import type { InterfaceGrantRecord, TenantRecord } from '@/features/tenant/api';
+import type { ApiInterface } from '@/shared/types';
+
+import type { AuthorizeRow, GrantForm } from '../authorize/types';
+
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { tenantApi } from '@/features/tenant/api';
-import type { InterfaceGrantRecord, TenantRecord } from '@/features/tenant/api';
 import { interfaceApi } from '@/shared/api/integration';
 import { getAuthUserId } from '@/shared/auth/session';
 import { useAuth } from '@/shared/composables/useAuth';
-import type { ApiInterface } from '@/shared/types';
 import { isApiSuccess } from '@/shared/types';
 
 import {
@@ -15,7 +18,6 @@ import {
   grantFormFromRow,
   mapAuthorizeRow,
 } from '../authorize/mappers';
-import type { AuthorizeRow, GrantForm } from '../authorize/types';
 import { DEFAULT_GRANT_FORM } from '../authorize/types';
 
 export function useServiceAuthorize() {
@@ -24,10 +26,10 @@ export function useServiceAuthorize() {
 
   const services = ref<ApiInterface[]>([]);
   const tenants = ref<TenantRecord[]>([]);
-  const selectedTenant = ref<TenantRecord | null>(null);
+  const selectedTenant = ref<null | TenantRecord>(null);
   const selectedTenantId = ref('');
   const loading = ref(false);
-  const actingId = ref<string | null>(null);
+  const actingId = ref<null | string>(null);
   const showGrantDialog = ref(false);
   const grantTarget = ref<AuthorizeRow | null>(null);
   const grantForm = ref<GrantForm>({ ...DEFAULT_GRANT_FORM });

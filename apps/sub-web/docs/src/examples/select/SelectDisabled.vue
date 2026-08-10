@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+
 import { NebulaSelect } from '@nebula-studio/nebula-ui';
 
 const selected = ref('');

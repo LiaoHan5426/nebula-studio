@@ -1,18 +1,22 @@
-import '@nebula-studio-internal/tailwind/electron';
-import '@nebula-studio/nebula-layout';
-import '@nebula-studio/nebula-ui';
-import '@nebula-studio-renderer/integration/bootstrap-runtime';
+import type { ShellEventBus } from '@nebula-studio/app-shell';
+import type { RuntimeMode } from '@nebula-studio/runtime';
+
 import {
   clearWebAuthSession,
   resolveShellEventBus,
 } from '@nebula-studio/app-shell';
-import type { ShellEventBus } from '@nebula-studio/app-shell';
+import '@nebula-studio/nebula-layout';
+import '@nebula-studio/nebula-ui';
 import { bootMicroApp, detectRuntimeMode } from '@nebula-studio/runtime';
-import type { RuntimeMode } from '@nebula-studio/runtime';
-import { install as installVxeTable } from 'vxe-table';
+
 import { install as installVxePcUi } from 'vxe-pc-ui';
+import { install as installVxeTable } from 'vxe-table';
+
 import AppComponent from './App.vue';
 import router from './router';
+
+import '@nebula-studio-internal/tailwind/electron';
+import '@nebula-studio-renderer/integration/bootstrap-runtime';
 
 /**
  * Integration 子应用统一启动入口。
@@ -32,7 +36,7 @@ export async function bootIntegration(opts?: {
   // 供鉴权/嵌入检测在 History 丢掉 ?embed= 后仍能识别 iframe 子应用
   window.__NEBULA_RUNTIME_MODE__ = mode;
   if (mode === 'platform-embed') {
-    window['__NEBULA_EMBED_SURFACE__'] = 'integration';
+    window.__NEBULA_EMBED_SURFACE__ = 'integration';
   }
 
   // MSW mock：仅 GitHub demo 部署时启用（构建时由 NEBULA_MSW_ENABLED 环境变量注入）

@@ -1,55 +1,55 @@
 export interface FlowStep {
-  id: string;
-  order: number;
-  name: string;
-  type:
-    | 'serviceTask'
-    | 'userTask'
-    | 'exclusiveGateway'
-    | 'parallelGateway'
-    | 'scriptTask';
-  interfaceId?: string;
-  inputMapping?: string;
-  outputMapping?: string;
+  condition?: string;
   errorHandling?: {
-    onError: string;
     fallbackInterfaceId?: string;
+    onError: string;
     retryCount: number;
     retryDelayMs: number;
   };
-  condition?: string;
+  id: string;
+  inputMapping?: string;
+  interfaceId?: string;
+  name: string;
+  order: number;
+  outputMapping?: string;
+  type:
+    | 'exclusiveGateway'
+    | 'parallelGateway'
+    | 'scriptTask'
+    | 'serviceTask'
+    | 'userTask';
 }
 
 export interface FlowConnection {
   sourceId: string;
   targetId: string;
-  type: 'normal' | 'success' | 'failure';
+  type: 'failure' | 'normal' | 'success';
 }
 
 export interface FlowDefinition {
+  description?: string;
   id: string;
   name: string;
-  description?: string;
   xml: string;
 }
 
 export type BpmnElementType =
-  | 'bpmn:ServiceTask'
-  | 'bpmn:UserTask'
+  | 'bpmn:EndEvent'
   | 'bpmn:ExclusiveGateway'
   | 'bpmn:ParallelGateway'
   | 'bpmn:ScriptTask'
+  | 'bpmn:SequenceFlow'
+  | 'bpmn:ServiceTask'
   | 'bpmn:StartEvent'
-  | 'bpmn:EndEvent'
-  | 'bpmn:SequenceFlow';
+  | 'bpmn:UserTask';
 
 export interface BpmnStepData {
-  interfaceId?: string;
+  condition?: string;
+  fallbackInterfaceId?: string;
   inputMapping?: string;
+  interfaceId?: string;
+  onError?: string;
   outputMapping?: string;
   retryCount?: number;
   retryDelayMs?: number;
-  condition?: string;
-  onError?: string;
-  fallbackInterfaceId?: string;
 }

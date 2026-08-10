@@ -1,7 +1,6 @@
-import { defineConfig } from 'vite-plus';
-
 import { defineConfig as fmtDefineConfig } from '@nebula-studio-internal/oxfmt';
 import { oxlintConfig } from '@nebula-studio-internal/oxlint';
+import { defineConfig } from 'vite-plus';
 
 export default defineConfig({
   staged: {

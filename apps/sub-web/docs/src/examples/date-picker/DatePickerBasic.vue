@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+
 import { NebulaDatePicker } from '@nebula-studio/nebula-ui';
 
-const dateValue = ref<string | null>(null);
+const dateValue = ref<null | string>(null);
 </script>
 
 <template>

@@ -1,12 +1,14 @@
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+
 import { describe, expect, it } from 'vitest';
+
 import {
   buildAppManifest,
-  loadWindowsConfig,
   findMonorepoRoot,
+  loadWindowsConfig,
 } from '../config/windowsManifest.ts';
 import { createNebulaApiProxy } from '../proxy/createNebulaApiProxy.ts';
 

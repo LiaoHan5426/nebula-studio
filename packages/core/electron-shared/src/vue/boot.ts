@@ -1,6 +1,8 @@
-import { createApp, h } from 'vue';
 import type { Component } from 'vue';
 import type { Router } from 'vue-router';
+
+import { createApp, h } from 'vue';
+
 import { ConfigProvider } from './ConfigProvider.ts';
 
 /**
@@ -9,10 +11,10 @@ import { ConfigProvider } from './ConfigProvider.ts';
 export interface BootSubAppOptions {
   /** Root Vue component for the sub-app. */
   App: Component;
-  /** Vue Router instance (optional — not all sub-apps use routing). */
-  router?: Router;
   /** Callback invoked before mounting — use for plugin installation, etc. */
   beforeMount?: (app: ReturnType<typeof createApp>) => void;
+  /** Vue Router instance (optional — not all sub-apps use routing). */
+  router?: Router;
 }
 
 /**

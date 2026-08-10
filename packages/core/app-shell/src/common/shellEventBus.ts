@@ -2,31 +2,31 @@
  * Shell 标准事件总线：跨子应用状态同步。
  */
 export type ShellEventMap = {
-  'tenant:changed': { tenantId: string };
   'auth:logout': { reason?: string };
-  'theme:changed': { theme: string };
   'notification:received': {
-    id?: string;
-    title?: string;
-    content?: string;
     actionLabel?: string;
-    viewId?: string;
+    content?: string;
+    id?: string;
     path?: string;
-    severity?: 'info' | 'success' | 'warning' | 'danger';
+    severity?: 'danger' | 'info' | 'success' | 'warning';
+    title?: string;
+    viewId?: string;
   };
+  'tenant:changed': { tenantId: string };
+  'theme:changed': { theme: string };
 };
 
 type Handler<T> = (payload: T) => void;
 
 export interface ShellEventBus {
-  on<K extends keyof ShellEventMap>(
-    event: K,
-    handler: Handler<ShellEventMap[K]>,
-  ): () => void;
   emit<K extends keyof ShellEventMap>(
     event: K,
     payload: ShellEventMap[K],
   ): void;
+  on<K extends keyof ShellEventMap>(
+    event: K,
+    handler: Handler<ShellEventMap[K]>,
+  ): () => void;
 }
 
 export function createEventBus(): ShellEventBus {
@@ -80,8 +80,8 @@ export function resolveShellEventBus(existing?: ShellEventBus): ShellEventBus {
 }
 
 export interface WireShellEventBusOptions {
-  onTenantChanged?: (tenantId: string) => void;
   onAuthLogout?: (reason?: string) => void;
+  onTenantChanged?: (tenantId: string) => void;
 }
 
 /** 注册标准 Shell 事件监听（tenant:changed / auth:logout）。 */

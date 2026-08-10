@@ -1,6 +1,5 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
-
 import datePickerBasicDemo from '@/examples/date-picker/DatePickerBasic.vue?demo';
 import datePickerDatetimeDemo from '@/examples/date-picker/DatePickerDatetime.vue?demo';
 import datePickerRangeDemo from '@/examples/date-picker/DatePickerRange.vue?demo';

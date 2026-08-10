@@ -1,38 +1,38 @@
 import { Parser } from 'node-sql-parser';
 
 export type ParseResult = {
-  type?: string;
-  from?: Array<{ table?: string }>;
-  columns?: Array<{ expr?: { column?: string } }>;
   [key: string]: unknown;
+  columns?: Array<{ expr?: { column?: string } }>;
+  from?: Array<{ table?: string }>;
+  type?: string;
 };
 
 export type ValidationResult = {
-  isValid: boolean;
-  error?: string;
   ast?: ParseResult;
-  tables?: string[];
   columns?: string[];
+  error?: string;
+  isValid: boolean;
+  tables?: string[];
 };
 
 export type SQLValidatorOptions = {
-  database?: string;
-  allowedTables?: string[];
   allowedColumns?: Record<string, string[]>;
+  allowedTables?: string[];
+  database?: string;
   disallowedStatements?: string[];
 };
 
 export type ParserExtension = {
-  database: string;
-  keywords?: string[];
-  functions?: string[];
   customRules?: (sql: string) => ValidationResult;
+  database: string;
+  functions?: string[];
+  keywords?: string[];
 };
 
 export class SQLValidator {
-  private parser: Parser;
-  private options: SQLValidatorOptions;
   private extensions: Map<string, ParserExtension>;
+  private options: SQLValidatorOptions;
+  private parser: Parser;
 
   constructor(options: SQLValidatorOptions = {}) {
     this.options = {
@@ -50,6 +50,23 @@ export class SQLValidator {
     };
     this.parser = new Parser();
     this.extensions = new Map();
+  }
+
+  getTableList(sql: string): string[] {
+    const result = this.validate(sql);
+    return result.tables || [];
+  }
+
+  registerExtension(extension: ParserExtension): void {
+    this.extensions.set(extension.database, extension);
+
+    if (extension.keywords) {
+      // 扩展解析器关键字
+    }
+
+    if (extension.functions) {
+      // 扩展解析器函数
+    }
   }
 
   validate(sql: string): ValidationResult {
@@ -111,16 +128,20 @@ export class SQLValidator {
     }
   }
 
-  registerExtension(extension: ParserExtension): void {
-    this.extensions.set(extension.database, extension);
+  private extractColumns(ast: ParseResult): string[] {
+    const columns: string[] = [];
 
-    if (extension.keywords) {
-      // 扩展解析器关键字
+    if (typeof ast === 'object' && ast !== null) {
+      if ('columns' in ast && Array.isArray(ast.columns)) {
+        ast.columns.forEach((col: { expr?: { column?: string } }) => {
+          if (col.expr?.column) {
+            columns.push(col.expr.column);
+          }
+        });
+      }
     }
 
-    if (extension.functions) {
-      // 扩展解析器函数
-    }
+    return columns;
   }
 
   private extractTables(ast: ParseResult): string[] {
@@ -139,31 +160,10 @@ export class SQLValidator {
     return tables;
   }
 
-  private extractColumns(ast: ParseResult): string[] {
-    const columns: string[] = [];
-
-    if (typeof ast === 'object' && ast !== null) {
-      if ('columns' in ast && Array.isArray(ast.columns)) {
-        ast.columns.forEach((col: { expr?: { column?: string } }) => {
-          if (col.expr?.column) {
-            columns.push(col.expr.column);
-          }
-        });
-      }
-    }
-
-    return columns;
-  }
-
   private getStatementType(ast: ParseResult): string {
     if (typeof ast === 'object' && ast !== null && 'type' in ast) {
       return String(ast.type).toUpperCase();
     }
     return 'UNKNOWN';
-  }
-
-  getTableList(sql: string): string[] {
-    const result = this.validate(sql);
-    return result.tables || [];
   }
 }

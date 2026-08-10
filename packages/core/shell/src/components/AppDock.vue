@@ -5,37 +5,39 @@
   展示集成应用网格、拖拽排序、添加/隐藏应用。
 -->
 <script setup lang="ts">
-import { computed, ref } from 'vue';
 import type { EmbeddedShellWindowId } from '@nebula-studio/app-shell';
+
+import { computed, ref } from 'vue';
+
 import { getShellIntegratedAppMeta } from '@nebula-studio/app-shell';
 import { NebulaButton, NebulaDrag, NebulaIcon } from '@nebula-studio/nebula-ui';
 
 const props = defineProps<{
-  /** 面板是否可见 */
-  open: boolean;
   /** 面板是否可关闭 */
   closable: boolean;
-  /** 集成网格视图 ID（v-model，可拖拽排序） */
-  gridViewIds: string[];
   /** 待启用的休眠应用 ID 列表 */
   dormantIntegrableIds: string[];
-  /** 当前用户角色，用于在启动器入口层过滤无权限应用 */
-  roles?: string[];
+  /** 集成网格视图 ID（v-model，可拖拽排序） */
+  gridViewIds: string[];
+  /** 面板是否可见 */
+  open: boolean;
   /** 最近访问顺序 */
   recentViewIds?: string[];
+  /** 当前用户角色，用于在启动器入口层过滤无权限应用 */
+  roles?: string[];
 }>();
 
 const emit = defineEmits<{
-  /** 进入子应用 */
-  'select-app': [viewId: string];
-  /** 隐藏应用 */
-  'hide-app': [viewId: string];
-  /** 启用应用 */
-  'enable-app': [viewId: string];
-  /** 拖拽排序完成 */
-  reorder: [orderedViewIds: string[]];
   /** 关闭面板 */
   close: [];
+  /** 启用应用 */
+  'enable-app': [viewId: string];
+  /** 隐藏应用 */
+  'hide-app': [viewId: string];
+  /** 拖拽排序完成 */
+  reorder: [orderedViewIds: string[]];
+  /** 进入子应用 */
+  'select-app': [viewId: string];
   /** grid v-model 更新 */
   'update:gridViewIds': [value: string[]];
 }>();
@@ -128,7 +130,7 @@ function selectApp(viewId: string): void {
       class="integration-backdrop"
       aria-label="关闭应用集成"
       @click="closable ? $emit('close') : undefined"
-    />
+    ></button>
     <div class="integration-panel">
       <div class="integration-panel-head">
         <h2 id="integration-dialog-title" class="integration-title">
@@ -221,7 +223,7 @@ function selectApp(viewId: string): void {
                     getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId)
                       .iconSvg
                   "
-                />
+                ></span>
                 <span class="integration-tile-label">{{
                   getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId)
                     .label
@@ -247,7 +249,7 @@ function selectApp(viewId: string): void {
                   getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId)
                     .iconSvg
                 "
-              />
+              ></span>
               <span class="integration-tile-label">
                 {{
                   getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId)
@@ -301,7 +303,7 @@ function selectApp(viewId: string): void {
                     getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId)
                       .iconSvg
                   "
-                />
+                ></span>
                 <span>{{
                   getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId)
                     .label

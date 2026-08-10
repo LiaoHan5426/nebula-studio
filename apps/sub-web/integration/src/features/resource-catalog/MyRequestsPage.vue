@@ -1,6 +1,11 @@
 <script setup lang="ts">
+import type { SubscriptionRequestRecord } from '@/features/subscription/api';
+
+import type { AccessRequestStatus } from './types';
+
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+
 import {
   NebulaButton,
   NebulaEmptyState,
@@ -10,12 +15,10 @@ import {
 } from '@nebula-studio/nebula-ui';
 
 import { subscriptionRequestApi } from '@/features/subscription/api';
-import type { SubscriptionRequestRecord } from '@/features/subscription/api';
 import { getAuthUserId } from '@/shared/auth/session';
 import { isApiSuccess } from '@/shared/types';
 
 import { normalizeRequestStatus } from './mappers';
-import type { AccessRequestStatus } from './types';
 
 const router = useRouter();
 const requests = ref<SubscriptionRequestRecord[]>([]);
@@ -70,9 +73,9 @@ function resourceName(request: SubscriptionRequestRecord): string {
 }
 
 function statusCopy(value: AccessRequestStatus): {
-  label: string;
-  description: string;
   action: string;
+  description: string;
+  label: string;
 } {
   return {
     DRAFT: {
@@ -165,7 +168,7 @@ onMounted(load);
     </div>
 
     <div v-if="loading" class="request-list">
-      <div v-for="index in 3" :key="index" class="request-skeleton" />
+      <div v-for="index in 3" :key="index" class="request-skeleton"></div>
     </div>
     <NebulaEmptyState
       v-else-if="error"
@@ -190,7 +193,7 @@ onMounted(load);
         <div
           class="timeline-dot"
           :data-status="normalizeRequestStatus(request.status)"
-        />
+        ></div>
         <div class="request-content">
           <div class="request-heading">
             <div>

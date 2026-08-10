@@ -5,9 +5,9 @@ import { applyEdgePathOffsets } from '../applyEdgePathOffsets';
 describe('applyEdgePathOffsets', () => {
   it('assigns opposite offsets to fork siblings', () => {
     const positions = new Map([
+      ['bottom', { x: 200, y: 140 }],
       ['start', { x: 0, y: 100 }],
       ['top', { x: 200, y: 60 }],
-      ['bottom', { x: 200, y: 140 }],
     ]);
     const edges = applyEdgePathOffsets(
       [

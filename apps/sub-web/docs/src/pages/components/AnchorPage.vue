@@ -1,6 +1,5 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
-
 import anchorBasicDemo from '@/examples/anchor/AnchorBasic.vue?demo';
 </script>
 

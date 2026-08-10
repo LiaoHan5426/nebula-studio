@@ -1,10 +1,10 @@
 <script setup lang="ts">
 withDefaults(
   defineProps<{
-    title: string;
     description?: string;
     eyebrow?: string;
     helpHref?: string;
+    title: string;
   }>(),
   {
     description: '',
@@ -26,7 +26,7 @@ withDefaults(
       </p>
     </div>
     <div v-if="$slots.actions || helpHref" class="nebula-page-header__actions">
-      <slot name="actions" />
+      <slot name="actions"></slot>
       <a
         v-if="helpHref"
         class="nebula-page-header__help"

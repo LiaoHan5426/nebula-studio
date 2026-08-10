@@ -2,9 +2,9 @@
 import type { TenantRecord } from '@/features/tenant/api';
 
 defineProps<{
-  tenants: TenantRecord[];
-  selectedTenantId: string;
   allowedSummary: string;
+  selectedTenantId: string;
+  tenants: TenantRecord[];
 }>();
 
 const emit = defineEmits<{

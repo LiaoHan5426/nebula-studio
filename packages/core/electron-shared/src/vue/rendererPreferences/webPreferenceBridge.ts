@@ -12,23 +12,23 @@ export interface WebPreferenceBridge {
 }
 
 export interface WebPreferenceChannels {
+  readonly changed: string;
   readonly get: string;
   readonly set: string;
-  readonly changed: string;
 }
 
 export interface CreateWebPreferenceBridgeOptions<T> {
   channels: WebPreferenceChannels;
-  /** Payload field broadcast on set, e.g. `theme` or `locale`. */
-  field: string;
-  read: () => T;
-  write: (value: T) => void;
-  normalizeFromInvokeArgs: (args: unknown[]) => T;
   /**
    * When set (typically the same key as `localStorage`), listen for `storage`
    * events from other frames and re-broadcast `channels.changed` to this document.
    */
   crossDocumentStorageKey?: string;
+  /** Payload field broadcast on set, e.g. `theme` or `locale`. */
+  field: string;
+  normalizeFromInvokeArgs: (args: unknown[]) => T;
+  read: () => T;
+  write: (value: T) => void;
 }
 
 /**

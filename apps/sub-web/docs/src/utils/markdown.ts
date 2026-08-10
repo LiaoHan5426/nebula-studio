@@ -4,6 +4,7 @@
  * 使用 markdown-it 解析 Markdown，Shiki 进行代码高亮。
  */
 import MarkdownIt from 'markdown-it';
+
 import { getHighlighter } from './highlighter';
 
 /**
@@ -55,8 +56,8 @@ export async function createMarkdownRendererWithHighlight(): Promise<MarkdownIt>
  * @returns frontmatter 对象与去除 frontmatter 后的正文内容
  */
 export function parseFrontmatter(raw: string): {
-  data: Record<string, unknown>;
   content: string;
+  data: Record<string, unknown>;
 } {
   const fmRegex = /^---\r?\n([\s\S]*?)\r?\n---\r?\n/;
   const match = raw.match(fmRegex);

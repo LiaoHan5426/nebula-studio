@@ -140,9 +140,13 @@ export default {
       },
     ],
     'scss/operator-no-newline-after': null,
+    // Allow underscore for third-party tokens (e.g. hljs-built_in)
     'selector-class-pattern':
-      '^-?(?:(?:o|c|u|t|s|is|has|_|js|qa)-)?[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*(?:__[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*)?(?:--[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*)?(?:[.+])?$',
+      '^-?(?:(?:o|c|u|t|s|is|has|_|js|qa)-)?[a-zA-Z0-9_]+(?:-[a-zA-Z0-9_]+)*(?:__[a-zA-Z0-9_]+(?:-[a-zA-Z0-9_]+)*)?(?:--[a-zA-Z0-9_]+(?:-[a-zA-Z0-9_]+)*)?(?:[.+])?$',
 
     'selector-not-notation': null,
+    // Nested @apply / utility blocks in Vue SFCs; stricter in newer Stylelint
+    'no-invalid-position-declaration': null,
+    'declaration-property-value-keyword-no-deprecated': null,
   },
 };

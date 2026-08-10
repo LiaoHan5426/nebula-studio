@@ -5,37 +5,41 @@
   管理子应用 iframe 的渲染、加载过渡、空状态展示。
 -->
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import type {
   EmbeddedShellWindowId,
   ShellEmbedPageMetaPayload,
 } from '@nebula-studio/app-shell';
+
+import type { ShellRecoveryKind } from './ShellRecoveryState.vue';
+
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+
 import {
   getShellIntegratedAppMeta,
   isShellEmbedPageMetaPayload,
 } from '@nebula-studio/app-shell';
+
 import ShellRecoveryState from './ShellRecoveryState.vue';
-import type { ShellRecoveryKind } from './ShellRecoveryState.vue';
 
 const props = defineProps<{
-  usesIframeEmbed: boolean;
+  activeViewId: null | string;
   availableViewIds: string[];
-  embedSrc: Record<EmbeddedShellWindowId, string>;
-  loadedEmbedIds: Set<string>;
+  embedLoadingViewId: null | string;
   embedReadyViewIds: Set<string>;
-  embedLoadingViewId: string | null;
-  activeViewId: string | null;
+  embedSrc: Record<EmbeddedShellWindowId, string>;
   integrationOpen: boolean;
+  loadedEmbedIds: Set<string>;
+  recoveryKind?: null | ShellRecoveryKind;
   resolveViewLabel: (viewId: string) => string;
-  recoveryKind?: ShellRecoveryKind | null;
+  usesIframeEmbed: boolean;
 }>();
 
 const emit = defineEmits<{
   'embed-load': [viewId: string];
+  login: [];
   'page-meta': [viewId: string, payload: ShellEmbedPageMetaPayload];
   retry: [viewId: string];
   workspace: [];
-  login: [];
 }>();
 
 const online = ref(typeof navigator === 'undefined' || navigator.onLine);
@@ -106,7 +110,7 @@ const transitionIconSvg = computed(() => {
   return getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId).iconSvg;
 });
 
-const prevActiveViewId = ref<string | null>(null);
+const prevActiveViewId = ref<null | string>(null);
 const isSwitching = ref(false);
 const transitionReady = ref(true);
 const enterPhase = ref(false);
@@ -186,7 +190,7 @@ watch(
     <div
       class="shell-embed-backdrop"
       :class="{ 'is-visible': isSwitching && !transitionReady }"
-    />
+    ></div>
 
     <div v-if="usesIframeEmbed && activeViewId" class="shell-embed">
       <template v-for="viewId in availableViewIds" :key="viewId">
@@ -200,7 +204,7 @@ watch(
           :title="`Nebula Studio — ${viewId}`"
           @load="onFrameLoad(viewId)"
           @error="onFrameError(viewId)"
-        />
+        ></iframe>
       </template>
     </div>
 
@@ -217,8 +221,8 @@ watch(
             v-if="transitionIconSvg"
             class="shell-embed-transition-icon"
             v-html="transitionIconSvg"
-          />
-          <div class="shell-embed-transition-spinner" aria-hidden="true" />
+          ></div>
+          <div class="shell-embed-transition-spinner" aria-hidden="true"></div>
           <p class="shell-embed-transition-title">
             正在打开 {{ transitionLabel }}
           </p>
@@ -244,7 +248,7 @@ watch(
     </div>
 
     <div v-if="!activeViewId && !integrationOpen" class="workspace-surface">
-      <slot name="workspace" />
+      <slot name="workspace"></slot>
     </div>
   </div>
 </template>

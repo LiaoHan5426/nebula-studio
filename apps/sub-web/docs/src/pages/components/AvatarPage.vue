@@ -1,9 +1,8 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
-
 import avatarBasicDemo from '@/examples/avatar/AvatarBasic.vue?demo';
-import avatarSizeDemo from '@/examples/avatar/AvatarSize.vue?demo';
 import avatarOnlineDemo from '@/examples/avatar/AvatarOnline.vue?demo';
+import avatarSizeDemo from '@/examples/avatar/AvatarSize.vue?demo';
 </script>
 
 <template>

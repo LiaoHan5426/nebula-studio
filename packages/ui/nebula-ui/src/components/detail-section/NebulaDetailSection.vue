@@ -1,9 +1,9 @@
 <script setup lang="ts">
 withDefaults(
   defineProps<{
-    title: string;
     description?: string;
     divided?: boolean;
+    title: string;
   }>(),
   {
     description: '',
@@ -20,11 +20,11 @@ withDefaults(
         <p v-if="description">{{ description }}</p>
       </div>
       <div v-if="$slots.actions" class="nebula-detail-section__actions">
-        <slot name="actions" />
+        <slot name="actions"></slot>
       </div>
     </header>
     <div class="nebula-detail-section__content">
-      <slot />
+      <slot></slot>
     </div>
   </section>
 </template>

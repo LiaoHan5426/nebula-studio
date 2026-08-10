@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import type { PluginRecord } from '@/features/plugin/api';
+
 import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
+
 import {
   NebulaButton,
   NebulaInput,
@@ -11,7 +14,6 @@ import {
 } from '@nebula-studio/nebula-ui';
 
 import { pluginApi } from '@/features/plugin/api';
-import type { PluginRecord } from '@/features/plugin/api';
 import PluginConnectorSection from '@/features/plugins/PluginConnectorSection.vue';
 import { useAuth } from '@/shared/composables/useAuth';
 import { ConnectorType, isApiSuccess } from '@/shared/types';
@@ -23,7 +25,7 @@ const defaultPluginInfo = {
   desc: '适配需要连接的数据库，如 PostgreSQL、MySQL 等',
 };
 
-const pluginTypeMap: Record<string, { label: string; desc: string }> = {
+const pluginTypeMap: Record<string, { desc: string; label: string }> = {
   database: {
     label: '数据库适配插件',
     desc: '适配需要连接的数据库，如 PostgreSQL、MySQL 等',
@@ -158,7 +160,7 @@ function resolveDisplayName(item: PluginRecord, connectorId: string): string {
 
 function mapPluginRow(item: PluginRecord): PluginRow {
   const status = String(item.status ?? 'UNKNOWN');
-  const metadata = item.metadata as { connectorId?: string } | undefined;
+  const metadata = item.metadata as undefined | { connectorId?: string };
   const connectorId = String(item.connectorId ?? metadata?.connectorId ?? '-');
   return {
     id: item.pluginId,
@@ -175,7 +177,7 @@ function mapPluginRow(item: PluginRecord): PluginRow {
     transitioning: Boolean(item.transitioning),
     isActive: status === 'ACTIVE',
     isPendingReview: status === 'PENDING_REVIEW',
-    canRequestActivation: ['INSTALLED', 'TESTED', 'INACTIVE'].includes(status),
+    canRequestActivation: ['INACTIVE', 'INSTALLED', 'TESTED'].includes(status),
   };
 }
 
@@ -416,9 +418,9 @@ const pluginDescription = computed(() => {
           <NebulaButton variant="outline" @click="showUploadDialog = false">
             取消
           </NebulaButton>
-          <NebulaButton variant="primary" @click="handleUpload"
-            >上传</NebulaButton
-          >
+          <NebulaButton variant="primary" @click="handleUpload">
+            上传
+          </NebulaButton>
         </div>
       </NebulaPane>
     </div>

@@ -1,30 +1,30 @@
-export type NebulaThemeMode = 'light' | 'dark';
+export type NebulaThemeMode = 'dark' | 'light';
 
-export type ThemePreferenceMode = NebulaThemeMode | 'system';
+export type ThemePreferenceMode = 'system' | NebulaThemeMode;
 
 export type ExperienceSurface =
+  | 'admin'
   | 'auth'
-  | 'shell'
+  | 'docs'
   | 'portal'
   | 'provider'
-  | 'admin'
   | 'settings'
-  | 'docs';
+  | 'shell';
 
 export type ExperienceDensity = 'comfortable' | 'compact';
 
-export type ContentWidth = 'reading' | 'standard' | 'wide' | 'full';
+export type ContentWidth = 'full' | 'reading' | 'standard' | 'wide';
 
-export type ExperiencePageMeta = {
-  title: string;
-  description?: string;
-  surface: ExperienceSurface;
+export type ExperiencePageMeta = Record<PropertyKey, unknown> & {
   density: ExperienceDensity;
+  description?: string;
   helpKey: string;
-  roles?: readonly string[];
   keywords?: readonly string[];
   returnTo?: string;
-} & Record<PropertyKey, unknown>;
+  roles?: readonly string[];
+  surface: ExperienceSurface;
+  title: string;
+};
 
 export function defineExperiencePageMeta(
   meta: ExperiencePageMeta,
@@ -39,28 +39,28 @@ export interface SubNavItem {
 }
 
 export interface NavChild {
-  to: string;
   label: string;
+  to: string;
 }
 
 export interface NavItem {
+  children?: NavChild[];
+  icon?: string;
   key: string;
   label: string;
-  icon?: string;
   to?: string;
-  children?: NavChild[];
 }
 
 export interface LayoutPreferences {
-  version?: number;
-  collapsed: boolean;
-  pinned: boolean;
-  expandOnHover: boolean;
-  showTagsBar: boolean;
-  showBreadcrumb: boolean;
-  contentCompact: boolean;
-  themeMode: ThemePreferenceMode;
   accentPreset: string;
+  collapsed: boolean;
+  contentCompact: boolean;
+  expandOnHover: boolean;
+  pinned: boolean;
+  showBreadcrumb: boolean;
+  showTagsBar: boolean;
+  themeMode: ThemePreferenceMode;
+  version?: number;
 }
 
 export const DEFAULT_LAYOUT_PREFERENCES: LayoutPreferences = {
@@ -76,17 +76,17 @@ export const DEFAULT_LAYOUT_PREFERENCES: LayoutPreferences = {
 };
 
 export interface BreadcrumbSegment {
+  icon?: 'file' | 'folder' | 'home' | 'integration' | 'settings';
   key?: string;
   label: string;
-  icon?: 'home' | 'folder' | 'file' | 'settings' | 'integration';
   to?: string;
 }
 
 export interface ShellTagItem {
+  closable?: boolean;
+  icon?: 'home';
   key: string;
   label: string;
-  icon?: 'home';
-  closable?: boolean;
 }
 
 export interface AccentPreset {

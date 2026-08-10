@@ -3,20 +3,20 @@
  */
 
 export interface ClusterNode {
-  nodeId: string;
-  nodeName?: string;
   address?: string;
-  role?: string;
-  status?: string;
   lastHeartbeat?: string;
-  registeredAt?: string;
   loadFactor?: number;
   metadata?: Record<string, string>;
+  nodeId: string;
+  nodeName?: string;
+  registeredAt?: string;
+  role?: string;
+  status?: string;
 }
 
 export interface ClusterNodeRegisterRequest {
+  address?: string;
   nodeId: string;
   nodeName?: string;
-  address?: string;
   role?: string;
 }

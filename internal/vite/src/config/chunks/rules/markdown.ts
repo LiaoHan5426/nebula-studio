@@ -1,4 +1,5 @@
 import type { NebulaManualChunkRule } from '../types.ts';
+
 import {
   nebulaChunkIsFromNodeModulePackage,
   nebulaChunkNormalizeId,

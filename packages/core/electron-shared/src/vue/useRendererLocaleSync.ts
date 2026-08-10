@@ -1,4 +1,5 @@
 import { onBeforeUnmount, onMounted, ref } from 'vue';
+
 import { IPC_CHANNELS } from './rendererPreferences/ipcChannels.ts';
 
 interface LocaleChangePayload {
@@ -37,10 +38,10 @@ function normalizeLocale(raw: unknown, fallback: string): string {
 }
 
 export interface UseRendererLocaleSyncOptions {
-  /** When true, keep `document.documentElement.lang` in sync. */
-  manageDom?: boolean;
   /** Used when IPC returns an empty value (should match main-process default). */
   fallbackLocale?: string;
+  /** When true, keep `document.documentElement.lang` in sync. */
+  manageDom?: boolean;
 }
 
 export function useRendererLocaleSync(

@@ -1,21 +1,19 @@
 {
   "name": "@nebula-studio/electron",
   "version": "0.0.0",
-  "private": true,
   "description": "Nebula Studio Electron desktop host.",
-  "author": "Liao Han <liaohan5426@gmail.com>",
-  "license": "UNLICENSED",
+  "private": true,
   "homepage": "https://github.com/LiaoHan5426/nebula-studio#readme",
+  "bugs": {
+    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LiaoHan5426/nebula-studio.git",
     "directory": "apps/electron"
   },
-  "bugs": {
-    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
-  },
-  "main": "./out/main/index.js",
-  "packageManager": "pnpm",
+  "license": "UNLICENSED",
+  "author": "Liao Han <liaohan5426@gmail.com>",
   "scripts": {
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
     "typecheck:web": "vue-tsc --noEmit -p tsconfig.renderer.json --composite false",
@@ -30,6 +28,7 @@
     "pack:mac": "vp run build && vp exec electron-builder --mac",
     "pack:linux": "vp run build && vp exec electron-builder --linux"
   },
+  "main": "./out/main/index.js",
   "dependencies": {
     "@electron-toolkit/preload": "catalog:electron",
     "@electron-toolkit/utils": "catalog:electron",
@@ -54,5 +53,6 @@
     "vite": "catalog:vite",
     "vue": "catalog:vue",
     "vue-tsc": "catalog:vue"
-  }
+  },
+  "packageManager": "pnpm"
 }

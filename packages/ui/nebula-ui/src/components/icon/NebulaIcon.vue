@@ -1,22 +1,25 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 import type { Component } from 'vue';
+
+import { computed } from 'vue';
+
 import { Icon } from '@iconify/vue';
+
 import { cn } from '../../utils/cn';
-import { resolveIcon, isHttpUrl, isIconifyName } from './preset';
+import { isHttpUrl, isIconifyName, resolveIcon } from './preset';
 
 const props = withDefaults(
   defineProps<{
-    /** 图标来源：Vue 组件 | Iconify 名称 | HTTP URL | 内置简写名 */
-    icon?: Component | string;
-    /** 尺寸（Tailwind class 或 px 数值） */
-    size?: string | number;
+    /** 自定义 class */
+    class?: string;
     /** 颜色（CSS 值或 Tailwind 语义色） */
     color?: string;
     /** 无图标时是否显示默认占位 */
     fallback?: boolean;
-    /** 自定义 class */
-    class?: string;
+    /** 图标来源：Vue 组件 | Iconify 名称 | HTTP URL | 内置简写名 */
+    icon?: Component | string;
+    /** 尺寸（Tailwind class 或 px 数值） */
+    size?: number | string;
   }>(),
   {
     icon: '',
@@ -78,7 +81,7 @@ const resolved = computed(() => {
     :src="resolved.value"
     :class="cn('inline-block shrink-0 object-contain', props.class)"
     :style="{ width: sizeStyle, height: sizeStyle }"
-    :alt="''"
+    alt=""
     aria-hidden="true"
   />
 
@@ -97,5 +100,5 @@ const resolved = computed(() => {
     :class="cn('inline-block shrink-0 rounded bg-muted', props.class)"
     :style="{ width: sizeStyle, height: sizeStyle }"
     aria-hidden="true"
-  />
+  ></span>
 </template>

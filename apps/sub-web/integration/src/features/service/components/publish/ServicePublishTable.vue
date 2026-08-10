@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { ApiInterface } from '@/shared/types';
+
 import {
   NebulaButton,
   NebulaTable,
@@ -6,7 +8,6 @@ import {
   NebulaTag,
 } from '@nebula-studio/nebula-ui';
 
-import type { ApiInterface } from '@/shared/types';
 import { InterfaceType } from '@/shared/types';
 
 import {
@@ -22,18 +23,18 @@ import {
 } from '../../publish/mappers';
 
 defineProps<{
-  services: ApiInterface[];
-  loading: boolean;
   isPlatformAdmin: boolean;
+  loading: boolean;
+  services: ApiInterface[];
 }>();
 
 const emit = defineEmits<{
   approve: [item: ApiInterface];
-  reject: [item: ApiInterface];
-  publish: [item: ApiInterface];
-  offline: [item: ApiInterface];
   delete: [item: ApiInterface];
   editComposite: [item: ApiInterface];
+  offline: [item: ApiInterface];
+  publish: [item: ApiInterface];
+  reject: [item: ApiInterface];
 }>();
 </script>
 

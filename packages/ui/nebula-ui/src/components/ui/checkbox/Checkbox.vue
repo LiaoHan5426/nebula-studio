@@ -1,7 +1,10 @@
 <script lang="ts" setup>
-import type { HTMLAttributes } from 'vue';
-import { CheckboxRoot, CheckboxIndicator, useForwardPropsEmits } from 'reka-ui';
 import type { CheckboxRootEmits, CheckboxRootProps } from 'reka-ui';
+
+import type { HTMLAttributes } from 'vue';
+
+import { CheckboxIndicator, CheckboxRoot, useForwardPropsEmits } from 'reka-ui';
+
 import { cn } from '../../../utils/cn';
 
 interface CheckboxProps extends CheckboxRootProps {

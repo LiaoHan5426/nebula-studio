@@ -1,20 +1,22 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
+
 import BpmnModeler from 'bpmn-js/lib/Modeler';
-import 'bpmn-js/dist/assets/diagram-js.css';
-import 'bpmn-js/dist/assets/bpmn-js.css';
-import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
-import '../styles/bpmn-theme.css';
 
 import {
   INTEGRATION_STARTER_BPMN,
   isBlankBpmn,
 } from '../constants/integrationStarterBpmn';
 
+import 'bpmn-js/dist/assets/diagram-js.css';
+import 'bpmn-js/dist/assets/bpmn-js.css';
+import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
+import '../styles/bpmn-theme.css';
+
 const props = withDefaults(
   defineProps<{
-    xml?: string;
     mode?: 'default' | 'integration';
+    xml?: string;
   }>(),
   {
     mode: 'default',
@@ -144,9 +146,7 @@ defineExpose({
     :class="{ 'bpmn-editor-wrapper--integration': mode === 'integration' }"
   >
     <div class="toolbar">
-      <span v-if="mode === 'integration'" class="toolbar-label"
-        >集成流程设计</span
-      >
+      <span v-if="mode === 'integration'" class="toolbar-label">集成流程设计</span>
       <button
         class="toolbar-btn"
         type="button"

@@ -1,19 +1,19 @@
 {
   "name": "@nebula-studio-internal/stylelint",
   "version": "0.0.0",
-  "private": true,
   "description": "Shared Stylelint configuration for Nebula Studio.",
-  "author": "Liao Han <liaohan5426@gmail.com>",
-  "license": "UNLICENSED",
+  "private": true,
   "homepage": "https://github.com/LiaoHan5426/nebula-studio#readme",
+  "bugs": {
+    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LiaoHan5426/nebula-studio.git",
     "directory": "tools/lint/stylelint"
   },
-  "bugs": {
-    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
-  },
+  "license": "UNLICENSED",
+  "author": "Liao Han <liaohan5426@gmail.com>",
   "type": "module",
   "files": [
     "dist"
@@ -28,18 +28,15 @@
   },
   "dependencies": {
     "@stylistic/stylelint-plugin": "catalog:lint",
-    "stylelint-config-recess-order": "catalog:lint",
-    "stylelint-scss": "catalog:lint"
-  },
-  "devDependencies": {
     "postcss": "catalog:style",
     "postcss-html": "catalog:style",
     "postcss-scss": "catalog:style",
     "stylelint": "catalog:lint",
-    "stylelint-config-recommended": "catalog:lint",
+    "stylelint-config-recess-order": "catalog:lint",
     "stylelint-config-recommended-scss": "catalog:lint",
     "stylelint-config-recommended-vue": "catalog:lint",
     "stylelint-config-standard": "catalog:lint",
-    "stylelint-order": "catalog:lint"
+    "stylelint-order": "catalog:lint",
+    "stylelint-scss": "catalog:lint"
   }
 }

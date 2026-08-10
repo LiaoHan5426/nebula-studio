@@ -1,6 +1,8 @@
-import { defineComponent, ref, onMounted, onBeforeUnmount } from 'vue';
-import { globalAuthProvider } from '../index.ts';
 import type { AuthSession } from '../index.ts';
+
+import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue';
+
+import { globalAuthProvider } from '../index.ts';
 
 /**
  * AuthProvider Vue component.

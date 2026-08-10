@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue';
+import type { ConfigItem } from '@/shared/api/configApi';
+
+import { computed, onMounted, ref } from 'vue';
+
 import {
   NebulaButton,
   NebulaDialog,
@@ -10,9 +13,8 @@ import {
 } from '@nebula-studio/nebula-ui';
 
 import { configApi } from '@/shared/api/configApi';
-import type { ConfigItem } from '@/shared/api/configApi';
-import { isApiSuccess } from '@/shared/types';
 import { useConfirm } from '@/shared/composables/useConfirm';
+import { isApiSuccess } from '@/shared/types';
 
 const configs = ref<ConfigItem[]>([]);
 const loading = ref(false);
@@ -173,9 +175,9 @@ function displayValue(config: ConfigItem): string {
           class="config-page__filter"
           @change="loadConfigs"
         />
-        <NebulaButton variant="secondary" @click="loadConfigs"
-          >刷新</NebulaButton
-        >
+        <NebulaButton variant="secondary" @click="loadConfigs">
+          刷新
+        </NebulaButton>
       </div>
 
       <div v-if="loading" class="config-page__empty">加载中…</div>
@@ -246,7 +248,7 @@ function displayValue(config: ConfigItem): string {
             v-model="form.value"
             rows="4"
             placeholder="配置值，支持 JSON"
-          />
+          ></textarea>
           <small v-if="activeSchema?.description">
             {{ activeSchema.description }}
           </small>

@@ -1,6 +1,10 @@
 <script setup lang="ts">
+import type { SubscriptionRequestRecord } from '@/features/subscription/api';
+import type { TableSubscription } from '@/shared/types';
+
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+
 import {
   NebulaButton,
   NebulaEmptyState,
@@ -12,10 +16,8 @@ import {
   subscriptionApi,
   subscriptionRequestApi,
 } from '@/features/subscription/api';
-import type { SubscriptionRequestRecord } from '@/features/subscription/api';
 import { getAuthUserId } from '@/shared/auth/session';
 import { useTenant } from '@/shared/composables/useTenant';
-import type { TableSubscription } from '@/shared/types';
 import { isApiSuccess } from '@/shared/types';
 
 import { normalizeRequestStatus } from './mappers';
@@ -114,9 +116,9 @@ onMounted(load);
         <NebulaButton variant="outline" @click="router.push('/my-requests')">
           我的申请
         </NebulaButton>
-        <NebulaButton @click="router.push('/catalog')"
-          >发现更多资源</NebulaButton
-        >
+        <NebulaButton @click="router.push('/catalog')">
+          发现更多资源
+        </NebulaButton>
       </template>
     </NebulaPageHeader>
 
@@ -142,7 +144,7 @@ onMounted(load);
     </div>
 
     <div v-if="loading" class="owned-grid">
-      <div v-for="index in 4" :key="index" class="owned-skeleton" />
+      <div v-for="index in 4" :key="index" class="owned-skeleton"></div>
     </div>
     <NebulaEmptyState
       v-else-if="error"
@@ -157,9 +159,9 @@ onMounted(load);
         title="还没有已授权资源"
         description="申请通过后，接入地址、鉴权方式和凭证状态会集中显示在这里。"
       >
-        <NebulaButton @click="router.push('/catalog')"
-          >浏览资源目录</NebulaButton
-        >
+        <NebulaButton @click="router.push('/catalog')">
+          浏览资源目录
+        </NebulaButton>
       </NebulaEmptyState>
       <section v-else class="owned-grid">
         <article

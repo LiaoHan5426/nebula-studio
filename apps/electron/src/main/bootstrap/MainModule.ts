@@ -1,6 +1,7 @@
 import type { App } from 'electron';
-import type { ConfigManager } from '../modules/ConfigManager';
+
 import type { ApplicationLogger } from '../modules/ApplicationLogger';
+import type { ConfigManager } from '../modules/ConfigManager';
 import type { RuntimePluginManager } from '../modules/RuntimePluginManager';
 import type { WindowManager } from '../modules/window/WindowManager';
 

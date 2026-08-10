@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import type { PermissionNode } from '@/shared/api/system';
+
 import { computed, onMounted, ref } from 'vue';
+
 import {
   NebulaButton,
   NebulaDialog,
@@ -12,25 +15,24 @@ import {
 } from '@nebula-studio/nebula-ui';
 
 import { permissionsApi } from '@/shared/api/system';
-import type { PermissionNode } from '@/shared/api/system';
-import { isApiSuccess } from '@/shared/types';
-import { useConfirm } from '@/shared/composables/useConfirm';
 import EntityListPage from '@/shared/components/EntityListPage.vue';
+import { useConfirm } from '@/shared/composables/useConfirm';
 import {
-  PERM_TYPE_OPTIONS,
   isButtonPermType,
+  PERM_TYPE_OPTIONS,
   permTypeLabel,
 } from '@/shared/permissionType';
+import { isApiSuccess } from '@/shared/types';
 
 const tree = ref<PermissionNode[]>([]);
 const loading = ref(false);
 const showDialog = ref(false);
 const saving = ref(false);
-const editingId = ref<string | null>(null);
+const editingId = ref<null | string>(null);
 const parentIdLocked = ref(false);
 const parentCodeById = ref(new Map<string, string>());
-const statusUpdatingId = ref<string | null>(null);
-const viewMode = ref<'tree' | 'matrix'>('tree');
+const statusUpdatingId = ref<null | string>(null);
+const viewMode = ref<'matrix' | 'tree'>('tree');
 const keyword = ref('');
 const selected = ref<PermissionNode>();
 const detailOpen = ref(false);
@@ -226,9 +228,9 @@ function parentCode(row: PermissionNode): string {
     :detail-subtitle="selected?.permCode"
   >
     <template #actions>
-      <NebulaButton variant="primary" @click="openCreate()"
-        >新建权限</NebulaButton
-      >
+      <NebulaButton variant="primary" @click="openCreate()">
+        新建权限
+      </NebulaButton>
       <NebulaButton variant="secondary" @click="loadTree">
         {{ loading ? '加载中…' : '刷新' }}
       </NebulaButton>
@@ -353,12 +355,12 @@ function parentCode(row: PermissionNode): string {
         <NebulaTableColumn title="操作" width="220" fixed="right">
           <template #default="{ row }">
             <div class="row-actions">
-              <NebulaButton variant="ghost" @click="openDetail(row)"
-                >详情</NebulaButton
-              >
-              <NebulaButton variant="ghost" @click="openEdit(row)"
-                >编辑</NebulaButton
-              >
+              <NebulaButton variant="ghost" @click="openDetail(row)">
+                详情
+              </NebulaButton>
+              <NebulaButton variant="ghost" @click="openEdit(row)">
+                编辑
+              </NebulaButton>
               <NebulaButton variant="ghost" @click="openCreate(row.id)">
                 新增下级
               </NebulaButton>

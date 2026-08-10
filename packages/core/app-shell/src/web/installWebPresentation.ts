@@ -1,9 +1,12 @@
+import type { PreferenceIpcListener } from './webShellEmbeddedState';
+
+import { loginWithBackendAuth } from '@nebula-studio/auth-provider/backend';
+
 import {
-  IPC_CHANNELS,
   createWebPreferenceBridge,
+  IPC_CHANNELS,
   mergeWebPreferenceBridges,
 } from '@nebula-studio-electron/electron-bridge/vue';
-import { loginWithBackendAuth } from '@nebula-studio/auth-provider/backend';
 
 import {
   markWebPresentationHost,
@@ -15,33 +18,19 @@ import {
   redirectShellToWebLogin,
   writeWebAuthSession,
 } from './webAuth';
-
 import { createWebNotifyApi } from './webNotify';
 import { createWebShellEmbeddedStateHandlers } from './webShellEmbeddedState';
-import type { PreferenceIpcListener } from './webShellEmbeddedState';
 
-type ThemeMode = 'light' | 'dark';
+type ThemeMode = 'dark' | 'light';
 
 const DEFAULT_WEB_THEME_KEY = 'nebula-studio-web-theme';
 const DEFAULT_WEB_LOCALE_KEY = 'nebula-studio-web-locale';
 
 export interface InstallWebPresentationOptions {
-  scope?: string;
-  /**
-   * 为壳层页面注册 `shell:*` IPC stub（Web 多页宿主与 Electron 行为对齐）。
-   * 仅应在加载 `frontend` 宿主入口时开启。
-   */
-  registerShellHostIpc?: boolean;
-  theme?: {
-    storageKey?: string;
-    default?: ThemeMode;
-    /** 与另一文档（iframe）共用同一 key 时，监听 `storage` 以同步主题 */
-    crossDocumentStorageKey?: string;
-  };
   locale?: {
-    storageKey?: string;
-    default?: string;
     crossDocumentStorageKey?: string;
+    default?: string;
+    storageKey?: string;
   };
   /**
    * 覆盖 `window.electron.process.versions`（Web 无 Node 运行时，`node` 可传 **构建时** 注入的版本号）。
@@ -51,6 +40,18 @@ export interface InstallWebPresentationOptions {
     electron: string;
     node: string;
   }>;
+  /**
+   * 为壳层页面注册 `shell:*` IPC stub（Web 多页宿主与 Electron 行为对齐）。
+   * 仅应在加载 `frontend` 宿主入口时开启。
+   */
+  registerShellHostIpc?: boolean;
+  scope?: string;
+  theme?: {
+    /** 与另一文档（iframe）共用同一 key 时，监听 `storage` 以同步主题 */
+    crossDocumentStorageKey?: string;
+    default?: ThemeMode;
+    storageKey?: string;
+  };
 }
 
 /**
@@ -61,8 +62,8 @@ export function installWebPresentation(
   options: InstallWebPresentationOptions = {},
 ): void {
   const g = globalThis as typeof globalThis & {
-    electron?: unknown;
     api?: unknown;
+    electron?: unknown;
   };
   if (g.electron) return;
 
@@ -126,7 +127,7 @@ export function installWebPresentation(
     read: readStoredTheme,
     write: writeStoredTheme,
     normalizeFromInvokeArgs: (args) => {
-      const raw = args[0] as { theme?: string } | undefined;
+      const raw = args[0] as undefined | { theme?: string };
       return raw?.theme === 'light' ? 'light' : 'dark';
     },
     crossDocumentStorageKey: themeCrossKey,
@@ -138,7 +139,7 @@ export function installWebPresentation(
     read: readStoredLocale,
     write: writeStoredLocale,
     normalizeFromInvokeArgs: (args) => {
-      const raw = args[0] as { locale?: unknown } | undefined;
+      const raw = args[0] as undefined | { locale?: unknown };
       if (typeof raw?.locale === 'string' && raw.locale.trim()) {
         return raw.locale.trim();
       }
@@ -230,7 +231,7 @@ export function installWebPresentation(
       },
     },
     auth: {
-      login: async (payload: { user: string; password: string }) => {
+      login: async (payload: { password: string; user: string }) => {
         const result = await loginWithBackendAuth(
           payload.user,
           payload.password,

@@ -1,54 +1,54 @@
-import { readFileSync, existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export type PreloadCapability = 'auth' | 'notify' | 'settings' | 'shell';
 
 export interface WindowsConfig {
-  shell?: { topInsetPx?: number };
-  electronEmbeddedPresentation?: 'iframe' | 'browser-view';
   apiBases?: Record<string, string>;
   apiTargets?: Record<string, string>;
-  rendererSources?: Record<string, string>;
-  windows: Record<
-    string,
-    {
-      preload: string;
-      renderer: string;
-      webEmbedEntry?: string;
-      label: string;
-      integratable?: boolean;
-      defaultEnabled?: boolean;
-      requiresAuth?: boolean;
-      preloadCapabilities?: PreloadCapability[];
-      iconSvg?: string;
-    }
-  >;
+  displayOrder?: string[];
+  electronEmbeddedPresentation?: 'browser-view' | 'iframe';
   modalRenderers?: Record<
     string,
     {
       preload: string;
+      preloadCapabilities?: PreloadCapability[];
       renderer: string;
       webEmbedEntry?: string;
-      preloadCapabilities?: PreloadCapability[];
     }
   >;
-  displayOrder?: string[];
+  rendererSources?: Record<string, string>;
+  shell?: { topInsetPx?: number };
+  windows: Record<
+    string,
+    {
+      defaultEnabled?: boolean;
+      iconSvg?: string;
+      integratable?: boolean;
+      label: string;
+      preload: string;
+      preloadCapabilities?: PreloadCapability[];
+      renderer: string;
+      requiresAuth?: boolean;
+      webEmbedEntry?: string;
+    }
+  >;
 }
 
 export interface NebulaAppManifest {
+  /** Map embed surface → relative boot entry path from apps/web/src */
+  embedBootEntries: Record<string, string>;
+  /** Surfaces available for ?embed= query in Web shell */
+  embedSurfaces: string[];
+  /** Preload ID → union of capabilities declared by all surfaces using it */
+  preloadCapabilities: Record<string, PreloadCapability[]>;
+  /** Unique preload IDs used by windows and modal renderers */
+  preloadIds: string[];
   /** Unique renderer package directory names under apps/sub-web */
   subApps: string[];
   /** Window IDs from configs/windows.json */
   windowIds: string[];
-  /** Unique preload IDs used by windows and modal renderers */
-  preloadIds: string[];
-  /** Preload ID → union of capabilities declared by all surfaces using it */
-  preloadCapabilities: Record<string, PreloadCapability[]>;
-  /** Surfaces available for ?embed= query in Web shell */
-  embedSurfaces: string[];
-  /** Map embed surface → relative boot entry path from apps/web/src */
-  embedBootEntries: Record<string, string>;
 }
 
 export function findMonorepoRoot(fromDir: string): string {

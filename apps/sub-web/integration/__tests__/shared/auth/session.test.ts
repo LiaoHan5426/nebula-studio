@@ -1,11 +1,10 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-
 import {
   clearAuthSession,
   getAuthToken,
   hasValidAuthToken,
   setAuthSession,
 } from '@/shared/auth/session';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('auth session', () => {
   beforeEach(() => {

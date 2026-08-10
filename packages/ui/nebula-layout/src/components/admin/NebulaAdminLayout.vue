@@ -1,7 +1,7 @@
 <script setup lang="ts">
 defineProps<{
-  title?: string;
   subtitle?: string;
+  title?: string;
 }>();
 </script>
 
@@ -17,15 +17,15 @@ defineProps<{
         <p v-if="subtitle">{{ subtitle }}</p>
       </header>
       <nav class="nebula-layout-admin__nav" aria-label="管理导航">
-        <slot name="sidebar" />
+        <slot name="sidebar"></slot>
       </nav>
     </aside>
     <div class="nebula-layout-admin__main">
       <header v-if="$slots.header" class="nebula-layout-admin__page-head">
-        <slot name="header" />
+        <slot name="header"></slot>
       </header>
       <main class="nebula-layout-admin__body">
-        <slot />
+        <slot></slot>
       </main>
     </div>
   </div>

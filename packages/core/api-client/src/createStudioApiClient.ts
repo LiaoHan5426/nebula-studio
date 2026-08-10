@@ -1,26 +1,27 @@
-import { createApiClient } from './createApiClient.ts';
 import type { ApiClient } from './createApiClient.ts';
 import type { ApiClientConfig } from './types.ts';
 
+import { createApiClient } from './createApiClient.ts';
+
 export interface StudioAuthProvider {
-  getToken(): string | null | undefined;
+  getToken(): null | string | undefined;
 }
 
 export interface StudioTenantProvider {
-  getTenantId(): string | null | undefined;
+  getTenantId(): null | string | undefined;
 }
 
 export interface StudioOrganizationProvider {
-  getOrgId(): string | null | undefined;
+  getOrgId(): null | string | undefined;
 }
 
 export interface CreateStudioApiClientOptions {
   authProvider?: StudioAuthProvider;
-  tenantProvider?: StudioTenantProvider;
-  organizationProvider?: StudioOrganizationProvider;
-  onUnauthorized?: ApiClientConfig['onUnauthorized'];
   credentials?: RequestCredentials;
+  onUnauthorized?: ApiClientConfig['onUnauthorized'];
+  organizationProvider?: StudioOrganizationProvider;
   progress?: boolean;
+  tenantProvider?: StudioTenantProvider;
 }
 
 /**

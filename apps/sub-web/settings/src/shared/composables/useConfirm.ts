@@ -2,7 +2,7 @@
  * Confirm dialog composable — delegated to `@nebula-studio/use-confirm`.
  */
 export {
-  useConfirmState,
-  useConfirm,
   answerConfirm,
+  useConfirm,
+  useConfirmState,
 } from '@nebula-studio/use-confirm';

@@ -5,9 +5,9 @@ export interface ResourceTypeDefinition {
   accent: string;
   applyLabel: string;
   detailEntries(resource: ResourceDetailViewModel): Array<{
+    code?: boolean;
     label: string;
     value: string;
-    code?: boolean;
   }>;
 }
 

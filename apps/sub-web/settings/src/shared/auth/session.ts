@@ -4,13 +4,13 @@
  * Settings-specific org context helpers are kept locally.
  */
 export {
-  getAuthToken,
-  getAuthUsername,
-  getAuthRoles,
-  getAuthUserId,
   clearAuthSession,
-  hasValidAuthToken,
+  getAuthRoles,
+  getAuthToken,
+  getAuthUserId,
+  getAuthUsername,
   hasAuthenticatedSession,
+  hasValidAuthToken,
   setAuthSession,
 } from '@nebula-studio/auth-provider/session';
 

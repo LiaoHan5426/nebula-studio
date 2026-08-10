@@ -1,21 +1,23 @@
-import '@nebula-studio-internal/tailwind/electron';
-import './styles/electron-overrides.css';
-
 import {
-  WEB_SHELL_EMBED_QUERY,
   installShellIframeElectronBridge,
+  WEB_SHELL_EMBED_QUERY,
 } from '@nebula-studio/app-shell';
+
 import appConfig from '../../app.config';
 import { resolveRendererEntry } from '../main/windowRegistry';
+
+import '@nebula-studio-internal/tailwind/electron';
+
+import './styles/electron-overrides.css';
 
 document.documentElement.dataset.platform = 'electron';
 
 type WindowId = keyof typeof appConfig.windows;
 type ModalId = keyof typeof appConfig.modalRenderers;
-type AnyBootWindowId = WindowId | ModalId;
+type AnyBootWindowId = ModalId | WindowId;
 type RendererPkg =
-  | (typeof appConfig.windows)[WindowId]['renderer']
-  | (typeof appConfig.modalRenderers)[ModalId]['renderer'];
+  | (typeof appConfig.modalRenderers)[ModalId]['renderer']
+  | (typeof appConfig.windows)[WindowId]['renderer'];
 
 /**
  * 唯一事实来源：`app.config.ts` 中 `windows.*.renderer` 与 `modalRenderers.*.renderer`。

@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { cn } from '../../../utils/cn';
-import { AvatarImage } from 'reka-ui';
 import type { AvatarImageProps } from 'reka-ui';
+
 import type { HTMLAttributes } from 'vue';
+
+import { AvatarImage } from 'reka-ui';
+
+import { cn } from '../../../utils/cn';
 
 defineProps<AvatarImageProps & { class?: HTMLAttributes['class'] }>();
 </script>

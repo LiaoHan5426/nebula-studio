@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import type { OrganizationNode, OrgPolicy } from '@/shared/api/system';
+
 import { onMounted, ref } from 'vue';
+
 import {
   NebulaButton,
   NebulaDialog,
@@ -8,9 +11,8 @@ import {
 } from '@nebula-studio/nebula-ui';
 
 import { organizationsApi, orgPolicyApi } from '@/shared/api/system';
-import type { OrganizationNode, OrgPolicy } from '@/shared/api/system';
-import { isApiSuccess } from '@/shared/types';
 import { useConfirm } from '@/shared/composables/useConfirm';
+import { isApiSuccess } from '@/shared/types';
 
 import OrganizationTreeNode from './OrganizationTreeNode.vue';
 
@@ -128,9 +130,9 @@ async function savePolicy() {
     </NebulaPane>
 
     <div class="page__actions">
-      <NebulaButton variant="primary" @click="openCreate()"
-        >新建组织</NebulaButton
-      >
+      <NebulaButton variant="primary" @click="openCreate()">
+        新建组织
+      </NebulaButton>
       <NebulaButton variant="secondary" @click="loadAll">
         {{ loading ? '加载中…' : '刷新' }}
       </NebulaButton>

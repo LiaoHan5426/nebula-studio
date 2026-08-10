@@ -1,6 +1,5 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
-
 import radioGroupBasicDemo from '@/examples/radio-group/RadioGroupBasic.vue?demo';
 import radioGroupDisabledDemo from '@/examples/radio-group/RadioGroupDisabled.vue?demo';
 </script>

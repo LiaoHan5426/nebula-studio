@@ -1,17 +1,20 @@
 <script setup lang="ts">
-import '../styles/dag-flow.css';
-
-import { MarkerType } from '@vue-flow/core';
 import type { PluginNodeSchema } from '@nebula-studio/nebula-low-render';
+
+import type { DagDefinition } from '../types/dag';
+
 import { markRaw } from 'vue';
 
+import { MarkerType } from '@vue-flow/core';
+
 import { useDagEditor } from '../composables/useDagEditor';
-import type { DagDefinition } from '../types/dag';
 import DagEditorCanvas from './DagEditorCanvas.vue';
 import DagEditorInspector from './DagEditorInspector.vue';
 import DagEditorToolbar from './DagEditorToolbar.vue';
 import DagFlowNode from './DagFlowNode.vue';
 import DagNodePalette from './DagNodePalette.vue';
+
+import '../styles/dag-flow.css';
 
 const props = defineProps<{
   modelValue?: DagDefinition | string;

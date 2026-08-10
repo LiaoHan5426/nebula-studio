@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import Demo from '@/components/Demo.vue';
-
 import inputBasicDemo from '@/examples/input/InputBasic.vue?demo';
-import inputTypesDemo from '@/examples/input/InputTypes.vue?demo';
 import inputDisabledDemo from '@/examples/input/InputDisabled.vue?demo';
 import inputTooltipDemo from '@/examples/input/InputTooltip.vue?demo';
+import inputTypesDemo from '@/examples/input/InputTypes.vue?demo';
 </script>
 
 <template>
@@ -57,9 +56,7 @@ import inputTooltipDemo from '@/examples/input/InputTooltip.vue?demo';
           <td><code>type</code></td>
           <td>输入框类型</td>
           <td>
-            <code
-              >'text' | 'password' | 'email' | 'number' | 'tel' | 'url'</code
-            >
+            <code>'text' | 'password' | 'email' | 'number' | 'tel' | 'url'</code>
           </td>
           <td><code>'text'</code></td>
         </tr>

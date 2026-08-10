@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 type BaselineSurface = {
   name: string;
   path: string;
-  surface: 'shell' | 'auth' | 'portal' | 'admin' | 'settings' | 'docs';
+  surface: 'admin' | 'auth' | 'docs' | 'portal' | 'settings' | 'shell';
 };
 
 const surfaces: BaselineSurface[] = [

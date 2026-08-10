@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { NebulaDrawer, NebulaButton } from '@nebula-studio/nebula-ui';
+
+import { NebulaButton, NebulaDrawer } from '@nebula-studio/nebula-ui';
 
 const drawerOpen = ref(false);
 </script>

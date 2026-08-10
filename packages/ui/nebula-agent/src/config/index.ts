@@ -1,10 +1,10 @@
 export type AgentConfig = {
-  model: string;
-  baseURL: string;
-  temperature?: number;
-  maxTokens?: number;
-  systemPrompt: string;
   apiKey?: string;
+  baseURL: string;
+  maxTokens?: number;
+  model: string;
+  systemPrompt: string;
+  temperature?: number;
 };
 
 export type AgentsConfig = {

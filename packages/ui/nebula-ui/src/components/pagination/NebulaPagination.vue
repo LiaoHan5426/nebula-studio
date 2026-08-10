@@ -1,27 +1,24 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import NebulaButton from '../button/NebulaButton.vue';
+
 import { cn } from '../../utils/cn';
+import NebulaButton from '../button/NebulaButton.vue';
 
-type PaginationAlign = 'start' | 'center' | 'end' | 'between';
-type PaginationPart = 'total' | 'sizes' | 'pager' | 'jumper';
-
-function clamp(value: number, min: number, max: number): number {
-  return Math.min(Math.max(value, min), max);
-}
+type PaginationAlign = 'between' | 'center' | 'end' | 'start';
+type PaginationPart = 'jumper' | 'pager' | 'sizes' | 'total';
 
 const props = withDefaults(
   defineProps<{
+    align?: PaginationAlign;
+    class?: string;
+    disabled?: boolean;
+    layout?: PaginationPart[];
     modelValue?: number;
-    total?: number;
     pageSize?: number;
     pageSizes?: number[];
-    disabled?: boolean;
     showSizeChanger?: boolean;
-    align?: PaginationAlign;
-    layout?: PaginationPart[];
     siblingCount?: number;
-    class?: string;
+    total?: number;
   }>(),
   {
     modelValue: 1,
@@ -38,10 +35,14 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
+  change: [payload: { page: number; pageSize: number }];
   'update:modelValue': [page: number];
   'update:pageSize': [size: number];
-  change: [payload: { page: number; pageSize: number }];
 }>();
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(Math.max(value, min), max);
+}
 
 const jumpPage = ref('');
 const pageCount = computed(() =>
@@ -54,7 +55,7 @@ const currentPage = computed(() => clamp(props.modelValue, 1, pageCount.value));
 const visibleParts = computed(() =>
   props.layout.filter((part) => part !== 'sizes' || props.showSizeChanger),
 );
-const pages = computed<Array<number | 'ellipsis'>>(() => {
+const pages = computed<Array<'ellipsis' | number>>(() => {
   if (pageCount.value <= 7) {
     return Array.from({ length: pageCount.value }, (_, index) => index + 1);
   }
@@ -68,7 +69,7 @@ const pages = computed<Array<number | 'ellipsis'>>(() => {
     values.add(page);
   }
   const sorted = [...values].toSorted((a, b) => a - b);
-  const result: Array<number | 'ellipsis'> = [];
+  const result: Array<'ellipsis' | number> = [];
   sorted.forEach((page, index) => {
     const previous = sorted[index - 1];
     if (previous !== undefined && page - previous > 1) result.push('ellipsis');
@@ -139,12 +140,11 @@ function jump(): void {
           aria-label="上一页"
           :disabled="disabled || currentPage <= 1"
           @click="changePage(currentPage - 1)"
-          >‹</NebulaButton
         >
+          ‹
+        </NebulaButton>
         <template v-for="(page, index) in pages" :key="`${page}-${index}`">
-          <span v-if="page === 'ellipsis'" class="nebula-pagination__ellipsis"
-            >…</span
-          >
+          <span v-if="page === 'ellipsis'" class="nebula-pagination__ellipsis">…</span>
           <NebulaButton
             v-else
             size="sm"
@@ -153,8 +153,9 @@ function jump(): void {
             :aria-current="page === currentPage ? 'page' : undefined"
             :disabled="disabled"
             @click="changePage(page)"
-            >{{ page }}</NebulaButton
           >
+            {{ page }}
+          </NebulaButton>
         </template>
         <NebulaButton
           size="sm"
@@ -162,8 +163,9 @@ function jump(): void {
           aria-label="下一页"
           :disabled="disabled || currentPage >= pageCount"
           @click="changePage(currentPage + 1)"
-          >›</NebulaButton
         >
+          ›
+        </NebulaButton>
       </div>
 
       <form v-else class="nebula-pagination__jumper" @submit.prevent="jump">

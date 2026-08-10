@@ -1,22 +1,25 @@
 <script setup lang="ts">
-import { computed, useId } from 'vue';
-import { Field } from 'vee-validate';
 import type { RuleExpression } from 'vee-validate';
+
+import { computed, useId } from 'vue';
+
+import { Field } from 'vee-validate';
+
 import { cn } from '../../utils/cn';
 
 const props = withDefaults(
   defineProps<{
-    name: string;
-    label?: string;
-    id?: string;
-    rules?: RuleExpression<unknown>;
-    required?: boolean;
+    class?: string;
     hint?: string;
+    id?: string;
+    label?: string;
+    name: string;
+    required?: boolean;
+    rules?: RuleExpression<unknown>;
     validateOnBlur?: boolean;
     validateOnChange?: boolean;
     validateOnInput?: boolean;
     validateOnModelUpdate?: boolean;
-    class?: string;
   }>(),
   {
     label: '',
@@ -79,8 +82,7 @@ function createControlProps<T extends object>(
           v-if="required"
           class="nebula-form-item__required"
           aria-hidden="true"
-          >*</span
-        >
+          >*</span>
       </label>
 
       <div class="nebula-form-item__control">
@@ -99,7 +101,7 @@ function createControlProps<T extends object>(
           :invalid="Boolean(errorMessage)"
           :meta="meta"
           :value="value"
-        />
+        ></slot>
       </div>
 
       <p

@@ -1,21 +1,24 @@
-import {
-  createRouter,
-  createWebHashHistory,
-  createWebHistory,
-} from 'vue-router';
 import type {
   NavigationGuardNext,
   RouteLocationNormalized,
   RouteRecordRaw,
 } from 'vue-router';
+
 import type { ExperienceSurface } from '@nebula-studio/nebula-layout';
 
-import { hasValidAuthToken, clearAuthSession } from '@/shared/auth/session';
-import { isPlatformAdmin } from '@/shared/auth/roles';
-import { isIntegrationShellIframeEmbed } from '@/shared/composables/useShellEmbed';
+import {
+  createRouter,
+  createWebHashHistory,
+  createWebHistory,
+} from 'vue-router';
+
 import { WEB_SHELL_EMBED_QUERY } from '@nebula-studio/app-shell';
 import { defineExperiencePageMeta } from '@nebula-studio/nebula-layout';
+
 import { PLATFORM_ADMIN_HOME, PORTAL_HOME } from '@/app/navigation';
+import { isPlatformAdmin } from '@/shared/auth/roles';
+import { clearAuthSession, hasValidAuthToken } from '@/shared/auth/session';
+import { isIntegrationShellIframeEmbed } from '@/shared/composables/useShellEmbed';
 
 function createIntegrationHistory() {
   // iframe 入口为 index.html?embed=integration；若用 History 模式导航到 /statistics/...
@@ -24,9 +27,8 @@ function createIntegrationHistory() {
   const embedSurface =
     params.get(WEB_SHELL_EMBED_QUERY) ??
     params.get('renderer') ??
-    (window as Window & { __NEBULA_EMBED_SURFACE__?: string })[
-      '__NEBULA_EMBED_SURFACE__'
-    ];
+    (window as Window & { __NEBULA_EMBED_SURFACE__?: string })
+      .__NEBULA_EMBED_SURFACE__;
   const injectedMode = (window as Window & { __NEBULA_RUNTIME_MODE__?: string })
     .__NEBULA_RUNTIME_MODE__;
   if (embedSurface === 'integration' || injectedMode === 'platform-embed') {

@@ -1,3 +1,9 @@
+import type { ElectronAuthSession } from '@nebula-studio/contracts/auth';
+
+import type { AuthBootstrapOptions, AuthStrategy } from '../types';
+
+import { SHELL_AUTH_UNAUTHORIZED_EVENT } from '@nebula-studio/app-shell';
+import { globalAuthProvider } from '@nebula-studio/auth-provider';
 /**
  * ElectronStrategy — Electron 桌面模式认证策略。
  *
@@ -12,13 +18,9 @@
  * - integration/src/App.vue — auth:session-changed 监听
  */
 import {
-  setAuthSession,
   hasValidAuthToken,
+  setAuthSession,
 } from '@nebula-studio/auth-provider/session';
-import { globalAuthProvider } from '@nebula-studio/auth-provider';
-import { SHELL_AUTH_UNAUTHORIZED_EVENT } from '@nebula-studio/app-shell';
-import type { ElectronAuthSession } from '@nebula-studio/contracts/auth';
-import type { AuthBootstrapOptions, AuthStrategy } from '../types';
 
 interface ElectronAPI {
   ipcRenderer: {

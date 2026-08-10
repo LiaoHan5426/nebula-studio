@@ -1,13 +1,14 @@
-import {
-  getEmbeddedShellWindowIds,
-  registerShellIntegratedApps,
-  setShellIntegrableOrder,
-  GENERATED_WINDOWS,
-  GENERATED_DISPLAY_ORDER,
-} from '@nebula-studio/app-shell';
 import type {
   EmbeddedShellWindowId,
   ShellIntegratedAppMeta,
+} from '@nebula-studio/app-shell';
+
+import {
+  GENERATED_DISPLAY_ORDER,
+  GENERATED_WINDOWS,
+  getEmbeddedShellWindowIds,
+  registerShellIntegratedApps,
+  setShellIntegrableOrder,
 } from '@nebula-studio/app-shell';
 
 type ShellIntegratedAppCatalogEntry = Omit<ShellIntegratedAppMeta, 'id'>;

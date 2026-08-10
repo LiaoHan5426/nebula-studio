@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import type { ClusterNode } from '@nebula-studio/contracts/integration';
+
 import { onMounted, ref } from 'vue';
+
+import { isApiSuccess } from '@nebula-studio/api-client';
 import { NebulaButton, NebulaPane, NebulaTag } from '@nebula-studio/nebula-ui';
 
 import { clusterApi } from '@/shared/api/clusterApi';
-import type { ClusterNode } from '@nebula-studio/contracts/integration';
-import { isApiSuccess } from '@nebula-studio/api-client';
 
 const nodes = ref<ClusterNode[]>([]);
 const loading = ref(false);
@@ -55,9 +57,9 @@ function formatLoad(load?: number) {
                 {{ node.address || '—' }} · {{ node.role || 'WORKER' }}
               </p>
             </div>
-            <NebulaTag :variant="statusVariant(node.status)">{{
-              node.status || 'UNKNOWN'
-            }}</NebulaTag>
+            <NebulaTag :variant="statusVariant(node.status)">
+              {{ node.status || 'UNKNOWN' }}
+            </NebulaTag>
           </div>
           <dl class="page__stats">
             <div>

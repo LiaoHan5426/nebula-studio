@@ -1,13 +1,13 @@
 export interface PluginNodeField {
+  defaultValue?: unknown;
   key: string;
   label: string;
-  type: 'text' | 'number' | 'boolean' | 'select';
-  required?: boolean;
   options?: Array<{ label: string; value: string }>;
-  defaultValue?: unknown;
+  required?: boolean;
+  type: 'boolean' | 'number' | 'select' | 'text';
 }
 
 export interface PluginNodeSchema {
-  label?: string;
   fields?: PluginNodeField[];
+  label?: string;
 }

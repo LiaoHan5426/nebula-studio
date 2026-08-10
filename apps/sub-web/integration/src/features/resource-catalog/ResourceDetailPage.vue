@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import type { ResourceDetailViewModel } from './types';
+
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+
 import {
   NebulaButton,
   NebulaEmptyState,
@@ -19,7 +22,6 @@ import {
   toggleFavoriteResource,
   trackPortalEvent,
 } from './storage';
-import type { ResourceDetailViewModel } from './types';
 
 const route = useRoute();
 const router = useRouter();
@@ -86,7 +88,11 @@ onMounted(load);
         ← 返回资源目录
       </button>
     </div>
-    <div v-if="loading" class="detail-loading" aria-label="正在加载资源详情" />
+    <div
+      v-if="loading"
+      class="detail-loading"
+      aria-label="正在加载资源详情"
+    ></div>
     <NebulaEmptyState
       v-else-if="error || !resource || !definition"
       title="无法打开资源"

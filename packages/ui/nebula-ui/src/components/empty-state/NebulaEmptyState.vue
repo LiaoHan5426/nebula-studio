@@ -1,10 +1,10 @@
 <script setup lang="ts">
 withDefaults(
   defineProps<{
-    title: string;
-    description?: string;
-    tone?: 'neutral' | 'error' | 'restricted';
     busy?: boolean;
+    description?: string;
+    title: string;
+    tone?: 'error' | 'neutral' | 'restricted';
   }>(),
   {
     description: '',
@@ -31,7 +31,7 @@ withDefaults(
     <h2>{{ title }}</h2>
     <p v-if="description">{{ description }}</p>
     <div v-if="$slots.actions" class="nebula-empty-state__actions">
-      <slot name="actions" />
+      <slot name="actions"></slot>
     </div>
   </section>
 </template>

@@ -1,19 +1,19 @@
 {
   "name": "@nebula-studio-internal/eslint",
   "version": "0.0.0",
-  "private": true,
   "description": "Shared ESLint configuration for Nebula Studio.",
-  "author": "Liao Han <liaohan5426@gmail.com>",
-  "license": "UNLICENSED",
+  "private": true,
   "homepage": "https://github.com/LiaoHan5426/nebula-studio#readme",
+  "bugs": {
+    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LiaoHan5426/nebula-studio.git",
     "directory": "tools/lint/eslint"
   },
-  "bugs": {
-    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
-  },
+  "license": "UNLICENSED",
+  "author": "Liao Han <liaohan5426@gmail.com>",
   "type": "module",
   "scripts": {
     "stub": "vp pack",
@@ -26,27 +26,24 @@
     ".": "./dist/index.mjs",
     "./package.json": "./package.json"
   },
-  "devDependencies": {
-    "@types/node": "catalog:types",
-    "typescript": "catalog:types",
-    "vite-plus": "catalog:vite"
-  },
   "dependencies": {
     "@eslint/js": "catalog:lint",
-    "@nebula-studio-internal/oxlint": "workspace:^",
-    "@typescript-eslint/eslint-plugin": "catalog:lint",
     "@typescript-eslint/parser": "catalog:lint",
     "eslint": "catalog:lint",
     "eslint-plugin-jsonc": "catalog:lint",
     "eslint-plugin-n": "catalog:lint",
     "eslint-plugin-perfectionist": "catalog:lint",
     "eslint-plugin-pnpm": "catalog:lint",
-    "eslint-plugin-unicorn": "catalog:lint",
     "eslint-plugin-unused-imports": "catalog:lint",
     "eslint-plugin-vue": "catalog:lint",
     "eslint-plugin-yml": "catalog:lint",
     "globals": "catalog:utils",
     "vue-eslint-parser": "catalog:lint",
     "yaml-eslint-parser": "catalog:lint"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:types",
+    "typescript": "catalog:types",
+    "vite-plus": "catalog:vite"
   }
 }

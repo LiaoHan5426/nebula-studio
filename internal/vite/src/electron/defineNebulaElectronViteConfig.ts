@@ -1,10 +1,14 @@
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { mergeConfig } from 'vite';
 import type { PluginOption } from 'vite';
-import { nebulaElectronRendererPartial } from '../config/nebulaElectronRenderer.ts';
+
 import type { NebulaRendererChunksOptions } from '../config/chunks/types.ts';
 import type { PreloadCapability } from '../config/windowsManifest.ts';
+
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+import { mergeConfig } from 'vite';
+
+import { nebulaElectronRendererPartial } from '../config/nebulaElectronRenderer.ts';
 
 /**
  * 统一 Preload 配置：源文件所在目录 + 需要构建的 preload capability map。
@@ -13,10 +17,10 @@ import type { PreloadCapability } from '../config/windowsManifest.ts';
  * 派生的能力集合直接传给统一的 `bootstrap()`。
  */
 export interface UnifiedPreloadOptions {
-  /** 统一 preload 源文件所在目录的绝对路径（如 `apps/electron-preload/src`） */
-  sourceDir: string;
   /** Preload ID → 该入口需要暴露的能力集合 */
   entries: Record<string, PreloadCapability[]>;
+  /** 统一 preload 源文件所在目录的绝对路径（如 `apps/electron-preload/src`） */
+  sourceDir: string;
 }
 
 /**
@@ -63,11 +67,19 @@ function createUnifiedPreloadVirtualEntries(
 }
 
 export interface DefineNebulaElectronViteConfigOptions {
+  /** 传给 `nebulaElectronRendererPartial({ chunks })`。 */
+  chunks?: NebulaRendererChunksOptions;
   /**
    * 传入本配置文件（如 `electron.vite.config.ts`）的 `import.meta.url`，
    * 用于解析 `apps/electron` 根目录与 preload 包路径，且不依赖 `process.cwd()`。
    */
   configModuleUrl: string | URL;
+  /** 深度合并进默认 `main` 段。 */
+  main?: Record<string, unknown>;
+  /** 深度合并进整条 `electron-vite` 配置（最后应用，可覆盖上述各段）。 */
+  merge?: Record<string, unknown>;
+  /** 深度合并进默认 `preload` 段。 */
+  preload?: Record<string, unknown>;
   /** 覆盖默认 preload 输入（窗口 ID → 文件路径）。一般无需设置，使用 `unifiedPreload` 即可。 */
   preloadInputs?: Record<string, string>;
   /**
@@ -76,14 +88,6 @@ export interface DefineNebulaElectronViteConfigOptions {
    * 与 `preloadInputs` 互斥，优先使用本字段。
    */
   unifiedPreload?: UnifiedPreloadOptions;
-  /** 传给 `nebulaElectronRendererPartial({ chunks })`。 */
-  chunks?: NebulaRendererChunksOptions;
-  /** 深度合并进默认 `main` 段。 */
-  main?: Record<string, unknown>;
-  /** 深度合并进默认 `preload` 段。 */
-  preload?: Record<string, unknown>;
-  /** 深度合并进整条 `electron-vite` 配置（最后应用，可覆盖上述各段）。 */
-  merge?: Record<string, unknown>;
 }
 
 /**

@@ -1,9 +1,9 @@
+import lucideIcons from '@iconify-json/lucide/icons.json';
 /**
  * 内置图标快捷映射 — 字符串简写 → 完整 Iconify 名称
  * 根据项目中常用的图标名称扩展
  */
 import { addCollection } from '@iconify/vue';
-import lucideIcons from '@iconify-json/lucide/icons.json';
 
 // 将 lucide 图标数据注册到本地，避免运行时从远程 API 加载
 addCollection(lucideIcons);
@@ -103,7 +103,7 @@ export function isIconifyName(value: string): boolean {
  * 解析图标字符串，返回标准化结果
  */
 export function resolveIcon(icon: string): {
-  type: 'component' | 'url' | 'iconify';
+  type: 'component' | 'iconify' | 'url';
   value: string;
 } {
   if (isHttpUrl(icon)) {

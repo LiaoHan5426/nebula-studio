@@ -1,53 +1,54 @@
+import type {
+  ApiClientConfig,
+  ExecuteSQLResponse,
+  QueryResult,
+} from '../../api-client';
+import type { ChartRecommendation } from '../../chart-selector';
+import type { CryptoConfig } from '../../crypto';
+import type { EChartsOption } from '../../echarts-generator';
+import type {
+  ParserExtension,
+  SQLValidatorOptions,
+  ValidationResult,
+} from '../../sql-validator';
+
+import { ApiClient } from '../../api-client';
+import { ChartSelector } from '../../chart-selector';
 /**
  * @experimental SQL Agent 功能尚未上线，仅供实验用途。
  */
 import { getAgentConfig } from '../../config';
-import { LLMClient } from '../../llm';
-import { ApiClient } from '../../api-client';
-import type {
-  ApiClientConfig,
-  QueryResult,
-  ExecuteSQLResponse,
-} from '../../api-client';
 import { SQLCrypto } from '../../crypto';
-import type { CryptoConfig } from '../../crypto';
-import { ChartSelector } from '../../chart-selector';
-import type { ChartRecommendation } from '../../chart-selector';
 import { EChartsGenerator } from '../../echarts-generator';
-import type { EChartsOption } from '../../echarts-generator';
+import { LLMClient } from '../../llm';
 import { buildPrompt } from '../../prompt-builder';
 import { SQLValidator } from '../../sql-validator';
-import type {
-  ValidationResult,
-  ParserExtension,
-  SQLValidatorOptions,
-} from '../../sql-validator';
 
 export type SQLAgentResult = {
-  userQuery: string;
-  generatedSQL: string;
-  validationResult: ValidationResult;
-  queryResult: QueryResult;
   chartRecommendation: ChartRecommendation;
   echartsOption: EChartsOption;
+  generatedSQL: string;
+  queryResult: QueryResult;
+  userQuery: string;
+  validationResult: ValidationResult;
 };
 
 export type SQLAgentOptions = {
   apiConfig?: ApiClientConfig;
   cryptoConfig?: CryptoConfig;
-  validatorOptions?: SQLValidatorOptions;
-  parserExtensions?: ParserExtension[];
   encryptSQL?: boolean;
+  parserExtensions?: ParserExtension[];
+  validatorOptions?: SQLValidatorOptions;
 };
 
 export class SQLAgent {
-  private llmClient: LLMClient;
   private apiClient: ApiClient;
-  private crypto: SQLCrypto;
   private chartSelector: ChartSelector;
+  private crypto: SQLCrypto;
   private echartsGenerator: EChartsGenerator;
-  private validator: SQLValidator;
   private encryptSQL: boolean;
+  private llmClient: LLMClient;
+  private validator: SQLValidator;
 
   constructor(options?: SQLAgentOptions) {
     const agentConfig = getAgentConfig('sql-agent');
@@ -115,19 +116,6 @@ export class SQLAgent {
     };
   }
 
-  async generateSQL(userQuery: string): Promise<string> {
-    const schema = await this.apiClient.getSchema();
-    const systemPrompt = await buildPrompt('sql', {
-      sql: {
-        dbType: 'mysql',
-        schema: schema.success
-          ? this.apiClient.formatSchemaForPrompt(schema.data || [])
-          : '',
-      },
-    });
-    return this.llmClient.generateSQL(userQuery, systemPrompt);
-  }
-
   async executeSQL(sql: string): Promise<QueryResult> {
     let sqlToExecute = sql;
 
@@ -147,15 +135,28 @@ export class SQLAgent {
     return response.data;
   }
 
-  validateSQL(sql: string): ValidationResult {
-    return this.validator.validate(sql);
+  async generateSQL(userQuery: string): Promise<string> {
+    const schema = await this.apiClient.getSchema();
+    const systemPrompt = await buildPrompt('sql', {
+      sql: {
+        dbType: 'mysql',
+        schema: schema.success
+          ? this.apiClient.formatSchemaForPrompt(schema.data || [])
+          : '',
+      },
+    });
+    return this.llmClient.generateSQL(userQuery, systemPrompt);
+  }
+
+  getValidator(): SQLValidator {
+    return this.validator;
   }
 
   registerParserExtension(extension: ParserExtension): void {
     this.validator.registerExtension(extension);
   }
 
-  getValidator(): SQLValidator {
-    return this.validator;
+  validateSQL(sql: string): ValidationResult {
+    return this.validator.validate(sql);
   }
 }

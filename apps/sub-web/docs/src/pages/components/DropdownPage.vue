@@ -1,6 +1,5 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
-
 import dropdownBasicDemo from '@/examples/dropdown/DropdownBasic.vue?demo';
 import dropdownDividerDemo from '@/examples/dropdown/DropdownDivider.vue?demo';
 </script>

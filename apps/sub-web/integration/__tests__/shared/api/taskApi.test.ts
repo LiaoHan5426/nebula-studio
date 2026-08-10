@@ -1,7 +1,7 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { TaskType } from '@nebula-studio/contracts/integration';
 
 import { taskApi } from '@/shared/api/taskApi';
-import { TaskType } from '@nebula-studio/contracts/integration';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const { taskRequest } = vi.hoisted(() => ({
   taskRequest: vi.fn(),

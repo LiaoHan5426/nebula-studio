@@ -1,4 +1,5 @@
 import { defineComponent, h } from 'vue';
+
 import { VxeColgroup } from 'vxe-table';
 
 export const NebulaTableRow = defineComponent({
@@ -9,7 +10,7 @@ export const NebulaTableRow = defineComponent({
       default: '',
     },
     align: {
-      type: String as () => 'left' | 'center' | 'right' | '',
+      type: String as () => '' | 'center' | 'left' | 'right',
       default: '',
     },
   },

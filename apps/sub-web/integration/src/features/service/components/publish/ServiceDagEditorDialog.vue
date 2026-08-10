@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { NebulaButton, NebulaPane } from '@nebula-studio/nebula-ui';
-import { DagEditor } from '@nebula-studio/nebula-dag-editor';
 import type { DagDefinition } from '@nebula-studio/nebula-dag-editor';
 import type { PluginNodeSchema } from '@nebula-studio/nebula-low-render';
 
+import { DagEditor } from '@nebula-studio/nebula-dag-editor';
+import { NebulaButton, NebulaPane } from '@nebula-studio/nebula-ui';
+
 defineProps<{
-  open: boolean;
   definition: DagDefinition | string;
   nodeSchemas: Record<string, PluginNodeSchema>;
+  open: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -28,9 +29,9 @@ const emit = defineEmits<{
         />
       </div>
       <div class="modal__actions">
-        <NebulaButton variant="outline" @click="emit('close')"
-          >取消</NebulaButton
-        >
+        <NebulaButton variant="outline" @click="emit('close')">
+          取消
+        </NebulaButton>
         <NebulaButton @click="emit('submit')">保存 DAG</NebulaButton>
       </div>
     </NebulaPane>

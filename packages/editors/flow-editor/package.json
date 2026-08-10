@@ -1,19 +1,19 @@
 {
   "name": "@nebula-studio/nebula-flow-editor",
   "version": "0.0.0",
-  "private": true,
   "description": "BPMN flow editor for Nebula Studio.",
-  "author": "Liao Han <liaohan5426@gmail.com>",
-  "license": "UNLICENSED",
+  "private": true,
   "homepage": "https://github.com/LiaoHan5426/nebula-studio#readme",
+  "bugs": {
+    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LiaoHan5426/nebula-studio.git",
     "directory": "packages/editors/flow-editor"
   },
-  "bugs": {
-    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
-  },
+  "license": "UNLICENSED",
+  "author": "Liao Han <liaohan5426@gmail.com>",
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -26,12 +26,12 @@
     "./components/IntegrationBpmnEditor.vue": "./src/components/IntegrationBpmnEditor.vue"
   },
   "dependencies": {
-    "vue": "catalog:vue",
+    "@bpmn-io/cm-theme": "catalog:bpmn",
+    "@nebula-studio/nebula-ui": "workspace:^",
     "bpmn-js": "catalog:bpmn",
     "bpmn-js-properties-panel": "catalog:bpmn",
     "camunda-bpmn-moddle": "catalog:bpmn",
-    "@bpmn-io/cm-theme": "catalog:bpmn",
-    "@nebula-studio/nebula-ui": "workspace:^"
+    "vue": "catalog:vue"
   },
   "devDependencies": {
     "@nebula-studio-internal/tsconfig": "workspace:^",

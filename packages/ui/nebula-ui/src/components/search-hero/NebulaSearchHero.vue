@@ -4,10 +4,10 @@ import NebulaInput from '../input/NebulaInput.vue';
 
 withDefaults(
   defineProps<{
-    title: string;
     description?: string;
     placeholder?: string;
     submitLabel?: string;
+    title: string;
   }>(),
   {
     description: '',
@@ -16,8 +16,8 @@ withDefaults(
   },
 );
 
-const model = defineModel<string>({ default: '' });
 const emit = defineEmits<{ search: [keyword: string] }>();
+const model = defineModel<string>({ default: '' });
 </script>
 
 <template>
@@ -42,7 +42,7 @@ const emit = defineEmits<{ search: [keyword: string] }>();
       </NebulaButton>
     </form>
     <div v-if="$slots.suggestions" class="nebula-search-hero__suggestions">
-      <slot name="suggestions" />
+      <slot name="suggestions"></slot>
     </div>
   </section>
 </template>

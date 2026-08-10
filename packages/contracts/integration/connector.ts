@@ -8,12 +8,12 @@ export enum ConnectorType {
 }
 
 export interface DatabaseConfig {
-  host: string;
-  port: number;
   database: string;
-  username: string;
-  password: string;
   driverClassName?: string;
+  host: string;
+  password: string;
+  port: number;
+  username: string;
 }
 
 export interface ProtocolConfig {
@@ -22,9 +22,9 @@ export interface ProtocolConfig {
 }
 
 export interface ValidationResult {
-  success: boolean;
   message: string;
   responseTimeMs: number;
+  success: boolean;
 }
 
 export interface DatabaseConnector {
@@ -32,29 +32,29 @@ export interface DatabaseConnector {
   connectorType: ConnectorType.DATABASE;
   databaseType: string;
   jdbcUrlTemplate: string;
-  status: 'ACTIVE' | 'INACTIVE';
   pluginId?: string;
   pluginName?: string;
   pluginVersion?: string;
+  status: 'ACTIVE' | 'INACTIVE';
 }
 
 export interface ProtocolConnector {
   connectorId: string;
   connectorType: ConnectorType.PROTOCOL;
-  protocolType: string;
-  status: 'ACTIVE' | 'INACTIVE';
   pluginId?: string;
   pluginName?: string;
   pluginVersion?: string;
+  protocolType: string;
+  status: 'ACTIVE' | 'INACTIVE';
 }
 
 export type Connector = DatabaseConnector | ProtocolConnector;
 
 export interface DataSourceConfig {
+  config: DatabaseConfig | ProtocolConfig;
+  connectorId: string;
+  createdAt: string;
   dataSourceId: string;
   name: string;
-  connectorId: string;
-  config: DatabaseConfig | ProtocolConfig;
   status: 'ACTIVE' | 'INACTIVE';
-  createdAt: string;
 }

@@ -5,7 +5,7 @@ const PERM_TYPE_LABELS: Record<string, string> = {
   API: '接口',
 };
 
-export function permTypeLabel(type?: string | null): string {
+export function permTypeLabel(type?: null | string): string {
   if (!type) return '-';
   const normalized = type.trim().toUpperCase();
   return PERM_TYPE_LABELS[normalized] ?? type;
@@ -18,6 +18,6 @@ export const PERM_TYPE_OPTIONS = [
   { value: 'API', label: '接口 (API)' },
 ] as const;
 
-export function isButtonPermType(type?: string | null): boolean {
+export function isButtonPermType(type?: null | string): boolean {
   return type?.trim().toUpperCase() === 'BUTTON';
 }

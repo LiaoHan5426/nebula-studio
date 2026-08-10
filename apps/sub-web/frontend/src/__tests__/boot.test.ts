@@ -1,5 +1,7 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { bootMicroApp } from '@nebula-studio/runtime';
+
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { bootFrontend } from '../boot';
 
 vi.mock('@nebula-studio/nebula-ui', () => ({}));

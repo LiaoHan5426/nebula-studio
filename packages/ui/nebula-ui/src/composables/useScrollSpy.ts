@@ -1,11 +1,11 @@
-import { onMounted, onUnmounted, nextTick } from 'vue';
+import { nextTick, onMounted, onUnmounted } from 'vue';
 
-type ScrollRoot = Window | HTMLElement;
+type ScrollRoot = HTMLElement | Window;
 
 function getScrollMetrics(root: ScrollRoot): {
-  scrollTop: number;
   clientHeight: number;
   scrollHeight: number;
+  scrollTop: number;
 } {
   if (root === window) {
     const scrollTop =
@@ -40,12 +40,12 @@ function sectionScrollTop(
 }
 
 export interface UseScrollSpyOptions {
-  items: () => { id: string; label: string }[];
-  trackScroll: () => boolean;
-  scrollRoot: () => string;
   activationViewportRatio: () => number;
-  scrollBottomSlack: () => number;
+  items: () => { id: string; label: string }[];
   onActivate: (id: string) => void;
+  scrollBottomSlack: () => number;
+  scrollRoot: () => string;
+  trackScroll: () => boolean;
 }
 
 /**

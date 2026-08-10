@@ -1,12 +1,13 @@
 import type { ProxyOptions } from 'vite';
+
 import { loadWindowsConfig } from '../config/windowsManifest.ts';
 
 export type NebulaApiProxyPreset = 'integration' | 'standard';
 
 export interface NebulaApiProxyTargets {
-  platform?: string;
   console?: string;
   executor?: string;
+  platform?: string;
 }
 
 export interface CreateNebulaApiProxyOptions {
@@ -56,15 +57,15 @@ const configureSseProxy: NonNullable<ProxyOptions['configure']> = (
     if (!isSseRequest(request.url)) return;
     delete res.headers['content-length'];
     res.headers['cache-control'] = 'no-cache';
-    res.headers['connection'] = 'keep-alive';
+    res.headers.connection = 'keep-alive';
     res.headers['x-accel-buffering'] = 'no';
   });
   proxy.on('error', (err, req, res) => {
     const request = req as { url?: string };
     const response = res as {
+      end?: () => void;
       headersSent?: boolean;
       writeHead?: (code: number) => void;
-      end?: () => void;
     };
     if (isSseRequest(request.url)) {
       if (response && !response.headersSent && response.writeHead) {

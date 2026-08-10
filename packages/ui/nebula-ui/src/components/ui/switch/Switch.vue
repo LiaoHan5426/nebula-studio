@@ -1,7 +1,10 @@
 <script lang="ts" setup>
-import type { HTMLAttributes } from 'vue';
-import { SwitchRoot, SwitchThumb, useForwardPropsEmits } from 'reka-ui';
 import type { SwitchRootEmits, SwitchRootProps } from 'reka-ui';
+
+import type { HTMLAttributes } from 'vue';
+
+import { SwitchRoot, SwitchThumb, useForwardPropsEmits } from 'reka-ui';
+
 import { cn } from '../../../utils/cn';
 
 interface SwitchProps extends SwitchRootProps {

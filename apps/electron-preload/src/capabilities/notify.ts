@@ -1,12 +1,13 @@
-import { ipcRenderer } from 'electron';
-import type { IpcRendererEvent } from 'electron';
-import { electronAPI } from '@electron-toolkit/preload';
 import type {
   AppNotifyPayload,
   AppNotifyResponsePayload,
-  NotifySource,
   NotifyBridgePayload,
+  NotifySource,
 } from '@nebula-studio-electron/electron-bridge';
+import type { IpcRendererEvent } from 'electron';
+
+import { electronAPI } from '@electron-toolkit/preload';
+import { ipcRenderer } from 'electron';
 
 /**
  * 统一 Notify 能力模块。
@@ -26,8 +27,8 @@ export function createNotifyCapability(source: NotifySource) {
       const channel = useBridge ? 'notify:bridge:app' : 'notify:app';
       return electronAPI.ipcRenderer.invoke(channel, req);
     },
-    system(payload: { title: string; body: string }) {
-      const req: NotifyBridgePayload<{ title: string; body: string }> = {
+    system(payload: { body: string; title: string }) {
+      const req: NotifyBridgePayload<{ body: string; title: string }> = {
         source,
         payload,
       };

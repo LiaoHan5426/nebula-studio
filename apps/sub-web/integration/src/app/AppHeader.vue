@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router';
+
 import { NebulaButton } from '@nebula-studio/nebula-ui';
 
 import { useAuth } from '@/shared/composables/useAuth';

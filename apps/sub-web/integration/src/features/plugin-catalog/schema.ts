@@ -66,7 +66,7 @@ export function readPluginConfigFields(schema: unknown): PluginSchemaField[] {
   return Object.entries(properties)
     .filter(
       ([key]) =>
-        !['required', 'title', 'description', 'type', 'nodeSchema'].includes(
+        !['description', 'nodeSchema', 'required', 'title', 'type'].includes(
           key,
         ),
     )

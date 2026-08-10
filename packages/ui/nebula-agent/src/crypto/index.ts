@@ -1,13 +1,13 @@
 export type CryptoConfig = {
   algorithm?: string;
-  key?: string;
   ivLength?: number;
+  key?: string;
 };
 
 export class SQLCrypto {
   private algorithm: string;
-  private key: Uint8Array;
   private ivLength: number;
+  private key: Uint8Array;
 
   constructor(config: CryptoConfig = {}) {
     this.algorithm = config.algorithm || 'AES-GCM';
@@ -22,46 +22,28 @@ export class SQLCrypto {
     this.checkSubtleAvailability();
   }
 
-  private checkSubtleAvailability(): void {
-    if (typeof crypto === 'undefined' || typeof crypto.subtle === 'undefined') {
-      throw new Error(
-        'crypto.subtle is not available in this environment. Please use HTTPS or localhost.',
-      );
-    }
-  }
+  async decrypt(encryptedHex: string): Promise<string> {
+    const encrypted = this.hexToUint8Array(encryptedHex);
 
-  private generateKey(): Uint8Array {
-    const array = new Uint8Array(32);
-    if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
-      crypto.getRandomValues(array);
-    } else {
-      for (let i = 0; i < array.length; i++) {
-        array[i] = Math.floor(Math.random() * 256);
-      }
-    }
-    return array;
-  }
+    const iv = encrypted.slice(0, this.ivLength);
+    const data = encrypted.slice(this.ivLength);
 
-  private hexToUint8Array(hex: string): Uint8Array {
-    const bytes = new Uint8Array(hex.length / 2);
-    for (let i = 0; i < hex.length; i += 2) {
-      bytes[i / 2] = parseInt(hex.substring(i, i + 2), 16);
-    }
-    return bytes;
-  }
+    const cryptoKey = await crypto.subtle.importKey(
+      'raw',
+      this.key.buffer as ArrayBuffer,
+      { name: this.algorithm },
+      false,
+      ['decrypt'],
+    );
 
-  private uint8ArrayToHex(array: Uint8Array): string {
-    return Array.from(array)
-      .map((b) => b.toString(16).padStart(2, '0'))
-      .join('');
-  }
+    const decrypted = await crypto.subtle.decrypt(
+      { name: this.algorithm, iv: iv.buffer as ArrayBuffer },
+      cryptoKey,
+      data.buffer as ArrayBuffer,
+    );
 
-  getKeyHex(): string {
-    return this.uint8ArrayToHex(this.key);
-  }
-
-  setKeyHex(key: string): void {
-    this.key = this.hexToUint8Array(key);
+    const decoder = new TextDecoder();
+    return decoder.decode(decrypted);
   }
 
   async encrypt(sql: string): Promise<string> {
@@ -98,27 +80,45 @@ export class SQLCrypto {
     return this.uint8ArrayToHex(result);
   }
 
-  async decrypt(encryptedHex: string): Promise<string> {
-    const encrypted = this.hexToUint8Array(encryptedHex);
+  getKeyHex(): string {
+    return this.uint8ArrayToHex(this.key);
+  }
 
-    const iv = encrypted.slice(0, this.ivLength);
-    const data = encrypted.slice(this.ivLength);
+  setKeyHex(key: string): void {
+    this.key = this.hexToUint8Array(key);
+  }
 
-    const cryptoKey = await crypto.subtle.importKey(
-      'raw',
-      this.key.buffer as ArrayBuffer,
-      { name: this.algorithm },
-      false,
-      ['decrypt'],
-    );
+  private checkSubtleAvailability(): void {
+    if (typeof crypto === 'undefined' || typeof crypto.subtle === 'undefined') {
+      throw new Error(
+        'crypto.subtle is not available in this environment. Please use HTTPS or localhost.',
+      );
+    }
+  }
 
-    const decrypted = await crypto.subtle.decrypt(
-      { name: this.algorithm, iv: iv.buffer as ArrayBuffer },
-      cryptoKey,
-      data.buffer as ArrayBuffer,
-    );
+  private generateKey(): Uint8Array {
+    const array = new Uint8Array(32);
+    if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+      crypto.getRandomValues(array);
+    } else {
+      for (let i = 0; i < array.length; i++) {
+        array[i] = Math.floor(Math.random() * 256);
+      }
+    }
+    return array;
+  }
 
-    const decoder = new TextDecoder();
-    return decoder.decode(decrypted);
+  private hexToUint8Array(hex: string): Uint8Array {
+    const bytes = new Uint8Array(hex.length / 2);
+    for (let i = 0; i < hex.length; i += 2) {
+      bytes[i / 2] = parseInt(hex.substring(i, i + 2), 16);
+    }
+    return bytes;
+  }
+
+  private uint8ArrayToHex(array: Uint8Array): string {
+    return Array.from(array)
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('');
   }
 }

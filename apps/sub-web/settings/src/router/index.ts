@@ -1,12 +1,15 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import type { SettingsAccess } from '@/shared/auth/access';
+
 import type { RouteRecordRaw } from 'vue-router';
 
-import SettingsLayout from '@/layout/SettingsLayout.vue';
+import { createRouter, createWebHistory } from 'vue-router';
+
 import { hasValidAuthToken } from '@nebula-studio/auth-provider/session';
 import { defineExperiencePageMeta } from '@nebula-studio/nebula-layout';
 import { detectRuntimeMode } from '@nebula-studio/runtime';
+
+import SettingsLayout from '@/layout/SettingsLayout.vue';
 import { canAccessSettings } from '@/shared/auth/access';
-import type { SettingsAccess } from '@/shared/auth/access';
 
 function settingsMeta(
   title: string,

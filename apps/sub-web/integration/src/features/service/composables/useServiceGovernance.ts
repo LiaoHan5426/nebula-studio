@@ -1,19 +1,6 @@
-import { computed, onMounted, ref, watch } from 'vue';
-
-import { governanceApi } from '@/features/governance/api';
-import { tenantApi } from '@/features/tenant/api';
 import type { TenantRecord } from '@/features/tenant/api';
-import { interfaceApi } from '@/shared/api/integration';
-import { getAuthUserId } from '@/shared/auth/session';
-import { useAuth } from '@/shared/composables/useAuth';
 import type { ApiInterface } from '@/shared/types';
-import { isApiSuccess } from '@/shared/types';
 
-import {
-  mapCircuitBreakerRow,
-  mapRateLimitRow,
-  mapWhitelistRow,
-} from '../governance/mappers';
 import type {
   CircuitBreakerRow,
   CircuitForm,
@@ -23,6 +10,21 @@ import type {
   WhitelistForm,
   WhitelistRow,
 } from '../governance/types';
+
+import { computed, onMounted, ref, watch } from 'vue';
+
+import { governanceApi } from '@/features/governance/api';
+import { tenantApi } from '@/features/tenant/api';
+import { interfaceApi } from '@/shared/api/integration';
+import { getAuthUserId } from '@/shared/auth/session';
+import { useAuth } from '@/shared/composables/useAuth';
+import { isApiSuccess } from '@/shared/types';
+
+import {
+  mapCircuitBreakerRow,
+  mapRateLimitRow,
+  mapWhitelistRow,
+} from '../governance/mappers';
 import { TAB_LABELS } from '../governance/types';
 
 export function useServiceGovernance() {
@@ -35,9 +37,9 @@ export function useServiceGovernance() {
   const selectedTenantId = ref('');
   const loading = ref(false);
   const showDialog = ref(false);
-  const editingRule = ref<RuleRow | null>(null);
+  const editingRule = ref<null | RuleRow>(null);
   const editingCircuit = ref<CircuitBreakerRow | null>(null);
-  const editingWhitelist = ref<WhitelistRow | null>(null);
+  const editingWhitelist = ref<null | WhitelistRow>(null);
 
   const rateLimitForm = ref<RateLimitForm>({
     ruleName: '',

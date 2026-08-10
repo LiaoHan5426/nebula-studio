@@ -8,6 +8,7 @@ export async function ignores(): Promise<Linter.Config[]> {
         '**/dist',
         '**/dist-*',
         '**/*-dist',
+        '**/out',
         '**/.husky',
         '**/.nitro',
         '**/.output',
@@ -30,6 +31,7 @@ export async function ignores(): Promise<Linter.Config[]> {
         '**/.changeset',
         '**/.idea',
         '**/.cache',
+        '**/.eslintcache',
         '**/.output',
         '**/.vite-inspect',
 

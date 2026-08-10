@@ -1,5 +1,12 @@
 <script setup lang="ts">
+import type {
+  WorkspaceLink,
+  WorkspaceModel,
+  WorkspaceSummary,
+} from '../types/workspace';
+
 import { computed } from 'vue';
+
 import {
   NebulaButton,
   NebulaEmptyState,
@@ -7,21 +14,16 @@ import {
   NebulaPageHeader,
   NebulaTag,
 } from '@nebula-studio/nebula-ui';
-import type {
-  WorkspaceLink,
-  WorkspaceModel,
-  WorkspaceSummary,
-} from '../types/workspace';
 
 const props = defineProps<{
-  username?: string;
   model: WorkspaceModel;
+  username?: string;
 }>();
 
 const emit = defineEmits<{
   activate: [item: WorkspaceLink];
-  search: [];
   manageApps: [];
+  search: [];
 }>();
 
 const greeting = computed(() => {
@@ -32,7 +34,7 @@ const greeting = computed(() => {
 
 function summaryVariant(
   tone: WorkspaceSummary['tone'],
-): 'default' | 'info' | 'success' | 'warning' | 'danger' {
+): 'danger' | 'default' | 'info' | 'success' | 'warning' {
   if (tone === 'danger') return 'danger';
   if (tone === 'neutral') return 'default';
   return tone ?? 'default';

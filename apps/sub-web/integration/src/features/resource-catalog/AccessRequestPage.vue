@@ -1,6 +1,10 @@
 <script setup lang="ts">
+import type { AccessRequestStep } from './request-state';
+import type { AccessRequestDraft, ResourceSummaryViewModel } from './types';
+
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+
 import {
   NebulaButton,
   NebulaEmptyState,
@@ -19,7 +23,6 @@ import {
   nextAccessRequestStep,
   previousAccessRequestStep,
 } from './request-state';
-import type { AccessRequestStep } from './request-state';
 import {
   clearAccessDraft,
   readAccessDraft,
@@ -27,7 +30,6 @@ import {
   writeAccessDraft,
 } from './storage';
 import { DEFAULT_ACCESS_REQUEST_DRAFT } from './types';
-import type { AccessRequestDraft, ResourceSummaryViewModel } from './types';
 
 const route = useRoute();
 const router = useRouter();
@@ -56,7 +58,7 @@ async function load(): Promise<void> {
     resource.value = result.items.find((item) => item.id === resourceId);
     if (!resource.value) error.value = '资源不存在或已经下线。';
     else if (
-      !['AVAILABLE', 'APPROVAL_REQUIRED'].includes(resource.value.availability)
+      !['APPROVAL_REQUIRED', 'AVAILABLE'].includes(resource.value.availability)
     ) {
       error.value = '该资源当前不可申请，请返回目录选择在线资源。';
     }
@@ -121,7 +123,7 @@ onMounted(() => {
     <button class="back-button" type="button" @click="router.back()">
       ← 返回资源详情
     </button>
-    <div v-if="loading" class="request-loading" />
+    <div v-if="loading" class="request-loading"></div>
     <NebulaEmptyState
       v-else-if="!resource"
       title="无法发起申请"
@@ -170,11 +172,9 @@ onMounted(() => {
               v-model="draft.purpose"
               rows="7"
               placeholder="例如：订单运营团队将在内部看板中读取每日履约状态，用于异常订单跟进。"
-            />
+            ></textarea>
           </label>
-          <span class="field-hint"
-            >{{ draft.purpose.length }} / 至少 10 字符</span
-          >
+          <span class="field-hint">{{ draft.purpose.length }} / 至少 10 字符</span>
         </div>
 
         <div v-else-if="step === 2" class="form-step">

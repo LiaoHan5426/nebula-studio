@@ -1,16 +1,18 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from 'vue';
-import { NebulaIcon, NebulaTag } from '@nebula-studio/nebula-ui';
 import type { GlobalSearchItem, GlobalSearchKind } from '../types/workspace';
 
+import { computed, nextTick, ref, watch } from 'vue';
+
+import { NebulaIcon, NebulaTag } from '@nebula-studio/nebula-ui';
+
 const props = defineProps<{
-  open: boolean;
   items: GlobalSearchItem[];
+  open: boolean;
 }>();
 
 const emit = defineEmits<{
-  'update:open': [value: boolean];
   activate: [item: GlobalSearchItem];
+  'update:open': [value: boolean];
 }>();
 
 const query = ref('');
@@ -96,7 +98,7 @@ function onKeydown(event: KeyboardEvent): void {
         class="command-palette__backdrop"
         aria-label="关闭全局搜索"
         @click="close"
-      />
+      ></button>
       <section class="command-palette__panel">
         <h2 id="command-palette-title" class="sr-only">全局搜索</h2>
         <label class="command-palette__search">

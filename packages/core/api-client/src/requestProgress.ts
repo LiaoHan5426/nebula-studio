@@ -1,6 +1,6 @@
-import NProgress from 'nprogress';
-
 import type { RequestProgressOptions } from './types';
+
+import NProgress from 'nprogress';
 
 const isTest = import.meta.env.MODE === 'test';
 

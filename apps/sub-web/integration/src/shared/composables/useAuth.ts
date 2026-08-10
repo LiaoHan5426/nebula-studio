@@ -1,7 +1,10 @@
 import { computed, ref } from 'vue';
 
+import { isSurfaceIframeEmbed } from '@nebula-studio/app-shell';
+
 import router from '@/router';
 import { authApi } from '@/shared/api/auth';
+import { isPlatformAdmin as checkPlatformAdmin } from '@/shared/auth/roles';
 import {
   clearAuthSession,
   getAuthRoles,
@@ -10,16 +13,14 @@ import {
   hasValidAuthToken,
   setAuthSession,
 } from '@/shared/auth/session';
-import { isPlatformAdmin as checkPlatformAdmin } from '@/shared/auth/roles';
-import { isSurfaceIframeEmbed } from '@nebula-studio/app-shell';
 import { useTenant } from '@/shared/composables/useTenant';
 import { isApiSuccess } from '@/shared/types';
 
-const token = ref<string | null>(getAuthToken());
-const username = ref<string | null>(getAuthUsername());
+const token = ref<null | string>(getAuthToken());
+const username = ref<null | string>(getAuthUsername());
 const roles = ref<string[]>(getAuthRoles());
 const loading = ref(false);
-const error = ref<string | null>(null);
+const error = ref<null | string>(null);
 const shellEmbed = isSurfaceIframeEmbed('integration');
 const { resetTenantSession } = useTenant();
 

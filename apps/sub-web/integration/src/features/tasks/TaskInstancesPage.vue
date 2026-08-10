@@ -1,19 +1,21 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { NebulaButton, NebulaPane, NebulaTag } from '@nebula-studio/nebula-ui';
-
-import { taskApi } from '@/shared/api/taskApi';
-import { useTenant } from '@/shared/composables/useTenant';
 import type {
   TaskInstance,
   TaskLog,
 } from '@nebula-studio/contracts/integration';
+
+import { onMounted, ref } from 'vue';
+
 import { isApiSuccess } from '@nebula-studio/api-client';
+import { NebulaButton, NebulaPane, NebulaTag } from '@nebula-studio/nebula-ui';
+
+import { taskApi } from '@/shared/api/taskApi';
+import { useTenant } from '@/shared/composables/useTenant';
 
 const { currentTenantId } = useTenant();
 
 const instances = ref<TaskInstance[]>([]);
-const selectedInstance = ref<TaskInstance | null>(null);
+const selectedInstance = ref<null | TaskInstance>(null);
 const logs = ref<TaskLog[]>([]);
 const loading = ref(false);
 const logsLoading = ref(false);
@@ -71,9 +73,9 @@ function statusVariant(status: string) {
   <div class="page">
     <NebulaPane title="任务实例" description="查看执行状态、日志与重试失败任务">
       <div class="page__toolbar">
-        <NebulaButton variant="outline" @click="loadInstances"
-          >刷新</NebulaButton
-        >
+        <NebulaButton variant="outline" @click="loadInstances">
+          刷新
+        </NebulaButton>
       </div>
 
       <div v-if="loading" class="page__empty">加载中…</div>
@@ -100,9 +102,9 @@ function statusVariant(status: string) {
                   {{ instance.retryCount ?? 0 }}
                 </p>
               </div>
-              <NebulaTag :variant="statusVariant(instance.status)">{{
-                instance.status
-              }}</NebulaTag>
+              <NebulaTag :variant="statusVariant(instance.status)">
+                {{ instance.status }}
+              </NebulaTag>
             </div>
             <div class="page__actions">
               <NebulaButton

@@ -5,56 +5,56 @@
 export enum ResourceType {
   API = 'API',
   CONNECTOR = 'CONNECTOR',
-  PLUGIN = 'PLUGIN',
-  FLOW = 'FLOW',
   DATASOURCE = 'DATASOURCE',
+  FLOW = 'FLOW',
+  PLUGIN = 'PLUGIN',
 }
 
 export enum ResourceStatus {
-  DRAFT = 'DRAFT',
-  VERSIONED = 'VERSIONED',
   ACTIVE = 'ACTIVE',
-  INACTIVE = 'INACTIVE',
-  DEPRECATED = 'DEPRECATED',
   ARCHIVED = 'ARCHIVED',
+  DEPRECATED = 'DEPRECATED',
+  DRAFT = 'DRAFT',
+  INACTIVE = 'INACTIVE',
+  VERSIONED = 'VERSIONED',
 }
 
 export interface ResourceRecord {
-  id: string;
-  name: string;
+  createdAt: string;
+  createdBy: string;
   description: string;
+  id: string;
+  labels: string;
+  name: string;
+  ownerId: string;
   resourceType: ResourceType | string;
   status: ResourceStatus | string;
   tenantId: string;
-  ownerId: string;
-  versionId: string;
-  labels: string;
-  createdBy: string;
-  createdAt: string;
   updatedAt: string;
+  versionId: string;
 }
 
 export interface ResourceCreateRequest {
-  name: string;
   description?: string;
+  labels?: string;
+  name: string;
   resourceType: ResourceType | string;
   tenantId: string;
-  labels?: string;
 }
 
 export interface ResourceUpdateRequest {
-  name?: string;
   description?: string;
-  status?: ResourceStatus | string;
   labels?: string;
+  name?: string;
+  status?: ResourceStatus | string;
   versionId?: string;
 }
 
 export interface ResourceQueryParams {
-  tenantId: string;
-  resourceType?: string;
-  status?: string;
   keyword?: string;
   page?: number;
+  resourceType?: string;
   size?: number;
+  status?: string;
+  tenantId: string;
 }

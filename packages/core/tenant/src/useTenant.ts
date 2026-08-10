@@ -1,24 +1,24 @@
 import { ref } from 'vue';
 
 export interface TenantRecord {
+  [key: string]: unknown;
   tenantId: string;
   tenantName?: string;
-  [key: string]: unknown;
 }
 
 export interface ApiResponse<T> {
-  success: boolean;
   data?: T;
+  success: boolean;
 }
 
 export interface TenantApiAdapter {
-  mine: () => Promise<ApiResponse<TenantRecord[]>>;
   get: (id: string) => Promise<ApiResponse<TenantRecord>>;
+  mine: () => Promise<ApiResponse<TenantRecord[]>>;
 }
 
 export interface UseTenantOptions {
-  tenantApi: TenantApiAdapter;
   isApiSuccess: <T>(response: ApiResponse<T>) => boolean;
+  tenantApi: TenantApiAdapter;
 }
 
 const STORAGE_KEY = 'tenant_id';

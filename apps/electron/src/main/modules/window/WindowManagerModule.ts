@@ -1,4 +1,5 @@
 import type { MainModule, MainModuleContext } from '../../bootstrap/MainModule';
+
 import { WindowStateManager } from './WindowStateManager';
 
 export class WindowManagerModule implements MainModule {

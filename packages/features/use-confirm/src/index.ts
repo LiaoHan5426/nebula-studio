@@ -1,8 +1,8 @@
 import { reactive } from 'vue';
 
 export interface ConfirmState {
-  open: boolean;
   message: string;
+  open: boolean;
 }
 
 interface ConfirmQueueItem {

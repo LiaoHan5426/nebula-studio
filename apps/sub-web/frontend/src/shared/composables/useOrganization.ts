@@ -1,12 +1,14 @@
+import type { OrgSummary } from '@/shared/types';
+
 import { computed, ref } from 'vue';
+
 import {
   readWebAuthSession,
   writeWebAuthSession,
 } from '@nebula-studio/app-shell';
 
-import { authMeApi, authModeApi, switchOrgApi } from '@/shared/api/systemAuth';
 import { setCurrentOrgId } from '@/shared/api/client';
-import type { OrgSummary } from '@/shared/types';
+import { authMeApi, authModeApi, switchOrgApi } from '@/shared/api/systemAuth';
 import { isApiSuccess } from '@/shared/types';
 
 const orgEnabled = ref(false);

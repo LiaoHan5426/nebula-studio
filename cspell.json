@@ -4,6 +4,7 @@
   "language": "en,en-US",
   "allowCompoundWords": true,
   "words": [
+    "Integratable",
     "acmr",
     "antd",
     "antdv",
@@ -30,7 +31,6 @@
     "fastify",
     "iconify",
     "iconoir",
-    "Integratable",
     "intlify",
     "isequal",
     "jspm",

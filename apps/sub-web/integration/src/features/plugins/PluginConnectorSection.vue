@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import type { Connector, DatabaseConfig, ProtocolConfig } from '@/shared/types';
+
 import { computed, onMounted, ref } from 'vue';
+
 import { NebulaButton, NebulaPane, NebulaTag } from '@nebula-studio/nebula-ui';
 
 import { connectorApi } from '@/shared/api/integration';
-import type { Connector, DatabaseConfig, ProtocolConfig } from '@/shared/types';
 import { ConnectorType, isApiSuccess } from '@/shared/types';
 
 const props = defineProps<{
@@ -19,11 +21,11 @@ const loading = ref(false);
 const showTestDialog = ref(false);
 const currentConnector = ref<Connector | null>(null);
 const testing = ref(false);
-const testResult = ref<{
-  success: boolean;
+const testResult = ref<null | {
   message: string;
   responseTimeMs: number;
-} | null>(null);
+  success: boolean;
+}>(null);
 
 const testConfig = ref<DatabaseConfig | ProtocolConfig>({
   host: 'localhost',
@@ -139,9 +141,9 @@ function resolveTypeLabel(connector: Connector): string {
     description="插件激活后由 PF4J 注册为运行时连接器，供数据源与接口编排选用。"
   >
     <div class="connector-section__toolbar">
-      <NebulaButton variant="outline" @click="loadConnectors"
-        >刷新</NebulaButton
-      >
+      <NebulaButton variant="outline" @click="loadConnectors">
+        刷新
+      </NebulaButton>
     </div>
 
     <div v-if="loading" class="connector-section__empty">加载中…</div>

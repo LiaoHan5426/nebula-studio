@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+
 import { answerConfirm, cancelAllConfirms, useConfirm } from '../index.ts';
 
 describe('useConfirm queue', () => {

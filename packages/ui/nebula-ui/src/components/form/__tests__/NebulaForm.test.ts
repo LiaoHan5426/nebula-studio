@@ -1,14 +1,16 @@
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent } from 'vue';
+
 import { describe, expect, it, vi } from 'vitest';
-import NebulaForm from '../NebulaForm.vue';
-import NebulaFormItem from '../NebulaFormItem.vue';
-import NebulaInput from '../../input/NebulaInput.vue';
+
 import NebulaCheckbox from '../../checkbox/NebulaCheckbox.vue';
 import NebulaDatePicker from '../../date-picker/NebulaDatePicker.vue';
+import NebulaInput from '../../input/NebulaInput.vue';
 import NebulaRadioGroup from '../../radio-group/NebulaRadioGroup.vue';
 import NebulaSelect from '../../select/NebulaSelect.vue';
 import NebulaSwitch from '../../switch/NebulaSwitch.vue';
+import NebulaForm from '../NebulaForm.vue';
+import NebulaFormItem from '../NebulaFormItem.vue';
 
 function mountForm(onSubmit = vi.fn()) {
   return mount(

@@ -1,14 +1,15 @@
-import { apiRequest } from '@/shared/api/client';
 import type { ApiResponse, VersionDiff, VersionSnapshot } from '@/shared/types';
+
+import { apiRequest } from '@/shared/api/client';
 
 const VERSION_BASE = '/api/version';
 
 export const versionApi = {
   createSnapshot(body: {
-    resourceId: string;
     label: string;
-    snapshotJson: string;
     operatorId?: string;
+    resourceId: string;
+    snapshotJson: string;
   }): Promise<ApiResponse<VersionSnapshot>> {
     return apiRequest(VERSION_BASE, '/snapshots', {
       method: 'POST',

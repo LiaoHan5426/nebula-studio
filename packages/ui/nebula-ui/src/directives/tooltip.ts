@@ -1,5 +1,7 @@
 import type { ObjectDirective } from 'vue';
+
 import type { TooltipPlacement } from '../utils/tooltip';
+
 import {
   hideFloatingTooltipByTarget,
   scheduleHideFloatingTooltipByTarget,

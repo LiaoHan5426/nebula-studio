@@ -1,5 +1,5 @@
-import type { GrantScheduleType } from '@/shared/grant/schedule';
 import type { InterfaceGrantRecord } from '@/features/tenant/api';
+import type { GrantScheduleType } from '@/shared/grant/schedule';
 
 export interface AuthorizeRow {
   serviceId: string;

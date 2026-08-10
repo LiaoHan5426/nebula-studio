@@ -1,6 +1,5 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
-
 import iconBasicDemo from '@/examples/icon/IconBasic.vue?demo';
 import iconCustomDemo from '@/examples/icon/IconCustom.vue?demo';
 import iconPresetDemo from '@/examples/icon/IconPreset.vue?demo';

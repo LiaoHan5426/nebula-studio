@@ -1,3 +1,5 @@
+import type { InjectionKey } from 'vue';
+
 import {
   computed,
   defineComponent,
@@ -7,10 +9,10 @@ import {
   ref,
   Teleport,
 } from 'vue';
-import type { InjectionKey } from 'vue';
-import { cn } from '../../utils/cn';
-import { useDropdownPosition } from '../../composables/useDropdownPosition';
+
 import { useDropdownDismiss } from '../../composables/useDropdownDismiss';
+import { useDropdownPosition } from '../../composables/useDropdownPosition';
+import { cn } from '../../utils/cn';
 
 const dropdownCloseKey: InjectionKey<() => void> = Symbol(
   'nebula-dropdown-close',

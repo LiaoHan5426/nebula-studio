@@ -1,10 +1,9 @@
-import { describe, expect, it } from 'vitest';
-
 import {
   buildNodeSchemasFromCatalog,
   mapPluginCatalogItem,
 } from '@/features/plugin-catalog/mappers';
 import { readPluginConfigFields } from '@/features/plugin-catalog/schema';
+import { describe, expect, it } from 'vitest';
 
 describe('plugin catalog schema', () => {
   it.each([

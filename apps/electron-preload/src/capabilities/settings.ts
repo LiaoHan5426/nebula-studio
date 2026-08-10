@@ -1,8 +1,9 @@
-import { ipcRenderer } from 'electron';
 import type { IpcRendererEvent } from 'electron';
-import { electronAPI } from '@electron-toolkit/preload';
 
-type ThemeMode = 'light' | 'dark';
+import { electronAPI } from '@electron-toolkit/preload';
+import { ipcRenderer } from 'electron';
+
+type ThemeMode = 'dark' | 'light';
 
 /**
  * 统一 Settings 能力模块。

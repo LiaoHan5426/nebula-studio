@@ -1,5 +1,7 @@
-import { defineComponent, h } from 'vue';
 import type { PropType } from 'vue';
+
+import { defineComponent, h } from 'vue';
+
 import { VxeColumn } from 'vxe-table';
 
 export const NebulaTableColumn = defineComponent({
@@ -14,19 +16,19 @@ export const NebulaTableColumn = defineComponent({
       default: '',
     },
     width: {
-      type: [String, Number] as PropType<string | number>,
+      type: [String, Number] as PropType<number | string>,
       default: undefined,
     },
     minWidth: {
-      type: [String, Number] as PropType<string | number>,
+      type: [String, Number] as PropType<number | string>,
       default: undefined,
     },
     fixed: {
-      type: String as PropType<'left' | 'right' | ''>,
+      type: String as PropType<'' | 'left' | 'right'>,
       default: '',
     },
     align: {
-      type: String as PropType<'left' | 'center' | 'right' | ''>,
+      type: String as PropType<'' | 'center' | 'left' | 'right'>,
       default: '',
     },
     type: {
@@ -39,13 +41,13 @@ export const NebulaTableColumn = defineComponent({
     },
     formatter: {
       type: [String, Function] as PropType<
-        string | ((params: unknown) => unknown)
+        ((params: unknown) => unknown) | string
       >,
       default: undefined,
     },
     showOverflow: {
       type: [Boolean, String] as PropType<
-        boolean | 'ellipsis' | 'title' | 'tooltip' | 'none'
+        'ellipsis' | 'none' | 'title' | 'tooltip' | boolean
       >,
       default: undefined,
     },

@@ -12,17 +12,14 @@ import type { AuthProfile } from '@nebula-studio/contracts/auth';
  * 各策略按需读取；不需要的字段可留空。
  */
 export interface AuthBootstrapOptions {
+  /**
+   * embed 模式下是否允许向父 Shell 请求打开登录弹窗。
+   * 默认 `true`。
+   */
+  allowShellLogin?: boolean;
+
   /** 当前子应用 ID（如 integration、settings） */
   appId?: string;
-
-  /** embed surface ID；默认与 appId 相同 */
-  surfaceId?: string;
-
-  /** 登录成功后的回调（如同步 tenant / profile） */
-  onAuthenticated?: (profile: AuthProfile) => void | Promise<void>;
-
-  /** 认证失败回调（如跳转登录页） */
-  onAuthFailed?: () => void;
 
   /**
    * standalone 模式下的登录页路由路径。
@@ -30,11 +27,14 @@ export interface AuthBootstrapOptions {
    */
   loginRoutePath?: string;
 
-  /**
-   * embed 模式下是否允许向父 Shell 请求打开登录弹窗。
-   * 默认 `true`。
-   */
-  allowShellLogin?: boolean;
+  /** 登录成功后的回调（如同步 tenant / profile） */
+  onAuthenticated?: (profile: AuthProfile) => Promise<void> | void;
+
+  /** 认证失败回调（如跳转登录页） */
+  onAuthFailed?: () => void;
+
+  /** embed surface ID；默认与 appId 相同 */
+  surfaceId?: string;
 }
 
 /**

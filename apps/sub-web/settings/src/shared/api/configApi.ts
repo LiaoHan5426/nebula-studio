@@ -1,6 +1,8 @@
-import { configRequest } from '@/shared/api/client';
 import type { ApiResponse } from '@/shared/types';
+
 import type { ConfigItem } from '@nebula-studio/contracts/system';
+
+import { configRequest } from '@/shared/api/client';
 
 export type { ConfigItem };
 
@@ -17,7 +19,7 @@ function buildQuery(params: Record<string, string | undefined>): string {
 
 export const configApi = {
   list(
-    params: { scope?: string; tenantId?: string; group?: string } = {},
+    params: { group?: string; scope?: string; tenantId?: string } = {},
   ): Promise<ApiResponse<ConfigItem[]>> {
     return configRequest(buildQuery(params));
   },

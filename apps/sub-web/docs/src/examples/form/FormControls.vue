@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { toTypedSchema } from '@vee-validate/zod';
-import { z } from 'zod';
+
 import {
   NebulaButton,
   NebulaCheckbox,
@@ -12,6 +11,9 @@ import {
   NebulaSelect,
   NebulaSwitch,
 } from '@nebula-studio/nebula-ui';
+
+import { toTypedSchema } from '@vee-validate/zod';
+import { z } from 'zod';
 
 const validationSchema = toTypedSchema(
   z.object({

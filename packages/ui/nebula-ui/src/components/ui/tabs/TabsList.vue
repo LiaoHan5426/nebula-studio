@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { HTMLAttributes } from 'vue';
+
 import { TabsList as TabsListRoot } from 'reka-ui';
+
 import { cn } from '../../../utils/cn';
 
 defineProps<{
@@ -17,6 +19,6 @@ defineProps<{
       )
     "
   >
-    <slot />
+    <slot></slot>
   </TabsListRoot>
 </template>

@@ -1,5 +1,6 @@
-import { apiRequest, governanceRequest } from '@/shared/api/client';
 import type { ApiResponse, ReleaseRecord } from '@/shared/types';
+
+import { apiRequest, governanceRequest } from '@/shared/api/client';
 
 export const releaseApi = {
   deployRelease(

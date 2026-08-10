@@ -4,88 +4,88 @@
 
 export enum TaskType {
   CRON = 'CRON',
+  EVENT = 'EVENT',
   FIXED_DELAY = 'FIXED_DELAY',
   FIXED_RATE = 'FIXED_RATE',
-  EVENT = 'EVENT',
   MANUAL = 'MANUAL',
 }
 
 export enum TaskStatus {
-  DRAFT = 'DRAFT',
   ACTIVE = 'ACTIVE',
-  PAUSED = 'PAUSED',
+  DRAFT = 'DRAFT',
   ERROR = 'ERROR',
+  PAUSED = 'PAUSED',
 }
 
 export enum TaskInstanceStatus {
-  CREATED = 'CREATED',
-  SCHEDULED = 'SCHEDULED',
-  RUNNING = 'RUNNING',
-  COMPLETED = 'COMPLETED',
-  FAILED = 'FAILED',
-  TIMEOUT = 'TIMEOUT',
   CANCELLED = 'CANCELLED',
+  COMPLETED = 'COMPLETED',
+  CREATED = 'CREATED',
+  FAILED = 'FAILED',
+  RUNNING = 'RUNNING',
+  SCHEDULED = 'SCHEDULED',
+  TIMEOUT = 'TIMEOUT',
 }
 
 export interface TaskDefinition {
-  id: string;
-  name: string;
-  taskType: TaskType;
-  status: TaskStatus;
-  cronExpression?: string;
-  payload?: string;
-  triggerType: string;
-  tenantId?: string;
-  metadata?: Record<string, unknown>;
   createdAt?: string;
+  cronExpression?: string;
+  id: string;
+  metadata?: Record<string, unknown>;
+  name: string;
+  payload?: string;
+  status: TaskStatus;
+  taskType: TaskType;
+  tenantId?: string;
+  triggerType: string;
   updatedAt?: string;
 }
 
 export interface TaskCreateRequest {
-  name: string;
-  taskType: TaskType;
   cronExpression?: string;
-  payload?: string;
-  triggerType: string;
   metadata?: Record<string, unknown>;
+  name: string;
+  payload?: string;
+  taskType: TaskType;
+  triggerType: string;
 }
 
 export interface TaskUpdateRequest {
-  name?: string;
   cronExpression?: string;
-  payload?: string;
   metadata?: Record<string, unknown>;
+  name?: string;
+  payload?: string;
 }
 
 export interface TaskInstance {
-  instanceId: string;
+  createdAt?: string;
   definitionId: string;
-  taskName?: string;
-  status: TaskInstanceStatus | string;
-  tenantId?: string;
+  finishedAt?: string;
+  instanceId: string;
+  maxRetries?: number;
   nodeId?: string;
   retryCount?: number;
-  maxRetries?: number;
   startedAt?: string;
-  finishedAt?: string;
-  createdAt?: string;
+  status: string | TaskInstanceStatus;
+  taskName?: string;
+  tenantId?: string;
 }
 
 export interface TaskLog {
-  logId: string;
-  instanceId: string;
   definitionId?: string;
-  level: 'DEBUG' | 'INFO' | 'WARN' | 'ERROR' | string;
+  instanceId: string;
+  level: 'DEBUG' | 'ERROR' | 'INFO' | 'WARN' | string;
+  logId: string;
   message: string;
   stackTrace?: string;
   timestamp?: string;
 }
 
 export interface TaskResult {
-  success: boolean;
-  output?: string;
-  errorType?: string;
-  errorMessage?: string;
   durationMs?: number;
+  errorMessage?: string;
+  errorType?: string;
+  output?: string;
   retryCount?: number;
+  success: boolean;
 }

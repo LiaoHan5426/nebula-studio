@@ -1,22 +1,22 @@
-import {
-  readWebAuthSession,
-  writeWebAuthSession,
-  clearWebAuthSession,
-  hasValidShellAuthSession,
-} from './storage.ts';
 import type { ShellAuthSessionPayload } from './storage.ts';
-
 import type {
   AuthProvider,
   AuthSession,
   AuthSessionListener,
 } from './types.ts';
 
+import {
+  clearWebAuthSession,
+  hasValidShellAuthSession,
+  readWebAuthSession,
+  writeWebAuthSession,
+} from './storage.ts';
+
 /**
  * Convert app-shell's ShellAuthSessionPayload to our AuthSession shape.
  */
 function toAuthSession(
-  payload: ShellAuthSessionPayload | null,
+  payload: null | ShellAuthSessionPayload,
 ): AuthSession | null {
   if (!payload?.user) return null;
   return {
@@ -46,8 +46,24 @@ function toShellPayload(session: AuthSession | null): ShellAuthSessionPayload {
 class AuthProviderImpl implements AuthProvider {
   private listeners = new Set<AuthSessionListener>();
 
+  clearSession(): void {
+    clearWebAuthSession();
+    this.notifyListeners(null);
+  }
+
   getSession(): AuthSession | null {
     return toAuthSession(readWebAuthSession());
+  }
+
+  hasValidSession(): boolean {
+    return hasValidShellAuthSession(readWebAuthSession());
+  }
+
+  onSessionChange(listener: AuthSessionListener): () => void {
+    this.listeners.add(listener);
+    return () => {
+      this.listeners.delete(listener);
+    };
   }
 
   setSession(session: AuthSession | null): void {
@@ -57,22 +73,6 @@ class AuthProviderImpl implements AuthProvider {
       this.clearSession();
     }
     this.notifyListeners(session);
-  }
-
-  hasValidSession(): boolean {
-    return hasValidShellAuthSession(readWebAuthSession());
-  }
-
-  clearSession(): void {
-    clearWebAuthSession();
-    this.notifyListeners(null);
-  }
-
-  onSessionChange(listener: AuthSessionListener): () => void {
-    this.listeners.add(listener);
-    return () => {
-      this.listeners.delete(listener);
-    };
   }
 
   private notifyListeners(session: AuthSession | null): void {

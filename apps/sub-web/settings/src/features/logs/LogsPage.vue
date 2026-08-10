@@ -1,5 +1,9 @@
 <script setup lang="ts">
+import type { LogRecord } from '@/shared/api/system';
+
 import { computed, onMounted, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
+
 import {
   NebulaButton,
   NebulaDrawer,
@@ -11,11 +15,9 @@ import {
 } from '@nebula-studio/nebula-ui';
 
 import { logsApi } from '@/shared/api/system';
-import type { LogRecord } from '@/shared/api/system';
 import { isApiSuccess } from '@/shared/types';
-import { useRouter } from 'vue-router';
 
-type LogTab = 'login' | 'operations' | 'audit';
+type LogTab = 'audit' | 'login' | 'operations';
 
 const tabs: { key: LogTab; label: string }[] = [
   { key: 'login', label: '登录日志' },

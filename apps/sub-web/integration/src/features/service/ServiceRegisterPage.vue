@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import type { ApiInterface, AtomicInterface } from '@/shared/types';
+
 import { computed, onMounted, ref } from 'vue';
+
 import {
   NebulaButton,
   NebulaPane,
@@ -10,7 +13,6 @@ import {
 
 import { interfaceApi } from '@/shared/api/integration';
 import { useAuth } from '@/shared/composables/useAuth';
-import type { ApiInterface, AtomicInterface } from '@/shared/types';
 import {
   InterfaceAuthType,
   InterfaceMethod,
@@ -140,9 +142,9 @@ function formatTime(value?: string) {
         <NebulaButton variant="primary" @click="openCreate">
           注册原子服务
         </NebulaButton>
-        <NebulaButton variant="outline" @click="loadServices"
-          >刷新</NebulaButton
-        >
+        <NebulaButton variant="outline" @click="loadServices">
+          刷新
+        </NebulaButton>
       </div>
 
       <div class="page__table-wrap">
@@ -247,9 +249,9 @@ function formatTime(value?: string) {
           <NebulaButton variant="outline" @click="showDialog = false">
             取消
           </NebulaButton>
-          <NebulaButton variant="primary" @click="saveService"
-            >保存</NebulaButton
-          >
+          <NebulaButton variant="primary" @click="saveService">
+            保存
+          </NebulaButton>
         </div>
       </NebulaPane>
     </div>

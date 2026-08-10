@@ -1,10 +1,10 @@
 import { getAuthRoles, getAuthUsername } from './session';
 
 const PLATFORM_ROLES = new Set([
-  'SUPER_ADMIN',
   'ADMIN',
-  'ROLE_SUPER_ADMIN',
   'ROLE_ADMIN',
+  'ROLE_SUPER_ADMIN',
+  'SUPER_ADMIN',
 ]);
 const ORG_ROLES = new Set([
   ...PLATFORM_ROLES,
@@ -27,11 +27,11 @@ export function isSettingsOrgAdmin(): boolean {
   );
 }
 
-export type SettingsAccess = 'personal' | 'organization' | 'platform';
+export type SettingsAccess = 'organization' | 'personal' | 'platform';
 
 export function resolveSettingsAccess(
   roles: string[],
-  username?: string | null,
+  username?: null | string,
 ): { organization: boolean; platform: boolean } {
   const platform =
     roles.some((role) => PLATFORM_ROLES.has(role)) || username === 'admin';

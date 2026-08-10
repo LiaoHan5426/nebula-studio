@@ -1,24 +1,25 @@
 <script setup lang="ts">
-import { NebulaButton } from '@nebula-studio/nebula-ui';
-import { computed, ref } from 'vue';
-
 import type { ShellTagItem } from '../../types/layout';
 
+import { computed, ref } from 'vue';
+
+import { NebulaButton } from '@nebula-studio/nebula-ui';
+
 const props = defineProps<{
-  tags: ShellTagItem[];
   activeKey: string;
   contentFullscreen?: boolean;
+  tags: ShellTagItem[];
 }>();
 
 const emit = defineEmits<{
   activate: [key: string];
   close: [key: string];
-  closeLeft: [];
-  closeRight: [];
-  closeOthers: [];
   closeAll: [];
-  refresh: [];
+  closeLeft: [];
+  closeOthers: [];
+  closeRight: [];
   fullscreen: [];
+  refresh: [];
 }>();
 
 const menuOpen = ref(false);

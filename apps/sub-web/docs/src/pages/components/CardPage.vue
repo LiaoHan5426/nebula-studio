@@ -1,9 +1,8 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
-
 import cardBasicDemo from '@/examples/card/CardBasic.vue?demo';
-import cardSimpleDemo from '@/examples/card/CardSimple.vue?demo';
 import cardFooterDemo from '@/examples/card/CardFooter.vue?demo';
+import cardSimpleDemo from '@/examples/card/CardSimple.vue?demo';
 </script>
 <template>
   <div class="doc-section">

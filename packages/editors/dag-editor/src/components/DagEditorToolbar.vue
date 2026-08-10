@@ -2,26 +2,26 @@
 import { NebulaButton } from '@nebula-studio/nebula-ui';
 
 defineProps<{
-  selectedNodeId: string | null;
-  selectedEdgeId: string | null;
-  selectedNodeLabel: string;
-  selectedEdgeLabel: string;
   nodeCount: number;
+  selectedEdgeId: null | string;
+  selectedEdgeLabel: string;
+  selectedNodeId: null | string;
+  selectedNodeLabel: string;
 }>();
 
 const emit = defineEmits<{
   addNode: [];
-  deleteNode: [];
-  deleteEdge: [];
   autoLayout: [];
+  deleteEdge: [];
+  deleteNode: [];
 }>();
 </script>
 
 <template>
   <div class="dag-editor__toolbar">
-    <NebulaButton variant="secondary" @click="emit('addNode')"
-      >新增节点</NebulaButton
-    >
+    <NebulaButton variant="secondary" @click="emit('addNode')">
+      新增节点
+    </NebulaButton>
     <NebulaButton
       variant="secondary"
       :disabled="!selectedNodeId"

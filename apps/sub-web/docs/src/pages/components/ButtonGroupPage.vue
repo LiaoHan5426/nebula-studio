@@ -1,6 +1,5 @@
 ﻿<script setup lang="ts">
 import Demo from '@/components/Demo.vue';
-
 import buttonGroupBasicDemo from '@/examples/button-group/ButtonGroupBasic.vue?demo';
 import buttonGroupVerticalDemo from '@/examples/button-group/ButtonGroupVertical.vue?demo';
 </script>

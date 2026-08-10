@@ -1,14 +1,16 @@
-import { defineComponent, h, computed, ref, watch } from 'vue';
 import type { VNode } from 'vue';
-import { useScrollSpy } from '../../composables/useScrollSpy';
+
+import { computed, defineComponent, h, ref, watch } from 'vue';
+
 import { useBackToTop } from '../../composables/useBackToTop';
+import { useScrollSpy } from '../../composables/useScrollSpy';
 
 export type NebulaAnchorItem = {
   id: string;
   label: string;
 };
 
-export type NebulaAnchorBackTopMode = 'inline' | 'float';
+export type NebulaAnchorBackTopMode = 'float' | 'inline';
 
 export const NebulaAnchor = defineComponent({
   name: 'NebulaAnchor',

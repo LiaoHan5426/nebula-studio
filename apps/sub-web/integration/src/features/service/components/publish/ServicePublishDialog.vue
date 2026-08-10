@@ -1,12 +1,4 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import {
-  NebulaButton,
-  NebulaInput,
-  NebulaPane,
-  NebulaSelect,
-} from '@nebula-studio/nebula-ui';
-
 import type {
   DagDefinitionRecord,
   OrchestrationType,
@@ -14,21 +6,31 @@ import type {
 } from '@/shared/types';
 
 import type { PublishForm } from '../../publish/types';
+
+import { computed } from 'vue';
+
+import {
+  NebulaButton,
+  NebulaInput,
+  NebulaPane,
+  NebulaSelect,
+} from '@nebula-studio/nebula-ui';
+
 import {
   PUBLISH_ORCHESTRATION_OPTIONS,
   SUBSCRIPTION_MODE_OPTIONS,
 } from '../../publish/types';
 
 const props = defineProps<{
-  open: boolean;
-  form: PublishForm;
   dagOptions: DagDefinitionRecord[];
+  form: PublishForm;
+  open: boolean;
 }>();
 
 const emit = defineEmits<{
   close: [];
-  submit: [];
   orchestrationChange: [];
+  submit: [];
   'update:form': [value: PublishForm];
 }>();
 
@@ -100,9 +102,9 @@ const dagSelectOptions = computed(
         />
       </label>
       <div class="modal__actions">
-        <NebulaButton variant="outline" @click="emit('close')"
-          >取消</NebulaButton
-        >
+        <NebulaButton variant="outline" @click="emit('close')">
+          取消
+        </NebulaButton>
         <NebulaButton @click="emit('submit')">确认发布</NebulaButton>
       </div>
     </NebulaPane>

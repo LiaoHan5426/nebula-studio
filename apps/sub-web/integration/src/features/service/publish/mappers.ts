@@ -3,14 +3,15 @@ import type {
   CompositeInterface,
   OrchestrationType,
 } from '@/shared/types';
+
+import type { PublishForm } from './types';
+
 import {
   InterfaceAuthType,
   InterfaceMethod,
   InterfaceStatus,
   InterfaceType,
 } from '@/shared/types';
-
-import type { PublishForm } from './types';
 
 export function createDefaultCompositeForm(): Partial<CompositeInterface> {
   return {
@@ -89,7 +90,7 @@ export function defaultOrchestrationType(
 
 export function statusVariant(
   status: string,
-): 'success' | 'warning' | 'default' {
+): 'default' | 'success' | 'warning' {
   if (status === InterfaceStatus.ACTIVE) return 'success';
   if (status === InterfaceStatus.PENDING_REVIEW) return 'warning';
   return 'default';
@@ -99,12 +100,12 @@ export function statusLabel(status: string): string {
   switch (status) {
     case InterfaceStatus.ACTIVE:
       return '已发布';
-    case InterfaceStatus.PENDING_REVIEW:
-      return '待审批';
-    case InterfaceStatus.INACTIVE:
-      return '已下线';
     case InterfaceStatus.DRAFT:
       return '草稿';
+    case InterfaceStatus.INACTIVE:
+      return '已下线';
+    case InterfaceStatus.PENDING_REVIEW:
+      return '待审批';
     default:
       return status;
   }

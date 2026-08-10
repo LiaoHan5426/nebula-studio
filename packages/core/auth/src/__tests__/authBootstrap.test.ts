@@ -1,4 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { AuthBootstrap } from '../AuthBootstrap';
 
 // Mock 外部依赖

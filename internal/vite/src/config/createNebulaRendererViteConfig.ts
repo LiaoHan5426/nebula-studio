@@ -1,33 +1,29 @@
 import type { UserConfig } from 'vite';
+
+import type { NebulaRendererChunksOptions } from './chunks/types.ts';
+import type { NebulaRendererPluginSelection } from './nebulaRendererPlugins.ts';
+
+import tailwindcss from '@tailwindcss/vite';
 import { mergeConfig } from 'vite';
 import { defineConfig } from 'vite-plus';
-import tailwindcss from '@tailwindcss/vite';
-import { nebulaRendererChunkBuildPartial } from './chunks/index.ts';
-import type { NebulaRendererChunksOptions } from './chunks/types.ts';
+
 import {
   nebulaBuildNodeVersionDefine,
   nebulaMswDefine,
 } from '../env/nebulaBuildDefines.ts';
 import { nebulaClientDefinePlugin } from '../plugin/nebulaClientDefine.ts';
+import { nebulaRendererChunkBuildPartial } from './chunks/index.ts';
 import { nebulaRendererOptimizeDeps } from './nebulaRendererOptimizeDeps.ts';
 import { resolveNebulaRendererPluginList } from './nebulaRendererPlugins.ts';
-import type { NebulaRendererPluginSelection } from './nebulaRendererPlugins.ts';
 import { nebulaRendererResolve } from './nebulaRendererResolve.ts';
 import { handleNebulaRendererWarning } from './nebulaRendererWarnings.ts';
 
 export interface CreateNebulaRendererViteConfigOptions {
-  root: string;
   base?: string;
-  define?: UserConfig['define'];
-  server?: UserConfig['server'];
   build?: UserConfig['build'];
-  /**
-   * 内置插件：`builtins` 覆盖默认（默认仅 `vue`）；`extra` 追加第三方插件。
-   * 新增内置能力时先在 `nebulaRendererPlugins.ts` 的 `NebulaRendererPluginId` / `BUILTIN_REGISTRY` 登记。
-   */
-  plugins?: NebulaRendererPluginSelection;
   /** Renderer 构建 chunk 策略，与 `nebulaElectronRendererPartial` 一致；默认开启。 */
   chunks?: NebulaRendererChunksOptions;
+  define?: UserConfig['define'];
   /**
    * 最后与默认配置合并（后者覆盖前者冲突项以 `merge` 为准）。
    *
@@ -45,6 +41,13 @@ export interface CreateNebulaRendererViteConfigOptions {
    *    用更高优先级或更具体选择器覆盖 `.nebula-*`（注意与 scoped 的权重）。
    */
   merge?: UserConfig;
+  /**
+   * 内置插件：`builtins` 覆盖默认（默认仅 `vue`）；`extra` 追加第三方插件。
+   * 新增内置能力时先在 `nebulaRendererPlugins.ts` 的 `NebulaRendererPluginId` / `BUILTIN_REGISTRY` 登记。
+   */
+  plugins?: NebulaRendererPluginSelection;
+  root: string;
+  server?: UserConfig['server'];
 }
 
 export function createNebulaRendererViteConfig(

@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { defineAsyncComponent } from 'vue';
-
 import type {
   CodeEditorError,
   CodeEditorOptions,
   CodeEditorReadyPayload,
 } from '../types';
 
+import { defineAsyncComponent } from 'vue';
+
 withDefaults(
   defineProps<{
-    modelValue?: string;
-    language?: string;
-    readonly?: boolean;
     height?: string;
+    language?: string;
+    modelValue?: string;
     options?: CodeEditorOptions;
+    readonly?: boolean;
   }>(),
   {
     modelValue: '',
@@ -25,9 +25,9 @@ withDefaults(
 );
 
 defineEmits<{
-  'update:modelValue': [value: string];
-  ready: [payload: CodeEditorReadyPayload];
   error: [error: CodeEditorError];
+  ready: [payload: CodeEditorReadyPayload];
+  'update:modelValue': [value: string];
 }>();
 
 const MonacoProvider = defineAsyncComponent({

@@ -1,11 +1,12 @@
-import { ref, onMounted, onUnmounted, watch } from 'vue';
 import type { Ref } from 'vue';
 
+import { onMounted, onUnmounted, ref, watch } from 'vue';
+
 export interface UseDropdownPositionOptions {
-  triggerRef: Ref<HTMLElement | null>;
+  offset: () => number;
   open: () => boolean;
   placement: () => 'bottom-end' | 'bottom-start';
-  offset: () => number;
+  triggerRef: Ref<HTMLElement | null>;
 }
 
 /**

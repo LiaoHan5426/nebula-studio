@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+
 import {
+  NebulaButton,
   NebulaDropdown,
   NebulaDropdownItem,
-  NebulaButton,
 } from '@nebula-studio/nebula-ui';
 
 const dropdownOpen = ref(false);

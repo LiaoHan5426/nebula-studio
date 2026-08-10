@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import type { ApiInterface, FlowDefinition } from '@/shared/types';
+
 import { onMounted, ref } from 'vue';
+
 import IntegrationBpmnEditor from '@nebula-studio/nebula-flow-editor/components/IntegrationBpmnEditor.vue';
 import {
   NebulaButton,
@@ -9,11 +12,10 @@ import {
   NebulaTag,
 } from '@nebula-studio/nebula-ui';
 
-import { interfaceApi } from '@/shared/api/integration';
 import { flowsApi } from '@/shared/api/flows';
-import type { ApiInterface, FlowDefinition } from '@/shared/types';
-import { isApiSuccess } from '@/shared/types';
+import { interfaceApi } from '@/shared/api/integration';
 import { useTenant } from '@/shared/composables/useTenant';
+import { isApiSuccess } from '@/shared/types';
 
 const flows = ref<FlowDefinition[]>([]);
 const atomicInterfaces = ref<ApiInterface[]>([]);
@@ -104,9 +106,9 @@ function statusVariant(status: string) {
       description="集成平台流程编排：Service Task 对应原子接口调用，保存后发布生效"
     >
       <div class="page__toolbar">
-        <NebulaButton variant="primary" @click="handleCreate"
-          >新建流程</NebulaButton
-        >
+        <NebulaButton variant="primary" @click="handleCreate">
+          新建流程
+        </NebulaButton>
         <NebulaButton variant="outline" @click="loadFlows">刷新</NebulaButton>
       </div>
 
@@ -118,23 +120,23 @@ function statusVariant(status: string) {
           <NebulaTableColumn field="tenantId" title="租户" width="120" />
           <NebulaTableColumn field="status" title="状态" width="120">
             <template #default="{ row }">
-              <NebulaTag :variant="statusVariant(row.status)">{{
-                row.status
-              }}</NebulaTag>
+              <NebulaTag :variant="statusVariant(row.status)">
+                {{ row.status }}
+              </NebulaTag>
             </template>
           </NebulaTableColumn>
           <NebulaTableColumn title="操作" width="280">
             <template #default="{ row }">
               <div class="row-actions">
-                <NebulaButton variant="outline" @click="openDesign(row)"
-                  >设计</NebulaButton
-                >
-                <NebulaButton variant="outline" @click="handlePublish(row.id)"
-                  >发布</NebulaButton
-                >
-                <NebulaButton variant="outline" @click="handleDelete(row.id)"
-                  >删除</NebulaButton
-                >
+                <NebulaButton variant="outline" @click="openDesign(row)">
+                  设计
+                </NebulaButton>
+                <NebulaButton variant="outline" @click="handlePublish(row.id)">
+                  发布
+                </NebulaButton>
+                <NebulaButton variant="outline" @click="handleDelete(row.id)">
+                  删除
+                </NebulaButton>
               </div>
             </template>
           </NebulaTableColumn>
@@ -158,12 +160,12 @@ function statusVariant(status: string) {
           />
         </div>
         <div class="modal__actions">
-          <NebulaButton variant="outline" @click="showEditor = false"
-            >关闭</NebulaButton
-          >
-          <NebulaButton variant="primary" @click="saveDesign"
-            >保存</NebulaButton
-          >
+          <NebulaButton variant="outline" @click="showEditor = false">
+            关闭
+          </NebulaButton>
+          <NebulaButton variant="primary" @click="saveDesign">
+            保存
+          </NebulaButton>
         </div>
       </NebulaPane>
     </div>

@@ -1,3 +1,5 @@
+import type { ShellAuthSessionPayload } from '@nebula-studio/app-shell';
+
 /**
  * Shell 认证等待 composable。
  *
@@ -12,19 +14,18 @@ import {
   hasValidShellAuthSession,
   readWebAuthSession,
 } from '@nebula-studio/app-shell';
-import type { ShellAuthSessionPayload } from '@nebula-studio/app-shell';
 
 const SHELL_AUTH_WAIT_TIMEOUT_MS = 120_000;
 
 export interface ShellAuthWaiterOptions {
   /** 获取当前 auth session */
-  getAuthSession: () => ShellAuthSessionPayload | null;
-  /** 设置 auth session */
-  setAuthSession: (session: ShellAuthSessionPayload | null) => void;
+  getAuthSession: () => null | ShellAuthSessionPayload;
   /** 打开登录窗口 */
   openLogin: () => Promise<void>;
   /** 刷新 auth session */
   refreshAuthSession: () => Promise<void>;
+  /** 设置 auth session */
+  setAuthSession: (session: null | ShellAuthSessionPayload) => void;
 }
 
 export function useShellAuthWaiter(opts: ShellAuthWaiterOptions) {

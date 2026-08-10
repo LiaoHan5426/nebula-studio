@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import type { ComponentPublicInstance } from 'vue';
+
+import type { NebulaFormControlProps } from '../form/types';
+
 import {
   computed,
   nextTick,
@@ -7,12 +11,10 @@ import {
   ref,
   watch,
 } from 'vue';
-import type { ComponentPublicInstance } from 'vue';
-import type { NebulaFormControlProps } from '../form/types';
 
-type NebulaSelectPrimitive = string | number;
+type NebulaSelectPrimitive = number | string;
 type NebulaSelectObjectOption = Readonly<Record<string, unknown>>;
-type NebulaSelectOption = NebulaSelectPrimitive | NebulaSelectObjectOption;
+type NebulaSelectOption = NebulaSelectObjectOption | NebulaSelectPrimitive;
 
 type NormalizedOption = {
   disabled: boolean;
@@ -29,15 +31,15 @@ defineOptions({
 const props = withDefaults(
   defineProps<
     NebulaFormControlProps & {
+      class?: string;
+      disabled?: boolean;
+      disabledKey?: string;
+      labelKey?: string;
       modelValue?: unknown;
       options?: readonly NebulaSelectOption[];
-      labelKey?: string;
-      valueKey?: string;
-      disabledKey?: string;
       placeholder?: string;
-      disabled?: boolean;
       returnObject?: boolean;
-      class?: string;
+      valueKey?: string;
     }
   >(),
   {
@@ -59,10 +61,10 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  'update:modelValue': [value: unknown];
-  change: [value: unknown, option: NebulaSelectOption];
   blur: [];
+  change: [value: unknown, option: NebulaSelectOption];
   focus: [];
+  'update:modelValue': [value: unknown];
 }>();
 
 const root = ref<HTMLElement>();
@@ -180,7 +182,7 @@ function toggleSelect(): void {
   }
 }
 
-function moveActive(direction: 1 | -1): void {
+function moveActive(direction: -1 | 1): void {
   const options = normalizedOptions.value;
   if (options.length === 0) return;
 
@@ -211,7 +213,7 @@ function scrollActiveOptionIntoView(): void {
 }
 
 function setOptionElement(
-  element: Element | ComponentPublicInstance | null,
+  element: ComponentPublicInstance | Element | null,
   index: number,
 ): void {
   if (element instanceof HTMLElement) {
@@ -341,7 +343,7 @@ watch(
           {{ placeholder }}
         </span>
       </span>
-      <span class="nebula-select__chevron" aria-hidden="true" />
+      <span class="nebula-select__chevron" aria-hidden="true"></span>
     </button>
 
     <Transition name="nebula-select-pop">

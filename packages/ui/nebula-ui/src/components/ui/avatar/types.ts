@@ -1,9 +1,10 @@
-import type { HTMLAttributes } from 'vue';
 import type {
-  AvatarRootProps,
-  AvatarImageProps,
   AvatarFallbackProps,
+  AvatarImageProps,
+  AvatarRootProps,
 } from 'reka-ui';
+
+import type { HTMLAttributes } from 'vue';
 
 export type AvatarProps = AvatarRootProps & {
   class?: HTMLAttributes['class'];

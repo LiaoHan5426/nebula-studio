@@ -1,19 +1,20 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
+
 import { NebulaIcon } from '@nebula-studio/nebula-ui';
 
 export interface NavChild {
-  to: string;
   label: string;
+  to: string;
 }
 
 export interface NavItem {
+  children?: NavChild[];
+  icon?: string;
   key: string;
   label: string;
-  icon?: string;
   to?: string;
-  children?: NavChild[];
 }
 
 const props = defineProps<{

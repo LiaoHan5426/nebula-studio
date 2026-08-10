@@ -1,9 +1,10 @@
-import { apiRequest, AUTH_BASE } from '@/shared/api/client';
 import type { ApiResponse } from '@nebula-studio/api-client';
 import type {
   AuthProfile,
   IntegrationLoginResult,
 } from '@nebula-studio/contracts/auth';
+
+import { apiRequest, AUTH_BASE } from '@/shared/api/client';
 
 export const authApi = {
   login(

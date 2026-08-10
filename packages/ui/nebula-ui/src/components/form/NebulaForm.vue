@@ -1,20 +1,22 @@
 <script setup lang="ts">
-import { Form } from 'vee-validate';
 import type {
   GenericObject,
   InvalidSubmissionContext,
   TypedSchema,
 } from 'vee-validate';
+
+import { Form } from 'vee-validate';
+
 import { cn } from '../../utils/cn';
 
 const props = withDefaults(
   defineProps<{
-    validationSchema?: TypedSchema | Record<string, unknown>;
+    class?: string;
     initialValues?: GenericObject;
-    validateOnMount?: boolean;
     keepValues?: boolean;
     name?: string;
-    class?: string;
+    validateOnMount?: boolean;
+    validationSchema?: Record<string, unknown> | TypedSchema;
   }>(),
   {
     validationSchema: undefined,
@@ -27,9 +29,9 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  submit: [values: GenericObject];
   invalidSubmit: [context: InvalidSubmissionContext];
   reset: [];
+  submit: [values: GenericObject];
 }>();
 </script>
 
@@ -48,7 +50,7 @@ const emit = defineEmits<{
     @reset="emit('reset')"
     @submit="emit('submit', $event)"
   >
-    <slot v-bind="form" />
+    <slot v-bind="form"></slot>
   </Form>
 </template>
 

@@ -1,10 +1,11 @@
+import { resolve } from 'node:path';
+
 import {
   createNebulaApiProxy,
   defineNebulaConfig,
   getNebulaAppManifest,
   nebulaWorkspaceManifestPlugin,
 } from '@nebula-studio-internal/vite';
-import { resolve } from 'node:path';
 
 const electronPreloadSrcDir = resolve(
   import.meta.dirname,

@@ -1,4 +1,5 @@
 import type { NebulaManualChunkRule } from '../types.ts';
+
 import { nebulaChunkNormalizeId } from '../pathUtils.ts';
 
 /** 其余 `node_modules` 依赖，避免全部挤进单一 entry chunk。 */

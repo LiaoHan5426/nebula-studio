@@ -1,24 +1,32 @@
 export {
-  shellPresentationConfig,
-  modalRenderersConfig,
-  displayOrderConfig,
-  getEmbeddedShellWindowIds,
-  isElectronIframeEmbedPresentation,
-  WEB_SHELL_EMBED_QUERY,
-} from './common/shellPresentationConfig';
-export type {
-  ShellWindowId,
-  EmbeddedShellWindowId,
-  ElectronEmbeddedPresentation,
-  GeneratedWindowEntry,
-  GeneratedModalRendererEntry,
-} from './common/shellPresentationConfig';
-export {
-  GENERATED_WINDOWS,
   GENERATED_DISPLAY_ORDER,
   GENERATED_MODAL_RENDERERS,
+  GENERATED_WINDOWS,
 } from './common/_generated-windows';
-export { installShellIframeElectronBridge } from './electron/installShellIframeElectronBridge';
+export {
+  persistActiveViewPreference,
+  persistShellSurfacePreference,
+  readActiveViewPreference,
+  readShellSurfacePreference,
+  SHELL_SURFACE_INTEGRATION,
+  SHELL_SURFACE_WORKSPACE,
+} from './common/activeViewPreference';
+export type { ShellSurfacePreference } from './common/activeViewPreference';
+export {
+  HELP_TOPICS,
+  readTaskGuideState,
+  resolveHelpTopic,
+  TASK_GUIDE_STORAGE_KEY,
+  TASK_GUIDES,
+  writeTaskGuideState,
+} from './common/helpCenter';
+export type { HelpTopic, TaskGuide, TaskGuideId } from './common/helpCenter';
+export {
+  getLayoutHostMode,
+  isShellEmbedSurface,
+  LAYOUT_PREFERENCES_STORAGE_KEY,
+} from './common/layoutHost';
+export type { LayoutHostMode, ShellEmbedSurface } from './common/layoutHost';
 export {
   getPresentationHost,
   isWebPresentationHost,
@@ -27,105 +35,29 @@ export {
   markWebShellHost,
 } from './common/presentationHost';
 export type { PresentationHostKind } from './common/presentationHost';
-export { installWebPresentation } from './web/installWebPresentation';
-export type { InstallWebPresentationOptions } from './web/installWebPresentation';
 export {
-  registerShellIntegratedApp,
-  registerShellIntegratedApps,
-  setShellIntegrableOrder,
-  getShellIntegratedAppRegistry,
-  getShellIntegratedAppMeta,
-  tryGetShellIntegratedAppMeta,
-  getDefaultEnabledShellIntegrableIds,
-  isShellIntegrableAppId,
-  isShellIntegratableAppId,
-  isShellStandaloneSidebarApp,
-  listShellIntegrableAppIds,
-  embeddedViewRequiresShellAuth,
-} from './common/shellIntegration';
-export type { ShellIntegratedAppMeta } from './common/shellIntegration';
-export {
-  SHELL_AUTH_SESSION_KEY,
-  clearWebAuthSession,
-  getWebShellEmbedSurface,
-  isSafeAuthReturnUrl,
-  readWebAuthSession,
-  redirectShellToWebLogin,
-  shouldRedirectUnauthenticatedWebShell,
-  writeWebAuthSession,
-  hasValidShellAuthSession,
-  isShellIframeEmbed,
-  readParentShellAuthSession,
-  handleShellAuthUnauthorized,
-  isSurfaceEmbed,
-  isSurfaceIframeEmbed,
-  SHELL_AUTH_UNAUTHORIZED_EVENT,
-} from './web/webAuth';
-export type { ShellAuthSessionPayload } from './web/webAuth';
-export {
-  completeLoginWithOrg,
-  fetchAuthMode,
-  loginWithBackendAuth,
-} from '@nebula-studio/auth-provider/backend';
-export type {
-  AuthMode,
-  BackendLoginResult,
-  OrgSummary,
-  OrgSummary as BackendOrgSummary,
-} from '@nebula-studio/auth-provider/backend';
-export { SHELL_ACTIVE_VIEW_STORAGE_KEY } from './common/shellHostStorageKeys';
-export {
-  readActiveViewPreference,
-  persistActiveViewPreference,
-  readShellSurfacePreference,
-  persistShellSurfacePreference,
-  SHELL_SURFACE_WORKSPACE,
-  SHELL_SURFACE_INTEGRATION,
-} from './common/activeViewPreference';
-export type { ShellSurfacePreference } from './common/activeViewPreference';
-export {
-  SHELL_EMBED_RESET_MESSAGE,
-  SHELL_EMBED_RESET_ACK_MESSAGE,
-  SHELL_EMBED_NAVIGATE_MESSAGE,
-  SHELL_EMBED_PAGE_META_MESSAGE,
-  createShellEmbedResetPayload,
   createShellEmbedResetAckPayload,
-  installShellEmbedResetListener,
-  isShellEmbedResetPayload,
-  isShellEmbedResetAckPayload,
-  postShellEmbedReset,
+  createShellEmbedResetPayload,
   installShellEmbedNavigationListener,
+  installShellEmbedResetListener,
   isShellEmbedNavigatePayload,
   isShellEmbedPageMetaPayload,
+  isShellEmbedResetAckPayload,
+  isShellEmbedResetPayload,
   postShellEmbedNavigate,
   postShellEmbedPageMeta,
+  postShellEmbedReset,
+  SHELL_EMBED_NAVIGATE_MESSAGE,
+  SHELL_EMBED_PAGE_META_MESSAGE,
+  SHELL_EMBED_RESET_ACK_MESSAGE,
+  SHELL_EMBED_RESET_MESSAGE,
 } from './common/shellEmbedMessaging';
-export {
-  HELP_TOPICS,
-  TASK_GUIDES,
-  TASK_GUIDE_STORAGE_KEY,
-  readTaskGuideState,
-  resolveHelpTopic,
-  writeTaskGuideState,
-} from './common/helpCenter';
-export type { HelpTopic, TaskGuide, TaskGuideId } from './common/helpCenter';
 export type {
   ShellEmbedNavigatePayload,
   ShellEmbedPageMetaPayload,
-  ShellEmbedResetPayload,
   ShellEmbedResetAckPayload,
+  ShellEmbedResetPayload,
 } from './common/shellEmbedMessaging';
-export {
-  getShellHostBridge,
-  type ShellHostBridge,
-  type ShellHostKind,
-} from './common/shellHostBridge';
-export {
-  LAYOUT_PREFERENCES_STORAGE_KEY,
-  getLayoutHostMode,
-  isShellEmbedSurface,
-} from './common/layoutHost';
-export type { LayoutHostMode, ShellEmbedSurface } from './common/layoutHost';
 export {
   createEventBus,
   resolveShellEventBus,
@@ -136,3 +68,71 @@ export type {
   ShellEventMap,
   WireShellEventBusOptions,
 } from './common/shellEventBus';
+export {
+  getShellHostBridge,
+  type ShellHostBridge,
+  type ShellHostKind,
+} from './common/shellHostBridge';
+export { SHELL_ACTIVE_VIEW_STORAGE_KEY } from './common/shellHostStorageKeys';
+export {
+  embeddedViewRequiresShellAuth,
+  getDefaultEnabledShellIntegrableIds,
+  getShellIntegratedAppMeta,
+  getShellIntegratedAppRegistry,
+  isShellIntegrableAppId,
+  isShellIntegratableAppId,
+  isShellStandaloneSidebarApp,
+  listShellIntegrableAppIds,
+  registerShellIntegratedApp,
+  registerShellIntegratedApps,
+  setShellIntegrableOrder,
+  tryGetShellIntegratedAppMeta,
+} from './common/shellIntegration';
+export type { ShellIntegratedAppMeta } from './common/shellIntegration';
+export {
+  displayOrderConfig,
+  getEmbeddedShellWindowIds,
+  isElectronIframeEmbedPresentation,
+  modalRenderersConfig,
+  shellPresentationConfig,
+  WEB_SHELL_EMBED_QUERY,
+} from './common/shellPresentationConfig';
+export type {
+  ElectronEmbeddedPresentation,
+  EmbeddedShellWindowId,
+  GeneratedModalRendererEntry,
+  GeneratedWindowEntry,
+  ShellWindowId,
+} from './common/shellPresentationConfig';
+export { installShellIframeElectronBridge } from './electron/installShellIframeElectronBridge';
+export { installWebPresentation } from './web/installWebPresentation';
+export type { InstallWebPresentationOptions } from './web/installWebPresentation';
+export {
+  clearWebAuthSession,
+  getWebShellEmbedSurface,
+  handleShellAuthUnauthorized,
+  hasValidShellAuthSession,
+  isSafeAuthReturnUrl,
+  isShellIframeEmbed,
+  isSurfaceEmbed,
+  isSurfaceIframeEmbed,
+  readParentShellAuthSession,
+  readWebAuthSession,
+  redirectShellToWebLogin,
+  SHELL_AUTH_SESSION_KEY,
+  SHELL_AUTH_UNAUTHORIZED_EVENT,
+  shouldRedirectUnauthenticatedWebShell,
+  writeWebAuthSession,
+} from './web/webAuth';
+export type { ShellAuthSessionPayload } from './web/webAuth';
+export {
+  completeLoginWithOrg,
+  fetchAuthMode,
+  loginWithBackendAuth,
+} from '@nebula-studio/auth-provider/backend';
+export type {
+  AuthMode,
+  BackendLoginResult,
+  OrgSummary as BackendOrgSummary,
+  OrgSummary,
+} from '@nebula-studio/auth-provider/backend';

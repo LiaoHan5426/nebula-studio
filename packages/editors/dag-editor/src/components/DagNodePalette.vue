@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { PluginNodeSchema } from '@nebula-studio/nebula-low-render';
+
 import { computed } from 'vue';
 
 const props = defineProps<{
@@ -7,13 +8,13 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  add: [payload: { type: string; label: string }];
+  add: [payload: { label: string; type: string }];
 }>();
 
 const paletteGroups = computed(() => {
   const schemas = props.nodeSchemas ?? {};
-  const basic: Array<{ type: string; label: string }> = [];
-  const plugins: Array<{ type: string; label: string }> = [];
+  const basic: Array<{ label: string; type: string }> = [];
+  const plugins: Array<{ label: string; type: string }> = [];
 
   for (const [type, schema] of Object.entries(schemas)) {
     const entry = {

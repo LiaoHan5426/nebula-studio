@@ -1,6 +1,6 @@
 import { IPC_CHANNELS } from './rendererPreferences/ipcChannels.ts';
 
-type ThemeMode = 'light' | 'dark';
+type ThemeMode = 'dark' | 'light';
 
 const THEME = IPC_CHANNELS.theme;
 

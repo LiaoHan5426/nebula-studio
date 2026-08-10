@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { NebulaButton } from '@nebula-studio/nebula-ui';
 import type { NebulaThemeMode } from '../../types/layout';
+
 import { onMounted, onUnmounted, ref, watch } from 'vue';
+
+import { NebulaButton } from '@nebula-studio/nebula-ui';
 
 import AppearanceTab from './AppearanceTab.vue';
 import LayoutTab from './LayoutTab.vue';
@@ -51,7 +53,7 @@ onUnmounted(() => {
 <template>
   <Teleport to="body">
     <div v-if="open" class="nebula-drawer-root nebula-prefs-drawer">
-      <div class="nebula-drawer__overlay" @click="close" />
+      <div class="nebula-drawer__overlay" @click="close"></div>
       <aside
         class="nebula-drawer nebula-drawer--right"
         role="dialog"

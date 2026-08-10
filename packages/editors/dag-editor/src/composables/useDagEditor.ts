@@ -1,40 +1,43 @@
-import { MarkerType, Position, useVueFlow } from '@vue-flow/core';
 import type { PluginNodeSchema } from '@nebula-studio/nebula-low-render';
-import { computed, nextTick, ref, shallowRef, watch } from 'vue';
 
 import type { DagDefinition } from '../types/dag';
-import { computeAutoLayout } from '../utils/dagAutoLayout';
+
+import { computed, nextTick, ref, shallowRef, watch } from 'vue';
+
+import { MarkerType, Position, useVueFlow } from '@vue-flow/core';
+
 import { applyEdgePathOffsets } from '../utils/applyEdgePathOffsets';
+import { computeAutoLayout } from '../utils/dagAutoLayout';
 import { readStoredPosition } from '../utils/readStoredPosition';
 import { resolveNodeDisplayLabel } from '../utils/resolveNodeDisplayLabel';
 
 export interface EditorNode {
+  data: {
+    config: Record<string, unknown>;
+    label: string;
+    type: string;
+  };
   id: string;
-  type: string;
   position: { x: number; y: number };
   sourcePosition: Position;
   targetPosition: Position;
-  data: {
-    label: string;
-    type: string;
-    config: Record<string, unknown>;
-  };
+  type: string;
 }
 
 export interface EditorEdge {
+  deletable?: boolean;
   id: string;
-  source: string;
-  target: string;
-  sourceHandle?: string;
-  targetHandle?: string;
-  type?: string;
   markerEnd?: string;
   pathOptions?: {
     borderRadius?: number;
     offset?: number;
   };
-  deletable?: boolean;
   selectable?: boolean;
+  source: string;
+  sourceHandle?: string;
+  target: string;
+  targetHandle?: string;
+  type?: string;
 }
 
 export interface UseDagEditorProps {
@@ -48,8 +51,8 @@ export function useDagEditor(
 ) {
   const nodes = shallowRef<EditorNode[]>([]);
   const edges = shallowRef<EditorEdge[]>([]);
-  const selectedNodeId = ref<string | null>(null);
-  const selectedEdgeId = ref<string | null>(null);
+  const selectedNodeId = ref<null | string>(null);
+  const selectedEdgeId = ref<null | string>(null);
   const canvasRef = ref<HTMLElement | null>(null);
   const fitViewOnInit = ref(true);
   let skipExternalDefinitionApply = false;
@@ -335,7 +338,7 @@ export function useDagEditor(
     syncDefinition();
   }
 
-  function addNodeFromPalette(payload: { type: string; label: string }) {
+  function addNodeFromPalette(payload: { label: string; type: string }) {
     addNode(payload.type, payload.label);
   }
 

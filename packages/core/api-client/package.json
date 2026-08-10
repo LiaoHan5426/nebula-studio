@@ -1,20 +1,24 @@
 {
   "name": "@nebula-studio/api-client",
   "version": "0.0.0",
-  "private": true,
   "description": "Shared authenticated API client for Nebula Studio applications.",
-  "author": "Liao Han <liaohan5426@gmail.com>",
-  "license": "UNLICENSED",
+  "private": true,
   "homepage": "https://github.com/LiaoHan5426/nebula-studio#readme",
+  "bugs": {
+    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LiaoHan5426/nebula-studio.git",
     "directory": "packages/core/api-client"
   },
-  "bugs": {
-    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
-  },
+  "license": "UNLICENSED",
+  "author": "Liao Han <liaohan5426@gmail.com>",
   "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vp test run"
+  },
   "sideEffects": [
     "./src/styles/progress.ts"
   ],
@@ -29,10 +33,6 @@
       "types": "./src/styles/progress.ts",
       "default": "./src/styles/progress.ts"
     }
-  },
-  "scripts": {
-    "typecheck": "tsc --noEmit -p tsconfig.json",
-    "test": "vp test run"
   },
   "dependencies": {
     "@nebula-studio/contracts": "workspace:^",

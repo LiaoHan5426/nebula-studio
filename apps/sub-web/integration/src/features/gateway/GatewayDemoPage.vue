@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { gatewayRequest } from '@/shared/api/executorApi';
+
 import { NebulaButton, NebulaPane } from '@nebula-studio/nebula-ui';
 
+import { gatewayRequest } from '@/shared/api/executorApi';
 import { useAuth } from '@/shared/composables/useAuth';
 
 const { token } = useAuth();
@@ -21,7 +22,7 @@ async function sendRequest() {
   responseText.value = '';
   try {
     const subPath = path.value.startsWith('/') ? path.value : `/${path.value}`;
-    const parsedBody = ['POST', 'PUT', 'PATCH'].includes(method.value)
+    const parsedBody = ['PATCH', 'POST', 'PUT'].includes(method.value)
       ? JSON.parse(body.value)
       : undefined;
 
@@ -85,7 +86,7 @@ async function sendRequest() {
         </label>
         <label v-if="['POST', 'PUT', 'PATCH'].includes(method)" class="field">
           <span>请求体 JSON</span>
-          <textarea v-model="body" rows="4" />
+          <textarea v-model="body" rows="4"></textarea>
         </label>
         <NebulaButton
           variant="primary"

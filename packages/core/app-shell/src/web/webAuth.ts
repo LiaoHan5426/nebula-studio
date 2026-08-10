@@ -1,14 +1,16 @@
-import {
-  isWebPresentationHost,
-  isWebShellHost,
-} from '../common/presentationHost';
-import { WEB_SHELL_EMBED_QUERY } from '../common/shellPresentationConfig';
+import type { ShellAuthSessionPayload } from '@nebula-studio/auth-provider/storage';
+
 import {
   clearWebAuthSession,
   readWebAuthSession,
   SHELL_AUTH_SESSION_KEY,
 } from '@nebula-studio/auth-provider/storage';
-import type { ShellAuthSessionPayload } from '@nebula-studio/auth-provider/storage';
+
+import {
+  isWebPresentationHost,
+  isWebShellHost,
+} from '../common/presentationHost';
+import { WEB_SHELL_EMBED_QUERY } from '../common/shellPresentationConfig';
 
 export {
   clearWebAuthSession,
@@ -19,16 +21,15 @@ export {
 } from '@nebula-studio/auth-provider/storage';
 export type { ShellAuthSessionPayload } from '@nebula-studio/auth-provider/storage';
 
-export function getWebShellEmbedSurface(): string | null {
+export function getWebShellEmbedSurface(): null | string {
   if (typeof window === 'undefined') return null;
   const params = new URLSearchParams(window.location.search);
   // Web: index.html?embed=integration；Electron 壳 iframe: ?renderer=integration
   const fromQuery = params.get(WEB_SHELL_EMBED_QUERY) ?? params.get('renderer');
   if (fromQuery) return fromQuery;
   // History 导航会丢掉 ?embed=；启动时注入的表面 ID 作为稳定回退
-  const injected = (window as Window & { __NEBULA_EMBED_SURFACE__?: string })[
-    '__NEBULA_EMBED_SURFACE__'
-  ];
+  const injected = (window as Window & { __NEBULA_EMBED_SURFACE__?: string })
+    .__NEBULA_EMBED_SURFACE__;
   return injected?.trim() ? injected.trim() : null;
 }
 
@@ -120,7 +121,7 @@ export function isShellIframeEmbed(): boolean {
 }
 
 /** iframe 与父页 sessionStorage 隔离，从父窗口读取 Shell 会话 */
-export function readParentShellAuthSession(): ShellAuthSessionPayload | null {
+export function readParentShellAuthSession(): null | ShellAuthSessionPayload {
   if (!isShellIframeEmbed()) {
     return readWebAuthSession();
   }

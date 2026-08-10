@@ -1,44 +1,44 @@
-import type { QueryResult } from '../types';
 import type { ChartRecommendation, ChartType } from '../chart-selector';
+import type { QueryResult } from '../types';
 
 export type EChartsOption = {
+  legend?: {
+    bottom?: string;
+    data?: string[];
+  };
+  series?: Array<{
+    barGap?: string;
+    data?: unknown[];
+    name?: string;
+    type: ChartType;
+  }>;
+  table?: {
+    columns?: {
+      name: string;
+    }[];
+    data?: unknown[][];
+  };
   title?: {
-    text: string;
     left?: string;
+    text: string;
   };
   tooltip?: {
     trigger?: string;
   };
-  legend?: {
-    data?: string[];
-    bottom?: string;
-  };
   xAxis?: {
-    type: string;
-    data?: string[] | number[];
+    data?: number[] | string[];
     name?: string;
+    type: string;
   };
   yAxis?:
     | {
-        type: string;
         name?: string;
-      }[]
+        type: string;
+      }
     | {
-        type: string;
         name?: string;
-      };
-  series?: Array<{
-    name?: string;
-    type: ChartType;
-    data?: unknown[];
-    barGap?: string;
-  }>;
-  table?: {
-    data?: unknown[][];
-    columns?: {
-      name: string;
-    }[];
-  };
+        type: string;
+      }[];
 };
 
 export class EChartsGenerator {
@@ -50,6 +50,8 @@ export class EChartsGenerator {
     const { chartType, xAxis, yAxis } = recommendation;
 
     switch (chartType) {
+      case 'area':
+        return this.generateAreaOption(columns, rows, xAxis, yAxis || []);
       case 'bar':
         return this.generateBarOption(columns, rows, xAxis, yAxis || []);
       case 'line':
@@ -58,12 +60,37 @@ export class EChartsGenerator {
         return this.generatePieOption(columns, rows, xAxis, yAxis?.[0]);
       case 'scatter':
         return this.generateScatterOption(columns, rows, xAxis, yAxis || []);
-      case 'area':
-        return this.generateAreaOption(columns, rows, xAxis, yAxis || []);
       case 'table':
       default:
         return this.generateTableOption(columns, rows);
     }
+  }
+
+  private generateAreaOption(
+    columns: string[],
+    rows: Record<string, unknown>[],
+    xAxis?: string,
+    yAxis: string[] = [],
+  ) {
+    const xField = xAxis ?? columns[0] ?? '';
+    const yFields = yAxis.length > 0 ? yAxis : columns.slice(1);
+
+    return {
+      title: { text: 'Area Chart', left: 'center' },
+      tooltip: { trigger: 'axis' },
+      legend: { data: yFields, bottom: '0%' },
+      xAxis: {
+        type: 'category',
+        data: rows.map((r) => String(r[xField])),
+        name: xField || undefined,
+      },
+      yAxis: { type: 'value' },
+      series: yFields.map((field) => ({
+        name: field,
+        type: 'area' as ChartType,
+        data: rows.map((r) => r[field]),
+      })),
+    };
   }
 
   private generateBarOption(
@@ -170,33 +197,6 @@ export class EChartsGenerator {
           data: rows.map((r) => [r[xField], r[yField]]),
         },
       ],
-    };
-  }
-
-  private generateAreaOption(
-    columns: string[],
-    rows: Record<string, unknown>[],
-    xAxis?: string,
-    yAxis: string[] = [],
-  ) {
-    const xField = xAxis ?? columns[0] ?? '';
-    const yFields = yAxis.length > 0 ? yAxis : columns.slice(1);
-
-    return {
-      title: { text: 'Area Chart', left: 'center' },
-      tooltip: { trigger: 'axis' },
-      legend: { data: yFields, bottom: '0%' },
-      xAxis: {
-        type: 'category',
-        data: rows.map((r) => String(r[xField])),
-        name: xField || undefined,
-      },
-      yAxis: { type: 'value' },
-      series: yFields.map((field) => ({
-        name: field,
-        type: 'area' as ChartType,
-        data: rows.map((r) => r[field]),
-      })),
     };
   }
 

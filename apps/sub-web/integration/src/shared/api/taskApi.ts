@@ -1,4 +1,3 @@
-import { taskRequest, taskInstanceRequest } from '@/shared/api/client';
 import type {
   ApiResponse,
   TaskCreateRequest,
@@ -8,6 +7,8 @@ import type {
   TaskResult,
   TaskUpdateRequest,
 } from '@nebula-studio/contracts/integration';
+
+import { taskInstanceRequest, taskRequest } from '@/shared/api/client';
 
 export const taskApi = {
   list(tenantId?: string): Promise<ApiResponse<TaskDefinition[]>> {

@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import type { ShellAppRecord } from '@/shared/api/system';
+
 import { onMounted, ref } from 'vue';
+
 import {
   NebulaButton,
   NebulaDialog,
@@ -10,10 +13,9 @@ import {
 } from '@nebula-studio/nebula-ui';
 
 import { appsApi } from '@/shared/api/system';
-import type { ShellAppRecord } from '@/shared/api/system';
-import { isApiSuccess } from '@/shared/types';
-import { useConfirm } from '@/shared/composables/useConfirm';
 import EntityListPage from '@/shared/components/EntityListPage.vue';
+import { useConfirm } from '@/shared/composables/useConfirm';
+import { isApiSuccess } from '@/shared/types';
 
 const apps = ref<ShellAppRecord[]>([]);
 const loading = ref(false);
@@ -114,9 +116,9 @@ function openDetails(app: ShellAppRecord) {
     :detail-subtitle="selected?.id || ''"
   >
     <template #actions>
-      <NebulaButton variant="primary" @click="openCreate"
-        >注册应用</NebulaButton
-      >
+      <NebulaButton variant="primary" @click="openCreate">
+        注册应用
+      </NebulaButton>
       <NebulaButton variant="secondary" @click="loadApps">刷新</NebulaButton>
     </template>
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { isWebPresentationHost } from '@nebula-studio/app-shell';
 import { computed, reactive } from 'vue';
+
+import { isWebPresentationHost } from '@nebula-studio/app-shell';
 
 const versions = reactive({ ...window.electron.process.versions });
 const isWeb = isWebPresentationHost();

@@ -1,3 +1,5 @@
+import type { ShellAuthSessionPayload } from '@nebula-studio/app-shell';
+
 /**
  * Shell embed detection for integration sub-web.
  *
@@ -6,11 +8,10 @@
  * helpers.  This file keeps thin wrappers for backward compatibility.
  */
 import {
+  readParentShellAuthSession as _readParent,
   isSurfaceEmbed,
   isSurfaceIframeEmbed,
-  readParentShellAuthSession as _readParent,
 } from '@nebula-studio/app-shell';
-import type { ShellAuthSessionPayload } from '@nebula-studio/app-shell';
 
 export function isIntegrationShellEmbed(): boolean {
   return isSurfaceEmbed('integration');
@@ -22,6 +23,6 @@ export function isIntegrationShellIframeEmbed(): boolean {
 }
 
 /** 从 Web 壳父窗口读取登录会话（iframe 与父页 sessionStorage 隔离） */
-export function readParentShellAuthSession(): ShellAuthSessionPayload | null {
+export function readParentShellAuthSession(): null | ShellAuthSessionPayload {
   return _readParent();
 }

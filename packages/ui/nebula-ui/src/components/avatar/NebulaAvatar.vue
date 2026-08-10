@@ -1,21 +1,22 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { Avatar, AvatarImage, AvatarFallback } from '../ui/avatar';
-import { cn } from '../../utils/cn';
 
-type AvatarSize = 'sm' | 'md' | 'lg';
-type AvatarStatus = 'online' | 'offline' | 'away' | 'busy';
+import { cn } from '../../utils/cn';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+
+type AvatarSize = 'lg' | 'md' | 'sm';
+type AvatarStatus = 'away' | 'busy' | 'offline' | 'online';
 
 const props = withDefaults(
   defineProps<{
-    src?: string;
     alt?: string;
-    text?: string;
-    size?: AvatarSize;
+    class?: string;
     online?: boolean;
+    size?: AvatarSize;
+    src?: string;
     status?: AvatarStatus;
     statusLabel?: string;
-    class?: string;
+    text?: string;
   }>(),
   {
     src: '',
@@ -71,8 +72,7 @@ const resolvedStatusLabel = computed(
       role="status"
       :title="resolvedStatusLabel"
       :aria-label="resolvedStatusLabel"
-      ><span class="sr-only">{{ resolvedStatusLabel }}</span></span
-    >
+      ><span class="sr-only">{{ resolvedStatusLabel }}</span></span>
   </span>
 </template>
 

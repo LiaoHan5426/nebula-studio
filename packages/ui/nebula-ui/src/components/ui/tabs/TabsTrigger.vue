@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import type { HTMLAttributes } from 'vue';
+
 import { TabsTrigger as TabsTriggerRoot } from 'reka-ui';
+
 import { cn } from '../../../utils/cn';
 
 defineProps<{
-  value: string;
-  disabled?: boolean;
   class?: HTMLAttributes['class'];
+  disabled?: boolean;
+  value: string;
 }>();
 </script>
 
@@ -21,6 +23,6 @@ defineProps<{
       )
     "
   >
-    <slot />
+    <slot></slot>
   </TabsTriggerRoot>
 </template>

@@ -1,13 +1,13 @@
 export const SHELL_AUTH_SESSION_KEY = 'nebula-studio-auth-session';
 
 export interface ShellAuthSessionPayload {
-  user: string;
-  token?: string;
   roles?: string[];
+  token?: string;
+  user: string;
   userId?: string;
 }
 
-export function readWebAuthSession(): ShellAuthSessionPayload | null {
+export function readWebAuthSession(): null | ShellAuthSessionPayload {
   try {
     const raw = sessionStorage.getItem(SHELL_AUTH_SESSION_KEY);
     if (!raw) return null;
@@ -26,7 +26,7 @@ export function clearWebAuthSession(): void {
 }
 
 export function hasValidShellAuthSession(
-  session: ShellAuthSessionPayload | null | undefined,
+  session: null | ShellAuthSessionPayload | undefined,
 ): boolean {
   const user = session?.user?.trim();
   const token = session?.token?.trim();

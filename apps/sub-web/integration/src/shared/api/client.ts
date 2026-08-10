@@ -1,7 +1,9 @@
-import { createStudioApiClient } from '@nebula-studio/api-client';
 import type { ApiRequestOptions, ApiResponse } from '@nebula-studio/api-client';
+
+import { createStudioApiClient } from '@nebula-studio/api-client';
 import { handleShellAuthUnauthorized } from '@nebula-studio/app-shell';
-import { getAuthToken, clearAuthSession } from '@/shared/auth/session';
+
+import { clearAuthSession, getAuthToken } from '@/shared/auth/session';
 
 export type { ApiRequestOptions, ApiResponse };
 

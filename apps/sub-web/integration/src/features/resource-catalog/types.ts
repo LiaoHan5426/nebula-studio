@@ -1,9 +1,9 @@
-export type ResourceKind = 'API' | 'TABLE' | 'CONNECTOR';
+export type ResourceKind = 'API' | 'CONNECTOR' | 'TABLE';
 export type ResourceAvailability =
-  | 'AVAILABLE'
   | 'APPROVAL_REQUIRED'
-  | 'UNAVAILABLE'
-  | 'OFFLINE';
+  | 'AVAILABLE'
+  | 'OFFLINE'
+  | 'UNAVAILABLE';
 
 export interface ResourceSummaryViewModel {
   id: string;
@@ -28,17 +28,17 @@ export interface ResourceDetailViewModel extends ResourceSummaryViewModel {
 }
 
 export type AccessRequestStatus =
+  | 'APPROVED'
+  | 'CANCELLED'
   | 'DRAFT'
+  | 'EXPIRED'
   | 'NEEDS_INFO'
   | 'PENDING'
-  | 'APPROVED'
-  | 'REJECTED'
-  | 'EXPIRED'
-  | 'CANCELLED';
+  | 'REJECTED';
 
 export interface AccessRequestDraft {
   purpose: string;
-  environment: 'DEVELOPMENT' | 'TEST' | 'PRODUCTION';
+  environment: 'DEVELOPMENT' | 'PRODUCTION' | 'TEST';
   duration: '30_DAYS' | '90_DAYS' | 'ONE_YEAR';
   scope: string;
   sensitivityConfirmed: boolean;
@@ -59,7 +59,7 @@ export interface CatalogQuery {
   tag: string;
   provider: string;
   availability: '' | ResourceAvailability;
-  sort: 'RELEVANCE' | 'UPDATED' | 'NAME';
+  sort: 'NAME' | 'RELEVANCE' | 'UPDATED';
   page: number;
 }
 

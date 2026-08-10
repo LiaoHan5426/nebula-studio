@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { markRaw, onMounted, ref, shallowRef, watch } from 'vue';
 import type { Component } from 'vue';
+
+import { markRaw, onMounted, ref, shallowRef, watch } from 'vue';
+
 import { getHighlighter } from '@/utils/highlighter';
 
 const props = withDefaults(
   defineProps<{
     component: Component;
-    source?: string;
     id?: string;
     showSource?: boolean;
+    source?: string;
   }>(),
   {
     source: '',
@@ -75,7 +77,7 @@ onMounted(() => {
 
     <!-- 源码区域 -->
     <div v-if="showSource" class="demo-source">
-      <div v-if="highlightedCode" v-html="highlightedCode" />
+      <div v-if="highlightedCode" v-html="highlightedCode"></div>
       <pre v-else><code>{{ source }}</code></pre>
     </div>
   </div>
