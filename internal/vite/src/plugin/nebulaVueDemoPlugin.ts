@@ -7,6 +7,29 @@ const DEMO_SUFFIX = '.vue?demo';
 const VIRTUAL_PREFIX = '\0nebula-vue-demo:';
 const VIRTUAL_SUFFIX = '\0';
 
+function vuePathFromDemoSource(source: string): null | string {
+  const queryIndex = source.indexOf(DEMO_QUERY);
+  if (queryIndex === -1 || !source.includes('.vue')) {
+    return null;
+  }
+  const beforeQuery = source.slice(0, queryIndex);
+  const query = source.slice(queryIndex);
+  if (query !== DEMO_QUERY && !query.startsWith(`${DEMO_QUERY}&`)) {
+    return null;
+  }
+  if (!beforeQuery.endsWith('.vue')) {
+    return null;
+  }
+  return beforeQuery;
+}
+
+function vueFileFromResolvedId(id: string): null | string {
+  if (id.startsWith(VIRTUAL_PREFIX) && id.endsWith(VIRTUAL_SUFFIX)) {
+    return id.slice(VIRTUAL_PREFIX.length, id.length - VIRTUAL_SUFFIX.length);
+  }
+  return vuePathFromDemoSource(id);
+}
+
 /**
  * Vue SFC demo loader: `import demo from './Foo.vue?demo'` → `{ component, source }`.
  */
@@ -15,10 +38,10 @@ export function nebulaVueDemoPlugin(): Plugin {
     name: 'nebula-vue-demo',
     enforce: 'pre',
     async resolveId(source, importer, options) {
-      if (!source.endsWith(DEMO_QUERY) || !source.includes('.vue')) {
+      const vuePath = vuePathFromDemoSource(source);
+      if (!vuePath) {
         return null;
       }
-      const vuePath = source.slice(0, -DEMO_QUERY.length);
       const resolved = await this.resolve(vuePath, importer, {
         ...options,
         skipSelf: true,
@@ -33,16 +56,14 @@ export function nebulaVueDemoPlugin(): Plugin {
       return `${VIRTUAL_PREFIX}${resolvedId}${VIRTUAL_SUFFIX}`;
     },
     load(id) {
-      if (!id.startsWith(VIRTUAL_PREFIX) || !id.endsWith(VIRTUAL_SUFFIX)) {
+      const vueId = vueFileFromResolvedId(id);
+      if (!vueId) {
         return null;
       }
-      const vueId = id.slice(
-        VIRTUAL_PREFIX.length,
-        id.length - VIRTUAL_SUFFIX.length,
-      );
       const source = readFileSync(vueId, 'utf-8');
       return [
-        `import Component from ${JSON.stringify(vueId)};`,
+        `import ComponentMod from ${JSON.stringify(vueId)};`,
+        `const Component = ComponentMod?.default ?? ComponentMod;`,
         `const source = ${JSON.stringify(source)};`,
         `const demo = { component: Component, source };`,
         `export default demo;`,

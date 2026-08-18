@@ -117,13 +117,13 @@ function closeDrawer() {
 .nebula-admin-subnav__drawer {
   position: fixed;
   inset: 0;
-  z-index: 8000;
+  z-index: var(--z-modal);
 }
 
 .nebula-admin-subnav__drawer-backdrop {
   position: absolute;
   inset: 0;
-  background: rgb(0 0 0 / 35%);
+  background: hsl(var(--overlay) / 35%);
 }
 
 .nebula-admin-subnav__drawer-panel {

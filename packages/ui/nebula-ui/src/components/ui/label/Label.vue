@@ -15,7 +15,7 @@ const props = defineProps<LabelProps & { class?: HTMLAttributes['class'] }>();
     v-bind="props"
     :class="
       cn(
-        'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
+        'text-sm font-medium leading-snug peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
         $attrs.class as string,
       )
     "

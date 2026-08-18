@@ -144,7 +144,9 @@ function jump(): void {
           ‹
         </NebulaButton>
         <template v-for="(page, index) in pages" :key="`${page}-${index}`">
-          <span v-if="page === 'ellipsis'" class="nebula-pagination__ellipsis">…</span>
+          <span v-if="page === 'ellipsis'" class="nebula-pagination__ellipsis"
+            >…</span
+          >
           <NebulaButton
             v-else
             size="sm"

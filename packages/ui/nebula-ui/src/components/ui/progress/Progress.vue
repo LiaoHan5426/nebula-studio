@@ -25,13 +25,13 @@ const percentage = computed(() => {
     v-bind="$props"
     :class="
       cn(
-        'relative h-2 w-full overflow-hidden rounded-full bg-primary/20',
+        'nebula-progress relative h-2 w-full overflow-hidden rounded-full bg-primary/20',
         $attrs.class as string,
       )
     "
   >
     <ProgressIndicator
-      class="h-full w-full flex-1 bg-primary transition-all"
+      class="nebula-progress__indicator h-full w-full flex-1 bg-primary transition-all"
       :style="{ transform: `translateX(-${100 - percentage}%)` }"
     />
   </ProgressRoot>

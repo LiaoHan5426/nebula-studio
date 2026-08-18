@@ -146,7 +146,9 @@ defineExpose({
     :class="{ 'bpmn-editor-wrapper--integration': mode === 'integration' }"
   >
     <div class="toolbar">
-      <span v-if="mode === 'integration'" class="toolbar-label">集成流程设计</span>
+      <span v-if="mode === 'integration'" class="toolbar-label"
+        >集成流程设计</span
+      >
       <button
         class="toolbar-btn"
         type="button"

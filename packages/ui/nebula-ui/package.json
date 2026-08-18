@@ -20,6 +20,7 @@
   },
   "sideEffects": [
     "./src/styles.css",
+    "./src/styles/controls.css",
     "./src/index.ts"
   ],
   "main": "./src/index.ts",

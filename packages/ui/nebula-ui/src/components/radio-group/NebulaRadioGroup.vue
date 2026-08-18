@@ -69,7 +69,7 @@ function updateValue(value: string): void {
       :key="option.value"
       :class="
         cn(
-          'flex items-center gap-2 cursor-pointer',
+          'nebula-control-label flex items-center gap-2 cursor-pointer',
           option.disabled && 'cursor-not-allowed opacity-50',
         )
       "

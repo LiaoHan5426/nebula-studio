@@ -126,6 +126,7 @@ describe('nebulaForm', () => {
           </NebulaForm>
         `,
       }),
+      { attachTo: document.body },
     );
 
     await wrapper.get('form').trigger('submit');
@@ -136,7 +137,11 @@ describe('nebulaForm', () => {
     ).toBeGreaterThanOrEqual(4);
 
     await wrapper.get('.nebula-select__trigger').trigger('click');
-    await wrapper.get('.nebula-select__option').trigger('click');
+    await flushPromises();
+    const option = document.body.querySelector('.nebula-select__option');
+    expect(option).toBeTruthy();
+    (option as HTMLElement).click();
+    await flushPromises();
     await wrapper.get('[role="radio"]').trigger('click');
     await wrapper.get('input[type="date"]').setValue('2026-07-20');
     await wrapper.get('[role="switch"]').trigger('click');

@@ -12,7 +12,12 @@ defineProps<{
 </script>
 
 <template>
-  <div :class="cn(badgeVariants({ variant }), $attrs.class as string)">
+  <div
+    :data-ui-variant="variant ?? 'default'"
+    :class="
+      cn('nebula-badge', badgeVariants({ variant }), $attrs.class as string)
+    "
+  >
     <slot></slot>
   </div>
 </template>

@@ -174,7 +174,9 @@ onMounted(() => {
               placeholder="例如：订单运营团队将在内部看板中读取每日履约状态，用于异常订单跟进。"
             ></textarea>
           </label>
-          <span class="field-hint">{{ draft.purpose.length }} / 至少 10 字符</span>
+          <span class="field-hint"
+            >{{ draft.purpose.length }} / 至少 10 字符</span
+          >
         </div>
 
         <div v-else-if="step === 2" class="form-step">

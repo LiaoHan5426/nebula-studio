@@ -82,7 +82,8 @@ function createControlProps<T extends object>(
           v-if="required"
           class="nebula-form-item__required"
           aria-hidden="true"
-          >*</span>
+          >*</span
+        >
       </label>
 
       <div class="nebula-form-item__control">

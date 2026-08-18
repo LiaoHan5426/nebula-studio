@@ -5,9 +5,29 @@ import { markRaw, onMounted, ref, shallowRef, watch } from 'vue';
 
 import { getHighlighter } from '@/utils/highlighter';
 
+function resolveVueComponent(input: unknown): Component | undefined {
+  if (input === null || input === undefined) return undefined;
+  if (typeof input === 'function') return input as Component;
+  if (typeof input !== 'object') return undefined;
+
+  const rec = input as Record<string, unknown>;
+  if (rec.component && rec.component !== input) {
+    const nested = resolveVueComponent(rec.component);
+    if (nested) return nested;
+  }
+  if (rec.default && rec.default !== input) {
+    const nested = resolveVueComponent(rec.default);
+    if (nested) return nested;
+  }
+  if (rec.setup || rec.render || rec.template || rec.name || '__name' in rec) {
+    return input as Component;
+  }
+  return undefined;
+}
+
 const props = withDefaults(
   defineProps<{
-    component: Component;
+    component?: Component | Record<string, unknown>;
     id?: string;
     showSource?: boolean;
     source?: string;
@@ -19,12 +39,19 @@ const props = withDefaults(
 );
 
 const highlightedCode = ref('');
-const demoComponent = shallowRef<Component>(markRaw(props.component));
+const demoComponent = shallowRef<Component | undefined>();
+
+function syncDemoComponent(component: unknown) {
+  const resolved = resolveVueComponent(component);
+  demoComponent.value = resolved ? markRaw(resolved) : undefined;
+}
+
+syncDemoComponent(props.component);
 
 watch(
   () => props.component,
   (component) => {
-    demoComponent.value = markRaw(component);
+    syncDemoComponent(component);
   },
 );
 
@@ -72,7 +99,8 @@ onMounted(() => {
   <div :id="id" class="demo-container">
     <!-- 预览区域 -->
     <div class="demo-preview">
-      <component :is="demoComponent" />
+      <component :is="demoComponent" v-if="demoComponent" />
+      <p v-else class="demo-preview__missing">示例组件未能加载。</p>
     </div>
 
     <!-- 源码区域 -->
@@ -97,6 +125,12 @@ onMounted(() => {
   padding: 26px 28px;
   background: hsl(var(--card));
   border-bottom: 1px solid hsl(var(--border));
+}
+
+.demo-preview__missing {
+  margin: 0;
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
 }
 
 .demo-preview > * + * {

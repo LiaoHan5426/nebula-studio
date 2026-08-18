@@ -15,11 +15,18 @@
 
 ## 目录结构（恢复时对照）
 
-| 目录               | 内容                  |
-| ------------------ | --------------------- |
-| `src/tokens/`      | `:root`、明暗语义变量 |
-| `src/foundations/` | 滚动条、主题过渡动画  |
-| `src/index.css`    | 聚合 `@import`        |
+| 目录               | 内容                                        |
+| ------------------ | ------------------------------------------- |
+| `src/tokens/`      | `:root` 尺寸/层级、明暗语义色与 50–700 色阶 |
+| `src/foundations/` | 滚动条、主题过渡动画                        |
+| `src/index.css`    | 聚合 `@import`                              |
+
+新增组件时：
+
+- **尺寸**：`var(--control-height-md)`（或 Tailwind `h-control`），不要再写 34px / 36px / 38px。
+- **颜色**：只用语义 token（`--primary`、`--destructive`）或色阶（`--primary-50`）；不要硬编码 hex。
+- **层级**：`--z-sticky` < `--z-nav` < `--z-overlay` < `--z-modal` < `--z-popover` < `--z-tooltip`。浮层禁止再用 `99999`。
+- **防遮蔽**：下拉/菜单 Teleport + `useDropdownPosition`；对话框 `max-height` + 内部滚动；正文旁的 sticky 导航用预留栏而不是 `position: fixed` 盖住内容。
 
 ## `package.json` exports
 

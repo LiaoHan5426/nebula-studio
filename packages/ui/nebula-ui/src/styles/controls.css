@@ -1,0 +1,264 @@
+/**
+ * Primitive chrome that does not depend on Tailwind utility generation.
+ *
+ * Preflight and `@layer base` reset `border-width: 0` on `*`. Layered utilities
+ * (`.border`, `.bg-primary`, `.flex`) can lose that race or fail to emit;
+ * these unlayered rules restore visible controls using semantic tokens.
+ */
+
+.nebula-control-label {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  cursor: pointer;
+}
+
+.nebula-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.nebula-button,
+.nebula-button-control {
+  box-sizing: border-box;
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--control-height-md, 2.25rem);
+  padding: 0.375rem 1rem;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: hsl(var(--secondary-foreground));
+  white-space: nowrap;
+  cursor: pointer;
+  background: hsl(var(--secondary));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-md, 0.5rem);
+}
+
+.nebula-button:hover:not(:disabled),
+.nebula-button-control:hover:not(:disabled) {
+  background: hsl(var(--secondary) / 80%);
+}
+
+.nebula-button[data-variant='primary'],
+.nebula-button-control[data-ui-variant='default'] {
+  color: hsl(var(--primary-foreground));
+  background: hsl(var(--primary));
+  border-color: hsl(var(--primary));
+}
+
+.nebula-button[data-variant='primary']:hover:not(:disabled),
+.nebula-button-control[data-ui-variant='default']:hover:not(:disabled) {
+  background: hsl(var(--primary-hover, var(--primary)));
+}
+
+.nebula-button[data-variant='outline'],
+.nebula-button-control[data-ui-variant='outline'] {
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
+  border-color: hsl(var(--input, var(--border)));
+}
+
+.nebula-button[data-variant='outline']:hover:not(:disabled),
+.nebula-button-control[data-ui-variant='outline']:hover:not(:disabled) {
+  color: hsl(var(--accent-foreground));
+  background: hsl(var(--accent));
+}
+
+.nebula-button[data-variant='ghost'],
+.nebula-button-control[data-ui-variant='ghost'] {
+  color: hsl(var(--foreground));
+  background: transparent;
+  border-color: transparent;
+}
+
+.nebula-button[data-variant='ghost']:hover:not(:disabled),
+.nebula-button-control[data-ui-variant='ghost']:hover:not(:disabled) {
+  color: hsl(var(--accent-foreground));
+  background: hsl(var(--accent));
+}
+
+.nebula-button[data-size='sm'],
+.nebula-button-control[data-ui-size='sm'] {
+  min-height: var(--control-height-sm, 2rem);
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+}
+
+.nebula-button[data-size='icon'],
+.nebula-button-control[data-ui-size='icon'] {
+  width: var(--control-height-md, 2.25rem);
+  min-width: var(--control-height-md, 2.25rem);
+  padding: 0;
+}
+
+.nebula-button:disabled,
+.nebula-button-control:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.nebula-input-control,
+.nebula-select__trigger,
+.nebula-date-picker__input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: var(--control-height-md, 2.25rem);
+  padding: 0.375rem 0.75rem;
+  font: inherit;
+  font-size: 0.875rem;
+  color: hsl(var(--foreground));
+  background: hsl(var(--input-background, var(--card)));
+  border: 1px solid hsl(var(--input, var(--border)));
+  border-radius: var(--radius-md, 0.5rem);
+}
+
+.nebula-radio {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  padding: 0;
+  appearance: none;
+  background: hsl(var(--background));
+  border: 2px solid hsl(var(--primary));
+  border-radius: 999px;
+}
+
+.nebula-radio__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  background: hsl(var(--primary));
+  border-radius: 999px;
+}
+
+.nebula-checkbox {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  padding: 0;
+  color: hsl(var(--primary-foreground));
+  appearance: none;
+  background: hsl(var(--background));
+  border: 2px solid hsl(var(--primary));
+  border-radius: 0.25rem;
+}
+
+.nebula-checkbox[data-state='checked'] {
+  background: hsl(var(--primary));
+  border-color: hsl(var(--primary));
+}
+
+.nebula-switch {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  width: 2.75rem;
+  height: 1.5rem;
+  padding: 0 0.125rem;
+  appearance: none;
+  cursor: pointer;
+  background: hsl(var(--input));
+  border: 2px solid transparent;
+  border-radius: 999px;
+}
+
+.nebula-switch[data-state='checked'] {
+  background: hsl(var(--primary));
+}
+
+.nebula-switch__thumb {
+  width: 1.25rem;
+  height: 1.25rem;
+  pointer-events: none;
+  background: hsl(var(--background));
+  border-radius: 999px;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 20%);
+  transition: transform 0.15s ease;
+}
+
+.nebula-switch[data-state='checked'] .nebula-switch__thumb {
+  transform: translateX(1.25rem);
+}
+
+.nebula-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: hsl(var(--primary-foreground));
+  background: hsl(var(--primary));
+  border: 1px solid transparent;
+  border-radius: var(--radius-md, 0.5rem);
+}
+
+.nebula-badge[data-ui-variant='secondary'] {
+  color: hsl(var(--secondary-foreground));
+  background: hsl(var(--secondary));
+}
+
+.nebula-badge[data-ui-variant='destructive'] {
+  color: hsl(var(--destructive-foreground));
+  background: hsl(var(--destructive));
+}
+
+.nebula-badge[data-ui-variant='success'] {
+  color: hsl(var(--success-foreground));
+  background: hsl(var(--success));
+}
+
+.nebula-badge[data-ui-variant='warning'] {
+  color: hsl(var(--warning-foreground));
+  background: hsl(var(--warning));
+}
+
+.nebula-badge[data-ui-variant='outline'] {
+  color: hsl(var(--foreground));
+  background: transparent;
+  border-color: hsl(var(--border));
+}
+
+.nebula-avatar {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  overflow: hidden;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: hsl(var(--muted-foreground));
+  background: hsl(var(--muted));
+  border: 1px solid hsl(var(--border));
+  border-radius: 999px;
+}
+
+.nebula-progress {
+  display: block;
+  width: 100%;
+  height: 0.5rem;
+  overflow: hidden;
+  background: hsl(var(--primary) / 20%);
+  border-radius: 999px;
+}
+
+.nebula-progress__indicator {
+  height: 100%;
+  background: hsl(var(--primary));
+}

@@ -84,7 +84,8 @@ onUnmounted(() => {
       </NebulaButton>
     </div>
     <p class="hint">
-      当前：<strong>{{ currentTheme === 'dark' ? '深色' : '浅色' }}</strong>{{ saving ? '（保存中…）' : '' }}
+      当前：<strong>{{ currentTheme === 'dark' ? '深色' : '浅色' }}</strong
+      >{{ saving ? '（保存中…）' : '' }}
     </p>
   </NebulaPane>
 </template>

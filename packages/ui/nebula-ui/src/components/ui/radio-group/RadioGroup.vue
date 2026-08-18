@@ -19,7 +19,7 @@ const forwarded = useForwardPropsEmits(props, emits);
 <template>
   <RadioGroupRoot
     v-bind="forwarded"
-    :class="cn('grid gap-2', $attrs.class as string)"
+    :class="cn('nebula-radio-group grid gap-2', $attrs.class as string)"
   >
     <slot></slot>
   </RadioGroupRoot>

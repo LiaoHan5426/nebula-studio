@@ -11,6 +11,8 @@
 
 历史上曾使用单文件 `electron.css`；已拆分为 **theme（工具层） + styles（设计层）**，恢复旧结构时勿只迁回单文件而丢失顺序语义。
 
+`theme.css` 将 styles 的控件高度映射为 `h-control` / `size-control`，将层级映射为 `z-overlay` / `z-modal` / `z-popover` / `z-tooltip`。组件应使用这些工具类，而不是再写 `h-9` + 另一套 scoped 高度。
+
 ## 消费方
 
 各 renderer / embed 的 `main.ts` 或宿主 boot：**`import '@nebula-studio-internal/tailwind/electron'`**。

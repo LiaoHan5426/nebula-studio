@@ -50,7 +50,7 @@ const model = useBooleanModel(
   <label
     :class="
       cn(
-        'inline-flex items-center gap-2 cursor-pointer',
+        'nebula-control-label inline-flex items-center gap-2 cursor-pointer',
         disabled && 'cursor-not-allowed opacity-50',
         props.class,
       )

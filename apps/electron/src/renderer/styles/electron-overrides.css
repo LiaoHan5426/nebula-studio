@@ -4,6 +4,9 @@ html[data-platform='electron'] {
   --radius-md: 0.42rem;
   --radius-lg: 0.6rem;
   --radius-xl: 0.78rem;
+  --control-height-sm: 1.75rem;
+  --control-height-md: 2rem;
+  --control-height-lg: 2.25rem;
 }
 
 html[data-platform='electron'],

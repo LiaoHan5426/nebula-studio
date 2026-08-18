@@ -69,6 +69,7 @@ export const NebulaDropdown = defineComponent({
 
     const { menuStyle } = useDropdownPosition({
       triggerRef,
+      menuRef,
       open: () => isOpen.value,
       placement: () => props.placement,
       offset: () => props.offset,

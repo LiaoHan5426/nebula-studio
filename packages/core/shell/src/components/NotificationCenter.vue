@@ -158,7 +158,7 @@ onUnmounted(() => {
   position: absolute;
   top: calc(100% + var(--space-2));
   right: 0;
-  z-index: 50;
+  z-index: var(--z-popover);
   width: min(22rem, calc(100vw - var(--space-8)));
   padding: var(--space-3);
   background: hsl(var(--card));

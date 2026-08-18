@@ -30,6 +30,15 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
+  --z-index-sticky: var(--z-sticky, 20);
+  --z-index-nav: var(--z-nav, 40);
+  --z-index-dropdown: var(--z-dropdown, 50);
+  --z-index-overlay: var(--z-overlay, 1050);
+  --z-index-modal: var(--z-modal, 1100);
+  --z-index-popover: var(--z-popover, 1200);
+  --z-index-toast: var(--z-toast, 1300);
+  --z-index-tooltip: var(--z-tooltip, 1400);
+
   /* Box Shadow */
   --shadow-float:
     0 6px 16px 0 rgb(0 0 0 / 8%), 0 3px 6px -4px rgb(0 0 0 / 12%),
@@ -292,14 +301,17 @@
 
 /* Base styles */
 @layer base {
+  /* Keep this inside @layer base and do not `@apply` on `*`.
+   * `@apply` on a universal selector can hoist `border-width: 0` out of the
+   * layer, which then beats `.border` / `.border-2` and strips control chrome. */
   *,
   ::after,
   ::before {
-    @apply border-border outline-ring/50;
-
     box-sizing: border-box;
+    border-color: hsl(var(--border));
     border-style: solid;
     border-width: 0;
+    outline-color: hsl(var(--ring) / 50%);
   }
 
   html {
@@ -309,7 +321,7 @@
     font-size: var(--font-size-base, 16px);
     font-variation-settings: normal;
     font-synthesis-weight: none;
-    line-height: 1.15;
+    line-height: var(--line-height-body, 1.5);
     text-rendering: optimizelegibility;
     text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
@@ -390,6 +402,11 @@
   button:not(:disabled),
   [role='button']:not(:disabled) {
     @apply cursor-pointer;
+  }
+
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
   }
 }
 

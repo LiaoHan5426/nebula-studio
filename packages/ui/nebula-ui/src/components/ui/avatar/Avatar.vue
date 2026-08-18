@@ -32,7 +32,7 @@ defineProps<AvatarProps>();
   <AvatarRoot
     :class="
       cn(
-        'relative flex h-9 w-9 shrink-0 overflow-hidden rounded-full',
+        'nebula-avatar relative flex h-9 w-9 shrink-0 overflow-hidden rounded-full',
         $attrs.class as string,
       )
     "

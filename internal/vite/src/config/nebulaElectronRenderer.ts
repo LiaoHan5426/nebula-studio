@@ -15,6 +15,7 @@ import {
 } from '../env/nebulaBuildDefines.ts';
 import { nebulaClientDefinePlugin } from '../plugin/nebulaClientDefine.ts';
 import { nebulaSubWebAliasPlugin } from '../plugin/nebulaSubWebAlias.ts';
+import { nebulaVueDemoPlugin } from '../plugin/nebulaVueDemoPlugin.ts';
 import { nebulaRendererChunkBuildPartial } from './chunks/index.ts';
 import { nebulaRendererOptimizeDeps } from './nebulaRendererOptimizeDeps.ts';
 import { resolveNebulaRendererPluginList } from './nebulaRendererPlugins.ts';
@@ -68,6 +69,7 @@ export function nebulaElectronRendererPartial(
       ...options.plugins,
       extra: [
         nebulaClientDefinePlugin(),
+        nebulaVueDemoPlugin(),
         nebulaSubWebAliasPlugin(),
         ...(options.plugins?.extra ?? []),
       ],

@@ -46,7 +46,9 @@ const model = useBooleanModel(
 
 <template>
   <label
-    :class="cn('inline-flex items-center gap-2', props.class)"
+    :class="
+      cn('nebula-control-label inline-flex items-center gap-2', props.class)
+    "
     v-bind="withTooltipAttrs('', '', props.tooltip, props.tooltipPlacement)"
   >
     <Switch

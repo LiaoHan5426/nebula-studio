@@ -1,4 +1,5 @@
 @import 'vxe-table/lib/style.css';
+@import './styles/controls.css';
 
 /** tiptap 编辑器基础样式 */
 .tiptap {
@@ -268,7 +269,7 @@
 
 .nebula-floating-tooltip {
   position: fixed;
-  z-index: 2147483646;
+  z-index: var(--z-tooltip);
   width: max-content;
   max-width: 300px;
   padding: 0.4rem 0.55rem;
@@ -881,7 +882,7 @@ html[data-theme='dark']
   position: fixed;
   top: 170px;
   right: 20px;
-  z-index: 40;
+  z-index: var(--z-sticky);
   display: grid;
   gap: 0.35rem;
   width: 160px;
@@ -942,7 +943,7 @@ html[data-theme='dark']
   position: fixed;
   right: 24px;
   bottom: 28px;
-  z-index: 45;
+  z-index: var(--z-nav);
   padding: 0.45rem 0.75rem;
   font-size: 0.82rem;
   font-weight: 600;
@@ -970,7 +971,7 @@ html[data-theme='dark']
   top: 0.65rem;
   right: auto;
   left: auto;
-  z-index: 25;
+  z-index: var(--z-sticky);
   box-sizing: border-box;
   display: flex;
   flex-flow: row wrap;
@@ -1068,6 +1069,7 @@ html[data-theme='dark']
 }
 
 .nebula-dropdown__menu {
+  z-index: var(--z-popover);
   min-width: 220px;
   padding: 6px;
   background: hsl(var(--card));
@@ -1124,13 +1126,13 @@ html[data-theme='dark']
 .nebula-drawer-root {
   position: fixed;
   inset: 0;
-  z-index: 99999;
+  z-index: var(--z-modal);
 }
 
 .nebula-drawer__overlay {
   position: absolute;
   inset: 0;
-  background: rgb(0 0 0 / 45%);
+  background: hsl(var(--overlay) / 45%);
   animation: nebula-drawer-fade-in 0.22s ease;
 }
 

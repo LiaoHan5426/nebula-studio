@@ -312,7 +312,7 @@ function runAndClose(fn: () => void) {
   position: absolute;
   top: calc(100% + 6px);
   right: 0;
-  z-index: 30;
+  z-index: var(--z-popover);
   display: grid;
   gap: 2px;
   min-width: 120px;

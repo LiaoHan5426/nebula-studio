@@ -12,6 +12,8 @@ import {
   watch,
 } from 'vue';
 
+import { useDropdownPosition } from '../../composables/useDropdownPosition';
+
 type NebulaSelectPrimitive = number | string;
 type NebulaSelectObjectOption = Readonly<Record<string, unknown>>;
 type NebulaSelectOption = NebulaSelectObjectOption | NebulaSelectPrimitive;
@@ -69,9 +71,19 @@ const emit = defineEmits<{
 
 const root = ref<HTMLElement>();
 const trigger = ref<HTMLButtonElement>();
+const dropdown = ref<HTMLElement>();
 const optionElements = ref<HTMLElement[]>([]);
 const isOpen = ref(false);
 const activeIndex = ref(-1);
+
+const { menuStyle } = useDropdownPosition({
+  triggerRef: trigger,
+  menuRef: dropdown,
+  open: () => isOpen.value,
+  placement: () => 'bottom-start',
+  offset: () => 6,
+  matchTriggerWidth: () => true,
+});
 
 function isObjectOption(
   option: NebulaSelectOption,
@@ -262,9 +274,11 @@ function handleTriggerKeydown(event: KeyboardEvent): void {
 }
 
 function handleDocumentPointerDown(event: PointerEvent): void {
-  if (!root.value?.contains(event.target as Node)) {
-    closeSelect();
+  const target = event.target as Node;
+  if (root.value?.contains(target) || dropdown.value?.contains(target)) {
+    return;
   }
+  closeSelect();
 }
 
 onMounted(() => {
@@ -346,46 +360,53 @@ watch(
       <span class="nebula-select__chevron" aria-hidden="true"></span>
     </button>
 
-    <Transition name="nebula-select-pop">
-      <div v-if="isOpen" class="nebula-select__dropdown">
+    <Teleport to="body">
+      <Transition name="nebula-select-pop">
         <div
-          v-if="normalizedOptions.length > 0"
-          class="nebula-select__list"
-          role="listbox"
+          v-if="isOpen"
+          ref="dropdown"
+          class="nebula-select__dropdown"
+          :style="menuStyle"
         >
-          <button
-            v-for="option in normalizedOptions"
-            :key="option.index"
-            :ref="(element) => setOptionElement(element, option.index)"
-            type="button"
-            class="nebula-select__option"
-            :class="{
-              'is-active': option.index === activeIndex,
-              'is-selected': Object.is(option.value, modelValue),
-            }"
-            :aria-disabled="option.disabled"
-            :aria-selected="Object.is(option.value, modelValue)"
-            :disabled="option.disabled"
-            role="option"
-            @click="selectOption(option)"
-            @mousemove="activeIndex = option.index"
+          <div
+            v-if="normalizedOptions.length > 0"
+            class="nebula-select__list"
+            role="listbox"
           >
-            <slot
-              name="option"
+            <button
+              v-for="option in normalizedOptions"
+              :key="option.index"
+              :ref="(element) => setOptionElement(element, option.index)"
+              type="button"
+              class="nebula-select__option"
+              :class="{
+                'is-active': option.index === activeIndex,
+                'is-selected': Object.is(option.value, modelValue),
+              }"
+              :aria-disabled="option.disabled"
+              :aria-selected="Object.is(option.value, modelValue)"
               :disabled="option.disabled"
-              :index="option.index"
-              :label="option.label"
-              :option="option.option"
-              :selected="Object.is(option.value, modelValue)"
-              :value="option.value"
+              role="option"
+              @click="selectOption(option)"
+              @mousemove="activeIndex = option.index"
             >
-              {{ option.label }}
-            </slot>
-          </button>
+              <slot
+                name="option"
+                :disabled="option.disabled"
+                :index="option.index"
+                :label="option.label"
+                :option="option.option"
+                :selected="Object.is(option.value, modelValue)"
+                :value="option.value"
+              >
+                {{ option.label }}
+              </slot>
+            </button>
+          </div>
+          <div v-else class="nebula-select__empty">No options</div>
         </div>
-        <div v-else class="nebula-select__empty">No options</div>
-      </div>
-    </Transition>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
@@ -394,6 +415,7 @@ watch(
   position: relative;
   display: block;
   min-width: 180px;
+  overflow: visible;
   color: hsl(var(--foreground));
 }
 
@@ -403,15 +425,15 @@ watch(
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  min-height: 34px;
+  min-height: var(--control-height-md);
   padding: 0.34rem 0.58rem 0.34rem 0.68rem;
   font: inherit;
   color: inherit;
   text-align: left;
   cursor: pointer;
-  background: hsl(var(--card));
-  border: 1px solid hsl(var(--border));
-  border-radius: 8px;
+  background: hsl(var(--input-background, var(--card)));
+  border: 1px solid hsl(var(--input, var(--border)));
+  border-radius: var(--radius-md, 8px);
   transition:
     border-color 0.15s ease,
     box-shadow 0.15s ease,
@@ -421,7 +443,7 @@ watch(
 .nebula-select__trigger:focus-visible {
   outline: none;
   border-color: hsl(var(--primary) / 70%);
-  box-shadow: 0 0 0 3px hsl(var(--primary) / 18%);
+  box-shadow: var(--focus-ring);
 }
 
 .nebula-select--invalid .nebula-select__trigger {
@@ -461,28 +483,24 @@ watch(
 }
 
 .nebula-select__dropdown {
-  position: absolute;
-  top: calc(100% + 6px);
-  right: 0;
-  left: 0;
-  z-index: 60;
+  box-sizing: border-box;
   padding: 0.28rem;
   background: hsl(var(--popover, var(--card)));
   border: 1px solid hsl(var(--border));
-  border-radius: 8px;
-  box-shadow: 0 12px 30px rgb(0 0 0 / 18%);
+  border-radius: var(--radius-md, 8px);
+  box-shadow: var(--shadow-lg, 0 12px 30px rgb(0 0 0 / 18%));
 }
 
 .nebula-select__list {
   display: grid;
   gap: 0.12rem;
-  max-height: 240px;
+  max-height: 100%;
   overflow-y: auto;
 }
 
 .nebula-select__option {
   width: 100%;
-  min-height: 30px;
+  min-height: var(--control-height-sm);
   padding: 0.34rem 0.45rem;
   font: inherit;
   color: hsl(var(--popover-foreground, var(--foreground)));
