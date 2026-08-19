@@ -6,6 +6,7 @@
 import MarkdownIt from 'markdown-it';
 
 import { getHighlighter } from './highlighter';
+import { SHIKI_DUAL_THEMES } from './shikiRender';
 
 /**
  * 创建带 Shiki 代码高亮的 markdown-it 实例。
@@ -18,13 +19,14 @@ export async function createMarkdownRendererWithHighlight(): Promise<MarkdownIt>
     linkify: true,
     typographer: true,
     highlight(code: string, lang: string): string {
-      if (lang && h.getLoadedLanguages().includes(lang)) {
+      const normalized = lang.trim().toLowerCase();
+      if (normalized && h.getLoadedLanguages().includes(normalized)) {
         return h.codeToHtml(code, {
-          lang,
-          theme: 'github-dark',
+          lang: normalized,
+          themes: SHIKI_DUAL_THEMES,
         });
       }
-      return `<pre><code>${md.utils.escapeHtml(code)}</code></pre>`;
+      return `<pre class="shiki"><code>${md.utils.escapeHtml(code)}</code></pre>`;
     },
   });
 

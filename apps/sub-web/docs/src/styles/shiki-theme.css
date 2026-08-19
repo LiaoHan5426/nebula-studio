@@ -1,0 +1,46 @@
+/**
+ * Shiki dual-theme presentation for docs (Demo + markdown).
+ *
+ * Shiki emits light colors inline and `--shiki-dark` / `--shiki-dark-bg` variables;
+ * dark mode overrides those variables via document theme selectors.
+ */
+
+pre.shiki {
+  padding: 16px;
+  margin: 16px 0;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.6;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-lg);
+}
+
+pre.shiki code {
+  padding: 0;
+  font-size: inherit;
+  background: none;
+  border: none;
+  border-radius: 0;
+}
+
+html.dark pre.shiki,
+html[data-theme='dark'] pre.shiki,
+[data-nebula-theme='dark'] pre.shiki {
+  background-color: var(--shiki-dark-bg) !important;
+  color: var(--shiki-dark) !important;
+}
+
+html.dark pre.shiki span,
+html[data-theme='dark'] pre.shiki span,
+[data-nebula-theme='dark'] pre.shiki span {
+  color: var(--shiki-dark) !important;
+}
+
+.demo-source pre.shiki {
+  padding: 18px 20px;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.7;
+  border: none;
+  border-radius: 0;
+}
