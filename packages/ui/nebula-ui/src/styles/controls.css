@@ -169,6 +169,7 @@
   width: 2.75rem;
   height: 1.5rem;
   padding: 0 0.125rem;
+  overflow: hidden;
   appearance: none;
   cursor: pointer;
   background: hsl(var(--input));
@@ -187,6 +188,7 @@
   background: hsl(var(--background));
   border-radius: 999px;
   box-shadow: 0 1px 2px rgb(0 0 0 / 20%);
+  translate: none;
   transition: transform 0.15s ease;
 }
 

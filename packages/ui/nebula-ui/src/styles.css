@@ -857,8 +857,74 @@ html[data-theme='dark']
   --vxe-ui-loading-background-color: hsl(var(--card) / 72%);
   --vxe-ui-table-resizable-line-color: hsl(var(--border));
   --vxe-ui-table-cell-placeholder-color: hsl(var(--muted-foreground));
+  --vxe-ui-table-tree-node-line-color: hsl(var(--border) / 78%);
+  --vxe-ui-table-tree-node-line-style: solid;
 
   color: hsl(var(--foreground));
+}
+
+/* vxe-table tree: expand control + hierarchy guides */
+.nebula-table .vxe-cell--tree-btn,
+.nebula-table .vxe-row-group--node-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border) / 82%);
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 6%);
+  transform: translateY(-50%);
+  z-index: 2;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.nebula-table .vxe-cell--tree-btn:hover,
+.nebula-table .vxe-row-group--node-btn:hover {
+  background: hsl(var(--muted) / 48%);
+  border-color: hsl(var(--primary) / 42%);
+}
+
+.nebula-table .vxe-cell--tree-btn > i,
+.nebula-table .vxe-row-group--node-btn > i {
+  display: inline-block !important;
+  font-size: 12px;
+  line-height: 1;
+  color: hsl(var(--muted-foreground));
+  transform-origin: center;
+  transition:
+    transform 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.15s ease;
+}
+
+.nebula-table.is--animat .vxe-cell--tree-btn > i.rotate90,
+.nebula-table.is--animat .vxe-row-group--node-btn > i.rotate90 {
+  transform: rotate(90deg);
+}
+
+.nebula-table .vxe-cell--tree-btn:hover > i,
+.nebula-table .vxe-row-group--node-btn:hover > i {
+  color: hsl(var(--foreground));
+}
+
+.nebula-table .vxe-tree-cell,
+.nebula-table .vxe-row-group-cell {
+  padding-left: calc(18px + 14px);
+  line-height: 1.45;
+}
+
+.nebula-table .vxe-tree--line {
+  width: 0.72em;
+  border-width: 0 0 1px 1px;
+  border-color: hsl(var(--border) / 78%);
+  border-radius: 0 0 0 3px;
+  transition:
+    border-color 0.2s ease,
+    opacity 0.2s ease;
 }
 
 .nebula-table--drag-row .vxe-body--row,

@@ -56,7 +56,7 @@ export const NebulaTableColumn = defineComponent({
       default: false,
     },
   },
-  setup(props, { slots }) {
+  setup (props, { slots }) {
     return () =>
       h(
         VxeColumn as unknown as object,
@@ -71,7 +71,7 @@ export const NebulaTableColumn = defineComponent({
           sortable: props.sortable,
           formatter: props.formatter,
           showOverflow: props.showOverflow,
-          treeNode: props.treeNode,
+          ...(props.treeNode ? { treeNode: true } : {}),
         },
         slots,
       );

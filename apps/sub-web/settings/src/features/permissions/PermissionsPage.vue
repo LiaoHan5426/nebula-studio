@@ -51,7 +51,7 @@ const dialogTitle = computed(() => (editingId.value ? '编辑权限' : '新建�
 const treeConfig = {
   children: 'children',
   expandAll: true,
-  indent: 18,
+  indent: 22,
   line: true,
 };
 const flatPermissions = computed(() => {
@@ -65,10 +65,13 @@ const flatPermissions = computed(() => {
   visit(tree.value);
   return result;
 });
+const isTreeTable = computed(
+  () => viewMode.value === 'tree' && !keyword.value.trim(),
+);
 const tableRows = computed(() => {
   const query = keyword.value.trim().toLowerCase();
   if (!query) {
-    return viewMode.value === 'tree' ? tree.value : flatPermissions.value;
+    return isTreeTable.value ? tree.value : flatPermissions.value;
   }
   return flatPermissions.value.filter((permission) =>
     [
@@ -82,6 +85,18 @@ const tableRows = computed(() => {
       .toLowerCase()
       .includes(query),
   );
+});
+const displayRows = computed(() => {
+  if (isTreeTable.value) {
+    return tableRows.value;
+  }
+  return tableRows.value.map(({ children: _children, ...row }) => row);
+});
+const resultCount = computed(() => {
+  if (keyword.value.trim()) {
+    return tableRows.value.length;
+  }
+  return flatPermissions.value.length;
 });
 
 onMounted(() => {
@@ -221,7 +236,7 @@ function parentCode(row: PermissionNode): string {
     title="权限管理"
     description="在权限树与矩阵之间切换，核对父级继承、冲突与实际权限来源。"
     eyebrow="Access control"
-    :result-summary="`${tableRows.length} 项权限`"
+    :result-summary="`${resultCount} 项权限`"
     :loading="loading"
     :empty="!loading && tableRows.length === 0"
     detail-title="权限详情"
@@ -263,21 +278,24 @@ function parentCode(row: PermissionNode): string {
       角色继承与冲突标记将在角色绑定数据中同步呈现。
     </p>
 
-    <div class="page__table-wrap permissions-table">
+    <div
+      class="page__table-wrap permissions-table"
+      :class="{ 'permissions-table--tree': isTreeTable }"
+    >
       <NebulaTable
-        :data="tableRows"
+        :key="isTreeTable ? 'tree' : 'matrix'"
+        :data="displayRows"
         :loading="loading"
         row-key="id"
-        :tree-config="
-          viewMode === 'tree' && !keyword.trim() ? treeConfig : undefined
-        "
+        :scroll-x="{ enabled: true }"
+        :tree-config="isTreeTable ? treeConfig : undefined"
         max-height="640"
       >
         <NebulaTableColumn
           field="permName"
           title="名称"
           min-width="180"
-          tree-node
+          :tree-node="isTreeTable"
           show-overflow="ellipsis"
         />
         <NebulaTableColumn field="permCode" title="权限标识" min-width="160">
@@ -318,20 +336,18 @@ function parentCode(row: PermissionNode): string {
           width="72"
           align="center"
         />
-        <NebulaTableColumn title="状态" width="140" align="center">
+        <NebulaTableColumn title="状态" width="88" align="center">
           <template #default="{ row }">
-            <div class="status-cell">
-              <span class="status-label">停用</span>
-              <span
-                class="status-switch"
-                :class="{ 'is-busy': statusUpdatingId === row.id }"
-              >
-                <NebulaSwitch
-                  :model-value="isActive(row)"
-                  @update:model-value="toggleStatus(row, $event)"
-                />
-              </span>
-              <span class="status-label">正常</span>
+            <div
+              class="status-cell"
+              :class="{ 'is-busy': statusUpdatingId === row.id }"
+            >
+              <NebulaSwitch
+                :model-value="isActive(row)"
+                :tooltip="isActive(row) ? '正常' : '停用'"
+                :aria-label="`${row.permName}：${isActive(row) ? '正常，点击停用' : '已停用，点击启用'}`"
+                @update:model-value="toggleStatus(row, $event)"
+              />
             </div>
           </template>
         </NebulaTableColumn>
@@ -352,21 +368,34 @@ function parentCode(row: PermissionNode): string {
             <NebulaTag variant="success">无冲突</NebulaTag>
           </template>
         </NebulaTableColumn>
-        <NebulaTableColumn title="操作" width="220" fixed="right">
+        <NebulaTableColumn
+          title="操作"
+          width="252"
+          fixed="right"
+          align="center"
+        >
           <template #default="{ row }">
-            <div class="row-actions">
-              <NebulaButton variant="ghost" @click="openDetail(row)">
+            <div class="permission-row-actions">
+              <NebulaButton size="sm" variant="ghost" @click="openDetail(row)">
                 详情
               </NebulaButton>
-              <NebulaButton variant="ghost" @click="openEdit(row)">
+              <span class="permission-row-actions__sep" aria-hidden="true" />
+              <NebulaButton size="sm" variant="ghost" @click="openEdit(row)">
                 编辑
               </NebulaButton>
-              <NebulaButton variant="ghost" @click="openCreate(row.id)">
+              <span class="permission-row-actions__sep" aria-hidden="true" />
+              <NebulaButton
+                size="sm"
+                variant="ghost"
+                @click="openCreate(row.id)"
+              >
                 新增下级
               </NebulaButton>
+              <span class="permission-row-actions__sep" aria-hidden="true" />
               <NebulaButton
+                size="sm"
                 variant="ghost"
-                class="danger"
+                class="danger-action"
                 @click="removePermission(row)"
               >
                 删除
@@ -461,29 +490,72 @@ function parentCode(row: PermissionNode): string {
     --vxe-ui-table-row-hover-background-color: hsl(var(--muted) / 18%);
     --vxe-ui-font-color: hsl(var(--foreground));
     --vxe-ui-table-header-font-color: hsl(var(--muted-foreground));
+    --vxe-ui-table-tree-node-line-color: hsl(var(--border) / 70%);
+  }
+
+  :deep(.vxe-table--body-wrapper) {
+    overflow-x: auto;
+  }
+
+  :deep(.vxe-table--scroll-x-handle-appearance),
+  :deep(.vxe-table--scroll-x-handle) {
+    opacity: 1;
+  }
+
+  :deep(.vxe-body--column.col--tree-node) {
+    font-weight: 500;
   }
 }
 
-.row-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2px;
+.permissions-table:not(.permissions-table--tree) :deep(.vxe-cell--tree-btn),
+.permissions-table:not(.permissions-table--tree) :deep(.vxe-tree--line),
+.permissions-table:not(.permissions-table--tree)
+  :deep(.vxe-tree--line-wrapper) {
+  display: none !important;
 }
 
-.danger {
-  color: hsl(var(--destructive));
+.permissions-table:not(.permissions-table--tree) :deep(.vxe-tree-cell),
+.permissions-table:not(.permissions-table--tree) :deep(.vxe-row-group-cell) {
+  padding-left: 0;
 }
 
-.status-cell {
+.permission-row-actions {
   display: inline-flex;
-  gap: 8px;
+  flex-wrap: nowrap;
+  gap: 0;
   align-items: center;
   justify-content: center;
 }
 
-.status-label {
+.permission-row-actions :deep(.nebula-button) {
+  min-height: 1.75rem;
+  padding-inline: 0.45rem;
   font-size: 12px;
-  color: hsl(var(--muted-foreground));
+}
+
+.permission-row-actions__sep {
+  flex-shrink: 0;
+  width: 1px;
+  height: 12px;
+  margin-inline: 1px;
+  background: hsl(var(--border) / 85%);
+}
+
+.danger-action {
+  color: hsl(var(--destructive));
+}
+
+.danger-action:hover {
+  color: hsl(var(--destructive));
+  background: hsl(var(--destructive) / 12%);
+}
+
+.status-cell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin-inline: auto;
 }
 
 .is-busy {

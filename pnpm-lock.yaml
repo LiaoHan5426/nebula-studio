@@ -230,8 +230,8 @@ catalogs:
       specifier: ^4.1.0
       version: 4.1.0
     vxe-table:
-      specifier: ^4.19.23
-      version: 4.19.23
+      specifier: ^4.20.12
+      version: 4.20.12
     xe-utils:
       specifier: ^4.0.11
       version: 4.0.11
@@ -243,7 +243,7 @@ catalogs:
       specifier: ^2.1.1
       version: 2.1.1
     tailwind-merge:
-      specifier: ^3.3.0
+      specifier: ^3.6.0
       version: 3.6.0
   utils:
     '@manypkg/get-packages':
@@ -1425,7 +1425,7 @@ importers:
         version: 4.1.0(vue@3.5.39(typescript@6.0.3))
       vxe-table:
         specifier: catalog:ui
-        version: 4.19.23(vue@3.5.39(typescript@6.0.3))
+        version: 4.20.12
       xe-utils:
         specifier: catalog:ui
         version: 4.0.11
@@ -4007,11 +4007,6 @@ packages:
     peerDependencies:
       vue: ^3.5.0
 
-  '@vxe-ui/core@4.4.15':
-    resolution: {integrity: sha512-DPNPnjSnypg8XO44ApcHw/nJNNJUYF85k1IVFJU8nyKj3qvYBFP96m4ZLOhc6tlMmMJWmhbzXCWZOb37dUNctQ==}
-    peerDependencies:
-      vue: ^3.2.0
-
   '@xmldom/xmldom@0.8.13':
     resolution: {integrity: sha512-KRYzxepc14G/CEpEGc3Yn+JKaAeT63smlDr+vjB8jRfgTBBI9wRj/nkQEO+ucV8p8I9bfKLWp37uHgFrbntPvw==}
     engines: {node: '>=10.0.0'}
@@ -4703,9 +4698,6 @@ packages:
 
   dom-serializer@2.0.0:
     resolution: {integrity: sha512-wIkAryiqt/nV5EQKqQpo3SToSOV9J0DnbJqwK7Wv/Trc92zIAYZ4FlMu+JPFW1DfGFt81ZTCGgDEabffXeLyJg==}
-
-  dom-zindex@1.0.7:
-    resolution: {integrity: sha512-cKU/h8v8IPBgdZOTPbPmq3Ib+Ac5C+kKoh9I4LbGR9BM3GwbmB16KYWKJcj5M2BavnA66EbgYzxYDLd1IytnlQ==}
 
   domelementtype@2.3.0:
     resolution: {integrity: sha512-OLETBj6w0OsagBwdXnPdN0cnMfF9opN69co+7ZrbfPGrdpPVNBUj02spi6B1N7wChLQiPn4CSH/zJvXw56gmHw==}
@@ -7129,11 +7121,8 @@ packages:
     peerDependencies:
       vue: ^3.0.1
 
-  vxe-pc-ui@4.15.23:
-    resolution: {integrity: sha512-bzmShPKgCv4FUgjHwyKaZVwdGR1cMA9WWVp/E8I/aVoG1s4rTKO+yxNZswgD2azyGs+5dp6X/kqLcnEBkqMm5g==}
-
-  vxe-table@4.19.23:
-    resolution: {integrity: sha512-kg6nzIkGCea4otjoxzWKVdcshUa00eswSlVZgo0cNIxpmmOMMIdmcY34IzJXl+UyYd/rvFGVjRidy/R97yaqVA==}
+  vxe-table@4.20.12:
+    resolution: {integrity: sha512-7vYORN4LOY67C/jR0ZpX3rxiU4odW/okWRZBL9PGb4qBtzo/0dlHKblvmBd7AyuxIvUX/xrkd2p3DkAwTGQGdQ==}
 
   w3c-keyname@2.2.8:
     resolution: {integrity: sha512-dpojBhNsCNN7T82Tm7k26A6G9ML3NkhDsnw9n/eoxSRlVBB4CEtIQ/KTCLI2Fwf3ataSXRhYFkQi3SlnFwPvPQ==}
@@ -7199,9 +7188,6 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
-
-  xe-utils@4.0.10:
-    resolution: {integrity: sha512-HLj9r+EjCh6e0J1vfZhDKPwaTtONMl0GNK0OYR6b3KU4QHHpOXNFzEhgwe35KFy8dqsK2sm2WFRzHRafqkYgMA==}
 
   xe-utils@4.0.11:
     resolution: {integrity: sha512-r3v1o10AnHXKRZ5ikuAOQ+Mxw/hy1XWjFr2/Q9L+LEZYq/PRxmiZ6/J53DEH53XqklEXddsmx1vYjOaOACq8IQ==}
@@ -9575,12 +9561,6 @@ snapshots:
     dependencies:
       vue: 3.5.39(typescript@6.0.3)
 
-  '@vxe-ui/core@4.4.15(vue@3.5.39(typescript@6.0.3))':
-    dependencies:
-      dom-zindex: 1.0.7
-      vue: 3.5.39(typescript@6.0.3)
-      xe-utils: 4.0.10
-
   '@xmldom/xmldom@0.8.13': {}
 
   '@xmldom/xmldom@0.9.10': {}
@@ -10238,8 +10218,6 @@ snapshots:
       domelementtype: 2.3.0
       domhandler: 5.0.2
       entities: 4.3.0
-
-  dom-zindex@1.0.7: {}
 
   domelementtype@2.3.0: {}
 
@@ -12995,17 +12973,7 @@ snapshots:
       sortablejs: 1.14.0
       vue: 3.5.39(typescript@6.0.3)
 
-  vxe-pc-ui@4.15.23(vue@3.5.39(typescript@6.0.3)):
-    dependencies:
-      '@vxe-ui/core': 4.4.15(vue@3.5.39(typescript@6.0.3))
-    transitivePeerDependencies:
-      - vue
-
-  vxe-table@4.19.23(vue@3.5.39(typescript@6.0.3)):
-    dependencies:
-      vxe-pc-ui: 4.15.23(vue@3.5.39(typescript@6.0.3))
-    transitivePeerDependencies:
-      - vue
+  vxe-table@4.20.12: {}
 
   w3c-keyname@2.2.8: {}
 
@@ -13061,8 +13029,6 @@ snapshots:
       signal-exit: 4.1.0
 
   ws@8.21.3: {}
-
-  xe-utils@4.0.10: {}
 
   xe-utils@4.0.11: {}
 

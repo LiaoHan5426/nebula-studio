@@ -64,6 +64,20 @@ export const NebulaTable = defineComponent({
       >,
       default: false,
     },
+    scrollY: {
+      type: [Boolean, Object] as PropType<
+        boolean | { enabled?: boolean; gt?: number }
+      >,
+      default: undefined,
+    },
+    virtualXConfig: {
+      type: Object as PropType<Record<string, unknown>>,
+      default: undefined,
+    },
+    virtualYConfig: {
+      type: Object as PropType<Record<string, unknown>>,
+      default: undefined,
+    },
     dragMode: {
       type: String as PropType<NebulaTableDragMode>,
       default: 'none',
@@ -72,25 +86,50 @@ export const NebulaTable = defineComponent({
       type: Object as PropType<Record<string, unknown>>,
       default: undefined,
     },
+    animat: {
+      type: Boolean,
+      default: true,
+    },
+    rowClassName: {
+      type: [String, Function] as PropType<
+        string | ((params: unknown) => string)
+      >,
+      default: undefined,
+    },
     class: {
       type: String,
       default: '',
     },
   },
-  setup(props, { slots }) {
-    const computedRowConfig = {
-      ...props.rowConfig,
-    };
+  setup (props, { slots }) {
+    const computedRowConfig = computed(() => {
+      const config = { ...props.rowConfig };
+      if (props.rowKey && config.keyField == null) {
+        config.keyField = props.rowKey;
+      }
+      return config;
+    });
 
-    if (props.rowKey) {
-      computedRowConfig.useKey = props.rowKey;
-    }
+    const computedTreeConfig = computed(() => {
+      if (!props.treeConfig) return undefined;
+      const config = { ...props.treeConfig };
+      if (props.rowKey && config.rowField == null) {
+        config.rowField = props.rowKey;
+      }
+      return config;
+    });
 
     const computedScrollX = computed(() =>
       typeof props.scrollX === 'boolean'
         ? { enabled: props.scrollX }
         : props.scrollX,
     );
+    const computedScrollY = computed(() => {
+      if (props.scrollY == null) return undefined;
+      return typeof props.scrollY === 'boolean'
+        ? { enabled: props.scrollY }
+        : props.scrollY;
+    });
     const scrollXEnabled = computed(() =>
       typeof props.scrollX === 'boolean'
         ? props.scrollX
@@ -107,10 +146,15 @@ export const NebulaTable = defineComponent({
           size: props.size,
           height: props.height,
           maxHeight: props.maxHeight,
-          rowConfig: computedRowConfig,
+          rowConfig: computedRowConfig.value,
           columnConfig: props.columnConfig,
           scrollX: computedScrollX.value,
-          treeConfig: props.treeConfig,
+          scrollY: computedScrollY.value,
+          virtualXConfig: props.virtualXConfig,
+          virtualYConfig: props.virtualYConfig,
+          treeConfig: computedTreeConfig.value,
+          animat: props.animat,
+          rowClassName: props.rowClassName,
           class: cn(
             'nebula-table',
             !scrollXEnabled.value && 'nebula-table--no-scroll-x',

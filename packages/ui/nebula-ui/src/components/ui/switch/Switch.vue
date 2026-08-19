@@ -29,7 +29,7 @@ const forwarded = useForwardPropsEmits(props, emits);
     <SwitchThumb
       :class="
         cn(
-          'nebula-switch__thumb pointer-events-none block size-5 rounded-full bg-background shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0',
+          'nebula-switch__thumb pointer-events-none block size-5 rounded-full bg-background shadow-lg ring-0',
         )
       "
     />
