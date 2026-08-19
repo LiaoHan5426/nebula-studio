@@ -3,8 +3,8 @@
  * 从 platform-console OpenAPI 生成 TypeScript 契约。
  * 用法:
  *   node scripts/generate-contracts.mjs
- *   node scripts/generate-contracts.mjs --url=http://localhost:8090/v3/api-docs
- *   node scripts/generate-contracts.mjs --strict --url=http://localhost:8090/v3/api-docs
+ *   node scripts/generate-contracts.mjs --url=<openapi-url>
+ *   node scripts/generate-contracts.mjs --strict --url=<openapi-url>
  *   node scripts/generate-contracts.mjs --file=packages/contracts/generated/openapi.json
  */
 import { execFileSync } from 'node:child_process';
@@ -15,12 +15,32 @@ import { fileURLToPath } from 'node:url';
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const root = join(scriptDir, '..');
 const outDir = join(root, 'packages/contracts/generated');
+const windowsConfigPath = join(root, 'configs/windows.json');
 const fileArg = process.argv.find((a) => a.startsWith('--file='))?.slice(7);
 const strict = process.argv.includes('--strict');
+
+function joinOrigin(origin, path = '/') {
+  const base = String(origin).replace(/\/$/, '');
+  if (!path || path === '/') return base;
+  return `${base}${path.startsWith('/') ? path : `/${path}`}`;
+}
+
+function resolveDefaultOpenApiUrl() {
+  const config = JSON.parse(readFileSync(windowsConfigPath, 'utf8'));
+  const spec = config.realStack?.openapi?.platform;
+  const target = spec?.target ? config.apiTargets?.[spec.target] : undefined;
+  if (!spec || !target) {
+    throw new Error(
+      'Missing realStack.openapi.platform or referenced apiTargets entry in configs/windows.json',
+    );
+  }
+  return joinOrigin(target, spec.path);
+}
+
 const apiDocsUrl =
   process.argv.find((a) => a.startsWith('--url='))?.slice(6) ??
   process.env.NEBULA_OPENAPI_URL ??
-  'http://localhost:8090/v3/api-docs';
+  resolveDefaultOpenApiUrl();
 const outFile = join(outDir, 'platform-api.ts');
 
 mkdirSync(outDir, { recursive: true });
@@ -45,7 +65,7 @@ if (fileArg) {
     } catch {
       console.error(`Failed to fetch OpenAPI: ${res.status} ${res.statusText}`);
       console.error(
-        'Ensure platform-console is running on :8090, pass --url=, or --file=',
+        'Ensure platform-console is running at configs/windows.json realStack.openapi.platform, pass --url=, or --file=',
       );
       process.exit(1);
     }
@@ -65,7 +85,7 @@ execFileSync('vp', ['exec', 'openapi-typescript', specFile, '-o', outFile], {
 
 writeFileSync(
   join(outDir, 'index.ts'),
-  `/** Auto-generated export surface. Run: vp run generate:contracts */\nexport type {\n  PlatformApiComponents,\n  PlatformApiOperation,\n  PlatformApiOperationId,\n  PlatformApiOperations,\n  PlatformApiPath,\n  PlatformApiPaths,\n} from './facade.ts';\n`,
+  `/** Auto-generated export surface. Run: vp run generate:contracts */\nexport type {\n  PlatformApiComponents,\n  PlatformApiOperation,\n  PlatformApiOperationId,\n  PlatformApiOperations,\n  PlatformApiPath,\n  PlatformApiPaths,\n} from './facade.ts';\n\nexport {\n  GENERATED_API_BASES,\n  GENERATED_API_TARGETS,\n} from './api-namespaces.ts';\nexport type {\n  GeneratedApiNamespace,\n  GeneratedApiTarget,\n} from './api-namespaces.ts';\n`,
 );
 execFileSync(
   'vp',

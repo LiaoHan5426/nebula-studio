@@ -1,9 +1,16 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Nebula Studio Windows Configuration",
-  "description": "Centralized window/renderer configuration for Nebula Studio Electron and Web modes.",
+  "description": "Centralized window/renderer and runtime-address configuration for Nebula Studio Electron and Web modes.",
   "type": "object",
-  "required": ["windows"],
+  "required": [
+    "windows",
+    "apiBases",
+    "apiTargets",
+    "apiProxy",
+    "realStack",
+    "e2e"
+  ],
   "additionalProperties": false,
   "properties": {
     "$schema": {
@@ -12,11 +19,31 @@
     "shell": {
       "type": "object",
       "additionalProperties": false,
+      "required": ["web"],
       "properties": {
         "topInsetPx": {
           "type": "number",
           "minimum": 0,
           "description": "Top inset for the shell window (px)."
+        },
+        "web": {
+          "$ref": "#/definitions/DevServerAddress",
+          "description": "Integrated Web Shell dev server address."
+        },
+        "electron": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "rendererEntry": {
+              "type": "string",
+              "description": "Packaged Electron renderer HTML path relative to the app output."
+            }
+          }
+        },
+        "embedQuery": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Query parameter used by the Web Shell to select an embed surface."
         }
       }
     },
@@ -27,13 +54,37 @@
     },
     "apiBases": {
       "type": "object",
-      "additionalProperties": { "type": "string" },
-      "description": "API base path mapping for different services."
+      "minProperties": 1,
+      "additionalProperties": { "type": "string", "pattern": "^/" },
+      "description": "API namespace to browser-relative base path."
     },
     "apiTargets": {
       "type": "object",
-      "additionalProperties": { "type": "string" },
-      "description": "Dev proxy target URLs for API services."
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^https?://"
+      },
+      "description": "API namespace to origin URL used by Vite proxy, real-stack, and OpenAPI."
+    },
+    "apiProxy": {
+      "$ref": "#/definitions/ApiProxyConfig"
+    },
+    "realStack": {
+      "$ref": "#/definitions/RealStackConfig"
+    },
+    "e2e": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mockRoutePatterns"],
+      "properties": {
+        "mockRoutePatterns": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" },
+          "description": "Playwright route patterns allowed for mock/experience projects."
+        }
+      }
     },
     "windows": {
       "type": "object",
@@ -60,6 +111,110 @@
     }
   },
   "definitions": {
+    "DevServerAddress": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["host", "port"],
+      "properties": {
+        "host": { "type": "string", "minLength": 1 },
+        "port": { "type": "integer", "minimum": 1, "maximum": 65535 },
+        "basePath": { "type": "string", "pattern": "^/" }
+      }
+    },
+    "StandaloneAddress": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["port"],
+      "properties": {
+        "host": { "type": "string", "minLength": 1 },
+        "port": { "type": "integer", "minimum": 1, "maximum": 65535 },
+        "basePath": { "type": "string", "pattern": "^/" }
+      }
+    },
+    "ApiProxyRoute": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prefix", "target"],
+      "properties": {
+        "prefix": { "type": "string", "pattern": "^/" },
+        "target": { "type": "string", "minLength": 1 },
+        "injectExecutorServiceToken": { "type": "boolean" }
+      }
+    },
+    "ApiProxyConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["presets"],
+      "properties": {
+        "presets": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["integration", "standard"],
+          "properties": {
+            "integration": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/definitions/ApiProxyRoute" }
+            },
+            "standard": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/definitions/ApiProxyRoute" }
+            }
+          }
+        }
+      }
+    },
+    "RealStackHealthCheck": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "target", "startupPath", "probePath"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "label": { "type": "string", "minLength": 1 },
+        "target": { "type": "string", "minLength": 1 },
+        "startupPath": { "type": "string", "pattern": "^/" },
+        "probePath": { "type": "string", "pattern": "^/" }
+      }
+    },
+    "RealStackConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["healthChecks", "openapi"],
+      "properties": {
+        "probeHost": { "type": "string", "minLength": 1 },
+        "healthChecks": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/RealStackHealthCheck" }
+        },
+        "openapi": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["platform"],
+          "properties": {
+            "platform": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["target", "path"],
+              "properties": {
+                "target": { "type": "string", "minLength": 1 },
+                "path": { "type": "string", "pattern": "^/" }
+              }
+            }
+          }
+        },
+        "unauthorizedProbe": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["target", "path"],
+          "properties": {
+            "target": { "type": "string", "minLength": 1 },
+            "path": { "type": "string", "pattern": "^/" }
+          }
+        }
+      }
+    },
     "PreloadCapability": {
       "type": "string",
       "enum": ["auth", "notify", "settings", "shell"],
@@ -142,6 +297,14 @@
           },
           "uniqueItems": true,
           "description": "List of capabilities to expose in this window's preload script."
+        },
+        "proxyPreset": {
+          "type": "string",
+          "enum": ["integration", "standard"],
+          "description": "Vite API proxy preset used when this renderer runs standalone."
+        },
+        "standalone": {
+          "$ref": "#/definitions/StandaloneAddress"
         }
       }
     },
@@ -170,6 +333,14 @@
           },
           "uniqueItems": true,
           "description": "List of capabilities to expose in this modal's preload script."
+        },
+        "proxyPreset": {
+          "type": "string",
+          "enum": ["integration", "standard"],
+          "description": "Vite API proxy preset used when this renderer runs standalone."
+        },
+        "standalone": {
+          "$ref": "#/definitions/StandaloneAddress"
         }
       }
     }

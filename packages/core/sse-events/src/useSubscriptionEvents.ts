@@ -10,7 +10,7 @@ export interface SseEventRecord {
 export type SseConnectionState = 'connected' | 'connecting' | 'error' | 'idle';
 
 export interface UseSubscriptionEventsOptions {
-  /** Base URL for SSE endpoint, e.g. 'http://localhost:8080' */
+  /** Base URL for SSE endpoint. Callers should pass a value derived from runtime address config. */
   baseUrl: string;
   /** Connection timeout in ms (default 10000) */
   connectTimeoutMs?: number;

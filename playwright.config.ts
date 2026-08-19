@@ -1,7 +1,10 @@
 import { defineConfig, devices } from '@playwright/test';
 
+import { resolveShellWeb } from '@nebula-studio-internal/vite';
+
 const executablePath = process.env.PLAYWRIGHT_EXECUTABLE_PATH;
 const skipWebServer = process.env.NEBULA_E2E_EXTERNAL_WEB === 'true';
+const shellWeb = resolveShellWeb();
 
 export default defineConfig({
   testDir: './e2e',
@@ -13,7 +16,7 @@ export default defineConfig({
     ['html', { outputFolder: 'playwright-report', open: 'never' }],
   ],
   use: {
-    baseURL: 'http://localhost:5173',
+    baseURL: shellWeb.baseUrl,
     headless: true,
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
@@ -54,7 +57,7 @@ export default defineConfig({
     ? undefined
     : {
         command: 'vp run dev:web',
-        port: 5173,
+        port: shellWeb.port,
         reuseExistingServer: true,
         timeout: 120_000,
       },

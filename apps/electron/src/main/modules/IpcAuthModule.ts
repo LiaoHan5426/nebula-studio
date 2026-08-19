@@ -9,6 +9,7 @@ import type {
 
 import type { MainModule, MainModuleContext } from '../bootstrap/MainModule';
 
+import { GENERATED_API_TARGETS } from '@nebula-studio/contracts/generated';
 import { BrowserWindow, ipcMain, net } from 'electron';
 
 /**
@@ -25,7 +26,7 @@ export class IpcAuthModule implements MainModule {
   readonly name = 'IpcAuth';
 
   #authSession: ElectronAuthSession | null = null;
-  #backendBaseUrl = 'http://localhost:8080';
+  #backendBaseUrl = GENERATED_API_TARGETS.console;
   #windowManager: MainModuleContext['windowManager'] | null = null;
 
   setup(context: MainModuleContext): void {

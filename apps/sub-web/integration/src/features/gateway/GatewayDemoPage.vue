@@ -52,7 +52,7 @@ async function sendRequest() {
   <div class="page">
     <NebulaPane
       title="服务测试"
-      description="模拟外部租户经网关调用已发布服务，请求转发至 demo-camel-executor :8081"
+      description="模拟外部租户经网关调用已发布服务，请求按运行形态地址配置转发至 Executor"
     >
       <div class="page__form">
         <label class="field">

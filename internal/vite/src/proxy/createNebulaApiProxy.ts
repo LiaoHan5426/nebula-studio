@@ -1,5 +1,6 @@
 import type { ProxyOptions } from 'vite';
 
+import { resolveApiProxyRoutes } from '../config/studioRuntime.ts';
 import { loadWindowsConfig } from '../config/windowsManifest.ts';
 
 export type NebulaApiProxyPreset = 'integration' | 'standard';
@@ -18,30 +19,27 @@ export interface CreateNebulaApiProxyOptions {
   targets?: NebulaApiProxyTargets;
 }
 
+const TARGET_ENV: Record<string, string | undefined> = {
+  platform: process.env.NEBULA_PLATFORM_TARGET,
+  console: process.env.NEBULA_CONSOLE_TARGET,
+  executor: process.env.NEBULA_EXECUTOR_TARGET,
+};
+
 function resolveTargets(
   options: CreateNebulaApiProxyOptions,
-): Required<NebulaApiProxyTargets> {
+): Record<string, string> {
   const fromConfig = loadWindowsConfig().apiTargets ?? {};
-  return {
-    platform:
-      options.targets?.platform ??
-      process.env.NEBULA_PLATFORM_TARGET ??
-      fromConfig.platform ??
-      'http://localhost:8090',
-    console:
-      options.targets?.console ??
-      process.env.NEBULA_CONSOLE_TARGET ??
-      fromConfig.console ??
-      'http://localhost:8080',
-    executor:
-      options.targets?.executor ??
-      process.env.NEBULA_EXECUTOR_TARGET ??
-      fromConfig.executor ??
-      'http://localhost:8081',
-  };
+  const merged: Record<string, string> = { ...fromConfig };
+  for (const [name, value] of Object.entries(TARGET_ENV)) {
+    if (value) merged[name] = value;
+  }
+  for (const [name, value] of Object.entries(options.targets ?? {})) {
+    if (value !== undefined) merged[name] = value;
+  }
+  return merged;
 }
 
-function isSseRequest(url?: string): boolean {
+function isSseRequest (url?: string): boolean {
   return url?.includes('/events') ?? false;
 }
 
@@ -78,7 +76,7 @@ const configureSseProxy: NonNullable<ProxyOptions['configure']> = (
   });
 };
 
-function buildProxyEntry(target: string, sse: boolean): ProxyOptions {
+function buildProxyEntry (target: string, sse: boolean): ProxyOptions {
   if (!sse) {
     return { target, changeOrigin: true };
   }
@@ -95,14 +93,14 @@ function buildProxyEntry(target: string, sse: boolean): ProxyOptions {
  * Executor 管理 API 使用服务身份（X-Service-Token），浏览器不应持有该令牌。
  * 开发代理在转发时注入，与 platform-integration / executor 的默认值对齐。
  */
-function resolveExecutorServiceToken(): string {
+function resolveExecutorServiceToken (): string {
   return (
     process.env.NEBULA_EXECUTOR_SERVICE_TOKEN ??
     'change-me-platform-executor-service-token'
   );
 }
 
-function buildExecutorProxyEntry(target: string, sse: boolean): ProxyOptions {
+function buildExecutorProxyEntry (target: string, sse: boolean): ProxyOptions {
   const serviceToken = resolveExecutorServiceToken();
   const injectServiceToken: NonNullable<ProxyOptions['configure']> = (
     proxy,
@@ -132,46 +130,32 @@ function buildExecutorProxyEntry(target: string, sse: boolean): ProxyOptions {
   };
 }
 
-function integrationRoutes(
-  targets: Required<NebulaApiProxyTargets>,
+function routesFromConfig(
+  preset: NebulaApiProxyPreset,
+  targets: Record<string, string>,
   sse: boolean,
 ): Array<[string, ProxyOptions]> {
-  return [
-    ['/api/integration/gateway', buildProxyEntry(targets.executor, sse)],
-    ['/api/integration/demo', buildProxyEntry(targets.executor, sse)],
-    ['/api/executor', buildExecutorProxyEntry(targets.executor, sse)],
-    ['/api/system', buildProxyEntry(targets.platform, sse)],
-    ['/api/platform', buildProxyEntry(targets.platform, sse)],
-    ['/api/security/governance', buildProxyEntry(targets.platform, sse)],
-    ['/api/version', buildProxyEntry(targets.platform, sse)],
-    ['/api/release', buildProxyEntry(targets.platform, sse)],
-    ['/api/releases', buildProxyEntry(targets.platform, sse)],
-    // 设置子应用配置页走 config-center，与 standard preset 对齐到 platform-console
-    ['/api/config', buildProxyEntry(targets.platform, sse)],
-    ['/api/task', buildProxyEntry(targets.platform, sse)],
-    ['/api', buildProxyEntry(targets.console, sse)],
-  ];
-}
-
-function standardRoutes(
-  targets: Required<NebulaApiProxyTargets>,
-  sse: boolean,
-): Array<[string, ProxyOptions]> {
-  return [
-    ['/api/system', buildProxyEntry(targets.platform, sse)],
-    ['/api/platform', buildProxyEntry(targets.platform, sse)],
-    ['/api/security/governance', buildProxyEntry(targets.platform, sse)],
-    ['/api/version', buildProxyEntry(targets.platform, sse)],
-    ['/api/release', buildProxyEntry(targets.platform, sse)],
-    ['/api/releases', buildProxyEntry(targets.platform, sse)],
-    ['/api/config', buildProxyEntry(targets.platform, sse)],
-    ['/api/task', buildProxyEntry(targets.platform, sse)],
-    ['/api', buildProxyEntry(targets.console, sse)],
-  ];
+  return resolveApiProxyRoutes(preset).map((route) => {
+    const target = targets[route.target];
+    if (target === undefined) {
+      throw new Error(
+        `[nebula-vite] Proxy route "${route.prefix}" references unknown target "${route.target}"`,
+      );
+    }
+    if (!target) {
+      throw new Error(
+        `[nebula-vite] Proxy route "${route.prefix}" has no target configured`,
+      );
+    }
+    const entry = route.injectExecutorServiceToken
+      ? buildExecutorProxyEntry(target, sse)
+      : buildProxyEntry(target, sse);
+    return [route.prefix, entry];
+  });
 }
 
 /**
- * Create dev-server API proxy rules from a preset and configs/windows.json targets.
+ * Create dev-server API proxy rules from a preset and configs/windows.json.
  * Routes are ordered from most specific prefix to least specific.
  */
 export function createNebulaApiProxy(
@@ -179,10 +163,7 @@ export function createNebulaApiProxy(
 ): Record<string, ProxyOptions> {
   const sse = options.sse ?? true;
   const targets = resolveTargets(options);
-  const routes =
-    options.preset === 'integration'
-      ? integrationRoutes(targets, sse)
-      : standardRoutes(targets, sse);
+  const routes = routesFromConfig(options.preset, targets, sse);
 
   const seen = new Set<string>();
   const proxy: Record<string, ProxyOptions> = {};

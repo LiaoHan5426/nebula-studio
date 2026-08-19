@@ -26,7 +26,7 @@ import '@nebula-studio-renderer/integration/bootstrap-runtime';
  * Integration 子应用统一启动入口。
  *
  * 由以下入口调用：
- * - `src/dev/main.ts` — Vite standalone dev (:5174)
+ * - `src/dev/main.ts` — Vite standalone dev（端口来自 configs/windows.json）
  * - `src/main.ts` — Electron renderer
  * - `apps/web/src/embed/integration-entry.ts` — Web shell iframe embed
  */

@@ -4,34 +4,68 @@ import { fileURLToPath } from 'node:url';
 
 export type PreloadCapability = 'auth' | 'notify' | 'settings' | 'shell';
 
+export type NebulaApiProxyPresetName = 'integration' | 'standard';
+
+export interface StandaloneRuntimeConfig {
+  basePath?: string;
+  host?: string;
+  port: number;
+}
+
+export interface ApiProxyRouteConfig {
+  injectExecutorServiceToken?: boolean;
+  prefix: string;
+  target: string;
+}
+
+export interface RealStackHealthCheckConfig {
+  id: string;
+  label: string;
+  probePath: string;
+  startupPath: string;
+  target: string;
+}
+
+export interface RendererRuntimeFields {
+  preload: string;
+  preloadCapabilities?: PreloadCapability[];
+  proxyPreset?: NebulaApiProxyPresetName;
+  renderer: string;
+  standalone?: StandaloneRuntimeConfig;
+  webEmbedEntry?: string;
+}
+
 export interface WindowsConfig {
   apiBases?: Record<string, string>;
+  apiProxy?: {
+    presets: Record<NebulaApiProxyPresetName, ApiProxyRouteConfig[]>;
+  };
   apiTargets?: Record<string, string>;
   displayOrder?: string[];
+  e2e?: { mockRoutePatterns: string[] };
   electronEmbeddedPresentation?: 'browser-view' | 'iframe';
-  modalRenderers?: Record<
-    string,
-    {
-      preload: string;
-      preloadCapabilities?: PreloadCapability[];
-      renderer: string;
-      webEmbedEntry?: string;
-    }
-  >;
+  modalRenderers?: Record<string, RendererRuntimeFields>;
+  realStack?: {
+    healthChecks: RealStackHealthCheckConfig[];
+    openapi: { platform: { path: string; target: string } };
+    probeHost?: string;
+    unauthorizedProbe?: { path: string; target: string };
+  };
   rendererSources?: Record<string, string>;
-  shell?: { topInsetPx?: number };
+  shell?: {
+    electron?: { rendererEntry?: string };
+    embedQuery?: string;
+    topInsetPx?: number;
+    web?: { basePath?: string; host: string; port: number };
+  };
   windows: Record<
     string,
-    {
+    RendererRuntimeFields & {
       defaultEnabled?: boolean;
       iconSvg?: string;
       integratable?: boolean;
       label: string;
-      preload: string;
-      preloadCapabilities?: PreloadCapability[];
-      renderer: string;
       requiresAuth?: boolean;
-      webEmbedEntry?: string;
     }
   >;
 }

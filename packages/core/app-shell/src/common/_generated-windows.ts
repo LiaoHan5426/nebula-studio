@@ -23,6 +23,8 @@ export interface GeneratedWindowEntry {
   integratable?: boolean;
   requiresAuth?: boolean;
   preloadCapabilities: GeneratedPreloadCapability[];
+  proxyPreset?: 'integration' | 'standard';
+  standalone?: { host?: string; port: number; basePath?: string };
 }
 
 export interface GeneratedModalRendererEntry {
@@ -30,10 +32,15 @@ export interface GeneratedModalRendererEntry {
   renderer: string;
   webEmbedEntry?: string;
   preloadCapabilities: GeneratedPreloadCapability[];
+  proxyPreset?: 'integration' | 'standard';
+  standalone?: { host?: string; port: number; basePath?: string };
 }
 
 export const GENERATED_SHELL_CONFIG = {
   topInsetPx: 56,
+  web: { host: 'localhost', port: 5173, basePath: '/' },
+  electron: { rendererEntry: 'renderer/index.html' },
+  embedQuery: 'embed',
 } as const;
 
 export const GENERATED_ELECTRON_EMBEDDED_PRESENTATION = 'iframe' as const;
@@ -54,6 +61,8 @@ export const GENERATED_WINDOWS: Record<string, GeneratedWindowEntry> = {
     integratable: false,
     requiresAuth: false,
     preloadCapabilities: ['auth', 'notify', 'shell'],
+    proxyPreset: 'standard',
+    standalone: { port: 5175, basePath: '/' },
   },
   docs: {
     preload: 'docs',
@@ -72,6 +81,7 @@ export const GENERATED_WINDOWS: Record<string, GeneratedWindowEntry> = {
     integratable: false,
     requiresAuth: false,
     preloadCapabilities: ['notify'],
+    standalone: { port: 5176, basePath: '/' },
   },
   settings: {
     preload: 'settings',
@@ -85,11 +95,13 @@ export const GENERATED_WINDOWS: Record<string, GeneratedWindowEntry> = {
     roles: ['authenticated'],
     returnTo: '/appearance',
     iconSvg:
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>',
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>',
     defaultEnabled: true,
     integratable: false,
     requiresAuth: true,
     preloadCapabilities: ['settings'],
+    proxyPreset: 'standard',
+    standalone: { port: 5177, basePath: '/' },
   },
   integration: {
     preload: 'main',
@@ -108,6 +120,8 @@ export const GENERATED_WINDOWS: Record<string, GeneratedWindowEntry> = {
     integratable: true,
     requiresAuth: true,
     preloadCapabilities: ['auth', 'notify'],
+    proxyPreset: 'integration',
+    standalone: { port: 5174, basePath: '/' },
   },
 } as const;
 
@@ -120,6 +134,8 @@ export const GENERATED_MODAL_RENDERERS: Record<
     renderer: 'login',
     webEmbedEntry: './embed/login-entry.js',
     preloadCapabilities: ['auth'],
+    proxyPreset: 'standard',
+    standalone: { port: 5178, basePath: '/' },
   },
 } as const;
 
@@ -136,12 +152,207 @@ export const GENERATED_API_BASES: Record<string, string> = {
   governance: '/api/security/governance',
   version: '/api/version',
   release: '/api/release',
+  releases: '/api/releases',
+  integration: '/api/integration',
+  flows: '/api/flows',
+  monitor: '/api/monitor',
+  task: '/api/task',
+  taskInstance: '/api/task/instance',
+  cluster: '/api/cluster',
+  subscribe: '/api/subscribe',
+  camelSubscribe: '/api/subscribe/camel',
+  camelTopology: '/api/camel/topology',
+  config: '/api/config',
 } as const;
 
 export const GENERATED_API_TARGETS: Record<string, string> = {
   platform: 'http://localhost:8090',
   console: 'http://localhost:8080',
-  executor: 'http://localhost:8081',
+  executor: 'http://localhost:8088',
+} as const;
+
+export const GENERATED_SHELL_WEB_BASE_URL = 'http://localhost:5173' as const;
+
+export const GENERATED_ELECTRON_RENDERER_ENTRY = 'renderer/index.html' as const;
+
+export const GENERATED_SHELL_EMBED_QUERY = 'embed' as const;
+
+export const GENERATED_STANDALONE_APPS = {
+  frontend: {
+    host: 'localhost',
+    port: 5175,
+    basePath: '/',
+    baseUrl: 'http://localhost:5175',
+    proxyPreset: 'standard',
+    embedPath: null,
+  },
+  docs: {
+    host: 'localhost',
+    port: 5176,
+    basePath: '/',
+    baseUrl: 'http://localhost:5176',
+    proxyPreset: null,
+    embedPath: '/?embed=docs',
+  },
+  settings: {
+    host: 'localhost',
+    port: 5177,
+    basePath: '/',
+    baseUrl: 'http://localhost:5177',
+    proxyPreset: 'standard',
+    embedPath: '/?embed=settings',
+  },
+  integration: {
+    host: 'localhost',
+    port: 5174,
+    basePath: '/',
+    baseUrl: 'http://localhost:5174',
+    proxyPreset: 'integration',
+    embedPath: '/?embed=integration',
+  },
+  login: {
+    host: 'localhost',
+    port: 5178,
+    basePath: '/',
+    baseUrl: 'http://localhost:5178',
+    proxyPreset: 'standard',
+    embedPath: '/?embed=login',
+  },
+} as const;
+
+export const GENERATED_API_PROXY = {
+  presets: {
+    integration: [
+      {
+        prefix: '/api/integration/gateway',
+        target: 'executor',
+      },
+      {
+        prefix: '/api/integration/demo',
+        target: 'executor',
+      },
+      {
+        prefix: '/api/executor',
+        target: 'executor',
+        injectExecutorServiceToken: true,
+      },
+      {
+        prefix: '/api/system',
+        target: 'platform',
+      },
+      {
+        prefix: '/api/platform',
+        target: 'platform',
+      },
+      {
+        prefix: '/api/security/governance',
+        target: 'platform',
+      },
+      {
+        prefix: '/api/version',
+        target: 'platform',
+      },
+      {
+        prefix: '/api/release',
+        target: 'platform',
+      },
+      {
+        prefix: '/api/releases',
+        target: 'platform',
+      },
+      {
+        prefix: '/api/config',
+        target: 'platform',
+      },
+      {
+        prefix: '/api/task',
+        target: 'platform',
+      },
+      {
+        prefix: '/api',
+        target: 'console',
+      },
+    ],
+    standard: [
+      {
+        prefix: '/api/system',
+        target: 'platform',
+      },
+      {
+        prefix: '/api/platform',
+        target: 'platform',
+      },
+      {
+        prefix: '/api/security/governance',
+        target: 'platform',
+      },
+      {
+        prefix: '/api/version',
+        target: 'platform',
+      },
+      {
+        prefix: '/api/release',
+        target: 'platform',
+      },
+      {
+        prefix: '/api/releases',
+        target: 'platform',
+      },
+      {
+        prefix: '/api/config',
+        target: 'platform',
+      },
+      {
+        prefix: '/api/task',
+        target: 'platform',
+      },
+      {
+        prefix: '/api',
+        target: 'console',
+      },
+    ],
+  },
+} as const;
+
+export const GENERATED_REAL_STACK = {
+  probeHost: '127.0.0.1',
+  healthChecks: [
+    {
+      id: 'platform',
+      label: 'Platform Console',
+      target: 'platform',
+      startupPath: '/actuator/health',
+      probePath: '/api/platform/health',
+    },
+    {
+      id: 'console',
+      label: 'Platform Integration',
+      target: 'console',
+      startupPath: '/actuator/health',
+      probePath: '/actuator/health',
+    },
+    {
+      id: 'executor',
+      label: 'Platform Integration Executor',
+      target: 'executor',
+      startupPath: '/actuator/health',
+      probePath: '/actuator/health',
+    },
+  ],
+  openapi: {
+    platform: {
+      target: 'platform',
+      path: '/v3/api-docs',
+    },
+  },
+  unauthorizedProbe: {
+    target: 'platform',
+    path: '/monitor/api/metrics',
+  },
+} as const;
+
+export const GENERATED_E2E = {
+  mockRoutePatterns: ['**/api/**'],
 } as const;
 
 export type GeneratedWindowId = 'main' | 'docs' | 'settings' | 'integration';

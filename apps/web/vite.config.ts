@@ -6,9 +6,11 @@ import {
   nebulaSubWebAliasPlugin,
   nebulaVueDemoPlugin,
   nebulaWorkspaceManifestPlugin,
+  resolveShellWeb,
 } from '@nebula-studio-internal/vite';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
+const shellWeb = resolveShellWeb();
 
 export default defineNebulaConfig({
   platform: 'web',
@@ -29,7 +31,7 @@ export default defineNebulaConfig({
       nebulaVueDemoPlugin(),
     ],
     server: {
-      port: 5173,
+      port: shellWeb.port,
       proxy: createNebulaApiProxy({ preset: 'integration' }),
     },
   },

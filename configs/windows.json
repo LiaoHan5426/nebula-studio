@@ -1,7 +1,16 @@
 {
   "$schema": "./windows.schema.json",
   "shell": {
-    "topInsetPx": 56
+    "topInsetPx": 56,
+    "web": {
+      "host": "localhost",
+      "port": 5173,
+      "basePath": "/"
+    },
+    "electron": {
+      "rendererEntry": "renderer/index.html"
+    },
+    "embedQuery": "embed"
   },
   "electronEmbeddedPresentation": "iframe",
   "apiBases": {
@@ -12,12 +21,95 @@
     "auth": "/api/auth",
     "governance": "/api/security/governance",
     "version": "/api/version",
-    "release": "/api/release"
+    "release": "/api/release",
+    "releases": "/api/releases",
+    "integration": "/api/integration",
+    "flows": "/api/flows",
+    "monitor": "/api/monitor",
+    "task": "/api/task",
+    "taskInstance": "/api/task/instance",
+    "cluster": "/api/cluster",
+    "subscribe": "/api/subscribe",
+    "camelSubscribe": "/api/subscribe/camel",
+    "camelTopology": "/api/camel/topology",
+    "config": "/api/config"
   },
   "apiTargets": {
     "platform": "http://localhost:8090",
     "console": "http://localhost:8080",
-    "executor": "http://localhost:8081"
+    "executor": "http://localhost:8088"
+  },
+  "apiProxy": {
+    "presets": {
+      "integration": [
+        { "prefix": "/api/integration/gateway", "target": "executor" },
+        { "prefix": "/api/integration/demo", "target": "executor" },
+        {
+          "prefix": "/api/executor",
+          "target": "executor",
+          "injectExecutorServiceToken": true
+        },
+        { "prefix": "/api/system", "target": "platform" },
+        { "prefix": "/api/platform", "target": "platform" },
+        { "prefix": "/api/security/governance", "target": "platform" },
+        { "prefix": "/api/version", "target": "platform" },
+        { "prefix": "/api/release", "target": "platform" },
+        { "prefix": "/api/releases", "target": "platform" },
+        { "prefix": "/api/config", "target": "platform" },
+        { "prefix": "/api/task", "target": "platform" },
+        { "prefix": "/api", "target": "console" }
+      ],
+      "standard": [
+        { "prefix": "/api/system", "target": "platform" },
+        { "prefix": "/api/platform", "target": "platform" },
+        { "prefix": "/api/security/governance", "target": "platform" },
+        { "prefix": "/api/version", "target": "platform" },
+        { "prefix": "/api/release", "target": "platform" },
+        { "prefix": "/api/releases", "target": "platform" },
+        { "prefix": "/api/config", "target": "platform" },
+        { "prefix": "/api/task", "target": "platform" },
+        { "prefix": "/api", "target": "console" }
+      ]
+    }
+  },
+  "realStack": {
+    "probeHost": "127.0.0.1",
+    "healthChecks": [
+      {
+        "id": "platform",
+        "label": "Platform Console",
+        "target": "platform",
+        "startupPath": "/actuator/health",
+        "probePath": "/api/platform/health"
+      },
+      {
+        "id": "console",
+        "label": "Platform Integration",
+        "target": "console",
+        "startupPath": "/actuator/health",
+        "probePath": "/actuator/health"
+      },
+      {
+        "id": "executor",
+        "label": "Platform Integration Executor",
+        "target": "executor",
+        "startupPath": "/actuator/health",
+        "probePath": "/actuator/health"
+      }
+    ],
+    "openapi": {
+      "platform": {
+        "target": "platform",
+        "path": "/v3/api-docs"
+      }
+    },
+    "unauthorizedProbe": {
+      "target": "platform",
+      "path": "/monitor/api/metrics"
+    }
+  },
+  "e2e": {
+    "mockRoutePatterns": ["**/api/**"]
   },
   "windows": {
     "main": {
@@ -33,7 +125,12 @@
       "iconSvg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x=\"3\" y=\"3\" width=\"7\" height=\"7\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"7\"/><rect x=\"14\" y=\"14\" width=\"7\" height=\"7\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\"/></svg>",
       "integratable": false,
       "requiresAuth": false,
-      "preloadCapabilities": ["auth", "notify", "shell"]
+      "preloadCapabilities": ["auth", "notify", "shell"],
+      "proxyPreset": "standard",
+      "standalone": {
+        "port": 5175,
+        "basePath": "/"
+      }
     },
     "docs": {
       "preload": "docs",
@@ -50,7 +147,11 @@
       "defaultEnabled": true,
       "integratable": false,
       "requiresAuth": false,
-      "preloadCapabilities": ["notify"]
+      "preloadCapabilities": ["notify"],
+      "standalone": {
+        "port": 5176,
+        "basePath": "/"
+      }
     },
     "settings": {
       "preload": "settings",
@@ -63,11 +164,16 @@
       "searchKeywords": ["外观", "用户", "角色", "权限", "配置"],
       "roles": ["authenticated"],
       "returnTo": "/appearance",
-      "iconSvg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/></svg>",
+      "iconSvg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/></svg>",
       "defaultEnabled": true,
       "integratable": false,
       "requiresAuth": true,
-      "preloadCapabilities": ["settings"]
+      "preloadCapabilities": ["settings"],
+      "proxyPreset": "standard",
+      "standalone": {
+        "port": 5177,
+        "basePath": "/"
+      }
     },
     "integration": {
       "preload": "main",
@@ -84,7 +190,12 @@
       "defaultEnabled": true,
       "integratable": true,
       "requiresAuth": true,
-      "preloadCapabilities": ["auth", "notify"]
+      "preloadCapabilities": ["auth", "notify"],
+      "proxyPreset": "integration",
+      "standalone": {
+        "port": 5174,
+        "basePath": "/"
+      }
     }
   },
   "modalRenderers": {
@@ -92,7 +203,12 @@
       "preload": "main",
       "renderer": "login",
       "webEmbedEntry": "./embed/login-entry.js",
-      "preloadCapabilities": ["auth"]
+      "preloadCapabilities": ["auth"],
+      "proxyPreset": "standard",
+      "standalone": {
+        "port": 5178,
+        "basePath": "/"
+      }
     }
   },
   "displayOrder": ["integration"]

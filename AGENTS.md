@@ -31,11 +31,11 @@ Typical local stack before manual or API smoke tests:
 
 1. **Backend** (Java/Maven, separate repo `nebula`):
    - Console `:8080` — from `demos/demo-camel-console`: `mvn spring-boot:run -DskipTests`
-   - Executor `:8081` — from `demos/demo-camel-executor`: `mvn spring-boot:run -DskipTests`
+   - Executor `:8088` — from `nebula-platform/platform-integration-executor`: `mvn spring-boot:run -DskipTests`
    - Do **not** use `mvn -pl … spring-boot:run` from the parent POM alone (it may bind to `nebula-parent` and fail); run from each demo module directory or `-f demos/demo-camel-console/pom.xml`.
 2. **Frontend** (this repo, **use `vp`**):
    - **Recommended:** `vp run dev:web` — open http://localhost:5173, enter「应用集成」→「集成平台」
-   - **Standalone integration:** `vp run --filter @nebula-studio-renderer/integration dev` — http://localhost:5174 (proxies `/api` → console 8080, gateway/demo → executor 8081)
+   - **Standalone integration:** `vp run --filter @nebula-studio-renderer/integration dev` — http://localhost:5174 (proxies `/api` → console 8080, gateway/demo → executor 8088)
 3. **Demo login:** `admin` / `admin123` or `demo` / `demo`; default tenant header `tenant-a`, API key `demo-api-key-tenant-a` for gateway demos.
 
 Smoke checks: login → tenant list/switch → subscriptions + SSE → gateway call → monitor APIs. Use `curl.exe` on Windows (PowerShell `curl` is an alias for `Invoke-WebRequest`).

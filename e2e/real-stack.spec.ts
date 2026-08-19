@@ -1,5 +1,10 @@
 import { expect, test } from '@playwright/test';
 
+import {
+  resolveHealthChecks,
+  resolveShellEmbedPath,
+} from '@nebula-studio-internal/vite';
+
 type ApiEnvelope<T> = {
   code?: number;
   data?: T;
@@ -22,29 +27,22 @@ function requireEnvironment(name: string): string {
 const testUsername = process.env.NEBULA_E2E_USERNAME ?? 'admin';
 const testPassword = requireEnvironment('NEBULA_E2E_PASSWORD');
 const gatewayApiKey = requireEnvironment('NEBULA_E2E_GATEWAY_API_KEY');
+const serviceChecks = resolveHealthChecks(undefined, { host: '127.0.0.1' });
 
 test.describe('real Nebula stack', () => {
   test('login, shell, search, catalog, settings, help and Platform domains', async ({
     page,
     request,
   }) => {
-    const serviceChecks = [
-      ['Platform Console', 'http://127.0.0.1:8090/api/platform/health'],
-      ['Platform Integration', 'http://127.0.0.1:8080/actuator/health'],
-      [
-        'Platform Integration Executor',
-        'http://127.0.0.1:8081/actuator/health',
-      ],
-    ] as const;
-
-    for (const [service, path] of serviceChecks) {
-      const response = await request.get(path);
-      expect(response.ok(), `${service} health check failed: ${path}`).toBe(
-        true,
-      );
+    for (const check of serviceChecks) {
+      const response = await request.get(check.probeUrl);
+      expect(
+        response.ok(),
+        `${check.label} health check failed: ${check.probeUrl}`,
+      ).toBe(true);
     }
 
-    await page.goto('/?embed=login');
+    await page.goto(resolveShellEmbedPath('login'));
     await page.locator('input[autocomplete="username"]').fill(testUsername);
     await page
       .locator('input[autocomplete="current-password"]')
@@ -71,19 +69,19 @@ test.describe('real Nebula stack', () => {
     await expect(page.locator(':focus-visible')).toBeVisible();
     await page.keyboard.press('Escape');
 
-    await page.goto('/?embed=integration#/catalog');
+    await page.goto(`${resolveShellEmbedPath('integration')}#/catalog`);
     await expect(
       page.getByRole('heading', { name: '找到下一项可复用能力' }),
     ).toBeVisible();
     await expect(page.getByRole('textbox', { name: '搜索资源' })).toBeVisible();
 
-    await page.goto('/?embed=integration#/plugins/market');
+    await page.goto(`${resolveShellEmbedPath('integration')}#/plugins/market`);
     await expect(page.getByRole('heading', { name: '插件目录' })).toBeVisible();
 
-    await page.goto('/?embed=integration#/subscriptions');
+    await page.goto(`${resolveShellEmbedPath('integration')}#/subscriptions`);
     await expect(page.getByRole('heading', { name: '库表订阅' })).toBeVisible();
 
-    await page.goto('/?embed=settings');
+    await page.goto(resolveShellEmbedPath('settings'));
     await page.getByRole('link', { name: '权限矩阵' }).click();
     await expect(
       page.getByRole('main').getByRole('heading', { name: '权限管理' }),

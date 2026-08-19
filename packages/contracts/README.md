@@ -44,7 +44,7 @@
 | `ShellAppRecord` | `ShellAppRestService` | `/api/system/apps/**` | platform-console |
 | `LogRecord` | `LogRestService` | `/api/system/logs/**` | platform-console |
 
-### integration（camel-console :8080 / executor :8081）
+### integration（camel-console :8080 / executor :8088）
 
 | contract 类型 | 后端 Controller | REST 路径 | 归属 |
 | --- | --- | --- | --- |
@@ -80,9 +80,9 @@
 | 路径前缀                      | 目标                    | 说明             |
 | ----------------------------- | ----------------------- | ---------------- |
 | `/api/system/**`              | `http://localhost:8090` | platform-console |
-| `/api/integration/gateway/**` | `http://localhost:8081` | executor         |
-| `/api/integration/demo/**`    | `http://localhost:8081` | executor         |
-| `/api/executor/**`            | `http://localhost:8081` | executor         |
+| `/api/integration/gateway/**` | `http://localhost:8088` | executor         |
+| `/api/integration/demo/**`    | `http://localhost:8088` | executor         |
+| `/api/executor/**`            | `http://localhost:8088` | executor         |
 | `/api/**` (其余)              | `http://localhost:8080` | camel-console    |
 
 > 权威源：`configs/windows.json` → `apiBases` + `apiTargets`；各子应用 `vite.proxy.ts` 定义代理路由

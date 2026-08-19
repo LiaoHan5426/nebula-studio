@@ -28,7 +28,27 @@ const outputPath = join(
   'common',
   '_generated-windows.ts',
 );
+const apiNamespacesPath = join(
+  rootDir,
+  'packages',
+  'contracts',
+  'generated',
+  'api-namespaces.ts',
+);
 const subWebDir = join(rootDir, 'apps', 'sub-web');
+
+function joinOrigin(origin, path = '/') {
+  const base = String(origin).replace(/\/$/, '');
+  if (!path || path === '/') return base;
+  return `${base}${path.startsWith('/') ? path : `/${path}`}`;
+}
+
+function collectRuntimeEntries(config) {
+  return [
+    ...Object.values(config.windows ?? {}),
+    ...Object.values(config.modalRenderers ?? {}),
+  ];
+}
 
 /**
  * Validate config with JSON Schema and check renderer entry files on disk.
@@ -83,6 +103,53 @@ function validateConfig(config, schema) {
     }
   }
 
+  const apiTargets = config.apiTargets ?? {};
+  for (const [preset, routes] of Object.entries(
+    config.apiProxy?.presets ?? {},
+  )) {
+    for (const [index, route] of routes.entries()) {
+      if (!apiTargets[route.target]) {
+        errors.push(
+          `apiProxy.presets.${preset}[${index}].target: unknown apiTargets.${route.target}`,
+        );
+      }
+    }
+  }
+
+  for (const check of config.realStack?.healthChecks ?? []) {
+    if (!apiTargets[check.target]) {
+      errors.push(
+        `realStack.healthChecks.${check.id}.target: unknown apiTargets.${check.target}`,
+      );
+    }
+  }
+
+  const openapiTarget = config.realStack?.openapi?.platform?.target;
+  if (openapiTarget && !apiTargets[openapiTarget]) {
+    errors.push(
+      `realStack.openapi.platform.target: unknown apiTargets.${openapiTarget}`,
+    );
+  }
+
+  const ports = new Map();
+  const shellPort = config.shell?.web?.port;
+  if (typeof shellPort === 'number') {
+    ports.set(shellPort, 'shell.web');
+  }
+  for (const entry of collectRuntimeEntries(config)) {
+    const port = entry.standalone?.port;
+    if (typeof port !== 'number') continue;
+    const owner = `renderer "${entry.renderer}"`;
+    const existing = ports.get(port);
+    if (existing) {
+      errors.push(
+        `standalone.port ${port} used by both ${existing} and ${owner}`,
+      );
+    } else {
+      ports.set(port, owner);
+    }
+  }
+
   return errors;
 }
 
@@ -124,6 +191,10 @@ function generateTypeScript(config) {
   lines.push('  integratable?: boolean;');
   lines.push('  requiresAuth?: boolean;');
   lines.push('  preloadCapabilities: GeneratedPreloadCapability[];');
+  lines.push("  proxyPreset?: 'integration' | 'standard';");
+  lines.push(
+    '  standalone?: { host?: string; port: number; basePath?: string };',
+  );
   lines.push('}');
   lines.push('');
   lines.push('export interface GeneratedModalRendererEntry {');
@@ -131,6 +202,10 @@ function generateTypeScript(config) {
   lines.push('  renderer: string;');
   lines.push('  webEmbedEntry?: string;');
   lines.push('  preloadCapabilities: GeneratedPreloadCapability[];');
+  lines.push("  proxyPreset?: 'integration' | 'standard';");
+  lines.push(
+    '  standalone?: { host?: string; port: number; basePath?: string };',
+  );
   lines.push('}');
   lines.push('');
 
@@ -181,6 +256,10 @@ function generateTypeScript(config) {
       lines.push(
         `    preloadCapabilities: ${JSON.stringify(win.preloadCapabilities)},`,
       );
+    if (win.proxyPreset)
+      lines.push(`    proxyPreset: ${JSON.stringify(win.proxyPreset)},`);
+    if (win.standalone)
+      lines.push(`    standalone: ${JSON.stringify(win.standalone)},`);
     lines.push('  },');
   }
   lines.push('} as const;');
@@ -203,6 +282,10 @@ function generateTypeScript(config) {
           `    preloadCapabilities: ${JSON.stringify(modal.preloadCapabilities)},`,
         );
       }
+      if (modal.proxyPreset)
+        lines.push(`    proxyPreset: ${JSON.stringify(modal.proxyPreset)},`);
+      if (modal.standalone)
+        lines.push(`    standalone: ${JSON.stringify(modal.standalone)},`);
       lines.push('  },');
     }
     lines.push('} as const;');
@@ -226,6 +309,79 @@ function generateTypeScript(config) {
   if (config.apiTargets) {
     lines.push(
       `export const GENERATED_API_TARGETS: Record<string, string> = ${JSON.stringify(config.apiTargets, null, 2)} as const;`,
+    );
+    lines.push('');
+  }
+
+  const shellWeb = config.shell?.web;
+  if (shellWeb) {
+    const shellBaseUrl = joinOrigin(
+      `http://${shellWeb.host}:${shellWeb.port}`,
+      shellWeb.basePath ?? '/',
+    );
+    lines.push(
+      `export const GENERATED_SHELL_WEB_BASE_URL = ${JSON.stringify(shellBaseUrl)} as const;`,
+    );
+    lines.push('');
+  }
+
+  if (config.shell?.electron?.rendererEntry) {
+    lines.push(
+      `export const GENERATED_ELECTRON_RENDERER_ENTRY = ${JSON.stringify(config.shell.electron.rendererEntry)} as const;`,
+    );
+    lines.push('');
+  }
+
+  if (config.shell?.embedQuery) {
+    lines.push(
+      `export const GENERATED_SHELL_EMBED_QUERY = ${JSON.stringify(config.shell.embedQuery)} as const;`,
+    );
+    lines.push('');
+  }
+
+  const standaloneApps = {};
+  for (const entry of collectRuntimeEntries(config)) {
+    if (!entry.standalone) continue;
+    const host = entry.standalone.host ?? config.shell?.web?.host;
+    if (!host) {
+      throw new Error(
+        `renderer "${entry.renderer}" standalone.host is missing and shell.web.host is not set`,
+      );
+    }
+    const basePath = entry.standalone.basePath ?? '/';
+    standaloneApps[entry.renderer] = {
+      host,
+      port: entry.standalone.port,
+      basePath,
+      baseUrl: joinOrigin(`http://${host}:${entry.standalone.port}`, basePath),
+      proxyPreset: entry.proxyPreset ?? null,
+      embedPath: entry.webEmbedEntry
+        ? `/?${config.shell?.embedQuery ?? 'embed'}=${entry.renderer}`
+        : null,
+    };
+  }
+  lines.push(
+    `export const GENERATED_STANDALONE_APPS = ${JSON.stringify(standaloneApps, null, 2)} as const;`,
+  );
+  lines.push('');
+
+  if (config.apiProxy) {
+    lines.push(
+      `export const GENERATED_API_PROXY = ${JSON.stringify(config.apiProxy, null, 2)} as const;`,
+    );
+    lines.push('');
+  }
+
+  if (config.realStack) {
+    lines.push(
+      `export const GENERATED_REAL_STACK = ${JSON.stringify(config.realStack, null, 2)} as const;`,
+    );
+    lines.push('');
+  }
+
+  if (config.e2e) {
+    lines.push(
+      `export const GENERATED_E2E = ${JSON.stringify(config.e2e, null, 2)} as const;`,
     );
     lines.push('');
   }
@@ -270,10 +426,27 @@ if (!existsSync(outputDir)) {
   mkdirSync(outputDir, { recursive: true });
 }
 writeFileSync(outputPath, ts, 'utf-8');
-execFileSync('vp', ['fmt', outputPath, '--write'], {
+
+const apiNamespaces = [
+  '// AUTO-GENERATED — do not edit manually.',
+  '// Source: configs/windows.json',
+  '',
+  `export const GENERATED_API_BASES = ${JSON.stringify(config.apiBases ?? {}, null, 2)} as const;`,
+  '',
+  'export type GeneratedApiNamespace = keyof typeof GENERATED_API_BASES;',
+  '',
+  `export const GENERATED_API_TARGETS = ${JSON.stringify(config.apiTargets ?? {}, null, 2)} as const;`,
+  '',
+  'export type GeneratedApiTarget = keyof typeof GENERATED_API_TARGETS;',
+  '',
+].join('\n');
+writeFileSync(apiNamespacesPath, apiNamespaces, 'utf-8');
+
+execFileSync('vp', ['fmt', outputPath, apiNamespacesPath, '--write'], {
   cwd: rootDir,
   stdio: 'inherit',
 });
 
 console.log(`Generated: ${outputPath}`);
+console.log(`Generated: ${apiNamespacesPath}`);
 console.log(`   ${ts.split('\n').length} lines written.`);

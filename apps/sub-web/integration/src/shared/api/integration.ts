@@ -23,7 +23,7 @@ function request<T>(
   return integrationRequest<T>(endpoint, options);
 }
 
-/** Legacy integration CRUD on console :8080 */
+/** Legacy integration CRUD on console target from configs/windows.json. */
 export const interfaceApi = {
   create(intf: Partial<ApiInterface>): Promise<ApiResponse<ApiInterface>> {
     return request('/interfaces', {

@@ -14,24 +14,46 @@ if ([string]::IsNullOrWhiteSpace($BackendRoot)) {
 $studioRoot = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
 $artifactRoot = Join-Path $studioRoot "test-results\real-stack"
 New-Item -ItemType Directory -Force -Path $artifactRoot | Out-Null
+$windowsConfigPath = Join-Path $studioRoot "configs\windows.json"
+$windowsConfig = Get-Content $windowsConfigPath -Raw | ConvertFrom-Json
 
-$services = @(
-    @{
-        Name = "platform-console"
-        Directory = Join-Path $BackendRoot "nebula-platform\platform-console"
-        Health = "http://localhost:8090/actuator/health"
-    },
-    @{
-        Name = "platform-integration"
-        Directory = Join-Path $BackendRoot "nebula-platform\platform-integration"
-        Health = "http://localhost:8080/actuator/health"
-    },
-    @{
-        Name = "platform-integration-executor"
-        Directory = Join-Path $BackendRoot "nebula-platform\platform-integration-executor"
-        Health = "http://localhost:8081/actuator/health"
+function Join-Url {
+    param([string]$Origin, [string]$Path)
+    $base = $Origin.TrimEnd("/")
+    if ([string]::IsNullOrWhiteSpace($Path) -or $Path -eq "/") {
+        return $base
     }
-)
+    if ($Path.StartsWith("/")) {
+        return "$base$Path"
+    }
+    return "$base/$Path"
+}
+
+function Get-ApiTargetOrigin {
+    param([string]$Target)
+    $origin = $windowsConfig.apiTargets.$Target
+    if ([string]::IsNullOrWhiteSpace($origin)) {
+        throw "[real-stack] apiTargets.$Target is missing in configs/windows.json"
+    }
+    return $origin
+}
+
+$serviceDirectories = @{
+    platform = Join-Path $BackendRoot "nebula-platform\platform-console"
+    console = Join-Path $BackendRoot "nebula-platform\platform-integration"
+    executor = Join-Path $BackendRoot "nebula-platform\platform-integration-executor"
+}
+
+$services = @($windowsConfig.realStack.healthChecks | ForEach-Object {
+    if (-not $serviceDirectories.ContainsKey($_.id)) {
+        throw "[real-stack] no backend directory mapping for realStack.healthChecks id=$($_.id)"
+    }
+    @{
+        Name = $_.label
+        Directory = $serviceDirectories[$_.id]
+        Health = Join-Url (Get-ApiTargetOrigin $_.target) $_.startupPath
+    }
+})
 
 function Test-Health {
     param([string]$Url)
@@ -310,7 +332,8 @@ try {
         Write-Host "[real-stack] starting $($service.Name), pid=$($process.Id)"
         Wait-Health $service
     }
-    Assert-Unauthorized "http://localhost:8090/monitor/api/metrics"
+    $unauthorizedProbe = $windowsConfig.realStack.unauthorizedProbe
+    Assert-Unauthorized (Join-Url (Get-ApiTargetOrigin $unauthorizedProbe.target) $unauthorizedProbe.path)
 
     Push-Location $studioRoot
     try {
@@ -320,6 +343,7 @@ try {
         if ($LASTEXITCODE -ne 0) { throw "contract generation failed" }
         & git diff --exit-code -- `
             "packages/core/app-shell/src/common/_generated-windows.ts" `
+            "packages/contracts/generated/api-namespaces.ts" `
             "packages/contracts/generated/openapi.json" `
             "packages/contracts/generated/platform-api.ts" `
             "packages/contracts/generated/index.ts"

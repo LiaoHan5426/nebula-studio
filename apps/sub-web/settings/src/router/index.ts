@@ -194,7 +194,7 @@ router.beforeEach((to, _from, next) => {
 
   // standalone 模式下无 token 拦截访问，embed/electron 不拦截（Shell 层管认证）
   if (getResolvedRuntimeMode() === 'standalone' && !hasValidAuthToken()) {
-    // 重定向到 login 子应用（standalone 端口约定：:5176）
+    // standalone 下由当前 dev server 的 proxy/base path 处理登录入口。
     window.location.href = '/login';
     return;
   }
