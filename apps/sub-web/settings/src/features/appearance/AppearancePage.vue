@@ -1,39 +1,22 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue';
+import { ref } from 'vue';
 
 import { NebulaButton, NebulaPane } from '@nebula-studio/nebula-ui';
 
-type ThemeMode = 'dark' | 'light';
+import { useConfig } from '@nebula-studio-electron/electron-bridge/vue';
 
-const currentTheme = ref<ThemeMode>('dark');
+const { theme, setTheme } = useConfig();
 const saving = ref(false);
-let disposeThemeListener: (() => void) | undefined;
 
-async function loadTheme(): Promise<void> {
-  currentTheme.value = await window.api.settings.getTheme();
-}
-
-async function applyTheme(theme: ThemeMode): Promise<void> {
+async function applyTheme(next: 'dark' | 'light'): Promise<void> {
   if (saving.value) return;
   saving.value = true;
   try {
-    currentTheme.value = await window.api.settings.setTheme(theme);
+    await setTheme(next);
   } finally {
     saving.value = false;
   }
 }
-
-onMounted(async () => {
-  await loadTheme();
-  disposeThemeListener = window.api.settings.onThemeChanged(({ theme }) => {
-    currentTheme.value = theme;
-  });
-});
-
-onUnmounted(() => {
-  disposeThemeListener?.();
-  disposeThemeListener = undefined;
-});
 </script>
 
 <template>
@@ -48,11 +31,11 @@ onUnmounted(() => {
         icon
         variant="ghost"
         :disabled="saving"
-        :title="currentTheme === 'dark' ? '切换到浅色主题' : '切换到深色主题'"
-        @click="applyTheme(currentTheme === 'dark' ? 'light' : 'dark')"
+        :title="theme === 'dark' ? '切换到浅色主题' : '切换到深色主题'"
+        @click="applyTheme(theme === 'dark' ? 'light' : 'dark')"
       >
         <svg
-          v-if="currentTheme === 'dark'"
+          v-if="theme === 'dark'"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -84,8 +67,9 @@ onUnmounted(() => {
       </NebulaButton>
     </div>
     <p class="hint">
-      当前：<strong>{{ currentTheme === 'dark' ? '深色' : '浅色' }}</strong
-      >{{ saving ? '（保存中…）' : '' }}
+      当前：<strong>{{ theme === 'dark' ? '深色' : '浅色' }}</strong> >{{
+        saving ? '（保存中…）' : ''
+      }}
     </p>
   </NebulaPane>
 </template>

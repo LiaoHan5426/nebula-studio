@@ -1,5 +1,7 @@
 import type { App } from 'vue';
 
+import { overlayContainerKey } from '@nebula-studio/nebula-ui';
+
 import type {
   InstallNebulaAssemblyOptions,
   NebulaAssemblyContext,
@@ -8,7 +10,6 @@ import type {
 import { createNebulaComponentContext } from '../context/createNebulaComponentContext';
 import { applyStyleContract } from '../style/applyStyleContract';
 import { nebulaAssemblyKey } from '../types/context';
-import { overlayContainerKey } from '../types/overlay';
 
 export function provideNebulaAssembly(
   app: App,

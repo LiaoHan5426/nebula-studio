@@ -5,6 +5,7 @@ import { onMounted, ref } from 'vue';
 
 import {
   NebulaButton,
+  NebulaDialog,
   NebulaInput,
   NebulaPane,
   NebulaSelect,
@@ -205,93 +206,89 @@ function formatTime(value?: string) {
       </div>
     </NebulaPane>
 
-    <div
-      v-if="approveTarget"
-      class="modal-overlay"
-      @click.self="approveTarget = null"
+    <NebulaDialog
+      :open="Boolean(approveTarget)"
+      title="审批通过并授权"
+      :description="
+        approveTarget
+          ? `租户 ${approveTarget.tenantId} · 服务 ${approveTarget.interfaceId}`
+          : undefined
+      "
+      @update:open="!$event && (approveTarget = null)"
     >
-      <NebulaPane title="审批通过并授权" class="modal">
-        <p class="field-hint">
-          租户 {{ approveTarget.tenantId }} · 服务
-          {{ approveTarget.interfaceId }}
-        </p>
+      <label class="field">
+        <span>授权到期</span>
+        <input v-model="grantForm.expiresAt" type="datetime-local" />
+      </label>
+      <label class="field">
+        <span>最大调用次数</span>
+        <NebulaInput v-model="grantForm.maxCalls" type="number" />
+      </label>
+      <label class="field">
+        <span>频率上限（次/窗口）</span>
+        <NebulaInput v-model="grantForm.rateLimitMax" type="number" />
+      </label>
+      <label class="field">
+        <span>频率窗口（秒）</span>
+        <NebulaInput v-model="grantForm.rateLimitWindowSeconds" type="number" />
+      </label>
+      <label class="field">
+        <span>服务时间</span>
+        <NebulaSelect
+          v-model="grantForm.scheduleType"
+          :options="GRANT_SCHEDULE_OPTIONS as any"
+        />
+      </label>
+      <div
+        v-if="grantForm.scheduleType !== 'ALWAYS'"
+        class="approve-dialog__row"
+      >
         <label class="field">
-          <span>授权到期</span>
-          <input v-model="grantForm.expiresAt" type="datetime-local" />
+          <span>开始</span>
+          <input v-model="grantForm.scheduleStartTime" type="time" />
         </label>
         <label class="field">
-          <span>最大调用次数</span>
-          <NebulaInput v-model="grantForm.maxCalls" type="number" />
+          <span>结束</span>
+          <input v-model="grantForm.scheduleEndTime" type="time" />
         </label>
-        <label class="field">
-          <span>频率上限（次/窗口）</span>
-          <NebulaInput v-model="grantForm.rateLimitMax" type="number" />
-        </label>
-        <label class="field">
-          <span>频率窗口（秒）</span>
-          <NebulaInput
-            v-model="grantForm.rateLimitWindowSeconds"
-            type="number"
-          />
-        </label>
-        <label class="field">
-          <span>服务时间</span>
-          <NebulaSelect
-            v-model="grantForm.scheduleType"
-            :options="GRANT_SCHEDULE_OPTIONS as any"
-          />
-        </label>
-        <div
-          v-if="grantForm.scheduleType !== 'ALWAYS'"
-          class="approve-dialog__row"
-        >
-          <label class="field">
-            <span>开始</span>
-            <input v-model="grantForm.scheduleStartTime" type="time" />
-          </label>
-          <label class="field">
-            <span>结束</span>
-            <input v-model="grantForm.scheduleEndTime" type="time" />
-          </label>
-        </div>
-        <div class="modal__actions">
-          <NebulaButton variant="outline" @click="approveTarget = null">
-            取消
-          </NebulaButton>
-          <NebulaButton variant="primary" @click="submitApprove">
-            确认通过
-          </NebulaButton>
-        </div>
-      </NebulaPane>
-    </div>
+      </div>
+      <div class="modal__actions">
+        <NebulaButton variant="outline" @click="approveTarget = null">
+          取消
+        </NebulaButton>
+        <NebulaButton variant="primary" @click="submitApprove">
+          确认通过
+        </NebulaButton>
+      </div>
+    </NebulaDialog>
 
-    <div
-      v-if="rejectTarget"
-      class="modal-overlay"
-      @click.self="rejectTarget = null"
+    <NebulaDialog
+      :open="Boolean(rejectTarget)"
+      title="拒绝订阅申请"
+      :description="
+        rejectTarget
+          ? `租户 ${rejectTarget.tenantId} · 服务 ${rejectTarget.interfaceId}`
+          : undefined
+      "
+      @update:open="!$event && (rejectTarget = null)"
     >
-      <NebulaPane title="拒绝订阅申请" class="modal">
-        <p class="field-hint">
-          租户 {{ rejectTarget.tenantId }} · 服务 {{ rejectTarget.interfaceId }}
-        </p>
-        <label class="field">
-          <span>拒绝原因</span>
-          <NebulaInput
-            v-model="rejectReason"
-            type="text"
-            placeholder="请输入拒绝原因"
-          />
-        </label>
-        <div class="modal__actions">
-          <NebulaButton variant="outline" @click="rejectTarget = null">
-            取消
-          </NebulaButton>
-          <NebulaButton variant="primary" @click="submitReject">
-            确认拒绝
-          </NebulaButton>
-        </div>
-      </NebulaPane>
-    </div>
+      <label class="field">
+        <span>拒绝原因</span>
+        <NebulaInput
+          v-model="rejectReason"
+          type="text"
+          placeholder="请输入拒绝原因"
+        />
+      </label>
+      <div class="modal__actions">
+        <NebulaButton variant="outline" @click="rejectTarget = null">
+          取消
+        </NebulaButton>
+        <NebulaButton variant="primary" @click="submitReject">
+          确认拒绝
+        </NebulaButton>
+      </div>
+    </NebulaDialog>
   </div>
 </template>
 

@@ -1,4 +1,6 @@
-import { createApp, defineComponent, h, nextTick } from 'vue';
+import { overlayContainerKey } from '@nebula-studio/nebula-ui';
+import { createApp, defineComponent, h, inject, nextTick } from 'vue';
+import type { Ref } from 'vue';
 
 import { describe, expect, it } from 'vitest';
 
@@ -60,6 +62,28 @@ describe('assembly context', () => {
     await nextTick();
 
     expect(captured).toBe(context);
+    app.unmount();
+  });
+
+  it('provides the nebula-ui overlay container key', async () => {
+    let captured: Ref<HTMLElement | null> | undefined;
+    const Child = defineComponent({
+      setup() {
+        captured = inject(overlayContainerKey);
+        return () => h('span');
+      },
+    });
+    const app = createApp(Child);
+    const context = createNebulaComponentContext({
+      host: createHostAdapter({ surface: 'standalone' }),
+    });
+    const host = document.createElement('div');
+    context.overlay.setTeleportTarget(host);
+    provideNebulaAssembly(app, context);
+    app.mount(document.createElement('div'));
+    await nextTick();
+
+    expect(captured?.value).toBe(host);
     app.unmount();
   });
 

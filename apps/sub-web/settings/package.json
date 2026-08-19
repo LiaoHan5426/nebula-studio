@@ -28,8 +28,9 @@
     "./boot": "./src/boot.ts"
   },
   "dependencies": {
-    "@nebula-studio-renderer/assembly-boot": "workspace:^",
+    "@nebula-studio-electron/electron-bridge": "workspace:^",
     "@nebula-studio-internal/tailwind": "workspace:^",
+    "@nebula-studio-renderer/assembly-boot": "workspace:^",
     "@nebula-studio/api-client": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
     "@nebula-studio/auth-provider": "workspace:^",

@@ -3,7 +3,7 @@ import type { DagDefinition } from '@nebula-studio/nebula-dag-editor';
 import type { PluginNodeSchema } from '@nebula-studio/nebula-low-render';
 
 import { DagEditor } from '@nebula-studio/nebula-dag-editor';
-import { NebulaButton, NebulaPane } from '@nebula-studio/nebula-ui';
+import { NebulaButton, NebulaDialog } from '@nebula-studio/nebula-ui';
 
 defineProps<{
   definition: DagDefinition | string;
@@ -19,52 +19,32 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div v-if="open" class="modal-overlay modal-overlay--full">
-    <NebulaPane title="组合服务 DAG 编排" class="modal modal--dag">
-      <div class="modal__content--dag">
-        <DagEditor
-          :model-value="definition"
-          :node-schemas="nodeSchemas"
-          @update:model-value="emit('update:definition', $event)"
-        />
-      </div>
-      <div class="modal__actions">
-        <NebulaButton variant="outline" @click="emit('close')">
-          取消
-        </NebulaButton>
-        <NebulaButton @click="emit('submit')">保存 DAG</NebulaButton>
-      </div>
-    </NebulaPane>
-  </div>
+  <NebulaDialog
+    :open="open"
+    title="组合服务 DAG 编排"
+    size="full"
+    @update:open="!$event && emit('close')"
+  >
+    <div class="modal__content--dag">
+      <DagEditor
+        :model-value="definition"
+        :node-schemas="nodeSchemas"
+        @update:model-value="emit('update:definition', $event)"
+      />
+    </div>
+    <div class="modal__actions">
+      <NebulaButton variant="outline" @click="emit('close')">
+        取消
+      </NebulaButton>
+      <NebulaButton @click="emit('submit')">保存 DAG</NebulaButton>
+    </div>
+  </NebulaDialog>
 </template>
 
 <style scoped>
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 900;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgb(0 0 0 / 45%);
-}
-
-.modal-overlay--full {
-  align-items: stretch;
-  justify-content: center;
-  padding: 16px;
-}
-
-.modal--dag {
-  display: flex;
-  flex-direction: column;
-  width: min(96vw, 1200px);
-  max-height: 92vh;
-}
-
 .modal__content--dag {
-  flex: 1;
-  min-height: 0;
+  min-height: 420px;
+  height: min(70vh, 640px);
   overflow: hidden;
 }
 

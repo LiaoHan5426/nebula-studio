@@ -267,45 +267,6 @@ body {
   align-items: center;
 }
 
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 40;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-  background: rgb(8 10 18 / 52%);
-  backdrop-filter: blur(2px);
-}
-
-.modal {
-  width: min(480px, 100%);
-}
-
-.modal-overlay--full {
-  align-items: stretch;
-}
-
-.modal--large {
-  width: min(96vw, 1200px);
-  max-height: 92vh;
-  overflow: auto;
-}
-
-.modal--dag {
-  display: flex;
-  flex-direction: column;
-  width: min(96vw, 1200px);
-  max-height: 92vh;
-}
-
-.modal__content--dag {
-  flex: 1;
-  min-height: 420px;
-  overflow: hidden;
-}
-
 .field input,
 .field select,
 .field__select {

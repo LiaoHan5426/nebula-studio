@@ -8,16 +8,25 @@ import {
   getLayoutHostMode,
   getWebShellEmbedSurface,
 } from '@nebula-studio/app-shell';
+import { tryUseNebulaAssembly } from '@nebula-studio/nebula-assembly';
 
 export function useShellHosted(): {
   embedSurface: ComputedRef<null | string>;
   hostMode: ComputedRef<LayoutHostMode>;
   isShellHosted: ComputedRef<boolean>;
 } {
+  const assembly = tryUseNebulaAssembly();
   const embedSurface = computed(() =>
     typeof window !== 'undefined' ? getWebShellEmbedSurface() : null,
   );
-  const hostMode = computed(() => getLayoutHostMode(embedSurface.value));
+  const hostMode = computed((): LayoutHostMode => {
+    if (assembly) {
+      return assembly.host.surface === 'platform-embed'
+        ? 'shell-hosted'
+        : 'standalone';
+    }
+    return getLayoutHostMode(embedSurface.value);
+  });
   const isShellHosted = computed(() => hostMode.value === 'shell-hosted');
 
   return { embedSurface, hostMode, isShellHosted };

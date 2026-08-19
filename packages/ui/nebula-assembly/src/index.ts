@@ -27,6 +27,7 @@ export {
 export { installNebulaAssemblyFromMode } from './install/installNebulaAssemblyFromMode';
 export { createOverlayService } from './overlay/createOverlayService';
 export {
+  applyOverlayStyleAttrs,
   applyStyleContract,
   clearStyleContract,
 } from './style/applyStyleContract';

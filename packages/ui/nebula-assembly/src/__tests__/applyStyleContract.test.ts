@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  applyOverlayStyleAttrs,
   applyStyleContract,
   clearStyleContract,
 } from '../style/applyStyleContract';
@@ -31,5 +32,13 @@ describe('applyStyleContract', () => {
 
     clearStyleContract(root);
     expect(root.hasAttribute(STYLE_CONTRACT_ATTR)).toBe(false);
+  });
+
+  it('copies theme attrs to the overlay portal without the assembly marker', () => {
+    const portal = document.createElement('div');
+    applyOverlayStyleAttrs(portal, { theme: 'light', density: 'comfortable' });
+    expect(portal.getAttribute(STYLE_THEME_ATTR)).toBe('light');
+    expect(portal.getAttribute(STYLE_DENSITY_ATTR)).toBe('comfortable');
+    expect(portal.hasAttribute(STYLE_CONTRACT_ATTR)).toBe(false);
   });
 });

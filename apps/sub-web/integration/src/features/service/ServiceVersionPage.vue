@@ -5,6 +5,7 @@ import { onMounted, ref } from 'vue';
 
 import {
   NebulaButton,
+  NebulaDialog,
   NebulaInput,
   NebulaPane,
   NebulaTable,
@@ -149,32 +150,29 @@ onMounted(() => {
       </div>
     </NebulaPane>
 
-    <div
-      v-if="rollbackTarget"
-      class="modal-overlay"
-      @click.self="rollbackTarget = null"
+    <NebulaDialog
+      :open="Boolean(rollbackTarget)"
+      title="确认回滚"
+      @update:open="!$event && (rollbackTarget = null)"
     >
-      <NebulaPane title="确认回滚" class="modal">
-        <p class="field-hint">
-          确认回滚到版本 {{ rollbackTarget.versionId }}？
-        </p>
-        <div class="modal__actions">
-          <NebulaButton variant="outline" @click="rollbackTarget = null">
-            取消
-          </NebulaButton>
-          <NebulaButton variant="primary" @click="confirmRollback">
-            确认
-          </NebulaButton>
-        </div>
-      </NebulaPane>
-    </div>
+      <p class="field-hint">确认回滚到版本 {{ rollbackTarget?.versionId }}？</p>
+      <div class="modal__actions">
+        <NebulaButton variant="outline" @click="rollbackTarget = null">
+          取消
+        </NebulaButton>
+        <NebulaButton variant="primary" @click="confirmRollback">
+          确认
+        </NebulaButton>
+      </div>
+    </NebulaDialog>
 
-    <div
-      v-if="selectedSnapshot"
-      class="modal-overlay"
-      @click.self="selectedSnapshot = null"
+    <NebulaDialog
+      :open="Boolean(selectedSnapshot)"
+      title="快照详情"
+      size="lg"
+      @update:open="!$event && (selectedSnapshot = null)"
     >
-      <NebulaPane title="快照详情" class="modal modal--large">
+      <template v-if="selectedSnapshot">
         <dl class="version-detail">
           <dt>版本 ID</dt>
           <dd>{{ selectedSnapshot.versionId }}</dd>
@@ -198,8 +196,8 @@ onMounted(() => {
             关闭
           </NebulaButton>
         </div>
-      </NebulaPane>
-    </div>
+      </template>
+    </NebulaDialog>
   </div>
 </template>
 

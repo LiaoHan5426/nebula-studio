@@ -3,7 +3,12 @@ import type { Connector, DatabaseConfig, ProtocolConfig } from '@/shared/types';
 
 import { computed, onMounted, ref } from 'vue';
 
-import { NebulaButton, NebulaPane, NebulaTag } from '@nebula-studio/nebula-ui';
+import {
+  NebulaButton,
+  NebulaDialog,
+  NebulaPane,
+  NebulaTag,
+} from '@nebula-studio/nebula-ui';
 
 import { connectorApi } from '@/shared/api/integration';
 import { ConnectorType, isApiSuccess } from '@/shared/types';
@@ -189,71 +194,66 @@ function resolveTypeLabel(connector: Connector): string {
       </article>
     </div>
 
-    <div
-      v-if="showTestDialog"
-      class="modal-overlay"
-      @click.self="showTestDialog = false"
+    <NebulaDialog
+      :open="showTestDialog"
+      :title="`测试 - ${currentConnector?.connectorId ?? ''}`"
+      @update:open="showTestDialog = $event"
     >
-      <NebulaPane
-        :title="`测试 - ${currentConnector?.connectorId}`"
-        class="modal"
+      <template
+        v-if="currentConnector?.connectorType === ConnectorType.DATABASE"
       >
-        <template
-          v-if="currentConnector?.connectorType === ConnectorType.DATABASE"
-        >
-          <label class="field">
-            <span>主机</span>
-            <input v-model="(testConfig as DatabaseConfig).host" />
-          </label>
-          <label class="field">
-            <span>端口</span>
-            <input
-              v-model.number="(testConfig as DatabaseConfig).port"
-              type="number"
-            />
-          </label>
-          <label class="field">
-            <span>数据库</span>
-            <input v-model="(testConfig as DatabaseConfig).database" />
-          </label>
-          <label class="field">
-            <span>用户名</span>
-            <input v-model="(testConfig as DatabaseConfig).username" />
-          </label>
-          <label class="field">
-            <span>密码</span>
-            <input
-              v-model="(testConfig as DatabaseConfig).password"
-              type="password"
-            />
-          </label>
-        </template>
-        <template v-else>
-          <label class="field">
-            <span>端点 URI</span>
-            <input v-model="(testConfig as ProtocolConfig).endpointUri" />
-          </label>
-        </template>
+        <label class="field">
+          <span>主机</span>
+          <input v-model="(testConfig as DatabaseConfig).host" />
+        </label>
+        <label class="field">
+          <span>端口</span>
+          <input
+            v-model.number="(testConfig as DatabaseConfig).port"
+            type="number"
+          />
+        </label>
+        <label class="field">
+          <span>数据库</span>
+          <input v-model="(testConfig as DatabaseConfig).database" />
+        </label>
+        <label class="field">
+          <span>用户名</span>
+          <input v-model="(testConfig as DatabaseConfig).username" />
+        </label>
+        <label class="field">
+          <span>密码</span>
+          <input
+            v-model="(testConfig as DatabaseConfig).password"
+            type="password"
+          />
+        </label>
+      </template>
+      <template v-else>
+        <label class="field">
+          <span>端点 URI</span>
+          <input v-model="(testConfig as ProtocolConfig).endpointUri" />
+        </label>
+      </template>
 
-        <div
-          v-if="testResult"
-          class="test-result"
-          :class="{ 'test-result--ok': testResult.success }"
-        >
-          {{ testResult.success ? '连接成功' : '连接失败' }} —
-          {{ testResult.message }} ({{ testResult.responseTimeMs }}ms)
-        </div>
+      <div
+        v-if="testResult"
+        class="test-result"
+        :class="{ 'test-result--ok': testResult.success }"
+      >
+        {{ testResult.success ? '连接成功' : '连接失败' }} —
+        {{ testResult.message }} ({{ testResult.responseTimeMs }}ms)
+      </div>
 
-        <div class="modal__actions">
-          <NebulaButton variant="outline" @click="showTestDialog = false">
-            关闭
-          </NebulaButton>
-          <NebulaButton variant="primary" :disabled="testing" @click="runTest">
-            {{ testing ? '测试中…' : '测试' }}
-          </NebulaButton>
-        </div>
-      </NebulaPane>
-    </div>
+      <div class="modal__actions">
+        <NebulaButton variant="outline" @click="showTestDialog = false">
+          关闭
+        </NebulaButton>
+        <NebulaButton variant="primary" :disabled="testing" @click="runTest">
+          {{ testing ? '测试中…' : '测试' }}
+        </NebulaButton>
+      </div>
+    </NebulaDialog>
   </NebulaPane>
 </template>
 

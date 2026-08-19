@@ -24,13 +24,13 @@ test.describe('resource discovery and access request portal', () => {
     let submittedRequest:
       | undefined
       | {
-        interfaceId: string;
-        reason: string;
-        requestConfig: Record<string, unknown>;
-        requestId: string;
-        requestType: string;
-        status: string;
-      };
+          interfaceId: string;
+          reason: string;
+          requestConfig: Record<string, unknown>;
+          requestId: string;
+          requestType: string;
+          status: string;
+        };
 
     await page.route(/^https?:\/\/[^/]+\/api\//, async (route) => {
       const request = route.request();

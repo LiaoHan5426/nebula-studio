@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 
-import { NebulaAvatar } from '@nebula-studio/nebula-ui';
+import { NebulaAvatar, useOverlayTeleportTo } from '@nebula-studio/nebula-ui';
 
 const props = defineProps<{
   avatarSrc?: string;
@@ -19,6 +19,7 @@ const open = ref(false);
 const triggerRef = ref<HTMLElement | null>(null);
 const menuRef = ref<HTMLElement | null>(null);
 const menuStyle = ref<Record<string, string>>({});
+const teleportTo = useOverlayTeleportTo();
 
 const displayEmail = computed(
   () => props.email || `${props.user || 'user'}@nebula.local`,
@@ -107,7 +108,7 @@ function onMenuAction(action: 'lockScreen' | 'logout' | 'profile') {
       />
     </button>
 
-    <Teleport to="body">
+    <Teleport defer :to="teleportTo">
       <div
         v-if="open"
         ref="menuRef"

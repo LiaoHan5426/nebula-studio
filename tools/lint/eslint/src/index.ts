@@ -1,6 +1,7 @@
 import type { Linter } from 'eslint';
 
 import {
+  hostBoundary,
   ignores,
   javascript,
   jsonc,
@@ -33,6 +34,7 @@ async function defineConfig(config: FlatConfig[] = []) {
     yaml(),
     pnpm(),
     ...customConfig,
+    hostBoundary(),
     ...config,
   ];
 

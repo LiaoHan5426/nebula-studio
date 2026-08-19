@@ -13,6 +13,7 @@ import { computed } from 'vue';
 
 import {
   NebulaButton,
+  NebulaDialog,
   NebulaInput,
   NebulaSelect,
 } from '@nebula-studio/nebula-ui';
@@ -57,219 +58,203 @@ const whitelistServiceOptions = computed(
 </script>
 
 <template>
-  <div v-if="open" class="modal-overlay" @click.self="emit('close')">
-    <div class="modal-card">
-      <h3>{{ title }}</h3>
-      <div v-if="activeTab === 'rateLimit'" class="modal-form">
-        <label class="modal-form__field">
-          <span>规则名称</span>
-          <NebulaInput
-            :model-value="rateLimitForm.ruleName"
-            placeholder="可选"
-            @update:model-value="
-              emit('update:rateLimitForm', {
-                ...rateLimitForm,
-                ruleName: String($event ?? ''),
-              })
-            "
-          />
-        </label>
-        <label class="modal-form__field">
-          <span>目标服务</span>
-          <NebulaSelect
-            :model-value="rateLimitForm.interfaceId"
-            :options="serviceSelectOptions"
-            label-key="interfaceName"
-            value-key="interfaceId"
-            @update:model-value="
-              emit('update:rateLimitForm', {
-                ...rateLimitForm,
-                interfaceId: String($event ?? ''),
-              })
-            "
-          />
-        </label>
-        <label class="modal-form__field">
-          <span>窗口内最大请求数</span>
-          <NebulaInput
-            :model-value="rateLimitForm.maxRequests"
-            type="number"
-            @update:model-value="
-              emit('update:rateLimitForm', {
-                ...rateLimitForm,
-                maxRequests: String($event ?? ''),
-              })
-            "
-          />
-        </label>
-        <label class="modal-form__field">
-          <span>窗口（秒）</span>
-          <NebulaInput
-            :model-value="rateLimitForm.windowSeconds"
-            type="number"
-            @update:model-value="
-              emit('update:rateLimitForm', {
-                ...rateLimitForm,
-                windowSeconds: String($event ?? ''),
-              })
-            "
-          />
-        </label>
-      </div>
-      <div v-else-if="activeTab === 'circuitBreaker'" class="modal-form">
-        <label class="modal-form__field">
-          <span>目标服务</span>
-          <NebulaSelect
-            :model-value="circuitForm.interfaceId"
-            :options="serviceSelectOptions"
-            label-key="interfaceName"
-            value-key="interfaceId"
-            :disabled="!!editingCircuit"
-            @update:model-value="
-              emit('update:circuitForm', {
-                ...circuitForm,
-                interfaceId: String($event ?? ''),
-              })
-            "
-          />
-        </label>
-        <label class="modal-form__field">
-          <span>失败率阈值 (%)</span>
-          <NebulaInput
-            :model-value="circuitForm.failureRateThreshold"
-            type="number"
-            @update:model-value="
-              emit('update:circuitForm', {
-                ...circuitForm,
-                failureRateThreshold: String($event ?? ''),
-              })
-            "
-          />
-        </label>
-        <label class="modal-form__field">
-          <span>慢调用率阈值 (%)</span>
-          <NebulaInput
-            :model-value="circuitForm.slowCallRateThreshold"
-            type="number"
-            @update:model-value="
-              emit('update:circuitForm', {
-                ...circuitForm,
-                slowCallRateThreshold: String($event ?? ''),
-              })
-            "
-          />
-        </label>
-        <label class="modal-form__field">
-          <span>慢调用时长 (秒)</span>
-          <NebulaInput
-            :model-value="circuitForm.slowCallDurationSeconds"
-            type="number"
-            @update:model-value="
-              emit('update:circuitForm', {
-                ...circuitForm,
-                slowCallDurationSeconds: String($event ?? ''),
-              })
-            "
-          />
-        </label>
-        <label class="modal-form__field">
-          <span>最小调用次数</span>
-          <NebulaInput
-            :model-value="circuitForm.minimumNumberOfCalls"
-            type="number"
-            @update:model-value="
-              emit('update:circuitForm', {
-                ...circuitForm,
-                minimumNumberOfCalls: String($event ?? ''),
-              })
-            "
-          />
-        </label>
-        <label class="modal-form__field">
-          <span>熔断等待 (秒)</span>
-          <NebulaInput
-            :model-value="circuitForm.waitDurationSeconds"
-            type="number"
-            @update:model-value="
-              emit('update:circuitForm', {
-                ...circuitForm,
-                waitDurationSeconds: String($event ?? ''),
-              })
-            "
-          />
-        </label>
-      </div>
-      <div v-else class="modal-form">
-        <label class="modal-form__field">
-          <span>规则名称</span>
-          <NebulaInput
-            :model-value="whitelistForm.ruleName"
-            placeholder="可选"
-            @update:model-value="
-              emit('update:whitelistForm', {
-                ...whitelistForm,
-                ruleName: String($event ?? ''),
-              })
-            "
-          />
-        </label>
-        <label class="modal-form__field">
-          <span>目标服务（留空为租户级）</span>
-          <NebulaSelect
-            :model-value="whitelistForm.interfaceId"
-            :options="whitelistServiceOptions"
-            label-key="interfaceName"
-            value-key="interfaceId"
-            @update:model-value="
-              emit('update:whitelistForm', {
-                ...whitelistForm,
-                interfaceId: String($event ?? ''),
-              })
-            "
-          />
-        </label>
-        <label class="modal-form__field">
-          <span>允许 IP（每行或逗号分隔）</span>
-          <textarea
-            :value="whitelistForm.whitelistIps"
-            rows="4"
-            @input="
-              emit('update:whitelistForm', {
-                ...whitelistForm,
-                whitelistIps: ($event.target as HTMLTextAreaElement).value,
-              })
-            "
-          ></textarea>
-        </label>
-      </div>
-      <div class="modal-card__actions">
-        <NebulaButton variant="outline" @click="emit('close')">
-          取消
-        </NebulaButton>
-        <NebulaButton @click="emit('submit')">保存</NebulaButton>
-      </div>
+  <NebulaDialog
+    :open="open"
+    :title="title"
+    @update:open="!$event && emit('close')"
+  >
+    <div v-if="activeTab === 'rateLimit'" class="modal-form">
+      <label class="modal-form__field">
+        <span>规则名称</span>
+        <NebulaInput
+          :model-value="rateLimitForm.ruleName"
+          placeholder="可选"
+          @update:model-value="
+            emit('update:rateLimitForm', {
+              ...rateLimitForm,
+              ruleName: String($event ?? ''),
+            })
+          "
+        />
+      </label>
+      <label class="modal-form__field">
+        <span>目标服务</span>
+        <NebulaSelect
+          :model-value="rateLimitForm.interfaceId"
+          :options="serviceSelectOptions"
+          label-key="interfaceName"
+          value-key="interfaceId"
+          @update:model-value="
+            emit('update:rateLimitForm', {
+              ...rateLimitForm,
+              interfaceId: String($event ?? ''),
+            })
+          "
+        />
+      </label>
+      <label class="modal-form__field">
+        <span>窗口内最大请求数</span>
+        <NebulaInput
+          :model-value="rateLimitForm.maxRequests"
+          type="number"
+          @update:model-value="
+            emit('update:rateLimitForm', {
+              ...rateLimitForm,
+              maxRequests: String($event ?? ''),
+            })
+          "
+        />
+      </label>
+      <label class="modal-form__field">
+        <span>窗口（秒）</span>
+        <NebulaInput
+          :model-value="rateLimitForm.windowSeconds"
+          type="number"
+          @update:model-value="
+            emit('update:rateLimitForm', {
+              ...rateLimitForm,
+              windowSeconds: String($event ?? ''),
+            })
+          "
+        />
+      </label>
     </div>
-  </div>
+    <div v-else-if="activeTab === 'circuitBreaker'" class="modal-form">
+      <label class="modal-form__field">
+        <span>目标服务</span>
+        <NebulaSelect
+          :model-value="circuitForm.interfaceId"
+          :options="serviceSelectOptions"
+          label-key="interfaceName"
+          value-key="interfaceId"
+          :disabled="!!editingCircuit"
+          @update:model-value="
+            emit('update:circuitForm', {
+              ...circuitForm,
+              interfaceId: String($event ?? ''),
+            })
+          "
+        />
+      </label>
+      <label class="modal-form__field">
+        <span>失败率阈值 (%)</span>
+        <NebulaInput
+          :model-value="circuitForm.failureRateThreshold"
+          type="number"
+          @update:model-value="
+            emit('update:circuitForm', {
+              ...circuitForm,
+              failureRateThreshold: String($event ?? ''),
+            })
+          "
+        />
+      </label>
+      <label class="modal-form__field">
+        <span>慢调用率阈值 (%)</span>
+        <NebulaInput
+          :model-value="circuitForm.slowCallRateThreshold"
+          type="number"
+          @update:model-value="
+            emit('update:circuitForm', {
+              ...circuitForm,
+              slowCallRateThreshold: String($event ?? ''),
+            })
+          "
+        />
+      </label>
+      <label class="modal-form__field">
+        <span>慢调用时长 (秒)</span>
+        <NebulaInput
+          :model-value="circuitForm.slowCallDurationSeconds"
+          type="number"
+          @update:model-value="
+            emit('update:circuitForm', {
+              ...circuitForm,
+              slowCallDurationSeconds: String($event ?? ''),
+            })
+          "
+        />
+      </label>
+      <label class="modal-form__field">
+        <span>最小调用次数</span>
+        <NebulaInput
+          :model-value="circuitForm.minimumNumberOfCalls"
+          type="number"
+          @update:model-value="
+            emit('update:circuitForm', {
+              ...circuitForm,
+              minimumNumberOfCalls: String($event ?? ''),
+            })
+          "
+        />
+      </label>
+      <label class="modal-form__field">
+        <span>熔断等待 (秒)</span>
+        <NebulaInput
+          :model-value="circuitForm.waitDurationSeconds"
+          type="number"
+          @update:model-value="
+            emit('update:circuitForm', {
+              ...circuitForm,
+              waitDurationSeconds: String($event ?? ''),
+            })
+          "
+        />
+      </label>
+    </div>
+    <div v-else class="modal-form">
+      <label class="modal-form__field">
+        <span>规则名称</span>
+        <NebulaInput
+          :model-value="whitelistForm.ruleName"
+          placeholder="可选"
+          @update:model-value="
+            emit('update:whitelistForm', {
+              ...whitelistForm,
+              ruleName: String($event ?? ''),
+            })
+          "
+        />
+      </label>
+      <label class="modal-form__field">
+        <span>目标服务（留空为租户级）</span>
+        <NebulaSelect
+          :model-value="whitelistForm.interfaceId"
+          :options="whitelistServiceOptions"
+          label-key="interfaceName"
+          value-key="interfaceId"
+          @update:model-value="
+            emit('update:whitelistForm', {
+              ...whitelistForm,
+              interfaceId: String($event ?? ''),
+            })
+          "
+        />
+      </label>
+      <label class="modal-form__field">
+        <span>允许 IP（每行或逗号分隔）</span>
+        <textarea
+          :value="whitelistForm.whitelistIps"
+          rows="4"
+          @input="
+            emit('update:whitelistForm', {
+              ...whitelistForm,
+              whitelistIps: ($event.target as HTMLTextAreaElement).value,
+            })
+          "
+        ></textarea>
+      </label>
+    </div>
+    <div class="modal-card__actions">
+      <NebulaButton variant="outline" @click="emit('close')">
+        取消
+      </NebulaButton>
+      <NebulaButton @click="emit('submit')">保存</NebulaButton>
+    </div>
+  </NebulaDialog>
 </template>
 
 <style scoped>
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgb(0 0 0 / 45%);
-}
-
-.modal-card {
-  width: min(480px, calc(100vw - 32px));
-  padding: 20px 24px;
-  background: hsl(var(--card));
-  border-radius: 10px;
-}
-
 .modal-form {
   display: flex;
   flex-direction: column;

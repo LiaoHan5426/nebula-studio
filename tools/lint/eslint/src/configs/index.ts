@@ -1,3 +1,4 @@
+export * from './host-boundary';
 export * from './ignores';
 export * from './javascript';
 export * from './jsonc';

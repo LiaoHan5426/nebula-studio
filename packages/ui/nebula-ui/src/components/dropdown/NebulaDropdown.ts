@@ -11,6 +11,7 @@ import {
 } from 'vue';
 
 import { useDropdownDismiss } from '../../composables/useDropdownDismiss';
+import { overlayContainerKey } from '../../composables/useOverlayContainer';
 import { useDropdownPosition } from '../../composables/useDropdownPosition';
 import { cn } from '../../utils/cn';
 
@@ -81,6 +82,7 @@ export const NebulaDropdown = defineComponent({
       open: () => isOpen.value,
       onClose: close,
     });
+    const overlayContainer = inject(overlayContainerKey, null);
 
     return () =>
       h('div', { class: cn('nebula-dropdown', props.class) }, [
@@ -100,7 +102,7 @@ export const NebulaDropdown = defineComponent({
           slots.trigger?.(),
         ),
         isOpen.value &&
-          h(Teleport, { to: 'body' }, [
+          h(Teleport, { to: overlayContainer?.value ?? 'body' }, [
             h(
               'div',
               {

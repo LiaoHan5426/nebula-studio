@@ -6,6 +6,7 @@ import { useRoute } from 'vue-router';
 
 import {
   NebulaButton,
+  NebulaDialog,
   NebulaInput,
   NebulaPane,
   NebulaTable,
@@ -392,38 +393,36 @@ const pluginDescription = computed(() => {
       </div>
     </NebulaPane>
 
-    <div
-      v-if="showUploadDialog"
-      class="modal-overlay"
-      @click.self="showUploadDialog = false"
+    <NebulaDialog
+      :open="showUploadDialog"
+      title="上传插件 JAR"
+      @update:open="showUploadDialog = $event"
     >
-      <NebulaPane title="上传插件 JAR" class="modal">
-        <label class="field">
-          <span>插件名称</span>
-          <NebulaInput v-model="uploadForm.pluginName" />
-        </label>
-        <label class="field">
-          <span>版本</span>
-          <NebulaInput v-model="uploadForm.pluginVersion" />
-        </label>
-        <label class="field">
-          <span>描述</span>
-          <NebulaInput v-model="uploadForm.description" />
-        </label>
-        <label class="field">
-          <span>JAR 文件</span>
-          <input type="file" accept=".jar" @change="onFileSelected" />
-        </label>
-        <div class="modal__actions">
-          <NebulaButton variant="outline" @click="showUploadDialog = false">
-            取消
-          </NebulaButton>
-          <NebulaButton variant="primary" @click="handleUpload">
-            上传
-          </NebulaButton>
-        </div>
-      </NebulaPane>
-    </div>
+      <label class="field">
+        <span>插件名称</span>
+        <NebulaInput v-model="uploadForm.pluginName" />
+      </label>
+      <label class="field">
+        <span>版本</span>
+        <NebulaInput v-model="uploadForm.pluginVersion" />
+      </label>
+      <label class="field">
+        <span>描述</span>
+        <NebulaInput v-model="uploadForm.description" />
+      </label>
+      <label class="field">
+        <span>JAR 文件</span>
+        <input type="file" accept=".jar" @change="onFileSelected" />
+      </label>
+      <div class="modal__actions">
+        <NebulaButton variant="outline" @click="showUploadDialog = false">
+          取消
+        </NebulaButton>
+        <NebulaButton variant="primary" @click="handleUpload">
+          上传
+        </NebulaButton>
+      </div>
+    </NebulaDialog>
 
     <PluginConnectorSection
       v-if="showConnectorSection"

@@ -7,7 +7,7 @@ interface ConfirmQueueItem {
   resolve: (value: boolean) => void;
 }
 
-export function createOverlayService (): OverlayService {
+export function createOverlayService(): OverlayService {
   const confirmState = reactive({
     open: false,
     message: '',
@@ -16,7 +16,7 @@ export function createOverlayService (): OverlayService {
   const queue: ConfirmQueueItem[] = [];
   let active: ConfirmQueueItem | null = null;
 
-  function showNext (): void {
+  function showNext(): void {
     if (active || queue.length === 0) {
       return;
     }
@@ -29,23 +29,23 @@ export function createOverlayService (): OverlayService {
   return {
     confirmState,
     teleportTarget,
-    setTeleportTarget (element: HTMLElement | null) {
+    setTeleportTarget(element: HTMLElement | null) {
       teleportTarget.value = element;
     },
-    confirm (message: string): Promise<boolean> {
+    confirm(message: string): Promise<boolean> {
       return new Promise((resolve) => {
         queue.push({ message, resolve });
         showNext();
       });
     },
-    answerConfirm (confirmed: boolean) {
+    answerConfirm(confirmed: boolean) {
       active?.resolve(confirmed);
       active = null;
       confirmState.open = false;
       confirmState.message = '';
       showNext();
     },
-    cancelAllConfirms (confirmed = false) {
+    cancelAllConfirms(confirmed = false) {
       active?.resolve(confirmed);
       active = null;
       while (queue.length > 0) {
@@ -54,7 +54,7 @@ export function createOverlayService (): OverlayService {
       confirmState.open = false;
       confirmState.message = '';
     },
-    toast () {
+    toast() {
       /* stub: host adapter may replace this */
     },
   };

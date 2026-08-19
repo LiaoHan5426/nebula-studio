@@ -10,11 +10,7 @@
   min-height: 0;
 }
 
-.nebula-assembly__overlay-root {
-  position: absolute;
-  width: 0;
-  height: 0;
-  overflow: visible;
-  pointer-events: none;
+.nebula-assembly__overlay-container {
+  position: relative;
   z-index: var(--z-overlay, 1050);
 }

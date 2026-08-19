@@ -8,7 +8,12 @@ import type {
 
 import { onMounted, ref } from 'vue';
 
-import { NebulaButton, NebulaPane, NebulaTag } from '@nebula-studio/nebula-ui';
+import {
+  NebulaButton,
+  NebulaDialog,
+  NebulaPane,
+  NebulaTag,
+} from '@nebula-studio/nebula-ui';
 
 import { connectorApi, dataSourceApi } from '@/shared/api/integration';
 import { ConnectorType, isApiSuccess } from '@/shared/types';
@@ -194,66 +199,64 @@ async function handleTest(id: string) {
       </div>
     </NebulaPane>
 
-    <div
-      v-if="showCreate"
-      class="modal-overlay"
-      @click.self="showCreate = false"
+    <NebulaDialog
+      :open="showCreate"
+      title="新建数据源"
+      @update:open="showCreate = $event"
     >
-      <NebulaPane title="新建数据源" class="modal">
+      <label class="field"
+        ><span>名称</span><input v-model="form.name"
+      /></label>
+      <label class="field">
+        <span>连接器</span>
+        <select v-model="form.connectorId" class="field__select">
+          <option
+            v-for="(c, index) in connectors"
+            :key="`${c.connectorId}-${index}`"
+            :value="c.connectorId"
+          >
+            {{ c.connectorId }}
+          </option>
+        </select>
+      </label>
+      <template
+        v-if="selectedConnector()?.connectorType !== ConnectorType.PROTOCOL"
+      >
         <label class="field"
-          ><span>名称</span><input v-model="form.name"
+          ><span>主机</span><input v-model="form.host"
         /></label>
-        <label class="field">
-          <span>连接器</span>
-          <select v-model="form.connectorId" class="field__select">
-            <option
-              v-for="(c, index) in connectors"
-              :key="`${c.connectorId}-${index}`"
-              :value="c.connectorId"
-            >
-              {{ c.connectorId }}
-            </option>
-          </select>
-        </label>
-        <template
-          v-if="selectedConnector()?.connectorType !== ConnectorType.PROTOCOL"
-        >
-          <label class="field"
-            ><span>主机</span><input v-model="form.host"
-          /></label>
-          <label class="field"
-            ><span>端口</span><input v-model.number="form.port" type="number"
-          /></label>
-          <label class="field"
-            ><span>数据库</span><input v-model="form.database"
-          /></label>
-          <label class="field"
-            ><span>用户名</span><input v-model="form.username"
-          /></label>
-          <label class="field"
-            ><span>密码</span><input v-model="form.password" type="password"
-          /></label>
-        </template>
-        <label v-else class="field"
-          ><span>端点 URI</span><input v-model="form.endpointUri"
+        <label class="field"
+          ><span>端口</span><input v-model.number="form.port" type="number"
         /></label>
-        <div class="modal__actions">
-          <NebulaButton variant="outline" @click="showCreate = false">
-            取消
-          </NebulaButton>
-          <NebulaButton variant="primary" @click="handleCreate">
-            创建
-          </NebulaButton>
-        </div>
-      </NebulaPane>
-    </div>
+        <label class="field"
+          ><span>数据库</span><input v-model="form.database"
+        /></label>
+        <label class="field"
+          ><span>用户名</span><input v-model="form.username"
+        /></label>
+        <label class="field"
+          ><span>密码</span><input v-model="form.password" type="password"
+        /></label>
+      </template>
+      <label v-else class="field"
+        ><span>端点 URI</span><input v-model="form.endpointUri"
+      /></label>
+      <div class="modal__actions">
+        <NebulaButton variant="outline" @click="showCreate = false">
+          取消
+        </NebulaButton>
+        <NebulaButton variant="primary" @click="handleCreate">
+          创建
+        </NebulaButton>
+      </div>
+    </NebulaDialog>
 
-    <div
-      v-if="showEdit && editing"
-      class="modal-overlay"
-      @click.self="showEdit = false"
+    <NebulaDialog
+      :open="showEdit && Boolean(editing)"
+      title="编辑数据源"
+      @update:open="showEdit = $event"
     >
-      <NebulaPane title="编辑数据源" class="modal">
+      <template v-if="editing">
         <label class="field"
           ><span>名称</span><input v-model="editing.name"
         /></label>
@@ -285,7 +288,7 @@ async function handleTest(id: string) {
             保存
           </NebulaButton>
         </div>
-      </NebulaPane>
-    </div>
+      </template>
+    </NebulaDialog>
   </div>
 </template>

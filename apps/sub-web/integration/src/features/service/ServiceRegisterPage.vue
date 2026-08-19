@@ -5,6 +5,7 @@ import { computed, onMounted, ref } from 'vue';
 
 import {
   NebulaButton,
+  NebulaDialog,
   NebulaPane,
   NebulaTable,
   NebulaTableColumn,
@@ -200,60 +201,55 @@ function formatTime(value?: string) {
       </div>
     </NebulaPane>
 
-    <div
-      v-if="showDialog"
-      class="modal-overlay"
-      @click.self="showDialog = false"
+    <NebulaDialog
+      :open="showDialog"
+      :title="form.interfaceId ? '编辑原子服务' : '注册原子服务'"
+      @update:open="showDialog = $event"
     >
-      <NebulaPane
-        :title="form.interfaceId ? '编辑原子服务' : '注册原子服务'"
-        class="modal"
-      >
-        <label class="field">
-          <span>服务名称</span>
-          <input v-model="form.interfaceName" />
-        </label>
-        <label class="field">
-          <span>端点 URI</span>
-          <input v-model="form.endpointUri" />
-        </label>
-        <label class="field">
-          <span>方法</span>
-          <select v-model="form.method" class="field__select">
-            <option
-              v-for="method in Object.values(InterfaceMethod)"
-              :key="method"
-              :value="method"
-            >
-              {{ method }}
-            </option>
-          </select>
-        </label>
-        <label class="field">
-          <span>连接器 ID</span>
-          <input v-model="form.connectorId" placeholder="http-connector" />
-        </label>
-        <label class="field">
-          <span>认证方式</span>
-          <select v-model="form.authConfig!.authType" class="field__select">
-            <option
-              v-for="auth in Object.values(InterfaceAuthType)"
-              :key="auth"
-              :value="auth"
-            >
-              {{ auth }}
-            </option>
-          </select>
-        </label>
-        <div class="modal__actions">
-          <NebulaButton variant="outline" @click="showDialog = false">
-            取消
-          </NebulaButton>
-          <NebulaButton variant="primary" @click="saveService">
-            保存
-          </NebulaButton>
-        </div>
-      </NebulaPane>
-    </div>
+      <label class="field">
+        <span>服务名称</span>
+        <input v-model="form.interfaceName" />
+      </label>
+      <label class="field">
+        <span>端点 URI</span>
+        <input v-model="form.endpointUri" />
+      </label>
+      <label class="field">
+        <span>方法</span>
+        <select v-model="form.method" class="field__select">
+          <option
+            v-for="method in Object.values(InterfaceMethod)"
+            :key="method"
+            :value="method"
+          >
+            {{ method }}
+          </option>
+        </select>
+      </label>
+      <label class="field">
+        <span>连接器 ID</span>
+        <input v-model="form.connectorId" placeholder="http-connector" />
+      </label>
+      <label class="field">
+        <span>认证方式</span>
+        <select v-model="form.authConfig!.authType" class="field__select">
+          <option
+            v-for="auth in Object.values(InterfaceAuthType)"
+            :key="auth"
+            :value="auth"
+          >
+            {{ auth }}
+          </option>
+        </select>
+      </label>
+      <div class="modal__actions">
+        <NebulaButton variant="outline" @click="showDialog = false">
+          取消
+        </NebulaButton>
+        <NebulaButton variant="primary" @click="saveService">
+          保存
+        </NebulaButton>
+      </div>
+    </NebulaDialog>
   </div>
 </template>

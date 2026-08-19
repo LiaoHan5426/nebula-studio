@@ -13,6 +13,7 @@ import {
 } from 'vue';
 
 import { useDropdownPosition } from '../../composables/useDropdownPosition';
+import { useOverlayTeleportTo } from '../../composables/useOverlayContainer';
 
 type NebulaSelectPrimitive = number | string;
 type NebulaSelectObjectOption = Readonly<Record<string, unknown>>;
@@ -75,6 +76,7 @@ const dropdown = ref<HTMLElement>();
 const optionElements = ref<HTMLElement[]>([]);
 const isOpen = ref(false);
 const activeIndex = ref(-1);
+const teleportTo = useOverlayTeleportTo();
 
 const { menuStyle } = useDropdownPosition({
   triggerRef: trigger,
@@ -360,7 +362,7 @@ watch(
       <span class="nebula-select__chevron" aria-hidden="true"></span>
     </button>
 
-    <Teleport to="body">
+    <Teleport defer :to="teleportTo">
       <Transition name="nebula-select-pop">
         <div
           v-if="isOpen"

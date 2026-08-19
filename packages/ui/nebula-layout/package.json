@@ -15,6 +15,9 @@
   "license": "UNLICENSED",
   "author": "Liao Han <liaohan5426@gmail.com>",
   "type": "module",
+  "scripts": {
+    "test": "vp test run"
+  },
   "sideEffects": [
     "./src/index.ts",
     "./src/styles.css",
@@ -46,6 +49,7 @@
   },
   "dependencies": {
     "@nebula-studio/app-shell": "workspace:^",
+    "@nebula-studio/nebula-assembly": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
     "vue": "catalog:vue",
     "vue-router": "catalog:vue"
@@ -53,6 +57,10 @@
   "devDependencies": {
     "@nebula-studio-internal/tsconfig": "workspace:^",
     "@nebula-studio/types": "workspace:^",
-    "sass": "catalog:style"
+    "@vitejs/plugin-vue": "catalog:vite",
+    "happy-dom": "catalog:vite",
+    "sass": "catalog:style",
+    "vite-plus": "catalog:vite",
+    "vitest": "catalog:vite"
   }
 }

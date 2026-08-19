@@ -6,6 +6,7 @@ import { onMounted, ref } from 'vue';
 import IntegrationBpmnEditor from '@nebula-studio/nebula-flow-editor/components/IntegrationBpmnEditor.vue';
 import {
   NebulaButton,
+  NebulaDialog,
   NebulaPane,
   NebulaTable,
   NebulaTableColumn,
@@ -144,31 +145,28 @@ function statusVariant(status: string) {
       </div>
     </NebulaPane>
 
-    <div
-      v-if="showEditor && editingFlow"
-      class="modal-overlay modal-overlay--full"
+    <NebulaDialog
+      :open="showEditor && Boolean(editingFlow)"
+      :title="editingFlow ? `设计 - ${editingFlow.name}` : '设计流程'"
+      size="full"
+      @update:open="showEditor = $event"
     >
-      <NebulaPane
-        :title="`设计 - ${editingFlow.name}`"
-        class="modal modal--large"
-      >
-        <div class="bpmn-wrap">
-          <IntegrationBpmnEditor
-            v-model:xml="bpmnXml"
-            :atomic-interfaces="atomicInterfaces"
-            @changed="() => {}"
-          />
-        </div>
-        <div class="modal__actions">
-          <NebulaButton variant="outline" @click="showEditor = false">
-            关闭
-          </NebulaButton>
-          <NebulaButton variant="primary" @click="saveDesign">
-            保存
-          </NebulaButton>
-        </div>
-      </NebulaPane>
-    </div>
+      <div class="bpmn-wrap">
+        <IntegrationBpmnEditor
+          v-model:xml="bpmnXml"
+          :atomic-interfaces="atomicInterfaces"
+          @changed="() => {}"
+        />
+      </div>
+      <div class="modal__actions">
+        <NebulaButton variant="outline" @click="showEditor = false">
+          关闭
+        </NebulaButton>
+        <NebulaButton variant="primary" @click="saveDesign">
+          保存
+        </NebulaButton>
+      </div>
+    </NebulaDialog>
   </div>
 </template>
 
@@ -177,5 +175,11 @@ function statusVariant(status: string) {
   height: min(72vh, 680px);
   margin-bottom: 12px;
   overflow: hidden;
+}
+
+.modal__actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
 }
 </style>

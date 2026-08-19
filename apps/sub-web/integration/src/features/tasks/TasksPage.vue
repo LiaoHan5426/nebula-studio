@@ -10,7 +10,12 @@ import { useRouter } from 'vue-router';
 
 import { isApiSuccess } from '@nebula-studio/api-client';
 import { TaskStatus, TaskType } from '@nebula-studio/contracts/integration';
-import { NebulaButton, NebulaPane, NebulaTag } from '@nebula-studio/nebula-ui';
+import {
+  NebulaButton,
+  NebulaDialog,
+  NebulaPane,
+  NebulaTag,
+} from '@nebula-studio/nebula-ui';
 
 import { taskApi } from '@/shared/api/taskApi';
 import { useTenant } from '@/shared/composables/useTenant';
@@ -200,86 +205,84 @@ function taskTypeLabel(type: string) {
       </div>
     </NebulaPane>
 
-    <!-- 新建任务弹窗 -->
-    <div
-      v-if="showCreate"
-      class="modal-overlay"
-      @click.self="showCreate = false"
+    <NebulaDialog
+      :open="showCreate"
+      title="新建任务"
+      @update:open="showCreate = $event"
     >
-      <NebulaPane title="新建任务" class="modal">
-        <label class="field">
-          <span>任务名称</span>
-          <input v-model="form.name" placeholder="输入任务名称" />
-        </label>
-        <label class="field">
-          <span>任务类型</span>
-          <select v-model="form.taskType" class="field__select">
-            <option :value="TaskType.CRON">定时任务 (CRON)</option>
-            <option :value="TaskType.FIXED_DELAY">固定延迟</option>
-            <option :value="TaskType.FIXED_RATE">固定频率</option>
-            <option :value="TaskType.EVENT">事件触发</option>
-            <option :value="TaskType.MANUAL">手动</option>
-          </select>
-        </label>
-        <label v-if="form.taskType === TaskType.CRON" class="field">
-          <span>Cron 表达式</span>
-          <input v-model="form.cronExpression" placeholder="0 * * * *" />
-          <div class="field__presets">
-            <button
-              v-for="preset in CRON_PRESETS"
-              :key="preset.value"
-              type="button"
-              class="field__preset"
-              @click="form.cronExpression = preset.value"
-            >
-              {{ preset.label }}
-            </button>
-          </div>
-        </label>
-        <label class="field">
-          <span>负载内容 (Payload)</span>
-          <textarea
-            v-model="form.payload"
-            placeholder="JSON 格式的任务数据"
-            rows="3"
-          ></textarea>
-        </label>
-        <div class="modal__actions">
-          <NebulaButton variant="outline" @click="showCreate = false">
-            取消
-          </NebulaButton>
-          <NebulaButton variant="primary" @click="handleCreate">
-            创建
-          </NebulaButton>
+      <label class="field">
+        <span>任务名称</span>
+        <input v-model="form.name" placeholder="输入任务名称" />
+      </label>
+      <label class="field">
+        <span>任务类型</span>
+        <select v-model="form.taskType" class="field__select">
+          <option :value="TaskType.CRON">定时任务 (CRON)</option>
+          <option :value="TaskType.FIXED_DELAY">固定延迟</option>
+          <option :value="TaskType.FIXED_RATE">固定频率</option>
+          <option :value="TaskType.EVENT">事件触发</option>
+          <option :value="TaskType.MANUAL">手动</option>
+        </select>
+      </label>
+      <label v-if="form.taskType === TaskType.CRON" class="field">
+        <span>Cron 表达式</span>
+        <input v-model="form.cronExpression" placeholder="0 * * * *" />
+        <div class="field__presets">
+          <button
+            v-for="preset in CRON_PRESETS"
+            :key="preset.value"
+            type="button"
+            class="field__preset"
+            @click="form.cronExpression = preset.value"
+          >
+            {{ preset.label }}
+          </button>
         </div>
-      </NebulaPane>
-    </div>
+      </label>
+      <label class="field">
+        <span>负载内容 (Payload)</span>
+        <textarea
+          v-model="form.payload"
+          placeholder="JSON 格式的任务数据"
+          rows="3"
+        ></textarea>
+      </label>
+      <div class="modal__actions">
+        <NebulaButton variant="outline" @click="showCreate = false">
+          取消
+        </NebulaButton>
+        <NebulaButton variant="primary" @click="handleCreate">
+          创建
+        </NebulaButton>
+      </div>
+    </NebulaDialog>
 
-    <!-- 编辑任务弹窗 -->
-    <div v-if="showEdit" class="modal-overlay" @click.self="showEdit = false">
-      <NebulaPane title="编辑任务" class="modal">
-        <label class="field">
-          <span>任务名称</span>
-          <input v-model="editForm.name" />
-        </label>
-        <label class="field">
-          <span>Cron 表达式</span>
-          <input v-model="editForm.cronExpression" />
-        </label>
-        <label class="field">
-          <span>负载内容 (Payload)</span>
-          <textarea v-model="editForm.payload" rows="3"></textarea>
-        </label>
-        <div class="modal__actions">
-          <NebulaButton variant="outline" @click="showEdit = false">
-            取消
-          </NebulaButton>
-          <NebulaButton variant="primary" @click="handleEdit">
-            保存
-          </NebulaButton>
-        </div>
-      </NebulaPane>
-    </div>
+    <NebulaDialog
+      :open="showEdit"
+      title="编辑任务"
+      @update:open="showEdit = $event"
+    >
+      <label class="field">
+        <span>任务名称</span>
+        <input v-model="editForm.name" />
+      </label>
+      <label class="field">
+        <span>Cron 表达式</span>
+        <input v-model="editForm.cronExpression" />
+      </label>
+      <label class="field">
+        <span>负载内容 (Payload)</span>
+        <textarea v-model="editForm.payload" rows="3"></textarea>
+      </label>
+      <div class="modal__actions">
+        <NebulaButton variant="outline" @click="showEdit = false">
+          取消
+        </NebulaButton>
+        <NebulaButton variant="primary" @click="handleEdit">
+          保存
+        </NebulaButton>
+      </div>
+    </NebulaDialog>
   </div>
 </template>
 

@@ -11,6 +11,9 @@ test.describe('Studio navigation flow', () => {
     await expect(page.locator('[data-nebula-assembly]').first()).toBeVisible({
       timeout: 20_000,
     });
+    await expect(
+      page.locator('[data-nebula-overlay-container]').first(),
+    ).toBeAttached();
   });
 
   test('login surface is reachable', async ({ page }) => {
@@ -72,6 +75,9 @@ test.describe('Studio navigation flow', () => {
     await expect(page.locator('[data-nebula-assembly]').first()).toBeVisible({
       timeout: 15_000,
     });
+    await expect(
+      page.locator('[data-nebula-overlay-container]').first(),
+    ).toBeAttached();
   });
 });
 

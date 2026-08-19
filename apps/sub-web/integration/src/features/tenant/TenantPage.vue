@@ -6,6 +6,7 @@ import { useRouter } from 'vue-router';
 
 import {
   NebulaButton,
+  NebulaDialog,
   NebulaPane,
   NebulaTable,
   NebulaTableColumn,
@@ -284,118 +285,104 @@ async function confirmDelete() {
       </div>
     </NebulaPane>
 
-    <div
-      v-if="showFormDialog"
-      class="modal-overlay"
-      @click.self="showFormDialog = false"
+    <NebulaDialog
+      :open="showFormDialog"
+      :title="formMode === 'create' ? '新增租户' : '编辑租户'"
+      @update:open="showFormDialog = $event"
     >
-      <NebulaPane
-        :title="formMode === 'create' ? '新增租户' : '编辑租户'"
-        class="modal"
-      >
-        <p v-if="formMode === 'create'" class="field-hint">
-          预览租户 ID：<strong>{{ previewTenantId }}</strong>
-        </p>
-        <label v-else class="field">
-          <span>租户 ID</span>
-          <input :value="form.tenantId" readonly class="field__readonly" />
-        </label>
+      <p v-if="formMode === 'create'" class="field-hint">
+        预览租户 ID：<strong>{{ previewTenantId }}</strong>
+      </p>
+      <label v-else class="field">
+        <span>租户 ID</span>
+        <input :value="form.tenantId" readonly class="field__readonly" />
+      </label>
 
-        <label v-if="formMode === 'create' && isPlatformAdmin" class="field">
-          <span>绑定系统用户</span>
-          <select v-model="form.userId" class="field__select">
-            <option value="">不绑定</option>
-            <option
-              v-for="user in CONSOLE_USERS"
-              :key="user.userId"
-              :value="user.userId"
-            >
-              {{ user.label }}
-            </option>
-          </select>
-        </label>
-        <p v-else-if="formMode === 'create'" class="field-hint">
-          将绑定当前账号：<strong>{{ username }}</strong>
-        </p>
-        <label v-else class="field">
-          <span>绑定系统用户</span>
-          <input
-            :value="resolveBoundUsername(form.userId)"
-            readonly
-            class="field__readonly"
-          />
-        </label>
-        <label class="field">
-          <span>Slug</span>
-          <input
-            v-model="form.slug"
-            placeholder="例如 a、b、admin"
-            :readonly="formMode === 'edit'"
-            :class="{ field__readonly: formMode === 'edit' }"
-          />
-        </label>
-        <label class="field">
-          <span>租户名称</span>
-          <input v-model="form.tenantName" placeholder="Tenant A" />
-        </label>
-        <label class="field">
-          <span>描述</span>
-          <input v-model="form.description" placeholder="可选" />
-        </label>
-        <label class="field">
-          <span>验证方式</span>
-          <select v-model="form.authType" class="field__select">
-            <option v-for="auth in AUTH_TYPES" :key="auth" :value="auth">
-              {{ auth }}
-            </option>
-          </select>
-        </label>
-        <label class="field">
-          <span>状态</span>
-          <select v-model="form.status" class="field__select">
-            <option value="ACTIVE">正常</option>
-            <option value="INACTIVE">禁用</option>
-          </select>
-        </label>
-        <div class="modal__actions">
-          <NebulaButton variant="outline" @click="showFormDialog = false">
-            取消
-          </NebulaButton>
-          <NebulaButton
-            variant="primary"
-            :disabled="saving"
-            @click="saveTenant"
+      <label v-if="formMode === 'create' && isPlatformAdmin" class="field">
+        <span>绑定系统用户</span>
+        <select v-model="form.userId" class="field__select">
+          <option value="">不绑定</option>
+          <option
+            v-for="user in CONSOLE_USERS"
+            :key="user.userId"
+            :value="user.userId"
           >
-            {{ saving ? '保存中…' : '保存' }}
-          </NebulaButton>
-        </div>
-      </NebulaPane>
-    </div>
+            {{ user.label }}
+          </option>
+        </select>
+      </label>
+      <p v-else-if="formMode === 'create'" class="field-hint">
+        将绑定当前账号：<strong>{{ username }}</strong>
+      </p>
+      <label v-else class="field">
+        <span>绑定系统用户</span>
+        <input
+          :value="resolveBoundUsername(form.userId)"
+          readonly
+          class="field__readonly"
+        />
+      </label>
+      <label class="field">
+        <span>Slug</span>
+        <input
+          v-model="form.slug"
+          placeholder="例如 a、b、admin"
+          :readonly="formMode === 'edit'"
+          :class="{ field__readonly: formMode === 'edit' }"
+        />
+      </label>
+      <label class="field">
+        <span>租户名称</span>
+        <input v-model="form.tenantName" placeholder="Tenant A" />
+      </label>
+      <label class="field">
+        <span>描述</span>
+        <input v-model="form.description" placeholder="可选" />
+      </label>
+      <label class="field">
+        <span>验证方式</span>
+        <select v-model="form.authType" class="field__select">
+          <option v-for="auth in AUTH_TYPES" :key="auth" :value="auth">
+            {{ auth }}
+          </option>
+        </select>
+      </label>
+      <label class="field">
+        <span>状态</span>
+        <select v-model="form.status" class="field__select">
+          <option value="ACTIVE">正常</option>
+          <option value="INACTIVE">禁用</option>
+        </select>
+      </label>
+      <div class="modal__actions">
+        <NebulaButton variant="outline" @click="showFormDialog = false">
+          取消
+        </NebulaButton>
+        <NebulaButton variant="primary" :disabled="saving" @click="saveTenant">
+          {{ saving ? '保存中…' : '保存' }}
+        </NebulaButton>
+      </div>
+    </NebulaDialog>
 
-    <div
-      v-if="pendingDeleteTenant"
-      class="modal-overlay"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="tenant-delete-title"
-      @click.self="cancelDelete"
+    <NebulaDialog
+      :open="Boolean(pendingDeleteTenant)"
+      title="确认删除租户"
+      @update:open="!$event && cancelDelete()"
     >
-      <NebulaPane title="确认删除租户" class="modal">
-        <p class="field-hint">
-          确定删除租户「{{
-            pendingDeleteTenant.tenantName || pendingDeleteTenant.tenantId
-          }}」吗？此操作不可恢复。
-        </p>
-        <div class="modal__actions">
-          <NebulaButton variant="outline" @click="cancelDelete">
-            取消
-          </NebulaButton>
-          <NebulaButton variant="primary" @click="confirmDelete">
-            删除
-          </NebulaButton>
-        </div>
-      </NebulaPane>
-    </div>
+      <p class="field-hint">
+        确定删除租户「{{
+          pendingDeleteTenant?.tenantName || pendingDeleteTenant?.tenantId
+        }}」吗？此操作不可恢复。
+      </p>
+      <div class="modal__actions">
+        <NebulaButton variant="outline" @click="cancelDelete">
+          取消
+        </NebulaButton>
+        <NebulaButton variant="primary" @click="confirmDelete">
+          删除
+        </NebulaButton>
+      </div>
+    </NebulaDialog>
   </div>
 </template>
 

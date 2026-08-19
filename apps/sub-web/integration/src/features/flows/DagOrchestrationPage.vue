@@ -10,6 +10,7 @@ import { DagEditor } from '@nebula-studio/nebula-dag-editor';
 import { useNebulaAssembly } from '@nebula-studio/nebula-assembly';
 import {
   NebulaButton,
+  NebulaDialog,
   NebulaPane,
   NebulaTable,
   NebulaTableColumn,
@@ -175,20 +176,38 @@ function statusVariant(status?: string) {
       </div>
     </NebulaPane>
 
-    <div v-if="showEditor" class="modal-overlay modal-overlay--full">
-      <NebulaPane :title="editorTitle" class="modal modal--dag">
-        <div class="modal__content--dag">
-          <DagEditor v-model="dagDefinition" :node-schemas="nodeSchemas" />
-        </div>
-        <div class="modal__actions">
-          <NebulaButton variant="outline" @click="showEditor = false">
-            取消
-          </NebulaButton>
-          <NebulaButton variant="primary" @click="saveEditor">
-            保存
-          </NebulaButton>
-        </div>
-      </NebulaPane>
-    </div>
+    <NebulaDialog
+      :open="showEditor"
+      :title="editorTitle"
+      size="full"
+      @update:open="showEditor = $event"
+    >
+      <div class="modal__content--dag">
+        <DagEditor v-model="dagDefinition" :node-schemas="nodeSchemas" />
+      </div>
+      <div class="modal__actions">
+        <NebulaButton variant="outline" @click="showEditor = false">
+          取消
+        </NebulaButton>
+        <NebulaButton variant="primary" @click="saveEditor">
+          保存
+        </NebulaButton>
+      </div>
+    </NebulaDialog>
   </div>
 </template>
+
+<style scoped>
+.modal__content--dag {
+  height: min(70vh, 640px);
+  min-height: 420px;
+  overflow: hidden;
+}
+
+.modal__actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+</style>

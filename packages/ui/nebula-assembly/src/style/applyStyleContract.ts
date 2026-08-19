@@ -28,6 +28,14 @@ export function applyStyleContract(
   contract: StyleContract,
 ): void {
   root.setAttribute(STYLE_CONTRACT_ATTR, '');
+  applyOverlayStyleAttrs(root, contract);
+}
+
+/** Theme/density/namespace only — used by the body-level overlay portal. */
+export function applyOverlayStyleAttrs(
+  root: HTMLElement,
+  contract: StyleContract,
+): void {
   setOrRemoveAttribute(root, STYLE_THEME_ATTR, contract.theme);
   setOrRemoveAttribute(root, STYLE_DENSITY_ATTR, contract.density);
   setOrRemoveAttribute(root, STYLE_NAMESPACE_ATTR, contract.namespace);

@@ -10,7 +10,6 @@ import {
   wrapWithAssemblyRoot,
 } from '@nebula-studio/nebula-assembly';
 
-
 type ElectronApi = {
   notify?: { show?(message: string): void };
   shell?: { openExternal?(url: string): Promise<void> | void };

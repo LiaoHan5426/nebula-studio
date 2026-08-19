@@ -1,6 +1,7 @@
-import { computed, defineComponent, h, ref, Teleport } from 'vue';
+import { computed, defineComponent, h, inject, ref, Teleport } from 'vue';
 
 import { useBodyScrollLock } from '../../composables/useBodyScrollLock';
+import { overlayContainerKey } from '../../composables/useOverlayContainer';
 import { useOverlayDismiss } from '../../composables/useOverlayDismiss';
 import { cn } from '../../utils/cn';
 import NebulaButton from '../button/NebulaButton.vue';
@@ -56,10 +57,11 @@ export const NebulaDrawer = defineComponent({
 
     useBodyScrollLock(() => isOpen.value);
     useOverlayDismiss({ isOpen: () => isOpen.value, onDismiss: close });
+    const overlayContainer = inject(overlayContainerKey, null);
 
     return () => {
       if (!isOpen.value) return null;
-      return h(Teleport, { to: 'body' }, [
+      return h(Teleport, { to: overlayContainer?.value ?? 'body' }, [
         h('div', { class: cn('nebula-drawer-root', props.class) }, [
           h('div', {
             class: 'nebula-drawer__overlay',
