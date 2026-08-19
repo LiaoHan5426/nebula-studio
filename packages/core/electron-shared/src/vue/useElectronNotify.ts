@@ -21,6 +21,10 @@ function resolveNotifyClient(): NotifyClient {
   return client;
 }
 
+/**
+ * Preload `window.api.notify` toast UI. This is not an in-app overlay service;
+ * page-level confirm/dialog/toast must use `nebula-assembly` overlay.
+ */
 export function useElectronNotify(
   client: NotifyClient = resolveNotifyClient(),
 ) {

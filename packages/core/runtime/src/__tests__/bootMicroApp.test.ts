@@ -8,6 +8,7 @@ import {
   bootMicroApp,
 } from '../bootMicroApp';
 import { detectRuntimeMode } from '../detectMode';
+import { getResolvedRuntimeMode } from '../resolvedMode';
 
 // Mock 外部依赖（vitest 自动提升 vi.mock 到模块顶部）
 vi.mock('@nebula-studio/app-shell', () => ({
@@ -74,6 +75,8 @@ describe('bootMicroApp', () => {
       expect.objectContaining({ scope: 'test-scope' }),
     );
     expect(mockBootSubApp).toHaveBeenCalled();
+    expect(window.__NEBULA_RUNTIME_MODE__).toBe('standalone');
+    expect(getResolvedRuntimeMode()).toBe('standalone');
   });
 
   it('platform-embed: calls installWebPresentation and bootSubApp', async () => {

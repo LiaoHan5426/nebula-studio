@@ -13,6 +13,7 @@ import { ACCENT_PRESETS, DEFAULT_LAYOUT_PREFERENCES } from '../types/layout';
 function resolveLayoutPreferencesStorageKey(): string {
   if (typeof window === 'undefined') return LAYOUT_PREFERENCES_STORAGE_KEY;
   if (isWebShellHost()) return LAYOUT_PREFERENCES_STORAGE_KEY;
+  // Compatibility facade: prefers boot-stamped runtime mode, then iframe heuristic.
   if (getLayoutHostMode() === 'shell-hosted') {
     return `${LAYOUT_PREFERENCES_STORAGE_KEY}:embed`;
   }

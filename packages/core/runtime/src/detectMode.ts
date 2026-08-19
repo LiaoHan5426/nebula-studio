@@ -8,7 +8,10 @@ export type NebulaRuntimeMode = 'electron' | 'platform-embed' | 'standalone';
 export type RuntimeMode = NebulaRuntimeMode;
 
 /**
- * 检测运行时模式。
+ * 检测运行时模式。仅供 apps boot / `bootMicroApp` 调用。
+ *
+ * 页面、feature、editor 应消费 assembly `host.surface`。
+ * 路由守卫等 boot 之后、无 Vue inject 的代码可读 `getResolvedRuntimeMode()`。
  *
  * 优先级：
  * 1. 宿主显式注入 `window.__NEBULA_RUNTIME_MODE__`（推荐，入口文件设置）

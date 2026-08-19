@@ -1,8 +1,9 @@
 /**
  * @nebula-studio/nebula-shell
  *
- * Plan-11: 从 `frontend/App.vue` 拆出的 Shell 层组件与 composable。
- * 提供布局骨架、iframe 嵌入管理、认证等待等能力。
+ * Product Shell container: workspace chrome, iframe host, app lifecycle.
+ * Embed messaging, window manifest, and host bridges stay in `app-shell`.
+ * Overlay / style / editor-host assembly stays in `nebula-assembly`.
  */
 
 export { default as AppDock } from './components/AppDock.vue';

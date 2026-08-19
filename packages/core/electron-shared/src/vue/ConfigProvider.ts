@@ -27,6 +27,13 @@ export interface RendererConfigContext {
 export const rendererConfigKey: InjectionKey<RendererConfigContext> =
   Symbol('renderer-config');
 
+/**
+ * Renderer ConfigProvider: theme/locale DOM sync for Electron and Web stubs.
+ *
+ * Keep this compatibility entry. New density, overlay, editor-host, and
+ * host-surface capabilities must go through `nebula-assembly` style/host
+ * contracts, not a second ConfigProvider API.
+ */
 export const ConfigProvider = defineComponent({
   name: 'ConfigProvider',
   props: {

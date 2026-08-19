@@ -12,6 +12,10 @@ import {
 import { bootSubApp } from '@nebula-studio-electron/electron-bridge/vue';
 
 import { detectRuntimeMode } from './detectMode';
+import {
+  __resetResolvedRuntimeModeForTests,
+  setResolvedRuntimeMode,
+} from './resolvedMode';
 
 export interface MicroAppHandle {
   app: App;
@@ -38,6 +42,7 @@ export async function bootMicroApp(
   activeHandle?.dispose();
 
   const mode = options.mode ?? detectRuntimeMode();
+  setResolvedRuntimeMode(mode);
   const disposers: Array<() => void> = [];
 
   if (mode !== 'electron' && options.webPresentation) {
@@ -192,4 +197,5 @@ export function __resetActiveMicroAppHandleForTests(): void {
     }
     activeHandle = null;
   }
+  __resetResolvedRuntimeModeForTests();
 }

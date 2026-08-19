@@ -73,3 +73,4 @@ export interface BootMicroAppOptions {
 
 export type { RuntimeMode } from './detectMode';
 export { detectRuntimeMode } from './detectMode';
+export { getResolvedRuntimeMode } from './resolvedMode';

@@ -36,33 +36,6 @@ const customConfig: Linter.Config[] = [
 
   // ==================== §3.8.3 表 A — 跨包依赖禁止矩阵 ====================
 
-  // packages/core 不能引用业务页面和 renderer
-  {
-    files: ['packages/core/**/**'],
-    ignores: restrictedImportIgnores,
-    rules: {
-      'no-restricted-imports': [
-        'error',
-        {
-          patterns: [
-            {
-              group: ['@nebula-studio-renderer/*'],
-              message: 'packages/core 禁止引用 renderer 包',
-            },
-            {
-              group: ['apps/sub-web/*'],
-              message: 'packages/core 禁止引用 sub-web 应用',
-            },
-            {
-              group: ['apps/web/**'],
-              message: 'packages/core 禁止引用 web 业务页',
-            },
-          ],
-        },
-      ],
-    },
-  },
-
   // packages/contracts 不能引用 editors / features / renderer / apps
   {
     files: ['packages/contracts/**/**'],
@@ -329,6 +302,42 @@ const customConfig: Linter.Config[] = [
         'error',
         {
           patterns: [
+            {
+              group: ['../../../apps/*', '../../apps/*'],
+              message: 'packages 禁止通过相对路径引用 apps',
+            },
+          ],
+        },
+      ],
+    },
+  },
+
+  // Must follow the packages/** import matrix: later configs replace the rule.
+  {
+    files: ['packages/core/**/**'],
+    ignores: restrictedImportIgnores,
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@nebula-studio/nebula-assembly'],
+              message:
+                'packages/core 禁止引用 nebula-assembly；core 只保留协议，装配层由 apps boot 接入',
+            },
+            {
+              group: ['@nebula-studio-renderer/*'],
+              message: 'packages/core 禁止引用 renderer 包',
+            },
+            {
+              group: ['apps/sub-web/*'],
+              message: 'packages/core 禁止引用 sub-web 应用',
+            },
+            {
+              group: ['apps/web/**'],
+              message: 'packages/core 禁止引用 web 业务页',
+            },
             {
               group: ['../../../apps/*', '../../apps/*'],
               message: 'packages 禁止通过相对路径引用 apps',

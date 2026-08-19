@@ -61,12 +61,12 @@ const hostBranchSelectors: RestrictedSyntaxSelector[] = [
   {
     selector: "ImportSpecifier[imported.name='detectRuntimeMode']",
     message:
-      'Do not import detectRuntimeMode in pages/features/editors. Runtime mode is resolved at boot and exposed via assembly host.surface.',
+      'Do not import detectRuntimeMode outside apps boot. Use assembly host.surface, or getResolvedRuntimeMode() in boot-adjacent guards after bootMicroApp.',
   },
   {
     selector: "CallExpression[callee.name='detectRuntimeMode']",
     message:
-      'Do not call detectRuntimeMode in pages/features/editors. Runtime mode is resolved at boot and exposed via assembly host.surface.',
+      'Do not call detectRuntimeMode outside apps boot. Use assembly host.surface, or getResolvedRuntimeMode() in boot-adjacent guards after bootMicroApp.',
   },
 ];
 
@@ -79,10 +79,12 @@ const businessSourceGlobs = [
   'apps/sub-web/docs/src/pages/**/**',
   'apps/sub-web/docs/src/components/**/**',
   'apps/sub-web/integration/src/features/**/**',
+  'apps/sub-web/integration/src/router/**/**',
   'apps/sub-web/login/src/features/**/**',
   'apps/sub-web/login/src/pages/**/**',
   'apps/sub-web/settings/src/features/**/**',
   'apps/sub-web/settings/src/pages/**/**',
+  'apps/sub-web/settings/src/router/**/**',
 ];
 
 const testAndDeclarationIgnores = [

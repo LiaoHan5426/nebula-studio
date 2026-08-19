@@ -1,8 +1,16 @@
 declare global {
   interface Window {
     __NEBULA_PRESENTATION_HOST__?: 'web';
+    __NEBULA_RUNTIME_MODE__?: 'electron' | 'platform-embed' | 'standalone';
+    __NEBULA_SHELL_HOST__?: boolean;
   }
 }
+
+/**
+ * Boot/presentation marks for Web vs Electron stubs.
+ * Do not add overlay, density, editor-host, or style-contract APIs here —
+ * those belong in `nebula-assembly` and apps boot adapters.
+ */
 
 export type PresentationHostKind = 'electron' | 'web';
 

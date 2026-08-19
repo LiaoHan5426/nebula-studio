@@ -6,7 +6,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 import { hasValidAuthToken } from '@nebula-studio/auth-provider/session';
 import { defineExperiencePageMeta } from '@nebula-studio/nebula-layout';
-import { detectRuntimeMode } from '@nebula-studio/runtime';
+import { getResolvedRuntimeMode } from '@nebula-studio/runtime';
 
 import SettingsLayout from '@/layout/SettingsLayout.vue';
 import { canAccessSettings } from '@/shared/auth/access';
@@ -193,7 +193,7 @@ router.beforeEach((to, _from, next) => {
   document.title = `${to.meta.title ?? '设置'} - Nebula Studio`;
 
   // standalone 模式下无 token 拦截访问，embed/electron 不拦截（Shell 层管认证）
-  if (detectRuntimeMode() === 'standalone' && !hasValidAuthToken()) {
+  if (getResolvedRuntimeMode() === 'standalone' && !hasValidAuthToken()) {
     // 重定向到 login 子应用（standalone 端口约定：:5176）
     window.location.href = '/login';
     return;

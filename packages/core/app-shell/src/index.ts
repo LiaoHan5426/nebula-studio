@@ -1,3 +1,11 @@
+/**
+ * Shared Web/Electron shell protocol: window manifest, embed messaging,
+ * event bus, auth session, and host bridges.
+ *
+ * Do not add UI assembly, overlay, style/density contract, or editor host
+ * here. Those live in `nebula-assembly` and are wired at apps boot.
+ */
+
 export {
   GENERATED_DISPLAY_ORDER,
   GENERATED_MODAL_RENDERERS,
@@ -25,6 +33,7 @@ export {
   getLayoutHostMode,
   isShellEmbedSurface,
   LAYOUT_PREFERENCES_STORAGE_KEY,
+  layoutHostModeFromRuntimeMode,
 } from './common/layoutHost';
 export type { LayoutHostMode, ShellEmbedSurface } from './common/layoutHost';
 export {
