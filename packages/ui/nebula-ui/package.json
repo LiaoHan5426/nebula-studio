@@ -57,6 +57,7 @@
     "vee-validate": "catalog:form",
     "vue": "catalog:vue",
     "vuedraggable": "catalog:ui",
+    "vxe-pc-ui": "catalog:ui",
     "vxe-table": "catalog:ui",
     "xe-utils": "catalog:ui"
   },

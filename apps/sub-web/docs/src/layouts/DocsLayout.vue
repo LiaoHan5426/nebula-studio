@@ -141,7 +141,22 @@ const searchResults = computed(() => {
 });
 
 function isActive(path: string): boolean {
-  return route.path === path;
+  const current = route.path;
+  if (current === path) return true;
+  const aliasMap: Record<string, string> = {
+    '/components': '/reference/components',
+    '/guide': '/reference/guide',
+    '/patterns': '/reference/patterns',
+  };
+  for (const [base, alias] of Object.entries(aliasMap)) {
+    if (path.startsWith(base) && current === alias + path.slice(base.length)) {
+      return true;
+    }
+    if (path.startsWith(alias) && current === base + path.slice(alias.length)) {
+      return true;
+    }
+  }
+  return false;
 }
 </script>
 
