@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import type { TenantRecord } from '@/features/tenant/api';
 
-import { computed, onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
-
 import {
   NebulaButton,
   NebulaDialog,
@@ -14,96 +11,28 @@ import {
 } from '@nebula-studio/nebula-ui';
 
 import { tenantApi } from '@/features/tenant/api';
+import { AUTH_TYPES, useTenantPage } from '@/features/tenant/useTenantPage';
 import { getAuthUserId } from '@/shared/auth/session';
-import { useAuth } from '@/shared/composables/useAuth';
 import { isApiSuccess } from '@/shared/types';
 
-type TenantFormMode = 'create' | 'edit';
-
-interface TenantForm {
-  tenantId?: string;
-  userId: string;
-  slug: string;
-  tenantName: string;
-  description: string;
-  status: string;
-  authType: string;
-}
-
-const AUTH_TYPES = ['API_KEY', 'JWT', 'NONE'] as const;
-
-/** 控制台可绑定的系统用户（演示环境） */
-const CONSOLE_USERS = [
-  { userId: '1', username: 'demo', label: 'demo' },
-  { userId: '2', username: 'admin', label: 'admin' },
-] as const;
-
-function resolveBoundUsername(userId?: string) {
-  if (!userId) return '未绑定';
-  return (
-    CONSOLE_USERS.find((user) => user.userId === userId)?.username ?? '未绑定'
-  );
-}
-
-const router = useRouter();
-const { isPlatformAdmin, username } = useAuth();
-const tenants = ref<TenantRecord[]>([]);
-const loading = ref(false);
-const pendingDeleteTenant = ref<null | TenantRecord>(null);
-const showFormDialog = ref(false);
-const formMode = ref<TenantFormMode>('create');
-const saving = ref(false);
-
-const form = ref<TenantForm>({
-  userId: '',
-  slug: '',
-  tenantName: '',
-  description: '',
-  status: 'ACTIVE',
-  authType: 'API_KEY',
-});
-
-const previewTenantId = computed(() => {
-  const userId = isPlatformAdmin.value
-    ? form.value.userId.trim()
-    : (getAuthUserId() ?? '').trim();
-  const slug = form.value.slug.trim();
-  if (!slug) return '-';
-  return userId ? `${userId}_${slug}` : `tenant-${slug}`;
-});
-
-const pageTitle = computed(() =>
-  isPlatformAdmin.value ? '租户管理' : '我的租户',
-);
-
-const pageDescription = computed(() =>
-  isPlatformAdmin.value
-    ? '平台管理员维护全部对接租户。租户 ID 规则：绑定用户时生成 {userId}_{slug}，未绑定时为 tenant-{slug}。'
-    : `管理当前账号（${username.value}）下的对接租户，可新增租户、编辑配置、为租户授权服务。新租户将自动绑定到当前账号，ID 格式为 {userId}_{slug}。`,
-);
-
-onMounted(() => {
-  void loadTenants();
-});
-
-async function loadTenants() {
-  loading.value = true;
-  try {
-    if (isPlatformAdmin.value) {
-      const response = await tenantApi.list(1, 50);
-      if (isApiSuccess(response)) {
-        tenants.value = response.data.items ?? [];
-      }
-      return;
-    }
-    const response = await tenantApi.mine();
-    if (isApiSuccess(response)) {
-      tenants.value = response.data ?? [];
-    }
-  } finally {
-    loading.value = false;
-  }
-}
+const {
+  consoleUsers,
+  form,
+  formMode,
+  isPlatformAdmin,
+  loadTenants,
+  loading,
+  pageDescription,
+  pageTitle,
+  pendingDeleteTenant,
+  previewTenantId,
+  resolveBoundUsername,
+  router,
+  saving,
+  showFormDialog,
+  tenants,
+  username,
+} = useTenantPage();
 
 function openCreate() {
   formMode.value = 'create';
@@ -302,12 +231,8 @@ async function confirmDelete() {
         <span>绑定系统用户</span>
         <select v-model="form.userId" class="field__select">
           <option value="">不绑定</option>
-          <option
-            v-for="user in CONSOLE_USERS"
-            :key="user.userId"
-            :value="user.userId"
-          >
-            {{ user.label }}
+          <option v-for="user in consoleUsers" :key="user.id" :value="user.id">
+            {{ user.username }}
           </option>
         </select>
       </label>

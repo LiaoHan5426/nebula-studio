@@ -11,9 +11,11 @@
 | `@nebula-studio/contracts/integration` | 集成域（接口、插件、连接器、资源、治理、流程、订阅、租户） |
 | `@nebula-studio/contracts/generated` | Platform OpenAPI 生成类型的稳定 facade |
 
-业务代码不得直接导入 `generated/platform-api.ts`。生成文件名和 OpenAPI operation 命名只允许在 `generated/facade.ts` 内出现，对外使用 `PlatformApiPaths`、`PlatformApiOperation` 等稳定别名。
+业务代码不得直接导入 `generated/platform-api.ts`。生成文件名和 OpenAPI operation 命名只允许在 `generated/facade.ts` 内出现，对外使用 `PlatformApiPaths`、`PlatformApiOperation` 以及 `GeneratedUser` / `GeneratedTaskCreateRequest` 等稳定 schema 别名。
 
-当前提交的 Platform OpenAPI 快照只包含平台索引、资源、治理、发布和版本接口，尚未提供 Auth 与 Camel Plugin schema。因此这两个域暂由本包根据后端 DTO 维护兼容契约；待对应服务输出完整 OpenAPI 后，再在 facade 内替换其来源，业务消费路径保持不变。
+**F1 首批迁移（2026-08-19）：** `packages/contracts/system` 与 `integration/task|flow|subscription` 经 `mappers.ts` 对齐 generated；Settings `configApi` 与 Integration `taskApi` / `subscription/api` 消费稳定路径。Auth、Camel-only DTO、governance/monitor 的 `Record<string, unknown>` 仍手写直至 OpenAPI 覆盖。
+
+**新 API 门禁：** ESLint `contract-boundary` 禁止在 `apps/sub-web/**/shared/api` 与 `features/**/api.ts` 新增手写 `*Request`/`*Record` interface（auth 与遗留 governance/monitor 白名单除外）；CI 仍跑 `vp run check:generated`。
 
 ---
 

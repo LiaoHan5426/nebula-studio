@@ -2,6 +2,8 @@ import { join } from 'node:path';
 
 import { _electron as electron, expect, test } from '@playwright/test';
 
+import { expectAssemblyMarkers } from './helpers/expectAssemblyMarkers';
+
 test('launch, preload capabilities, auth restoration and view switching', async ({
   browserName: _browserName,
 }, testInfo) => {
@@ -15,12 +17,7 @@ test('launch, preload capabilities, auth restoration and view switching', async 
     await expect(window.locator('[data-nebula-surface="shell"]')).toBeVisible({
       timeout: 20_000,
     });
-    await expect(window.locator('[data-nebula-assembly]').first()).toBeVisible({
-      timeout: 20_000,
-    });
-    await expect(
-      window.locator('[data-nebula-overlay-container]').first(),
-    ).toBeAttached();
+    await expectAssemblyMarkers(window);
 
     const capabilities = await window.evaluate(() => {
       const nebulaWindow = window as Window & {
@@ -132,6 +129,7 @@ test('launch, preload capabilities, auth restoration and view switching', async 
         name: '找到下一项可复用能力',
       }),
     ).toBeVisible({ timeout: 20_000 });
+    await expectAssemblyMarkers(window);
     const catalogMs = Math.round(performance.now() - catalogStarted);
 
     await testInfo.attach('electron-performance.json', {

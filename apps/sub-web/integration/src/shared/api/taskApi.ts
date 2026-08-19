@@ -7,6 +7,10 @@ import type {
   TaskResult,
   TaskUpdateRequest,
 } from '@nebula-studio/contracts/integration';
+import {
+  toGeneratedTaskCreateRequest,
+  toGeneratedTaskUpdateRequest,
+} from '@nebula-studio/contracts/integration';
 
 import { taskInstanceRequest, taskRequest } from '@/shared/api/client';
 
@@ -23,7 +27,7 @@ export const taskApi = {
   create(body: TaskCreateRequest): Promise<ApiResponse<TaskDefinition>> {
     return taskRequest<TaskDefinition>('', {
       method: 'POST',
-      body: JSON.stringify(body),
+      body: JSON.stringify(toGeneratedTaskCreateRequest(body)),
     });
   },
 
@@ -33,7 +37,7 @@ export const taskApi = {
   ): Promise<ApiResponse<TaskDefinition>> {
     return taskRequest<TaskDefinition>(`/${id}`, {
       method: 'PUT',
-      body: JSON.stringify(body),
+      body: JSON.stringify(toGeneratedTaskUpdateRequest(body)),
     });
   },
 

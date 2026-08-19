@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { expectAssemblyMarkers } from './helpers/expectAssemblyMarkers';
+
 /**
  * Studio flow E2E — navigation smoke across login, settings, and integration.
  *
@@ -8,12 +10,7 @@ import { expect, test } from '@playwright/test';
 test.describe('Studio navigation flow', () => {
   test('web shell loads and exposes embed routes', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('[data-nebula-assembly]').first()).toBeVisible({
-      timeout: 20_000,
-    });
-    await expect(
-      page.locator('[data-nebula-overlay-container]').first(),
-    ).toBeAttached();
+    await expectAssemblyMarkers(page);
   });
 
   test('login surface is reachable', async ({ page }) => {
@@ -72,12 +69,7 @@ test.describe('Studio navigation flow', () => {
       );
     });
     await page.goto('/?embed=integration#/dag');
-    await expect(page.locator('[data-nebula-assembly]').first()).toBeVisible({
-      timeout: 15_000,
-    });
-    await expect(
-      page.locator('[data-nebula-overlay-container]').first(),
-    ).toBeAttached();
+    await expectAssemblyMarkers(page, { timeoutMs: 15_000 });
   });
 });
 

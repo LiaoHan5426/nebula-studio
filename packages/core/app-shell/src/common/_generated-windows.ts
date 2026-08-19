@@ -8,28 +8,28 @@ export type GeneratedPreloadCapability =
   | 'shell';
 
 export interface GeneratedWindowEntry {
-  category?: 'product' | 'settings' | 'support' | 'workspace';
-  defaultEnabled?: boolean;
-  description?: string;
-  helpKey?: string;
-  iconSvg?: string;
-  integratable?: boolean;
-  label: string;
   preload: string;
-  preloadCapabilities: GeneratedPreloadCapability[];
   renderer: string;
-  requiresAuth?: boolean;
-  returnTo?: string;
-  roles?: string[];
-  searchKeywords?: string[];
   webEmbedEntry?: string;
+  label: string;
+  description?: string;
+  category?: 'workspace' | 'product' | 'support' | 'settings';
+  helpKey?: string;
+  searchKeywords?: string[];
+  roles?: string[];
+  returnTo?: string;
+  iconSvg?: string;
+  defaultEnabled?: boolean;
+  integratable?: boolean;
+  requiresAuth?: boolean;
+  preloadCapabilities: GeneratedPreloadCapability[];
 }
 
 export interface GeneratedModalRendererEntry {
   preload: string;
-  preloadCapabilities: GeneratedPreloadCapability[];
   renderer: string;
   webEmbedEntry?: string;
+  preloadCapabilities: GeneratedPreloadCapability[];
 }
 
 export const GENERATED_SHELL_CONFIG = {
@@ -144,4 +144,4 @@ export const GENERATED_API_TARGETS: Record<string, string> = {
   executor: 'http://localhost:8081',
 } as const;
 
-export type GeneratedWindowId = 'docs' | 'integration' | 'main' | 'settings';
+export type GeneratedWindowId = 'main' | 'docs' | 'settings' | 'integration';

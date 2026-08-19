@@ -18,6 +18,9 @@
   "exports": {
     ".": {
       "types": "./index.d.ts"
+    },
+    "./sub-web": {
+      "types": "./sub-web.d.ts"
     }
   }
 }

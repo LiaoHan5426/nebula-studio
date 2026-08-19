@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { expectAssemblyMarkers } from './helpers/expectAssemblyMarkers';
+
 const TOKEN = 'mock-e2e-token-nebula-studio';
 
 test.describe('resource discovery and access request portal', () => {
@@ -125,9 +127,7 @@ test.describe('resource discovery and access request portal', () => {
     });
 
     await page.goto('/?embed=integration#/catalog');
-    await expect(page.locator('[data-nebula-assembly]').first()).toBeVisible({
-      timeout: 20_000,
-    });
+    await expectAssemblyMarkers(page);
     await expect(
       page.getByRole('heading', { name: '找到下一项可复用能力' }),
     ).toBeVisible({ timeout: 15_000 });

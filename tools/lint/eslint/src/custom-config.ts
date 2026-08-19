@@ -1,5 +1,7 @@
 import type { Linter } from 'eslint';
 
+import { contractBoundaryConfig } from './configs/contract-boundary.ts';
+
 const restrictedImportIgnores = [
   '**/*.config.ts',
   '**/*.config.mts',
@@ -372,6 +374,7 @@ const customConfig: Linter.Config[] = [
       'no-console': 'off',
     },
   },
+  contractBoundaryConfig,
 ];
 
 export { customConfig };

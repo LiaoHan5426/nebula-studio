@@ -20,21 +20,52 @@ import {
   NebulaSelect,
 } from '@nebula-studio/nebula-ui';
 
+import {
+  authFlowReducer,
+  canPersistFinalToken,
+  createInitialAuthFlowState,
+} from './authStateMachine';
 import { classifyAuthFailure, readAuthEntryContext } from './authFlow';
 
 const RECENT_ORG_KEY = 'nebula-auth-recent-org';
 const user = ref('');
 const password = ref('');
 const busy = ref(false);
-const step = ref<AuthFlowStep>('credentials');
-const failure = ref<AuthFailure | null>(null);
-const pendingLogin = ref<BackendLoginResult | null>(null);
-const selectedOrgId = ref('');
 const orgQuery = ref('');
-const recoveryAccount = ref('');
-const mfaCode = ref('');
 const entryContext = readAuthEntryContext(location.search);
 const showDemoAccounts = import.meta.env.DEV;
+const flowState = ref(
+  createInitialAuthFlowState(
+    entryContext ? classifyAuthFailure(new Error(entryContext)) : null,
+  ),
+);
+const step = computed(() => flowState.value.step);
+const failure = computed(() => flowState.value.failure);
+const pendingLogin = computed(() => flowState.value.pendingLogin);
+const selectedOrgId = computed({
+  get: () => flowState.value.selectedOrgId,
+  set: (value: string) => {
+    flowState.value = authFlowReducer(flowState.value, {
+      type: 'ORG_SELECTED',
+      orgId: value,
+    });
+  },
+});
+const mfaCode = computed({
+  get: () => flowState.value.mfaCode,
+  set: (value: string) => {
+    flowState.value = authFlowReducer(flowState.value, {
+      type: 'MFA_CODE_CHANGED',
+      value,
+    });
+  },
+});
+const recoveryAccount = computed({
+  get: () => flowState.value.recoveryAccount,
+  set: (value: string) => {
+    flowState.value = { ...flowState.value, recoveryAccount: value };
+  },
+});
 
 const authTitle = computed(() => {
   const titles: Record<AuthFlowStep, string> = {
@@ -101,7 +132,13 @@ function rememberOrganization(): void {
 }
 
 async function finishLogin(result: BackendLoginResult): Promise<void> {
+  if (!canPersistFinalToken(flowState.value) && !result.token) {
+    return;
+  }
   const { username, token, roles, userId } = result;
+  if (!token) {
+    return;
+  }
   const session = {
     user: username,
     token,
@@ -110,7 +147,7 @@ async function finishLogin(result: BackendLoginResult): Promise<void> {
   };
 
   rememberOrganization();
-  step.value = 'success';
+  flowState.value = authFlowReducer(flowState.value, { type: 'SUCCESS' });
   await new Promise<void>((resolve) => window.setTimeout(resolve, 350));
 
   if (isWebPresentationHost()) {
@@ -150,28 +187,35 @@ async function finishLogin(result: BackendLoginResult): Promise<void> {
 }
 
 function handleFailure(error: unknown): void {
-  failure.value = classifyAuthFailure(error);
+  const classified = classifyAuthFailure(error);
   password.value = '';
-  step.value = failure.value.kind === 'mfa-required' ? 'mfa' : 'failure';
+  flowState.value = authFlowReducer(flowState.value, {
+    type: 'FAILURE',
+    failure: classified,
+  });
 }
 
 async function onSubmit(): Promise<void> {
-  failure.value = null;
+  flowState.value = { ...flowState.value, failure: null };
   busy.value = true;
   try {
     const result = await loginWithBackendAuth(user.value, password.value);
-    if (result.needsOrgSelection) {
-      pendingLogin.value = result;
+    flowState.value = authFlowReducer(flowState.value, {
+      type: 'CREDENTIALS_SUBMITTED',
+      result,
+    });
+    if (flowState.value.step === 'organization') {
       const recent = localStorage.getItem(RECENT_ORG_KEY);
       selectedOrgId.value =
         result.organizations?.find((org) => org.id === recent)?.id ??
         result.organizations?.find((org) => org.primary)?.id ??
         result.organizations?.[0]?.id ??
         '';
-      step.value = 'organization';
       return;
     }
-    await finishLogin(result);
+    if (flowState.value.step === 'success') {
+      await finishLogin(result);
+    }
   } catch (error) {
     handleFailure(error);
   } finally {
@@ -181,19 +225,26 @@ async function onSubmit(): Promise<void> {
 
 async function onOrgSubmit(): Promise<void> {
   if (!pendingLogin.value || !selectedOrgId.value) return;
-  failure.value = null;
+  flowState.value = { ...flowState.value, failure: null };
   busy.value = true;
   try {
     const completed = await completeLoginWithOrg(
       selectedOrgId.value,
       pendingLogin.value.token,
     );
-    await finishLogin({
+    const merged = {
       ...pendingLogin.value,
       ...completed,
       username: completed.username || pendingLogin.value.username,
       token: completed.token ?? pendingLogin.value.token,
+    };
+    flowState.value = authFlowReducer(flowState.value, {
+      type: 'ORG_SUBMITTED',
+      result: merged,
     });
+    if (flowState.value.step === 'success') {
+      await finishLogin(merged);
+    }
   } catch (error) {
     handleFailure(error);
   } finally {
@@ -202,12 +253,10 @@ async function onOrgSubmit(): Promise<void> {
 }
 
 function backToCredentials(): void {
-  failure.value = null;
-  pendingLogin.value = null;
-  selectedOrgId.value = '';
   orgQuery.value = '';
-  mfaCode.value = '';
-  step.value = 'credentials';
+  flowState.value = authFlowReducer(flowState.value, {
+    type: 'BACK_TO_CREDENTIALS',
+  });
 }
 </script>
 

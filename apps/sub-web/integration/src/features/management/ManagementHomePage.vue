@@ -26,6 +26,7 @@ const router = useRouter();
 const loading = ref(true);
 const partial = ref(false);
 const serviceCount = ref(0);
+const draftPublishCount = ref(0);
 const pendingPluginCount = ref(0);
 const pendingRequestCount = ref(0);
 const failedPluginCount = ref(0);
@@ -74,9 +75,12 @@ const metrics = computed<SummaryMetric[]>(() =>
         },
         {
           label: '待发布',
-          value: '—',
-          hint: '从服务列表进入发布流程',
-          tone: 'default',
+          value: draftPublishCount.value,
+          hint:
+            draftPublishCount.value > 0
+              ? '草稿或未发布服务待处理'
+              : '暂无待发布服务',
+          tone: draftPublishCount.value ? 'warning' : 'default',
         },
       ],
 );
@@ -85,13 +89,18 @@ async function load(): Promise<void> {
   loading.value = true;
   partial.value = false;
   const [services, plugins, requests] = await Promise.allSettled([
-    interfaceApi.list({ page: 1, pageSize: 1 }),
+    interfaceApi.list({ page: 1, pageSize: 100 }),
     pluginApi.list({ page: 1, pageSize: 100 }),
     subscriptionRequestApi.list({ page: 1, pageSize: 100 }),
   ]);
   if (services.status === 'fulfilled' && isApiSuccess(services.value)) {
     serviceCount.value =
       services.value.data.total ?? services.value.data.items.length;
+    draftPublishCount.value = (services.value.data.items ?? []).filter((item) =>
+      ['DRAFT', 'PENDING_PUBLISH', 'UNPUBLISHED'].includes(
+        String(item.status ?? ''),
+      ),
+    ).length;
   } else partial.value = true;
   if (plugins.status === 'fulfilled' && isApiSuccess(plugins.value)) {
     const items = plugins.value.data.items ?? [];

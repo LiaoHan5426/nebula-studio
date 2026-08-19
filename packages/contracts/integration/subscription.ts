@@ -78,3 +78,26 @@ export interface SubscriptionRequestRecord {
   subscriptionId: string;
   updatedAt?: string;
 }
+
+/** Portal / subscription-request API（camel-console） */
+export interface SubscriptionAccessRequestRecord {
+  createdAt?: string;
+  interfaceId: string;
+  reason?: string;
+  requestConfig?: Record<string, unknown>;
+  requestId: string;
+  requestType: string;
+  status: string;
+  tenantId: string;
+  updatedAt?: string;
+  userId?: string;
+}
+
+export interface SubscriptionAccessRequestCreatePayload {
+  interfaceId: string;
+  reason: string;
+  requestConfig?: Record<string, unknown>;
+  requestType?: string;
+  tenantId: string;
+  userId: string;
+}

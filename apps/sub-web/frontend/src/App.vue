@@ -41,6 +41,16 @@ import {
 
 import TaskGuidePanel from '@/components/TaskGuidePanel.vue';
 import { useOrganization } from '@/shared/composables/useOrganization';
+import { useWorkspaceSummary } from '@/shared/composables/useWorkspaceSummary';
+
+// ─── Workspace summary (real APIs) ───────────────────────
+const {
+  pendingRequestCount,
+  taskCount,
+  incidentCount,
+  resourceCount,
+  workspaceSummaryPartial,
+} = useWorkspaceSummary();
 
 // ─── Organization ────────────────────────────────────────
 const {
@@ -178,36 +188,54 @@ const workspaceModel = computed<WorkspaceModel>(() => ({
     {
       id: 'requests',
       label: '访问申请',
-      value: 0,
-      description: '暂无待处理申请',
-      tone: 'info',
+      value: pendingRequestCount.value,
+      description:
+        pendingRequestCount.value > 0 ? '有待处理的访问申请' : '暂无待处理申请',
+      tone: pendingRequestCount.value > 0 ? 'warning' : 'info',
       action: {
         id: 'requests',
         title: '查看我的申请',
         viewId: 'integration',
-        path: '/subscriptions',
+        path: '/my-requests',
       },
     },
     {
       id: 'tasks',
       label: '待办任务',
-      value: 0,
-      description: '当前无待办',
-      tone: 'success',
+      value: taskCount.value,
+      description: taskCount.value > 0 ? '已登记的任务定义' : '当前无待办',
+      tone: taskCount.value > 0 ? 'info' : 'success',
+      action: {
+        id: 'tasks',
+        title: '打开任务中心',
+        viewId: 'integration',
+        path: '/tasks',
+      },
     },
     {
       id: 'incidents',
       label: '运行异常',
-      value: 0,
-      description: '当前无异常',
-      tone: 'neutral',
+      value: incidentCount.value,
+      description: incidentCount.value > 0 ? '存在活跃告警' : '当前无异常',
+      tone: incidentCount.value > 0 ? 'danger' : 'neutral',
+      action: {
+        id: 'monitor',
+        title: '打开监控',
+        viewId: 'integration',
+        path: '/monitor',
+      },
     },
     {
       id: 'resources',
       label: '常用资源',
-      value: 0,
-      description: '等待资源目录接入',
-      tone: 'neutral',
+      value: resourceCount.value,
+      description:
+        resourceCount.value > 0
+          ? '资源目录已接入'
+          : workspaceSummaryPartial.value
+            ? '摘要部分不可用'
+            : '暂无已登记资源',
+      tone: resourceCount.value > 0 ? 'info' : 'neutral',
       action: {
         id: 'catalog',
         title: '打开资源目录',

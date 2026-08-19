@@ -47,16 +47,21 @@ describe('taskApi', () => {
     await taskApi.create(body);
     expect(taskRequest).toHaveBeenCalledWith('', {
       method: 'POST',
-      body: JSON.stringify(body),
+      body: JSON.stringify({
+        taskName: 'Test Task',
+        taskType: TaskType.CRON,
+        triggerType: 'CRON',
+        cronExpression: '0 * * * *',
+      }),
     });
   });
 
   it('updates a task', async () => {
-    const body = { name: 'Updated' };
+    const body = { payload: '{"mode":"full"}' };
     await taskApi.update('task-1', body);
     expect(taskRequest).toHaveBeenCalledWith('/task-1', {
       method: 'PUT',
-      body: JSON.stringify(body),
+      body: JSON.stringify({ taskConfig: '{"mode":"full"}' }),
     });
   });
 

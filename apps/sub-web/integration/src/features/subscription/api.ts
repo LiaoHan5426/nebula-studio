@@ -1,33 +1,18 @@
 import type {
   ApiResponse,
   PageResponse,
+  SubscriptionAccessRequestCreatePayload,
+  SubscriptionAccessRequestRecord,
   SubscriptionConfig,
   TableSubscription,
 } from '@/shared/types';
 
 import { consoleRequest } from '@/shared/api/client';
 
-export interface SubscriptionRequestRecord {
-  requestId: string;
-  tenantId: string;
-  userId?: string;
-  interfaceId: string;
-  requestType: string;
-  status: string;
-  reason?: string;
-  createdAt?: string;
-  updatedAt?: string;
-  requestConfig?: Record<string, unknown>;
-}
-
-export interface SubscriptionRequestCreatePayload {
-  tenantId: string;
-  userId: string;
-  interfaceId: string;
-  requestType?: string;
-  reason: string;
-  requestConfig?: Record<string, unknown>;
-}
+export type {
+  SubscriptionAccessRequestCreatePayload,
+  SubscriptionAccessRequestRecord,
+} from '@nebula-studio/contracts/integration';
 
 export const subscriptionApi = {
   create(
@@ -98,8 +83,8 @@ export const subscriptionApi = {
 
 export const subscriptionRequestApi = {
   create(
-    payload: SubscriptionRequestCreatePayload,
-  ): Promise<ApiResponse<SubscriptionRequestRecord>> {
+    payload: SubscriptionAccessRequestCreatePayload,
+  ): Promise<ApiResponse<SubscriptionAccessRequestRecord>> {
     return consoleRequest('/subscription-request', {
       method: 'POST',
       body: JSON.stringify(payload),
@@ -113,7 +98,7 @@ export const subscriptionRequestApi = {
       status?: string;
       tenantId?: string;
     } = {},
-  ): Promise<ApiResponse<PageResponse<SubscriptionRequestRecord>>> {
+  ): Promise<ApiResponse<PageResponse<SubscriptionAccessRequestRecord>>> {
     const query = new URLSearchParams();
     if (params.page) query.set('page', String(params.page));
     if (params.pageSize) query.set('pageSize', String(params.pageSize));
@@ -124,7 +109,7 @@ export const subscriptionRequestApi = {
 
   listByUser(
     userId: string,
-  ): Promise<ApiResponse<SubscriptionRequestRecord[]>> {
+  ): Promise<ApiResponse<SubscriptionAccessRequestRecord[]>> {
     return consoleRequest(
       `/subscription-request/user/${encodeURIComponent(userId)}`,
     );
@@ -149,7 +134,7 @@ export const subscriptionRequestApi = {
       scheduleTimezone?: string;
       scheduleType?: string;
     } = {},
-  ): Promise<ApiResponse<SubscriptionRequestRecord>> {
+  ): Promise<ApiResponse<SubscriptionAccessRequestRecord>> {
     const { approvedBy = 'admin', ...grantFields } = options;
     return consoleRequest(`/subscription-request/${requestId}/approve`, {
       method: 'POST',
@@ -161,7 +146,7 @@ export const subscriptionRequestApi = {
     requestId: string,
     reason: string,
     approvedBy = 'admin',
-  ): Promise<ApiResponse<SubscriptionRequestRecord>> {
+  ): Promise<ApiResponse<SubscriptionAccessRequestRecord>> {
     return consoleRequest(`/subscription-request/${requestId}/reject`, {
       method: 'POST',
       body: JSON.stringify({ approvedBy, reason }),
