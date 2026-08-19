@@ -1,6 +1,10 @@
 import type { RuntimeMode } from '@nebula-studio/runtime';
 
 import { bootMicroApp, detectRuntimeMode } from '@nebula-studio/runtime';
+import {
+  installAssemblyForSubApp,
+  wrapSubAppWithAssembly,
+} from '@nebula-studio-renderer/assembly-boot';
 
 import AppComponent from './App.vue';
 import router from './router';
@@ -33,7 +37,7 @@ export async function bootSettings(opts?: {
   await bootMicroApp({
     appId: 'settings',
     mode,
-    rootComponent: AppComponent,
+    rootComponent: wrapSubAppWithAssembly(AppComponent),
     router,
     webPresentation:
       mode === 'electron'
@@ -47,5 +51,8 @@ export async function bootSettings(opts?: {
           },
     auth: { enabled: true },
     embedDefaultRoute: mode === 'platform-embed' ? '/users' : undefined,
+    beforeMount(app) {
+      installAssemblyForSubApp(app, mode);
+    },
   });
 }

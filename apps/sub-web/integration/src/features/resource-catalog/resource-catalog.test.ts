@@ -6,6 +6,7 @@ import {
 } from '@/shared/types';
 import { describe, expect, it } from 'vitest';
 
+import { catalogApplyPath, catalogDetailPath } from './catalog-routes';
 import {
   dedupeResources,
   mapApiResource,
@@ -18,6 +19,17 @@ import {
   previousAccessRequestStep,
 } from './request-state';
 import { DEFAULT_ACCESS_REQUEST_DRAFT } from './types';
+
+describe('catalog routes', () => {
+  it('encodes colon resource ids as a single path segment', () => {
+    expect(catalogDetailPath('api:orders-api')).toBe(
+      '/catalog/api%3Aorders-api',
+    );
+    expect(catalogApplyPath('api:orders-api')).toBe(
+      '/catalog/api%3Aorders-api/apply',
+    );
+  });
+});
 
 describe('resource catalog mappers', () => {
   it('maps an API contract to the shared resource summary', () => {

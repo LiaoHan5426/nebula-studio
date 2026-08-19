@@ -17,11 +17,13 @@ const props = withDefaults(
     modelValue?: string;
     options?: CodeEditorOptions;
     readonly?: boolean;
+    theme?: 'dark' | 'light';
   }>(),
   {
     modelValue: '',
     language: 'plaintext',
     readonly: false,
+    theme: 'light',
     options: () => ({}),
   },
 );
@@ -71,6 +73,7 @@ function handleError(cause: unknown): void {
     <CodeEditor
       v-model:value="value"
       :language="language"
+      :theme="theme === 'dark' ? 'vs-dark' : 'vs'"
       :options="providerOptions"
       @ready="handleReady"
       @error="handleError"

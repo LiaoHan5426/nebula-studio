@@ -4,6 +4,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { bootFrontend } from '../boot';
 
+vi.mock('@nebula-studio-renderer/assembly-boot', () => ({
+  installAssemblyForSubApp: vi.fn(),
+  wrapSubAppWithAssembly: (component: unknown) => component,
+}));
 vi.mock('@nebula-studio/nebula-ui', () => ({}));
 vi.mock('@nebula-studio/nebula-layout', () => ({}));
 vi.mock('@nebula-studio-internal/tailwind/electron', () => ({}));

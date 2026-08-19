@@ -28,6 +28,8 @@
     "./components/DagEditor.vue": "./src/components/DagEditor.vue"
   },
   "dependencies": {
+    "@nebula-studio/nebula-assembly": "workspace:^",
+    "@nebula-studio/nebula-code-editor": "workspace:^",
     "@nebula-studio/nebula-low-render": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
     "@vue-flow/background": "catalog:dag",

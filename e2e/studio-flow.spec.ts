@@ -8,8 +8,9 @@ import { expect, test } from '@playwright/test';
 test.describe('Studio navigation flow', () => {
   test('web shell loads and exposes embed routes', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('domcontentloaded');
-    await expect(page.locator('body')).not.toBeEmpty();
+    await expect(page.locator('[data-nebula-assembly]').first()).toBeVisible({
+      timeout: 20_000,
+    });
   });
 
   test('login surface is reachable', async ({ page }) => {
@@ -55,6 +56,22 @@ test.describe('Studio navigation flow', () => {
     await page.goto('/?embed=docs');
     await page.waitForLoadState('domcontentloaded');
     await expect(page.locator('body')).not.toBeEmpty();
+  });
+
+  test('embedded sub-app exposes assembly mount root', async ({ page }) => {
+    await page.addInitScript(() => {
+      sessionStorage.setItem(
+        'nebula-studio-auth-session',
+        JSON.stringify({
+          user: 'e2e-user',
+          token: 'mock-e2e-token-nebula-studio',
+        }),
+      );
+    });
+    await page.goto('/?embed=integration#/dag');
+    await expect(page.locator('[data-nebula-assembly]').first()).toBeVisible({
+      timeout: 15_000,
+    });
   });
 });
 

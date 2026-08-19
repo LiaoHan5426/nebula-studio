@@ -27,6 +27,7 @@
     }
   },
   "dependencies": {
+    "@nebula-studio/nebula-assembly": "workspace:^",
     "vue": "catalog:vue"
   },
   "devDependencies": {

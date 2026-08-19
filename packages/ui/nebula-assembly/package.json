@@ -1,0 +1,54 @@
+{
+  "name": "@nebula-studio/nebula-assembly",
+  "version": "0.0.0",
+  "description": "Component assembly layer: host capabilities, style contract, overlay service, and editor host for Nebula Studio.",
+  "private": true,
+  "homepage": "https://github.com/LiaoHan5426/nebula-studio#readme",
+  "bugs": {
+    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LiaoHan5426/nebula-studio.git",
+    "directory": "packages/ui/nebula-assembly"
+  },
+  "license": "UNLICENSED",
+  "author": "Liao Han <liaohan5426@gmail.com>",
+  "type": "module",
+  "scripts": {
+    "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false",
+    "test": "vp test run"
+  },
+  "sideEffects": [
+    "./src/styles/assembly.css",
+    "./src/index.ts"
+  ],
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./styles.css": {
+      "default": "./src/styles/assembly.css"
+    }
+  },
+  "dependencies": {
+    "@nebula-studio/nebula-ui": "workspace:^",
+    "@nebula-studio/styles": "workspace:^",
+    "vue": "catalog:vue"
+  },
+  "devDependencies": {
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "@nebula-studio/nebula-ui": "workspace:^",
+    "@nebula-studio/types": "workspace:^",
+    "@types/node": "catalog:types",
+    "@vitejs/plugin-vue": "catalog:vite",
+    "@vue/test-utils": "catalog:vue",
+    "happy-dom": "catalog:vite",
+    "vite-plus": "catalog:vite",
+    "vitest": "catalog:vite",
+    "vue-tsc": "catalog:vue"
+  }
+}

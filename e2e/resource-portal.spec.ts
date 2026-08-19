@@ -24,13 +24,13 @@ test.describe('resource discovery and access request portal', () => {
     let submittedRequest:
       | undefined
       | {
-          interfaceId: string;
-          reason: string;
-          requestConfig: Record<string, unknown>;
-          requestId: string;
-          requestType: string;
-          status: string;
-        };
+        interfaceId: string;
+        reason: string;
+        requestConfig: Record<string, unknown>;
+        requestId: string;
+        requestType: string;
+        status: string;
+      };
 
     await page.route(/^https?:\/\/[^/]+\/api\//, async (route) => {
       const request = route.request();
@@ -42,6 +42,17 @@ test.describe('resource discovery and access request portal', () => {
           body: JSON.stringify({ code: 200, isSuccess: true, data }),
         });
 
+      if (path.endsWith('/auth/me') || path.endsWith('/auth/mode')) {
+        return ok({
+          user: 'portal-user',
+          userId: 'user-e2e',
+          username: 'portal-user',
+          roles: [],
+          authType: 'token',
+          orgEnabled: false,
+          multiOrgEnabled: false,
+        });
+      }
       if (path.endsWith('/tenant/mine')) {
         return ok([
           {
@@ -114,13 +125,17 @@ test.describe('resource discovery and access request portal', () => {
     });
 
     await page.goto('/?embed=integration#/catalog');
+    await expect(page.locator('[data-nebula-assembly]').first()).toBeVisible({
+      timeout: 20_000,
+    });
     await expect(
       page.getByRole('heading', { name: '找到下一项可复用能力' }),
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 15_000 });
     await page.getByRole('textbox', { name: '搜索资源' }).fill('订单');
     await expect(
       page.getByRole('heading', { name: '订单查询 API' }),
     ).toBeVisible();
+    await expect(page).toHaveURL(/keyword=/);
     // The production surface runs in a Shell iframe. This top-level test
     // restores the same Shell session immediately before client navigation.
     await page.evaluate((token) => {
@@ -135,9 +150,14 @@ test.describe('resource discovery and access request portal', () => {
       );
     }, TOKEN);
 
-    await page.getByRole('heading', { name: '订单查询 API' }).click();
+    await page
+      .locator('article')
+      .filter({ hasText: '订单查询 API' })
+      .getByRole('button', { name: '查看详情' })
+      .click();
+    await expect(page).toHaveURL(/#\/catalog\/api/);
     await expect(
-      page.getByRole('heading', { name: '订单查询 API' }),
+      page.getByRole('button', { name: '返回资源目录' }),
     ).toBeVisible();
     await page.getByRole('button', { name: '申请 API 访问' }).click();
 

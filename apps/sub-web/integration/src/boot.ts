@@ -7,6 +7,10 @@ import {
 } from '@nebula-studio/app-shell';
 import '@nebula-studio/nebula-layout';
 import '@nebula-studio/nebula-ui';
+import {
+  installAssemblyForSubApp,
+  wrapSubAppWithAssembly,
+} from '@nebula-studio-renderer/assembly-boot';
 import { bootMicroApp, detectRuntimeMode } from '@nebula-studio/runtime';
 
 import { install as installVxePcUi } from 'vxe-pc-ui';
@@ -53,7 +57,7 @@ export async function bootIntegration(opts?: {
   await bootMicroApp({
     appId: 'integration',
     mode,
-    rootComponent: AppComponent,
+    rootComponent: wrapSubAppWithAssembly(AppComponent),
     router,
     webPresentation:
       mode === 'electron'
@@ -79,6 +83,7 @@ export async function bootIntegration(opts?: {
     },
     embedDefaultRoute: mode === 'platform-embed' ? '/catalog' : undefined,
     beforeMount(app) {
+      installAssemblyForSubApp(app, mode);
       installVxePcUi(app);
       installVxeTable(app);
     },

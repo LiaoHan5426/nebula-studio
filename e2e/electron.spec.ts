@@ -15,6 +15,9 @@ test('launch, preload capabilities, auth restoration and view switching', async 
     await expect(window.locator('[data-nebula-surface="shell"]')).toBeVisible({
       timeout: 20_000,
     });
+    await expect(window.locator('[data-nebula-assembly]').first()).toBeVisible({
+      timeout: 20_000,
+    });
 
     const capabilities = await window.evaluate(() => {
       const nebulaWindow = window as Window & {

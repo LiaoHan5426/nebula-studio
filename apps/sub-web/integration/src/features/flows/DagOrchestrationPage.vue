@@ -7,6 +7,7 @@ import type { PluginNodeSchema } from '@nebula-studio/nebula-low-render';
 import { computed, onMounted, ref } from 'vue';
 
 import { DagEditor } from '@nebula-studio/nebula-dag-editor';
+import { useNebulaAssembly } from '@nebula-studio/nebula-assembly';
 import {
   NebulaButton,
   NebulaPane,
@@ -30,6 +31,7 @@ const dagDefinition = ref<DagDefinition | string>({ nodes: {} });
 const nodeSchemas = ref<Record<string, PluginNodeSchema>>({});
 
 const { currentTenantId } = useTenant();
+const { editor: editorHost } = useNebulaAssembly();
 
 const editorTitle = computed(() =>
   editingDag.value ? `编辑 DAG — ${editingDag.value.dagName}` : 'DAG 编排',
@@ -82,6 +84,11 @@ async function openEditor(dag: DagDefinitionRecord) {
   } else {
     dagDefinition.value = { nodes: {} };
   }
+  editorHost.configure({
+    size: { height: 'min(72vh, 720px)', width: '100%' },
+    readonly: false,
+    save: saveEditor,
+  });
   showEditor.value = true;
 }
 

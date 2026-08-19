@@ -7,7 +7,9 @@ import type {
 
 import { defineAsyncComponent } from 'vue';
 
-withDefaults(
+import { useCodeEditorHost } from '../composables/useCodeEditorHost';
+
+const props = withDefaults(
   defineProps<{
     height?: string;
     language?: string;
@@ -30,6 +32,9 @@ defineEmits<{
   'update:modelValue': [value: string];
 }>();
 
+const { resolvedHeight, resolvedReadonly, resolvedTheme } =
+  useCodeEditorHost(props);
+
 const MonacoProvider = defineAsyncComponent({
   loader: () => import('../providers/monaco/NebulaMonacoEditor.vue'),
   delay: 120,
@@ -38,12 +43,13 @@ const MonacoProvider = defineAsyncComponent({
 </script>
 
 <template>
-  <div class="nebula-code-editor" :style="{ height }">
+  <div class="nebula-code-editor" :style="{ height: resolvedHeight }">
     <Suspense>
       <MonacoProvider
         :model-value="modelValue"
         :language="language"
-        :readonly="readonly"
+        :readonly="resolvedReadonly"
+        :theme="resolvedTheme"
         :options="options"
         @update:model-value="$emit('update:modelValue', $event)"
         @ready="$emit('ready', $event)"

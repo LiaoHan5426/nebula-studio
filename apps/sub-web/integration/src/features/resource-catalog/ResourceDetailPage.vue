@@ -14,6 +14,7 @@ import {
 import { useTenant } from '@/shared/composables/useTenant';
 
 import { loadResourceCatalog } from './api';
+import { catalogApplyPath } from './catalog-routes';
 import { toResourceDetail } from './mappers';
 import { resourceTypeRegistry } from './registry';
 import {
@@ -43,7 +44,7 @@ const isFavorite = computed(() =>
   resource.value ? favorites.value.includes(resource.value.id) : false,
 );
 const applyPath = computed(() =>
-  resource.value ? `/catalog/${resource.value.id}/apply` : '/catalog',
+  resource.value ? catalogApplyPath(resource.value.id) : '/catalog',
 );
 
 async function load(): Promise<void> {

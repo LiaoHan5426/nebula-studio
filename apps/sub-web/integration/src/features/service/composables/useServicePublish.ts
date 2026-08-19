@@ -12,6 +12,8 @@ import type { PublishForm, ServiceTab } from '../publish/types';
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+import { useNebulaAssembly } from '@nebula-studio/nebula-assembly';
+
 import { approvalApi } from '@/features/approval/api';
 import { loadDagNodeSchemas } from '@/features/flows/loadDagNodeSchemas';
 import { dagApi } from '@/features/monitor/api';
@@ -38,6 +40,7 @@ export function useServicePublish() {
   const activeTab = ref<ServiceTab>('all');
   const { isPlatformAdmin } = useAuth();
   const router = useRouter();
+  const { editor: editorHost } = useNebulaAssembly();
 
   const showCompositeDialog = ref(false);
   const showFlowEditor = ref(false);
@@ -228,6 +231,11 @@ export function useServicePublish() {
     } else {
       dagDefinition.value = { nodes: {} };
     }
+    editorHost.configure({
+      size: { height: 'min(72vh, 720px)', width: '100%' },
+      readonly: false,
+      save: saveDagEditor,
+    });
     showDagEditor.value = true;
   }
 

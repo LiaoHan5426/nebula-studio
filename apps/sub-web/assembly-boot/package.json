@@ -1,0 +1,22 @@
+{
+  "name": "@nebula-studio-renderer/assembly-boot",
+  "version": "0.0.0",
+  "description": "Boot-boundary helpers for assembling Nebula host capabilities (reads window only at app startup).",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@nebula-studio/nebula-assembly": "workspace:^",
+    "@nebula-studio/runtime": "workspace:^"
+  },
+  "devDependencies": {
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "@nebula-studio/types": "workspace:^",
+    "typescript": "catalog:types"
+  }
+}

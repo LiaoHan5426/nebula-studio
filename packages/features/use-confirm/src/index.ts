@@ -1,5 +1,7 @@
 import { reactive } from 'vue';
 
+import { tryUseNebulaAssembly } from '@nebula-studio/nebula-assembly';
+
 export interface ConfirmState {
   message: string;
   open: boolean;
@@ -10,7 +12,7 @@ interface ConfirmQueueItem {
   resolve: (value: boolean) => void;
 }
 
-const state = reactive<ConfirmState>({
+const legacyState = reactive<ConfirmState>({
   open: false,
   message: '',
 });
@@ -24,17 +26,25 @@ function showNext(): void {
   }
   active = queue.shift() ?? null;
   if (!active) return;
-  state.message = active.message;
-  state.open = true;
+  legacyState.message = active.message;
+  legacyState.open = true;
 }
 
 /** Reactive state for building a `<ConfirmDialog>` component. */
 export function useConfirmState(): ConfirmState {
-  return state;
+  const assembly = tryUseNebulaAssembly();
+  if (assembly) {
+    return assembly.overlay.confirmState;
+  }
+  return legacyState;
 }
 
 /** Enqueue a confirm dialog. Concurrent calls are shown one at a time. */
 export function useConfirm(message: string): Promise<boolean> {
+  const assembly = tryUseNebulaAssembly();
+  if (assembly) {
+    return assembly.overlay.confirm(message);
+  }
   return new Promise((resolve) => {
     queue.push({ message, resolve });
     showNext();
@@ -43,20 +53,30 @@ export function useConfirm(message: string): Promise<boolean> {
 
 /** Programmatically answer the current confirm dialog. */
 export function answerConfirm(confirmed: boolean): void {
+  const assembly = tryUseNebulaAssembly();
+  if (assembly) {
+    assembly.overlay.answerConfirm(confirmed);
+    return;
+  }
   active?.resolve(confirmed);
   active = null;
-  state.open = false;
-  state.message = '';
+  legacyState.open = false;
+  legacyState.message = '';
   showNext();
 }
 
 /** Cancel all pending confirms (e.g. on unmount). */
 export function cancelAllConfirms(confirmed = false): void {
+  const assembly = tryUseNebulaAssembly();
+  if (assembly) {
+    assembly.overlay.cancelAllConfirms(confirmed);
+    return;
+  }
   active?.resolve(confirmed);
   active = null;
   while (queue.length > 0) {
     queue.shift()?.resolve(confirmed);
   }
-  state.open = false;
-  state.message = '';
+  legacyState.open = false;
+  legacyState.message = '';
 }

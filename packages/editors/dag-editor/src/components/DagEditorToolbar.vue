@@ -3,6 +3,7 @@ import { NebulaButton } from '@nebula-studio/nebula-ui';
 
 defineProps<{
   nodeCount: number;
+  readonly?: boolean;
   selectedEdgeId: null | string;
   selectedEdgeLabel: string;
   selectedNodeId: null | string;
@@ -19,26 +20,30 @@ const emit = defineEmits<{
 
 <template>
   <div class="dag-editor__toolbar">
-    <NebulaButton variant="secondary" @click="emit('addNode')">
+    <NebulaButton
+      variant="secondary"
+      :disabled="readonly"
+      @click="emit('addNode')"
+    >
       新增节点
     </NebulaButton>
     <NebulaButton
       variant="secondary"
-      :disabled="!selectedNodeId"
+      :disabled="readonly || !selectedNodeId"
       @click="emit('deleteNode')"
     >
       删除节点
     </NebulaButton>
     <NebulaButton
       variant="secondary"
-      :disabled="!selectedEdgeId"
+      :disabled="readonly || !selectedEdgeId"
       @click="emit('deleteEdge')"
     >
       删除连线
     </NebulaButton>
     <NebulaButton
       variant="secondary"
-      :disabled="nodeCount === 0"
+      :disabled="readonly || nodeCount === 0"
       @click="emit('autoLayout')"
     >
       自动布局

@@ -289,7 +289,10 @@ const customConfig: Linter.Config[] = [
               message: 'electron main 禁止引用 Vue SFC',
             },
             {
-              group: ['@nebula-studio/nebula-ui'],
+              group: [
+                '@nebula-studio/nebula-ui',
+                '@nebula-studio/nebula-assembly',
+              ],
               message: 'electron main 禁止引用 packages/ui',
             },
           ],

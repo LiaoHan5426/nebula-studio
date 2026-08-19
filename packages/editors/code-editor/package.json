@@ -38,6 +38,7 @@
     "vue": "catalog:vue"
   },
   "dependencies": {
+    "@nebula-studio/nebula-assembly": "workspace:^",
     "monaco-editor": "catalog:editor",
     "monaco-editor-vue3": "catalog:editor"
   },

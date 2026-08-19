@@ -31,6 +31,7 @@ import { useTenant } from '@/shared/composables/useTenant';
 import { isApiSuccess } from '@/shared/types';
 
 import { loadResourceCatalog } from './api';
+import { catalogDetailPath } from './catalog-routes';
 import { resourceTypeRegistry } from './registry';
 import {
   favoriteResourceIds,
@@ -111,8 +112,11 @@ watch(
       const current = Object.fromEntries(
         Object.entries(route.query).map(([key, value]) => [key, String(value)]),
       );
-      if (JSON.stringify(next) !== JSON.stringify(current)) {
-        void router.replace({ query: next });
+      if (
+        route.name === 'resource-catalog' &&
+        JSON.stringify(next) !== JSON.stringify(current)
+      ) {
+        void router.replace({ name: 'resource-catalog', query: next });
       }
     }, 160);
   },
@@ -227,10 +231,7 @@ function openResource(resource: ResourceSummaryViewModel): void {
     resourceId: resource.id,
     kind: resource.kind,
   });
-  void router.push({
-    name: 'resource-detail',
-    params: { resourceId: resource.id },
-  });
+  void router.push(catalogDetailPath(resource.id));
 }
 
 function toggleFavorite(resource: ResourceSummaryViewModel): void {

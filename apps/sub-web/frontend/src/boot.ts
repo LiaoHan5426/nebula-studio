@@ -7,6 +7,10 @@ import {
 } from '@nebula-studio/app-shell';
 import '@nebula-studio/nebula-layout';
 import '@nebula-studio/nebula-ui';
+import {
+  installAssemblyForSubApp,
+  wrapSubAppWithAssembly,
+} from '@nebula-studio-renderer/assembly-boot';
 import { bootMicroApp, detectRuntimeMode } from '@nebula-studio/runtime';
 
 import AppComponent from './App.vue';
@@ -50,7 +54,7 @@ export async function bootFrontend(opts?: {
   await bootMicroApp({
     appId: 'frontend',
     mode,
-    rootComponent: AppComponent,
+    rootComponent: wrapSubAppWithAssembly(AppComponent),
     webPresentation:
       mode === 'electron'
         ? undefined
@@ -67,6 +71,9 @@ export async function bootFrontend(opts?: {
     beforeMountAsync: async () => {
       // 动态导入 registerIntegratedApps（保持原有副作用）
       await import('./runtime/registerIntegratedApps');
+    },
+    beforeMount(app) {
+      installAssemblyForSubApp(app, mode);
     },
   });
 }

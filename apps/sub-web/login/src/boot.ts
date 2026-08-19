@@ -1,6 +1,10 @@
 import type { RuntimeMode } from '@nebula-studio/runtime';
 
 import { bootMicroApp, detectRuntimeMode } from '@nebula-studio/runtime';
+import {
+  installAssemblyForSubApp,
+  wrapSubAppWithAssembly,
+} from '@nebula-studio-renderer/assembly-boot';
 
 import AppComponent from './App.vue';
 
@@ -30,7 +34,7 @@ export async function bootLogin(opts?: { mode?: RuntimeMode }): Promise<void> {
   await bootMicroApp({
     appId: 'login',
     mode,
-    rootComponent: AppComponent,
+    rootComponent: wrapSubAppWithAssembly(AppComponent),
     webPresentation:
       mode === 'electron'
         ? undefined
@@ -39,5 +43,8 @@ export async function bootLogin(opts?: { mode?: RuntimeMode }): Promise<void> {
             processVersions: { node: __NEBULA_BUILD_NODE_VERSION__ },
           },
     // login 自身即登录页，不启用 auth（避免循环跳转）
+    beforeMount(app) {
+      installAssemblyForSubApp(app, mode);
+    },
   });
 }

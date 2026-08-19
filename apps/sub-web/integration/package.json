@@ -32,14 +32,15 @@
     "./auth/session": "./src/shared/auth/session.ts"
   },
   "dependencies": {
-    "@nebula-studio-electron/electron-bridge": "workspace:^",
+    "@nebula-studio-renderer/assembly-boot": "workspace:^",
     "@nebula-studio-internal/tailwind": "workspace:^",
     "@nebula-studio-renderer/login": "workspace:^",
     "@nebula-studio/api-client": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
     "@nebula-studio/auth-provider": "workspace:^",
     "@nebula-studio/contracts": "workspace:^",
-    "@nebula-studio/nebula-dag-editor": "workspace:^",
+    "@nebula-studio/nebula-code-editor": "workspace:^",
+    "@nebula-studio/nebula-assembly": "workspace:^",
     "@nebula-studio/nebula-flow-editor": "workspace:^",
     "@nebula-studio/nebula-integration-panel": "workspace:^",
     "@nebula-studio/nebula-layout": "workspace:^",

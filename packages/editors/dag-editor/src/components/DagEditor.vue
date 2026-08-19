@@ -8,6 +8,7 @@ import { markRaw } from 'vue';
 import { MarkerType } from '@vue-flow/core';
 
 import { useDagEditor } from '../composables/useDagEditor';
+import { useDagEditorHost } from '../composables/useDagEditorHost';
 import DagEditorCanvas from './DagEditorCanvas.vue';
 import DagEditorInspector from './DagEditorInspector.vue';
 import DagEditorToolbar from './DagEditorToolbar.vue';
@@ -62,16 +63,23 @@ const {
   onFlowInit,
   bindCanvasRef,
 } = useDagEditor(props, (event, value) => emit(event, value));
+
+const { editorStyle, isReadonly } = useDagEditorHost();
 </script>
 
 <template>
-  <div class="dag-editor" :class="{ 'dag-editor--with-panel': selectedNodeId }">
+  <div
+    class="dag-editor"
+    :class="{ 'dag-editor--with-panel': selectedNodeId }"
+    :style="editorStyle"
+  >
     <DagEditorToolbar
       :selected-node-id="selectedNodeId"
       :selected-edge-id="selectedEdgeId"
       :selected-node-label="selectedNodeLabel"
       :selected-edge-label="selectedEdgeLabel"
       :node-count="nodes.length"
+      :readonly="isReadonly"
       @add-node="addNode()"
       @delete-node="deleteSelectedNode"
       @delete-edge="deleteSelectedEdge"
@@ -107,6 +115,7 @@ const {
         v-model:selected-config="selectedConfig"
         :selected-node-label="selectedNodeLabel"
         :selected-schema="selectedSchema"
+        :readonly="isReadonly"
         @delete-node="deleteSelectedNode"
       />
     </div>
