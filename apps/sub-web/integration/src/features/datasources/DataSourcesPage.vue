@@ -204,9 +204,7 @@ async function handleTest(id: string) {
       title="新建数据源"
       @update:open="showCreate = $event"
     >
-      <label class="field"
-        ><span>名称</span><input v-model="form.name"
-      /></label>
+      <label class="field"><span>名称</span><input v-model="form.name" /></label>
       <label class="field">
         <span>连接器</span>
         <select v-model="form.connectorId" class="field__select">
@@ -222,25 +220,13 @@ async function handleTest(id: string) {
       <template
         v-if="selectedConnector()?.connectorType !== ConnectorType.PROTOCOL"
       >
-        <label class="field"
-          ><span>主机</span><input v-model="form.host"
-        /></label>
-        <label class="field"
-          ><span>端口</span><input v-model.number="form.port" type="number"
-        /></label>
-        <label class="field"
-          ><span>数据库</span><input v-model="form.database"
-        /></label>
-        <label class="field"
-          ><span>用户名</span><input v-model="form.username"
-        /></label>
-        <label class="field"
-          ><span>密码</span><input v-model="form.password" type="password"
-        /></label>
+        <label class="field"><span>主机</span><input v-model="form.host" /></label>
+        <label class="field"><span>端口</span><input v-model.number="form.port" type="number" /></label>
+        <label class="field"><span>数据库</span><input v-model="form.database" /></label>
+        <label class="field"><span>用户名</span><input v-model="form.username" /></label>
+        <label class="field"><span>密码</span><input v-model="form.password" type="password" /></label>
       </template>
-      <label v-else class="field"
-        ><span>端点 URI</span><input v-model="form.endpointUri"
-      /></label>
+      <label v-else class="field"><span>端点 URI</span><input v-model="form.endpointUri" /></label>
       <div class="modal__actions">
         <NebulaButton variant="outline" @click="showCreate = false">
           取消
@@ -257,29 +243,16 @@ async function handleTest(id: string) {
       @update:open="showEdit = $event"
     >
       <template v-if="editing">
-        <label class="field"
-          ><span>名称</span><input v-model="editing.name"
-        /></label>
+        <label class="field"><span>名称</span><input v-model="editing.name" /></label>
         <template v-if="'host' in editing.config">
-          <label class="field"
-            ><span>主机</span
-            ><input v-model="(editing.config as DatabaseConfig).host"
-          /></label>
-          <label class="field"
-            ><span>端口</span
-            ><input
+          <label class="field"><span>主机</span><input v-model="(editing.config as DatabaseConfig).host" /></label>
+          <label class="field"><span>端口</span><input
               v-model.number="(editing.config as DatabaseConfig).port"
               type="number"
           /></label>
-          <label class="field"
-            ><span>数据库</span
-            ><input v-model="(editing.config as DatabaseConfig).database"
-          /></label>
+          <label class="field"><span>数据库</span><input v-model="(editing.config as DatabaseConfig).database" /></label>
         </template>
-        <label v-else class="field"
-          ><span>端点</span
-          ><input v-model="(editing.config as ProtocolConfig).endpointUri"
-        /></label>
+        <label v-else class="field"><span>端点</span><input v-model="(editing.config as ProtocolConfig).endpointUri" /></label>
         <div class="modal__actions">
           <NebulaButton variant="outline" @click="showEdit = false">
             取消

@@ -9,11 +9,8 @@ import {
   completeLoginWithOrg,
   loginWithBackendAuth,
 } from '@nebula-studio/auth-provider/backend';
-import {
-  isSafeAuthReturnUrl,
-  isWebPresentationHost,
-  writeWebAuthSession,
-} from '@nebula-studio/app-shell';
+import { writeWebAuthSession } from '@nebula-studio/auth-provider/storage';
+import { isSafeAuthReturnUrl } from '@nebula-studio/auth-provider/web';
 import { NebulaAuthLayout } from '@nebula-studio/nebula-layout';
 import {
   NebulaButton,
@@ -21,13 +18,14 @@ import {
   NebulaInput,
   NebulaSelect,
 } from '@nebula-studio/nebula-ui';
+import { isWebPresentationHost } from '@nebula-studio/shell-protocol';
 
+import { classifyAuthFailure, readAuthEntryContext } from './authFlow';
 import {
   authFlowReducer,
   canPersistFinalToken,
   createInitialAuthFlowState,
 } from './authStateMachine';
-import { classifyAuthFailure, readAuthEntryContext } from './authFlow';
 
 const RECENT_ORG_KEY = 'nebula-auth-recent-org';
 const user = ref('');

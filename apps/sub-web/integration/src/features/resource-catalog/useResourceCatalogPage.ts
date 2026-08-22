@@ -1,3 +1,5 @@
+import type { RouteLocationNormalizedLoaded, Router } from 'vue-router';
+
 import type {
   CatalogQuery,
   ResourceAvailability,
@@ -12,7 +14,6 @@ import {
   ref,
   watch,
 } from 'vue';
-import type { RouteLocationNormalizedLoaded, Router } from 'vue-router';
 
 import { subscriptionRequestApi } from '@/features/subscription/api';
 import { getAuthUserId } from '@/shared/auth/session';

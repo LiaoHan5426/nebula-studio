@@ -1,5 +1,6 @@
-import { expect } from '@playwright/test';
 import type { Page } from '@playwright/test';
+
+import { expect } from '@playwright/test';
 
 /**
  * Reachability for Host embed URLs. Avoid `networkidle` — Federation/HMR/SSE

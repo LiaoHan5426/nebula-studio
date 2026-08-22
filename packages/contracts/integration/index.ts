@@ -16,11 +16,11 @@ export * from './connector.js';
 export * from './flow.js';
 export * from './governance.js';
 export * from './interface.js';
+export * from './mappers.js';
 export * from './plugin.js';
 export * from './resource.js';
 export * from './subscription.js';
 export * from './task.js';
-export * from './tenant.js';
 
+export * from './tenant.js';
 export * from './topology.js';
-export * from './mappers.js';

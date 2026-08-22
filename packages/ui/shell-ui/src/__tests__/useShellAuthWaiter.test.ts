@@ -20,7 +20,7 @@ vi.mock('@nebula-studio/shell-protocol', () => ({
 
 vi.mock('@nebula-studio/auth-provider/storage', () => ({
   clearWebAuthSession: vi.fn(),
-  hasValidShellAuthSession: vi.fn((s: { user?: string } | null) => !!s?.user),
+  hasValidShellAuthSession: vi.fn((s: null | { user?: string }) => !!s?.user),
   readWebAuthSession: vi.fn(() => null),
 }));
 

@@ -1,6 +1,5 @@
-import { expect, test } from '@playwright/test';
-
 import { resolveStandaloneApp } from '@nebula-studio-internal/vite';
+import { expect, test } from '@playwright/test';
 
 import { expectAssemblyMarkers } from './helpers/expectAssemblyMarkers';
 import { injectMockAuthSession } from './helpers/injectMockAuthSession';

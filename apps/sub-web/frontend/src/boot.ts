@@ -1,29 +1,26 @@
-import type { RuntimeMode } from '@nebula-studio/runtime';
+import type { RuntimeMode } from '@nebula-studio/shell-protocol';
 
-import {
-  redirectShellToWebLogin,
-  resolveShellEventBus,
-  shouldRedirectUnauthenticatedWebShell,
-} from '@nebula-studio/app-shell';
+import { redirectShellToWebLogin, shouldRedirectUnauthenticatedWebShell } from '@nebula-studio/auth-provider/web';
+import '@nebula-studio/nebula-layout';
+import '@nebula-studio/nebula-ui';
+import { bootMicroApp } from '@nebula-studio/runtime';
 import {
   installShellHostBridge,
   installWebPresentationUnlessElectron,
 } from '@nebula-studio/shell-host';
-import '@nebula-studio/nebula-layout';
-import '@nebula-studio/nebula-ui';
+import { resolveShellEventBus } from '@nebula-studio/shell-protocol';
+import '@nebula-studio/styles/document';
+
 import {
   installAssemblyForSubApp,
   wrapSubAppWithAssembly,
 } from '@nebula-studio-renderer/assembly-boot';
-import { bootMicroApp } from '@nebula-studio/runtime';
 
 import AppComponent from './App.vue';
 import {
   bootstrapShellIntegratedApps,
   hydrateShellIntegratedAppsFromRuntime,
 } from './platform/integratedApps';
-
-import '@nebula-studio-internal/tailwind/electron';
 
 /**
  * Frontend (Shell) 子应用统一启动入口。

@@ -1,14 +1,16 @@
-import {
-  redirectShellToWebLogin,
-  resolveShellEventBus,
-  shouldRedirectUnauthenticatedWebShell,
-} from '@nebula-studio/app-shell';
+import type { RuntimeMode } from '@nebula-studio/shell-protocol';
+
+import { redirectShellToWebLogin, shouldRedirectUnauthenticatedWebShell } from '@nebula-studio/auth-provider/web';
+import '@nebula-studio/nebula-layout';
+import '@nebula-studio/nebula-ui';
+import { bootMicroApp } from '@nebula-studio/runtime';
 import {
   installShellHostBridge,
   installWebPresentationUnlessElectron,
 } from '@nebula-studio/shell-host';
-import '@nebula-studio/nebula-layout';
-import '@nebula-studio/nebula-ui';
+import { resolveShellEventBus } from '@nebula-studio/shell-protocol';
+import '@nebula-studio/styles/document';
+
 import {
   installAssemblyForSubApp,
   wrapSubAppWithAssembly,
@@ -18,10 +20,6 @@ import {
   bootstrapShellIntegratedApps,
   hydrateShellIntegratedAppsFromRuntime,
 } from '@nebula-studio-renderer/main/platform/integrated-apps';
-import { bootMicroApp } from '@nebula-studio/runtime';
-import type { RuntimeMode } from '@nebula-studio/runtime';
-
-import '@nebula-studio-internal/tailwind/electron';
 
 /**
  * Host-owned workspace shell for Web (no embed query) and the Electron main window.

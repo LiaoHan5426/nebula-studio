@@ -22,15 +22,15 @@
     "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false"
   },
   "dependencies": {
-    "@nebula-studio/federation-protocol": "workspace:^",
     "@nebula-studio/application-runtime": "workspace:^",
+    "@nebula-studio/federation-protocol": "workspace:^",
     "@nebula-studio/host-capabilities": "workspace:^",
     "vue": "catalog:vue"
   },
   "devDependencies": {
+    "@module-federation/vite": "catalog:vite",
     "@nebula-studio-internal/tsconfig": "workspace:^",
     "@nebula-studio-internal/vite": "workspace:^",
-    "@module-federation/vite": "catalog:vite",
     "typescript": "catalog:types",
     "vite": "catalog:vite",
     "vite-plus": "catalog:vite",

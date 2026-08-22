@@ -1,8 +1,8 @@
+import type { NebulaApiProxyPresetName } from './apiContext.ts';
+
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-
-import type { NebulaApiProxyPresetName } from './apiContext.ts';
 
 export type PreloadCapability = 'auth' | 'notify' | 'settings' | 'shell';
 
@@ -59,10 +59,10 @@ export interface WindowsConfig {
 export interface NebulaAppManifest {
   /** Map embed surface → relative boot entry path from apps/web/src */
   embedBootEntries: Record<string, string>;
-  /** Surfaces that load via Module Federation instead of a static embed entry */
-  federationSurfaces: string[];
   /** Surfaces available for ?embed= query in Web shell */
   embedSurfaces: string[];
+  /** Surfaces that load via Module Federation instead of a static embed entry */
+  federationSurfaces: string[];
   /** Preload ID → union of capabilities declared by all surfaces using it */
   preloadCapabilities: Record<string, PreloadCapability[]>;
   /** Unique preload IDs used by windows and modal renderers */

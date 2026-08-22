@@ -20,8 +20,8 @@ import type {
 
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 
-import { resolveShellEventBus } from '@nebula-studio/shell-protocol';
 import { NebulaButton, NebulaIcon } from '@nebula-studio/nebula-ui';
+import { resolveShellEventBus } from '@nebula-studio/shell-protocol';
 
 const emit = defineEmits<{
   activate: [notification: ShellNotification];

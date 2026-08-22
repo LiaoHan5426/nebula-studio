@@ -1,3 +1,10 @@
+import {
+  __resetResolvedRuntimeModeForTests,
+  getResolvedRuntimeMode,
+  requireRuntimeMode,
+  stampFederationRuntimeMode,
+} from '@nebula-studio/shell-protocol';
+
 import { bootSubApp } from '@nebula-studio-electron/electron-bridge/vue';
 import { assert, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -5,12 +12,6 @@ import {
   __resetActiveMicroAppHandleForTests,
   bootMicroApp,
 } from '../bootMicroApp';
-import {
-  __resetResolvedRuntimeModeForTests,
-  getResolvedRuntimeMode,
-  requireRuntimeMode,
-  stampFederationRuntimeMode,
-} from '@nebula-studio/shell-protocol';
 
 vi.mock('@nebula-studio-electron/electron-bridge/vue', () => ({
   bootSubApp: vi.fn(() => ({

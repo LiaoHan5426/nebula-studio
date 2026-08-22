@@ -1,4 +1,5 @@
 import type { TenantRecord } from '@/features/tenant/api';
+
 import type { UserRecord } from '@nebula-studio/contracts/system';
 
 import { computed, onMounted, ref } from 'vue';

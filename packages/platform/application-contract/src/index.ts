@@ -12,13 +12,13 @@ export interface HostAuthSession {
 export type HostCapabilityEvent = 'auth-logout' | 'tenant-changed';
 
 export interface HostAuthCapability {
-  getSession(): HostAuthSession | Promise<HostAuthSession | null> | null;
-  getToken?(): string | null;
+  getSession(): HostAuthSession | null | Promise<HostAuthSession | null>;
+  getToken?(): null | string;
   logout?(): Promise<void> | void;
 }
 
 export interface HostTenantCapability {
-  getTenantId(): string | null;
+  getTenantId(): null | string;
 }
 
 export interface HostEventsCapability {
@@ -36,8 +36,8 @@ export interface HostNavigationCapability {
 /** Token/tenant adapter for Remote api-client; not a full HTTP client. */
 export interface HostApiCapability {
   createClient(): {
-    getTenantId(): string | null;
-    getToken(): string | null;
+    getTenantId(): null | string;
+    getToken(): null | string;
   };
 }
 
@@ -54,21 +54,21 @@ export interface HostLocaleCapability {
 }
 
 export interface HostCapabilities {
-  readonly contractVersion: typeof CONTRACT_VERSION;
-  readonly auth?: HostAuthCapability;
   readonly api?: HostApiCapability;
+  readonly auth?: HostAuthCapability;
+  readonly contractVersion: typeof CONTRACT_VERSION;
+  readonly events?: HostEventsCapability;
+  readonly locale?: HostLocaleCapability;
   readonly navigation?: HostNavigationCapability;
   readonly tenant?: HostTenantCapability;
-  readonly events?: HostEventsCapability;
   readonly theme?: HostThemeCapability;
-  readonly locale?: HostLocaleCapability;
 }
 
 export interface RemoteMountOptions {
+  application: { id: string; runtimeConfig?: unknown; version: string; };
+  capabilities: HostCapabilities;
   container: HTMLElement;
   initialPath: string;
-  application: { id: string; version: string; runtimeConfig?: unknown };
-  capabilities: HostCapabilities;
 }
 
 export interface RemoteHandle {

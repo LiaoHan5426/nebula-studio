@@ -29,7 +29,7 @@ const jsSyntaxBase = [
   'TSExportAssignment',
 ] as const;
 
-function forbidJsonDep(
+function forbidJsonDep (
   name: string,
   message: string,
   groups = 'dependencies|peerDependencies|optionalDependencies',
@@ -40,7 +40,26 @@ function forbidJsonDep(
   };
 }
 
+const productInternalImportBan = {
+  group: [
+    '@nebula-studio-internal/node',
+    '@nebula-studio-internal/node/*',
+    '@nebula-studio-internal/vite',
+    '@nebula-studio-internal/vite/*',
+  ],
+  message:
+    'apps/packages 运行时禁止依赖 @nebula-studio-internal/node 或 vite；构建入口用 vite.config',
+};
+
+const appShellProtocolImportBan = {
+  selector:
+    "ImportDeclaration[source.value='@nebula-studio/app-shell'] > ImportSpecifier[imported.name=/^(RuntimeMode|createEventBus|resolveShellEventBus|stampFederationRuntimeMode|requireRuntimeMode|getResolvedRuntimeMode|wireShellEventBus|loginWithBackendAuth)$/]",
+  message:
+    '协议与认证符号从 @nebula-studio/shell-protocol 或 auth-provider 直接 import，禁止经 app-shell 再导出',
+};
+
 const remoteImportPatterns = [
+  productInternalImportBan,
   {
     group: ['@nebula-studio/web'],
     message: 'Remote 禁止依赖 Web Host',
@@ -93,6 +112,16 @@ const remoteJsonDepBans = [
     'Remote production deps must not include @electron-toolkit/preload',
     'dependencies',
   ),
+  forbidJsonDep(
+    '@nebula-studio-internal/node',
+    'Product packages must not runtime-depend on @nebula-studio-internal/node',
+    'dependencies',
+  ),
+  forbidJsonDep(
+    '@nebula-studio-internal/vite',
+    'Product packages must not runtime-depend on @nebula-studio-internal/vite',
+    'dependencies',
+  ),
 ];
 
 const hostRemoteJsonBans = [
@@ -109,6 +138,16 @@ const hostRemoteJsonBans = [
   forbidJsonDep(
     '@nebula-studio-renderer/integration',
     'Host production deps must not include Integration Remote',
+    'dependencies',
+  ),
+  forbidJsonDep(
+    '@nebula-studio-internal/node',
+    'Product packages must not runtime-depend on @nebula-studio-internal/node',
+    'dependencies',
+  ),
+  forbidJsonDep(
+    '@nebula-studio-internal/vite',
+    'Product packages must not runtime-depend on @nebula-studio-internal/vite',
     'dependencies',
   ),
 ];
@@ -128,8 +167,30 @@ const platformJsonBans = [
   })),
 ];
 
-export async function mfBoundary(): Promise<Linter.Config[]> {
+export async function mfBoundary (): Promise<Linter.Config[]> {
   return [
+    {
+      files: [
+        'apps/**/*.ts',
+        'apps/**/*.tsx',
+        'packages/**/*.ts',
+        'packages/**/*.tsx',
+      ],
+      ignores: restrictedImportIgnores,
+      rules: {
+        'no-restricted-imports': [
+          'error',
+          {
+            patterns: [productInternalImportBan],
+          },
+        ],
+        'no-restricted-syntax': [
+          'error',
+          ...jsSyntaxBase,
+          appShellProtocolImportBan,
+        ],
+      },
+    },
     {
       files: ['apps/sub-web/docs/**/**'],
       ignores: restrictedImportIgnores,
@@ -409,6 +470,24 @@ export async function mfBoundary(): Promise<Linter.Config[]> {
       },
     },
     {
+      files: ['apps/**/package.json', 'packages/**/package.json'],
+      rules: {
+        'no-restricted-syntax': [
+          'error',
+          forbidJsonDep(
+            '@nebula-studio-internal/node',
+            'Product packages must not runtime-depend on @nebula-studio-internal/node',
+            'dependencies',
+          ),
+          forbidJsonDep(
+            '@nebula-studio-internal/vite',
+            'Product packages must not runtime-depend on @nebula-studio-internal/vite',
+            'dependencies',
+          ),
+        ],
+      },
+    },
+    {
       files: [
         'apps/sub-web/docs/package.json',
         'apps/sub-web/settings/package.json',
@@ -422,6 +501,20 @@ export async function mfBoundary(): Promise<Linter.Config[]> {
       files: ['apps/web/package.json', 'apps/electron/package.json'],
       rules: {
         'no-restricted-syntax': ['error', ...hostRemoteJsonBans],
+      },
+    },
+    {
+      files: ['apps/electron/package.json'],
+      rules: {
+        'no-restricted-syntax': [
+          'error',
+          ...hostRemoteJsonBans,
+          forbidJsonDep(
+            '@nebula-studio-internal/node',
+            'Electron production deps must not include @nebula-studio-internal/node',
+            'dependencies',
+          ),
+        ],
       },
     },
     {
@@ -508,6 +601,14 @@ export async function mfBoundary(): Promise<Linter.Config[]> {
       rules: {
         'no-restricted-syntax': [
           'error',
+          forbidJsonDep(
+            '@nebula-studio/shell-protocol',
+            'app-shell must not depend on shell-protocol; callers import it directly',
+          ),
+          forbidJsonDep(
+            '@nebula-studio/auth-provider',
+            'app-shell must not depend on auth-provider; callers import it directly',
+          ),
           forbidJsonDep(
             '@nebula-studio/shell-host',
             'app-shell must not depend on shell-host (avoids a cycle)',

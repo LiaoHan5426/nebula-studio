@@ -1,6 +1,6 @@
-export { installShellHostBridge } from './installShellHostBridge';
-export { installShellIframeElectronBridge } from './electron/installShellIframeElectronBridge';
 export { createElectronShellHostBridge } from './electron/electronShellHostBridge';
+export { installShellIframeElectronBridge } from './electron/installShellIframeElectronBridge';
+export { installShellHostBridge } from './installShellHostBridge';
 export {
   installWebPresentation,
   installWebPresentationUnlessElectron,

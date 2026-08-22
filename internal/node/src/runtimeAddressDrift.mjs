@@ -40,8 +40,8 @@ export const DEFAULT_ADDRESS_ALLOWLIST = [
 
 export const DEFAULT_IGNORED_DIRECTORIES = new Set([
   '.git',
-  'dist',
   'dev-dist',
+  'dist',
   'node_modules',
   'out',
   'playwright-report',

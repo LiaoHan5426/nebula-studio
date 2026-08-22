@@ -1,10 +1,11 @@
-import { createApp, h } from 'vue';
-
 import type {
   NebulaRemoteApplication,
   RemoteHandle,
   RemoteMountOptions,
 } from '@nebula-studio/application-contract';
+
+import { createApp, h } from 'vue';
+
 import { CONTRACT_VERSION } from '@nebula-studio/application-contract';
 
 import { DESIGNER_ONLY_MARKER } from './designer-only.ts';

@@ -11,8 +11,8 @@ import {
 } from 'vue';
 
 import { useDropdownDismiss } from '../../composables/useDropdownDismiss';
-import { overlayContainerKey } from '../../composables/useOverlayContainer';
 import { useDropdownPosition } from '../../composables/useDropdownPosition';
+import { overlayContainerKey } from '../../composables/useOverlayContainer';
 import { cn } from '../../utils/cn';
 
 const dropdownCloseKey: InjectionKey<() => void> = Symbol(

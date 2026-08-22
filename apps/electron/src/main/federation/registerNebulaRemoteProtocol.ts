@@ -1,15 +1,16 @@
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { is } from '@electron-toolkit/utils';
-import { protocol } from 'electron';
 import {
   createFederationDistResponse,
   federationProtocolPrivileges,
+  findMonorepoRoot,
   NEBULA_REMOTE_SCHEME,
   pickFederationRemoteRoots,
 } from '@nebula-studio/federation-protocol';
-import { findMonorepoRoot } from '@nebula-studio-internal/node';
+
+import { is } from '@electron-toolkit/utils';
+import { protocol } from 'electron';
 
 protocol.registerSchemesAsPrivileged([
   {

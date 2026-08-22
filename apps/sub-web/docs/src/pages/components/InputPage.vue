@@ -56,9 +56,7 @@ import inputTypesDemo from '@/examples/input/InputTypes.vue?demo';
           <td><code>type</code></td>
           <td>输入框类型</td>
           <td>
-            <code
-              >'text' | 'password' | 'email' | 'number' | 'tel' | 'url'</code
-            >
+            <code>'text' | 'password' | 'email' | 'number' | 'tel' | 'url'</code>
           </td>
           <td><code>'text'</code></td>
         </tr>

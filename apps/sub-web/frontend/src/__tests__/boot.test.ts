@@ -10,7 +10,7 @@ vi.mock('@nebula-studio-renderer/assembly-boot', () => ({
 }));
 vi.mock('@nebula-studio/nebula-ui', () => ({}));
 vi.mock('@nebula-studio/nebula-layout', () => ({}));
-vi.mock('@nebula-studio-internal/tailwind/electron', () => ({}));
+vi.mock('@nebula-studio/styles/document', () => ({}));
 vi.mock('../App.vue', () => ({ default: {} }));
 vi.mock('../platform/integratedApps', () => ({
   bootstrapShellIntegratedApps: vi.fn(),

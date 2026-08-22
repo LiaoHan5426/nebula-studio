@@ -1,3 +1,1 @@
-import '@nebula-studio/styles';
-
-import './theme.css';
+import './document.css';

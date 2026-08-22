@@ -1,33 +1,23 @@
 <script setup lang="ts">
-import type {
-  EmbeddedShellWindowId,
-  ShellAuthSessionPayload,
-  ShellEmbedPageMetaPayload,
-} from '@nebula-studio/app-shell';
+import type { EmbeddedShellWindowId } from '@nebula-studio/app-shell';
+import type { ShellAuthSessionPayload } from '@nebula-studio/auth-provider/storage';
+import type { IframeCapabilityBridge } from '@nebula-studio/host-capabilities';
 import type {
   GlobalSearchItem,
   WorkspaceLink,
   WorkspaceModel,
 } from '@nebula-studio/nebula-shell';
+import type { ShellEmbedPageMetaPayload } from '@nebula-studio/shell-protocol';
 
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 
-/**
- * App.vue — Shell 组装层。
- *
- * Plan-11: 组件已拆出至 `@nebula-studio/nebula-shell`。
- * 本文件负责组装 OrgSwitcher / IframeHost / AppDock 并保留生命周期与 IPC 胶水逻辑。
- */
-import { resolveRendererIpc } from '@nebula-studio-electron/electron-bridge/vue';
 import {
   embeddedViewRequiresShellAuth,
   getShellIntegratedAppMeta,
   isShellIntegrableAppId,
   isShellStandaloneSidebarApp,
-  postShellEmbedNavigate,
 } from '@nebula-studio/app-shell';
 import { connectIframeCapabilityBridge } from '@nebula-studio/host-capabilities';
-import type { IframeCapabilityBridge } from '@nebula-studio/host-capabilities';
 import {
   NebulaShellLayout,
   useLayoutPreferences,
@@ -41,6 +31,7 @@ import {
   PersonalWorkspace,
   useAppLifecycle,
 } from '@nebula-studio/nebula-shell';
+import { postShellEmbedNavigate } from '@nebula-studio/shell-protocol';
 
 import TaskGuidePanel from '@/components/TaskGuidePanel.vue';
 import {
@@ -54,6 +45,13 @@ import {
 } from '@/platform/integratedApps';
 import { useOrganization } from '@/shared/composables/useOrganization';
 import { useWorkspaceSummary } from '@/shared/composables/useWorkspaceSummary';
+/**
+ * App.vue — Shell 组装层。
+ *
+ * Plan-11: 组件已拆出至 `@nebula-studio/nebula-shell`。
+ * 本文件负责组装 OrgSwitcher / IframeHost / AppDock 并保留生命周期与 IPC 胶水逻辑。
+ */
+import { resolveRendererIpc } from '@nebula-studio-electron/electron-bridge/vue';
 
 // ─── Workspace summary (real APIs) ───────────────────────
 const {

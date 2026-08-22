@@ -2,12 +2,13 @@ import type {
   ApiProxyRouteConfig,
   NebulaApiProxyPresetName,
 } from './apiContext.ts';
-import { requireApiProxyPreset } from './apiContext.ts';
-import { hasWebShellPath, loadWindowsConfig } from './windowsManifest.ts';
 import type {
   RendererRuntimeFields,
   WindowsConfig,
 } from './windowsManifest.ts';
+
+import { requireApiProxyPreset } from './apiContext.ts';
+import { hasWebShellPath, loadWindowsConfig } from './windowsManifest.ts';
 
 export interface ResolvedDevServer {
   basePath: string;

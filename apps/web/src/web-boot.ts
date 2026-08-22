@@ -1,8 +1,5 @@
-import { createWebEmbedHostCapabilities } from '@nebula-studio/host-capabilities';
-import {
-  readParentShellAuthSession,
-  WEB_SHELL_EMBED_QUERY,
-} from '@nebula-studio/app-shell';
+import type { StaticRemoteRegistration } from '@nebula-studio/application-runtime';
+
 import {
   createFrontendTelemetryReporter,
   fetchFrontendRuntimeEntries,
@@ -15,7 +12,9 @@ import {
   registerStaticRemotes,
   resolveFederationRegistrationWithPolicy,
 } from '@nebula-studio/application-runtime';
-import type { StaticRemoteRegistration } from '@nebula-studio/application-runtime';
+import { readParentShellAuthSession } from '@nebula-studio/auth-provider/web';
+import { createWebEmbedHostCapabilities } from '@nebula-studio/host-capabilities';
+import { WEB_SHELL_EMBED_QUERY } from '@nebula-studio/shell-protocol';
 
 document.documentElement.dataset.platform = 'web';
 

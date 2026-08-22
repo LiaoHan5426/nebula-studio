@@ -4,6 +4,7 @@ import type {
   HostCapabilities,
   HostCapabilityEvent,
 } from '@nebula-studio/application-contract';
+
 import { CONTRACT_VERSION } from '@nebula-studio/application-contract';
 import {
   clearWebAuthSession,
@@ -62,7 +63,7 @@ async function setHostScheme(scheme: ThemeScheme): Promise<void> {
   applyDocumentScheme(scheme);
 }
 
-function readTenantId(): string | null {
+function readTenantId(): null | string {
   if (typeof localStorage === 'undefined') {
     return null;
   }
@@ -83,7 +84,7 @@ function readAuthSession(): HostAuthSession | null {
   };
 }
 
-function readAuthToken(): string | null {
+function readAuthToken(): null | string {
   return readAuthSession()?.token?.trim() || null;
 }
 

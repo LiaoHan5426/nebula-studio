@@ -1,4 +1,5 @@
 import type { ShellHostBridge } from '@nebula-studio/shell-protocol';
+
 import {
   persistShellSurfacePreference,
   readShellSurfacePreference,

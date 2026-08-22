@@ -1,19 +1,20 @@
 import type { ShellEventBus } from '@nebula-studio/shell-protocol';
-import type { RuntimeMode } from '@nebula-studio/runtime';
+import type { RuntimeMode } from '@nebula-studio/shell-protocol';
 
 import { HOST_CAPABILITIES_KEY } from '@nebula-studio/application-contract';
 import { clearWebAuthSession } from '@nebula-studio/auth-provider/storage';
-import { resolveShellEventBus } from '@nebula-studio/shell-protocol';
-import { installWebPresentationUnlessElectron } from '@nebula-studio/shell-host';
 import { createWebEmbedHostCapabilities } from '@nebula-studio/host-capabilities';
 import '@nebula-studio/nebula-layout';
 import '@nebula-studio/nebula-ui';
+import { bootMicroApp } from '@nebula-studio/runtime';
+import { installWebPresentationUnlessElectron } from '@nebula-studio/shell-host';
+import { resolveShellEventBus } from '@nebula-studio/shell-protocol';
+import '@nebula-studio/styles/document';
+
 import {
   installAssemblyForSubApp,
   wrapSubAppWithAssembly,
 } from '@nebula-studio-renderer/assembly-boot';
-import { bootMicroApp } from '@nebula-studio/runtime';
-
 import { install as installVxePcUi } from 'vxe-pc-ui';
 import { install as installVxeTable } from 'vxe-table';
 
@@ -21,7 +22,6 @@ import AppComponent from './App.vue';
 import router from './router';
 import { bindHostCapabilities } from './shared/hostCapabilityBridge';
 
-import '@nebula-studio-internal/tailwind/electron';
 import '@nebula-studio-renderer/integration/bootstrap-runtime';
 
 /**

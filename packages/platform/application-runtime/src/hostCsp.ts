@@ -2,7 +2,7 @@
  * Host iframe CSP. The HTML meta policy is authoritative; mutating the meta
  * tag after load does not expand the enforced CSP in browsers.
  */
-const LOOPBACK_HOSTS = new Set(['localhost', '127.0.0.1']);
+const LOOPBACK_HOSTS = new Set(['127.0.0.1', 'localhost']);
 
 export function alignLoopbackIframeSrc(
   src: string,
@@ -49,12 +49,12 @@ export function isIframeSrcAllowed(
 
 export function iframeFrameOrigins(
   entries: readonly {
+    defaultPath?: string;
     driver: string;
     manifestUrl?: string;
-    defaultPath?: string;
   }[],
   pageOrigin: string,
-  resolveSrc: (entry: { manifestUrl?: string; defaultPath?: string }) => string,
+  resolveSrc: (entry: { defaultPath?: string; manifestUrl?: string; }) => string,
 ): string[] {
   const extras = new Set<string>();
   for (const entry of entries) {

@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import type { HostCapabilities } from '@nebula-studio/application-contract';
+
 import { inject, ref } from 'vue';
 
 import { HOST_CAPABILITIES_KEY } from '@nebula-studio/application-contract';
-import type { HostCapabilities } from '@nebula-studio/application-contract';
 import { NebulaButton, NebulaPane } from '@nebula-studio/nebula-ui';
 
 const capabilities = inject<HostCapabilities | undefined>(

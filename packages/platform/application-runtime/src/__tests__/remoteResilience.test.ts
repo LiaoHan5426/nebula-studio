@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
-
 import type { FrontendRuntimeEntry } from '@nebula-studio/contracts/system';
+
+import { describe, expect, it } from 'vitest';
 
 import {
   createMemoryKv,

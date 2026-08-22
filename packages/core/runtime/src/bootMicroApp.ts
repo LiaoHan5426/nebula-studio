@@ -1,5 +1,7 @@
 import type { App } from 'vue';
 
+import type { RuntimeMode } from '@nebula-studio/shell-protocol';
+
 import type { BootMicroAppOptions } from './index';
 
 import {
@@ -10,7 +12,6 @@ import {
   setResolvedRuntimeMode,
   wireShellEventBus,
 } from '@nebula-studio/shell-protocol';
-import type { RuntimeMode } from '@nebula-studio/shell-protocol';
 
 import { bootSubApp } from '@nebula-studio-electron/electron-bridge/vue';
 

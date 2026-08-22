@@ -1,9 +1,10 @@
+import type { App, Component } from 'vue';
+
 import type {
   NebulaHostCapabilitiesInput,
   StyleContract,
 } from '@nebula-studio/nebula-assembly';
 import type { RuntimeMode } from '@nebula-studio/shell-protocol';
-import type { App, Component } from 'vue';
 
 import {
   installNebulaAssemblyFromMode,

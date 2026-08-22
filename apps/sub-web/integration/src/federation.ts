@@ -1,19 +1,28 @@
-import { createApp } from 'vue';
-
 import type {
   NebulaRemoteApplication,
   RemoteHandle,
   RemoteMountOptions,
 } from '@nebula-studio/application-contract';
+
+import { createApp } from 'vue';
+
 import {
   CONTRACT_VERSION,
   HOST_CAPABILITIES_KEY,
 } from '@nebula-studio/application-contract';
+import '@nebula-studio/nebula-layout';
+import '@nebula-studio/nebula-ui';
+import {
+  applyRemoteMountAppearance,
+  clearRemoteMountAppearance,
+  stampFederationRuntimeMode,
+} from '@nebula-studio/shell-protocol';
+import '@nebula-studio/styles/remote';
+
 import {
   installAssemblyForSubApp,
   wrapSubAppWithAssembly,
 } from '@nebula-studio-renderer/assembly-boot';
-import { stampFederationRuntimeMode } from '@nebula-studio/shell-protocol';
 import { install as installVxePcUi } from 'vxe-pc-ui';
 import { install as installVxeTable } from 'vxe-table';
 
@@ -21,40 +30,7 @@ import AppComponent from './App.vue';
 import router from './router';
 import { bindHostCapabilities } from './shared/hostCapabilityBridge';
 
-import '@nebula-studio/nebula-layout';
-import '@nebula-studio/nebula-ui';
-import '@nebula-studio-internal/tailwind/electron';
 import '@nebula-studio-renderer/integration/bootstrap-runtime';
-
-function applyHostAppearance(options: RemoteMountOptions): void {
-  const root = document.documentElement;
-  const scheme = options.capabilities.theme?.scheme;
-  const locale = options.capabilities.locale?.locale;
-
-  root.dataset.nebulaCss = 'integration';
-  options.container.dataset.nebulaCss = 'integration';
-  window.__NEBULA_EMBED_SURFACE__ = 'integration';
-
-  if (scheme === 'dark' || scheme === 'light') {
-    root.dataset.nebulaTheme = scheme;
-    options.container.dataset.nebulaTheme = scheme;
-    root.classList.toggle('dark', scheme === 'dark');
-  }
-  if (locale) {
-    root.lang = locale;
-    options.container.dataset.nebulaLocale = locale;
-  }
-}
-
-function clearHostAppearance(container: HTMLElement): void {
-  const root = document.documentElement;
-  delete root.dataset.nebulaCss;
-  delete root.dataset.nebulaTheme;
-  delete container.dataset.nebulaCss;
-  delete container.dataset.nebulaTheme;
-  delete container.dataset.nebulaLocale;
-  delete window.__NEBULA_EMBED_SURFACE__;
-}
 
 function pathForRouter(initialPath: string): string {
   const hashIndex = initialPath.indexOf('#');
@@ -88,7 +64,12 @@ export const nebulaIntegrationApplication: NebulaRemoteApplication = {
   contractVersion: CONTRACT_VERSION,
   async mount(options: RemoteMountOptions): Promise<RemoteHandle> {
     stampFederationRuntimeMode();
-    applyHostAppearance(options);
+    applyRemoteMountAppearance(options.container, {
+      cssNamespace: 'integration',
+      scheme: options.capabilities.theme?.scheme,
+      locale: options.capabilities.locale?.locale,
+    });
+    window.__NEBULA_EMBED_SURFACE__ = 'integration';
     bindHostCapabilities(options.capabilities);
     const offTenant = options.capabilities.events?.subscribe(
       'tenant-changed',
@@ -130,7 +111,8 @@ export const nebulaIntegrationApplication: NebulaRemoteApplication = {
         bindHostCapabilities(undefined);
         app.unmount();
         options.container.replaceChildren();
-        clearHostAppearance(options.container);
+        clearRemoteMountAppearance(options.container);
+        delete window.__NEBULA_EMBED_SURFACE__;
       },
     };
   },

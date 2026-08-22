@@ -6,10 +6,10 @@ import {
   federationRegistrationFromRuntime,
   fetchFrontendRuntimeEntries,
   findFederationRuntimeEntry,
+  iframeRegistrationFromRuntime,
   localDocsFederationRegistration,
   localFederationRegistration,
   normalizeExposedModule,
-  iframeRegistrationFromRuntime,
   resolveExternalHref,
   resolveIframeSrc,
 } from '../frontendRuntime.ts';

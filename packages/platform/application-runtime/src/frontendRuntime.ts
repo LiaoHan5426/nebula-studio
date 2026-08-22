@@ -1,6 +1,7 @@
 import type { GeneratedFrontendRuntimeEntryView } from '@nebula-studio/contracts/generated';
-import { GENERATED_FEDERATION_DEV_ENTRIES } from '@nebula-studio/contracts/generated';
 import type { FrontendRuntimeEntry } from '@nebula-studio/contracts/system';
+
+import { GENERATED_FEDERATION_DEV_ENTRIES } from '@nebula-studio/contracts/generated';
 import { mapFrontendRuntimeEntryFromGenerated } from '@nebula-studio/contracts/system';
 
 import { alignLoopbackIframeSrc, isIframeSrcAllowed } from './hostCsp.ts';

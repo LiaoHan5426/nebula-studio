@@ -5,12 +5,12 @@ import { fileURLToPath } from 'node:url';
 
 import { describe, expect, it } from 'vitest';
 
+import { loadApiContext } from '../config/apiContext.ts';
 import {
   buildAppManifest,
   findMonorepoRoot,
   loadWindowsConfig,
 } from '../config/windowsManifest.ts';
-import { loadApiContext } from '../config/apiContext.ts';
 import { createNebulaApiProxy } from '../proxy/createNebulaApiProxy.ts';
 
 describe('windows manifest', () => {

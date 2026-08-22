@@ -30,9 +30,9 @@
     "@nebula-studio-electron/electron-bridge": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
     "@nebula-studio/auth-provider": "workspace:^",
-    "@nebula-studio/shell-protocol": "workspace:^",
     "@nebula-studio/nebula-layout": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
+    "@nebula-studio/shell-protocol": "workspace:^",
     "vue": "catalog:vue"
   },
   "devDependencies": {

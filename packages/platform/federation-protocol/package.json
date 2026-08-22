@@ -15,14 +15,14 @@
   "license": "UNLICENSED",
   "author": "Liao Han <liaohan5426@gmail.com>",
   "type": "module",
+  "scripts": {
+    "test": "vp test run"
+  },
   "exports": {
     ".": {
       "types": "./src/serve.d.ts",
       "default": "./src/serve.mjs"
     }
-  },
-  "scripts": {
-    "test": "vp test run"
   },
   "devDependencies": {
     "@nebula-studio-internal/tsconfig": "workspace:^",

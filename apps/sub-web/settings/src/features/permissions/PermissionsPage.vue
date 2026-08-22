@@ -379,11 +379,11 @@ function parentCode(row: PermissionNode): string {
               <NebulaButton size="sm" variant="ghost" @click="openDetail(row)">
                 详情
               </NebulaButton>
-              <span class="permission-row-actions__sep" aria-hidden="true" />
+              <span class="permission-row-actions__sep" aria-hidden="true"></span>
               <NebulaButton size="sm" variant="ghost" @click="openEdit(row)">
                 编辑
               </NebulaButton>
-              <span class="permission-row-actions__sep" aria-hidden="true" />
+              <span class="permission-row-actions__sep" aria-hidden="true"></span>
               <NebulaButton
                 size="sm"
                 variant="ghost"
@@ -391,7 +391,7 @@ function parentCode(row: PermissionNode): string {
               >
                 新增下级
               </NebulaButton>
-              <span class="permission-row-actions__sep" aria-hidden="true" />
+              <span class="permission-row-actions__sep" aria-hidden="true"></span>
               <NebulaButton
                 size="sm"
                 variant="ghost"

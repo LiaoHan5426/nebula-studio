@@ -31,11 +31,11 @@ minimumReleaseAgeExclude:
 overrides:
   '@codemirror/state': ^6.7.1
   '@codemirror/view': ^6.43.9
-  vite: 'catalog:vite'
-  vitest: 'catalog:vite'
   # app-builder-lib 26 调用 ElectronDownloadCacheMode.ReadWrite（@electron/get v5+）。
   # 其声明依赖 ^3.0.0 会解析到 3.0.0，pack:win 报 Cannot read properties of undefined (reading 'ReadWrite')。
   '@electron/get': ^5.0.0
+  vite: 'catalog:vite'
+  vitest: 'catalog:vite'
 catalogMode: prefer
 
 catalog:

@@ -92,7 +92,7 @@ export const NebulaTable = defineComponent({
     },
     rowClassName: {
       type: [String, Function] as PropType<
-        string | ((params: unknown) => string)
+        ((params: unknown) => string) | string
       >,
       default: undefined,
     },

@@ -1,4 +1,4 @@
-import { mkdtempSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -6,6 +6,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   createFederationDistResponse,
+  findMonorepoRoot,
   pickFederationRemoteRoots,
   resolveFederationDistFile,
   rewriteFederationPublicPath,
@@ -62,5 +63,13 @@ describe('federation-protocol', () => {
       hasManifest: (dir) => dir === packaged.docs,
     });
     expect(roots).toEqual(packaged);
+  });
+
+  it('finds the monorepo root from a nested cwd', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'nebula-mono-'));
+    writeFileSync(join(dir, 'pnpm-workspace.yaml'), 'packages: []\n');
+    const nested = join(dir, 'apps', 'electron');
+    mkdirSync(nested, { recursive: true });
+    expect(findMonorepoRoot(nested)).toBe(dir);
   });
 });

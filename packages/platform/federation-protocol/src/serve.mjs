@@ -1,5 +1,13 @@
 import { existsSync, readFileSync } from 'node:fs';
-import { basename, extname, isAbsolute, relative, resolve } from 'node:path';
+import {
+  basename,
+  dirname,
+  extname,
+  isAbsolute,
+  join,
+  relative,
+  resolve,
+} from 'node:path';
 
 const corsHeaders = {
   'access-control-allow-origin': '*',
@@ -34,20 +42,20 @@ export function resolveFederationDistFile(roots, hostname, pathname) {
 
 export function contentTypeFor(filePath) {
   switch (extname(filePath).toLowerCase()) {
+    case '.css':
+      return 'text/css; charset=utf-8';
     case '.html':
       return 'text/html; charset=utf-8';
     case '.js':
     case '.mjs':
       return 'text/javascript; charset=utf-8';
-    case '.css':
-      return 'text/css; charset=utf-8';
     case '.json':
     case '.map':
       return 'application/json; charset=utf-8';
-    case '.wasm':
-      return 'application/wasm';
     case '.svg':
       return 'image/svg+xml';
+    case '.wasm':
+      return 'application/wasm';
     default:
       return 'application/octet-stream';
   }
@@ -110,6 +118,23 @@ export function federationProtocolPrivileges() {
  * Packaged Electron uses extraResources; Playwright / electron-vite preview
  * launch `out/main` with `is.dev === false` but no extraResources tree.
  */
+export function findMonorepoRoot(cwd = process.cwd()) {
+  let currentDir = resolve(cwd);
+  while (true) {
+    if (
+      existsSync(join(currentDir, 'pnpm-lock.yaml')) ||
+      existsSync(join(currentDir, 'pnpm-workspace.yaml'))
+    ) {
+      return currentDir;
+    }
+    const parentDir = dirname(currentDir);
+    if (parentDir === currentDir) {
+      return '';
+    }
+    currentDir = parentDir;
+  }
+}
+
 export function pickFederationRemoteRoots(options) {
   const { isDev, packaged, repo, hasManifest } = options;
   const packagedHas = Object.values(packaged).some((dir) => hasManifest(dir));

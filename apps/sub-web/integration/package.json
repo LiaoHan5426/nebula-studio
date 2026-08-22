@@ -33,14 +33,13 @@
     "./auth/session": "./src/shared/auth/session.ts"
   },
   "dependencies": {
-    "@nebula-studio/application-contract": "workspace:^",
-    "@nebula-studio-internal/tailwind": "workspace:^",
     "@nebula-studio-renderer/assembly-boot": "workspace:^",
     "@nebula-studio-renderer/login": "workspace:^",
     "@nebula-studio/api-client": "workspace:^",
-    "@nebula-studio/host-capabilities": "workspace:^",
+    "@nebula-studio/application-contract": "workspace:^",
     "@nebula-studio/auth-provider": "workspace:^",
     "@nebula-studio/contracts": "workspace:^",
+    "@nebula-studio/host-capabilities": "workspace:^",
     "@nebula-studio/nebula-assembly": "workspace:^",
     "@nebula-studio/nebula-code-editor": "workspace:^",
     "@nebula-studio/nebula-flow-editor": "workspace:^",
@@ -52,6 +51,7 @@
     "@nebula-studio/shell-host": "workspace:^",
     "@nebula-studio/shell-protocol": "workspace:^",
     "@nebula-studio/sse-events": "workspace:^",
+    "@nebula-studio/styles": "workspace:^",
     "@nebula-studio/tenant": "workspace:^",
     "vue": "catalog:vue",
     "vue-router": "catalog:vue"

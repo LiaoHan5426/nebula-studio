@@ -9,35 +9,35 @@ import { fileURLToPath } from 'node:url';
 
 import { federation } from '@module-federation/vite';
 
+import { asVitePlugins } from '../federation/asVitePlugins.ts';
+import { createNebulaSharedConfig } from '../federation/createNebulaSharedConfig.ts';
+import { nebulaCssNamespacePlugin } from '../federation/nebulaCssNamespacePlugin.ts';
 import { resolveSubAppRoot } from '../plugin/nebulaWorkspaceManifestPlugin.ts';
 import { createNebulaApiProxy } from '../proxy/createNebulaApiProxy.ts';
 import { createNebulaRendererViteConfig } from './createNebulaRendererViteConfig.ts';
 import { resolveStandaloneApp } from './studioRuntime.ts';
 import { loadWindowsConfig } from './windowsManifest.ts';
-import { asVitePlugins } from '../federation/asVitePlugins.ts';
-import { createNebulaSharedConfig } from '../federation/createNebulaSharedConfig.ts';
-import { nebulaCssNamespacePlugin } from '../federation/nebulaCssNamespacePlugin.ts';
 
 export interface DefineNebulaSubAppConfigOptions {
   /** Sub-app directory name under apps/sub-web (e.g. integration). */
   appId: string;
+  /** Renderer chunk splitting. Federation remotes default to off unless set. */
+  chunks?: import('./chunks/types.ts').NebulaRendererChunksOptions;
   /** Vite config module URL (`import.meta.url` from the sub-app vite.config.ts). */
   configModuleUrl: string | URL;
   /** Dev server port. Defaults to the renderer standalone.port in windows.json. */
   devPort?: number;
-  /** Extra Vite plugins appended to the sub-app config. */
-  plugins?: Plugin[];
-  /** Renderer chunk splitting. Federation remotes default to off unless set. */
-  chunks?: import('./chunks/types.ts').NebulaRendererChunksOptions;
-  /** Options forwarded to createNebulaApiProxy when proxyPreset is set. */
-  proxyOptions?: Omit<CreateNebulaApiProxyOptions, 'preset'>;
-  /** Proxy preset; set false to disable. Defaults to the renderer proxyPreset in windows.json. */
-  proxyPreset?: false | NebulaApiProxyPreset;
   federation?: {
     cssNamespace?: string;
     exposes: Record<string, string>;
     name: string;
   };
+  /** Extra Vite plugins appended to the sub-app config. */
+  plugins?: Plugin[];
+  /** Options forwarded to createNebulaApiProxy when proxyPreset is set. */
+  proxyOptions?: Omit<CreateNebulaApiProxyOptions, 'preset'>;
+  /** Proxy preset; set false to disable. Defaults to the renderer proxyPreset in windows.json. */
+  proxyPreset?: false | NebulaApiProxyPreset;
 }
 
 export function defineNebulaSubAppConfig(

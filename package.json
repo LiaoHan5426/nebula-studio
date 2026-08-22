@@ -31,6 +31,7 @@
     "check:bundle": "node ./scripts/check-bundle-budget.mjs",
     "check:css-sources": "node ./scripts/check-css-sources.mjs",
     "check:boundaries": "node ./scripts/check-boundaries.mjs",
+    "check:inventory": "node ./scripts/check-inventory.mjs",
     "check:editors": "node ./scripts/check-editor-boundaries.mjs && vp run @nebula-studio/nebula-code-editor#typecheck && vp run @nebula-studio/nebula-code-editor#test && vp run @nebula-studio/nebula-code-editor#build && vp run @nebula-studio/nebula-code-editor#check:bundle",
     "check:mf-poc": "node ./scripts/check-mf-poc.mjs",
     "check:docs-mf": "node ./scripts/check-docs-mf.mjs",
@@ -40,7 +41,7 @@
     "check:host-workspace": "node ./scripts/check-host-workspace.mjs",
     "check:iframe-driver": "node ./scripts/check-iframe-driver.mjs",
     "check:remote-resilience": "node ./scripts/check-remote-resilience.mjs",
-    "check:federation": "node ./scripts/check-boundaries.mjs && node ./scripts/check-remote-resilience.mjs && vp run --filter @nebula-studio/host-capabilities test && vp run --filter @nebula-studio/application-runtime test && vp run --filter @nebula-studio/federation-protocol test && vp run --filter @nebula-studio-internal/vite test && vp run --filter @nebula-studio-internal/node test",
+    "check:federation": "node ./scripts/check-boundaries.mjs && node ./scripts/check-inventory.mjs && node ./scripts/check-remote-resilience.mjs && vp run --filter @nebula-studio/host-capabilities test && vp run --filter @nebula-studio/application-runtime test && vp run --filter @nebula-studio/federation-protocol test && vp run --filter @nebula-studio-internal/vite test && vp run --filter @nebula-studio-internal/node test",
     "dev:mf-poc": "vp run mf-poc-host#dev",
     "dev:mf-poc:electron": "node ./apps/mf-poc-host/electron-poc/launch.mjs",
     "dev:mf-poc:electron-file": "node ./apps/mf-poc-host/electron-poc/launch.mjs --file",
@@ -71,10 +72,10 @@
   },
   "devDependencies": {
     "@nebula-studio-internal/eslint": "workspace:^",
+    "@nebula-studio-internal/node": "workspace:^",
     "@nebula-studio-internal/oxfmt": "workspace:^",
     "@nebula-studio-internal/oxlint": "workspace:^",
     "@nebula-studio-internal/stylelint": "workspace:^",
-    "@nebula-studio-internal/node": "workspace:^",
     "@nebula-studio-internal/tsconfig": "workspace:^",
     "@nebula-studio/types": "workspace:^",
     "@playwright/test": "catalog:test",
@@ -89,7 +90,7 @@
     "tailwindcss": "catalog:style",
     "unconfig": "catalog:utils",
     "vite-plus": "catalog:vite",
-    "vitest": "^4.1.10"
+    "vitest": "catalog:vite"
   },
   "engines": {
     "node": ">=22.12.0"

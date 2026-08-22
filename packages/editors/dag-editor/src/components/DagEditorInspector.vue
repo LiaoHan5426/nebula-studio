@@ -3,8 +3,8 @@ import type { PluginNodeSchema } from '@nebula-studio/nebula-low-render';
 
 import { computed } from 'vue';
 
-import { NebulaCodeEditor } from '@nebula-studio/nebula-code-editor';
 import { tryUseEditorHost } from '@nebula-studio/nebula-assembly';
+import { NebulaCodeEditor } from '@nebula-studio/nebula-code-editor';
 import { PluginNodeForm } from '@nebula-studio/nebula-low-render';
 import { NebulaButton } from '@nebula-studio/nebula-ui';
 

@@ -1,0 +1,36 @@
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+import { describe, expect, it } from 'vitest';
+
+const studioRoot = join(
+  dirname(fileURLToPath(import.meta.url)),
+  '../../../..',
+);
+
+describe('production CSS layering', () => {
+  it('Federation entries import the remote CSS chain, not document preflight', () => {
+    for (const rel of [
+      'apps/sub-web/docs/src/federation.ts',
+      'apps/sub-web/settings/src/federation.ts',
+      'apps/sub-web/integration/src/federation.ts',
+    ]) {
+      const source = readFileSync(join(studioRoot, rel), 'utf8');
+      expect(source).toContain("@nebula-studio/styles/remote");
+      expect(source).not.toContain('styles/document');
+      expect(source).not.toContain('tailwind/electron');
+      expect(source).not.toContain('document.documentElement.dataset.nebulaCss');
+    }
+  });
+
+  it('remote.css has no html preflight leak', () => {
+    const remote = readFileSync(
+      join(studioRoot, 'tools/tailwindcss/src/remote.css'),
+      'utf8',
+    );
+    expect(remote).toContain("import './theme.css'");
+    expect(remote).not.toMatch(/html\s*\{/);
+    expect(remote).not.toContain('preflight');
+  });
+});

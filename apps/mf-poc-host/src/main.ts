@@ -4,7 +4,7 @@ import {
 } from '@nebula-studio/application-runtime';
 import { createPocHostCapabilities } from '@nebula-studio/host-capabilities';
 
-type PocRemoteId = 'hello' | 'hello-style-b' | 'hello-dual';
+type PocRemoteId = 'hello' | 'hello-dual' | 'hello-style-b';
 
 function pocMode(): 'file' | 'http' {
   return new URLSearchParams(location.search).get('mf') === 'file'

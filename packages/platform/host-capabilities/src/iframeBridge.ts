@@ -432,7 +432,7 @@ export function installIframeCapabilityGuest(options: {
       protocolVersion: IFRAME_CAPABILITY_PROTOCOL_VERSION,
       nonce: event.data.nonce,
     };
-    (event.source as Window | null)?.postMessage(ack, event.origin, [
+    (event.source as null | Window)?.postMessage(ack, event.origin, [
       channel.port2,
     ]);
   }

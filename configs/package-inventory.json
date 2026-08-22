@@ -1,0 +1,292 @@
+{
+  "schemaVersion": 1,
+  "totals": {
+    "apps": 11,
+    "packages": 30,
+    "internal": 2,
+    "tools": 6,
+    "all": 49
+  },
+  "maxTotals": {
+    "apps": 11,
+    "packages": 30,
+    "internal": 2,
+    "tools": 6,
+    "all": 49
+  },
+  "packages": [
+    {
+      "name": "@nebula-studio/electron",
+      "dir": "apps/electron",
+      "category": "apps"
+    },
+    {
+      "name": "@nebula-studio/mf-poc-host",
+      "dir": "apps/mf-poc-host",
+      "category": "apps"
+    },
+    {
+      "name": "@nebula-studio-renderer/hello",
+      "dir": "apps/remotes/hello",
+      "category": "apps"
+    },
+    {
+      "name": "@nebula-studio-renderer/hello-dual",
+      "dir": "apps/remotes/hello-dual",
+      "category": "apps"
+    },
+    {
+      "name": "@nebula-studio-renderer/hello-style-b",
+      "dir": "apps/remotes/hello-style-b",
+      "category": "apps"
+    },
+    {
+      "name": "@nebula-studio-renderer/docs",
+      "dir": "apps/sub-web/docs",
+      "category": "apps"
+    },
+    {
+      "name": "@nebula-studio-renderer/main",
+      "dir": "apps/sub-web/frontend",
+      "category": "apps"
+    },
+    {
+      "name": "@nebula-studio-renderer/integration",
+      "dir": "apps/sub-web/integration",
+      "category": "apps"
+    },
+    {
+      "name": "@nebula-studio-renderer/login",
+      "dir": "apps/sub-web/login",
+      "category": "apps"
+    },
+    {
+      "name": "@nebula-studio-renderer/settings",
+      "dir": "apps/sub-web/settings",
+      "category": "apps"
+    },
+    {
+      "name": "@nebula-studio/web",
+      "dir": "apps/web",
+      "category": "apps"
+    },
+    {
+      "name": "@nebula-studio-internal/node",
+      "dir": "internal/node",
+      "category": "internal"
+    },
+    {
+      "name": "@nebula-studio-internal/vite",
+      "dir": "internal/vite",
+      "category": "internal"
+    },
+    {
+      "name": "@nebula-studio/contracts",
+      "dir": "packages/contracts",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/api-client",
+      "dir": "packages/core/api-client",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/app-shell",
+      "dir": "packages/core/app-shell",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/auth",
+      "dir": "packages/core/auth",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/auth-provider",
+      "dir": "packages/core/auth-provider",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio-electron/electron-bridge",
+      "dir": "packages/core/electron-shared",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/runtime",
+      "dir": "packages/core/runtime",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/sse-events",
+      "dir": "packages/core/sse-events",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/tenant",
+      "dir": "packages/core/tenant",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/nebula-code-editor",
+      "dir": "packages/editors/code-editor",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/nebula-dag-editor",
+      "dir": "packages/editors/dag-editor",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/nebula-flow-editor",
+      "dir": "packages/editors/flow-editor",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/nebula-integration-panel",
+      "dir": "packages/editors/integration-panel",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/nebula-low-render",
+      "dir": "packages/editors/low-code-form",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/use-confirm",
+      "dir": "packages/features/use-confirm",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/application-contract",
+      "dir": "packages/platform/application-contract",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/application-runtime",
+      "dir": "packages/platform/application-runtime",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio-renderer/assembly-boot",
+      "dir": "packages/platform/assembly-boot",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/federation-protocol",
+      "dir": "packages/platform/federation-protocol",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/host-capabilities",
+      "dir": "packages/platform/host-capabilities",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/shell-host",
+      "dir": "packages/platform/shell-host",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/shell-protocol",
+      "dir": "packages/platform/shell-protocol",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/styles",
+      "dir": "packages/styles",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/msw",
+      "dir": "packages/testing/msw",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/types",
+      "dir": "packages/types",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/nebula-agent",
+      "dir": "packages/ui/nebula-agent",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/nebula-assembly",
+      "dir": "packages/ui/nebula-assembly",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/nebula-layout",
+      "dir": "packages/ui/nebula-layout",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/nebula-ui",
+      "dir": "packages/ui/nebula-ui",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/nebula-shell",
+      "dir": "packages/ui/shell-ui",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio-internal/eslint",
+      "dir": "tools/lint/eslint",
+      "category": "tools"
+    },
+    {
+      "name": "@nebula-studio-internal/oxfmt",
+      "dir": "tools/lint/oxfmt",
+      "category": "tools"
+    },
+    {
+      "name": "@nebula-studio-internal/oxlint",
+      "dir": "tools/lint/oxlint",
+      "category": "tools"
+    },
+    {
+      "name": "@nebula-studio-internal/stylelint",
+      "dir": "tools/lint/stylelint",
+      "category": "tools"
+    },
+    {
+      "name": "@nebula-studio-internal/tailwind",
+      "dir": "tools/tailwindcss",
+      "category": "tools"
+    },
+    {
+      "name": "@nebula-studio-internal/tsconfig",
+      "dir": "tools/tsconfig",
+      "category": "tools"
+    }
+  ],
+  "knownDuplicateBootBlocks": [
+    {
+      "id": "standalone-boot.ts",
+      "files": [
+        "apps/sub-web/docs/src/boot.ts",
+        "apps/sub-web/settings/src/boot.ts",
+        "apps/sub-web/integration/src/boot.ts",
+        "apps/sub-web/frontend/src/boot.ts",
+        "apps/sub-web/login/src/boot.ts"
+      ],
+      "note": "Five standalone boots still share document CSS + bootMicroApp + assembly. Federation remotes use federation.ts instead."
+    },
+    {
+      "id": "host-vs-standalone-workspace-login",
+      "files": [
+        "apps/web/src/workspace/bootHostWorkspace.ts",
+        "apps/sub-web/frontend/src/boot.ts",
+        "apps/web/src/auth/bootHostLogin.ts",
+        "apps/sub-web/login/src/boot.ts"
+      ],
+      "note": "Host bootHost* still near-clones standalone workspace/login. Federation appearance helper was extracted to shell-protocol."
+    }
+  ],
+  "notes": {
+    "hostGzipBaseline": "configs/bundle-baseline.json",
+    "cssNamespace": "application id; Host in-memory duplicate rejection; nebula-css-source-report.json",
+    "cspNonceGateway": "intentionally not implemented"
+  }
+}

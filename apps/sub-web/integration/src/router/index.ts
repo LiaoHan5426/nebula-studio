@@ -12,8 +12,8 @@ import {
   createWebHistory,
 } from 'vue-router';
 
-import { WEB_SHELL_EMBED_QUERY } from '@nebula-studio/shell-protocol';
 import { defineExperiencePageMeta } from '@nebula-studio/nebula-layout';
+import { WEB_SHELL_EMBED_QUERY } from '@nebula-studio/shell-protocol';
 
 import { PLATFORM_ADMIN_HOME, PORTAL_HOME } from '@/app/navigation';
 import { isPlatformAdmin } from '@/shared/auth/roles';

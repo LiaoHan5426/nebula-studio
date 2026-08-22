@@ -1,13 +1,14 @@
+import type { RuntimeMode } from '@nebula-studio/shell-protocol';
+
 import { bootMicroApp } from '@nebula-studio/runtime';
-import type { RuntimeMode } from '@nebula-studio/runtime';
 import { installWebPresentationUnlessElectron } from '@nebula-studio/shell-host';
+import '@nebula-studio/styles/document';
+
 import {
   installAssemblyForSubApp,
   wrapSubAppWithAssembly,
 } from '@nebula-studio-renderer/assembly-boot';
 import LoginApp from '@nebula-studio-renderer/login/app';
-
-import '@nebula-studio-internal/tailwind/electron';
 
 /**
  * Host-owned login surface for Web `/?embed=login` and the Electron login window.

@@ -2,7 +2,6 @@ import type { ElectronAuthSession } from '@nebula-studio/contracts/auth';
 
 import type { AuthBootstrapOptions, AuthStrategy } from '../types';
 
-import { SHELL_AUTH_UNAUTHORIZED_EVENT } from '@nebula-studio/auth-provider/web';
 import { globalAuthProvider } from '@nebula-studio/auth-provider';
 /**
  * ElectronStrategy — Electron 桌面模式认证策略。
@@ -21,6 +20,7 @@ import {
   hasValidAuthToken,
   setAuthSession,
 } from '@nebula-studio/auth-provider/session';
+import { SHELL_AUTH_UNAUTHORIZED_EVENT } from '@nebula-studio/auth-provider/web';
 
 interface ElectronAPI {
   ipcRenderer: {

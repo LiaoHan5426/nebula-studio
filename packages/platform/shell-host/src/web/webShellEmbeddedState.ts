@@ -1,15 +1,17 @@
 import type { EmbeddedShellWindowId } from '@nebula-studio/app-shell/shell-config';
+
 import { getEmbeddedShellWindowIds } from '@nebula-studio/app-shell/shell-config';
 import {
   getDefaultEnabledShellIntegrableIds,
   isShellIntegrableAppId,
   listShellIntegrableAppIds,
 } from '@nebula-studio/app-shell/shell-integration';
-import { UNHANDLED } from '@nebula-studio-electron/electron-bridge/vue';
 import {
   persistActiveViewPreference,
   SHELL_ACTIVE_VIEW_STORAGE_KEY,
 } from '@nebula-studio/shell-protocol';
+
+import { UNHANDLED } from '@nebula-studio-electron/electron-bridge/vue';
 
 type PreferenceIpcListener = (
   event: unknown,

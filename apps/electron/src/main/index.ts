@@ -1,13 +1,14 @@
 import { GENERATED_STANDALONE_APPS } from '@nebula-studio/contracts/generated';
-import {
-  attachNebulaRemoteProtocolHandler,
-  nebulaRemoteOrigin,
-} from './federation/registerNebulaRemoteProtocol';
+
 import { electronApp, is, optimizer } from '@electron-toolkit/utils';
 import { bootstrapShellIntegratedApps } from '@nebula-studio-renderer/main/platform/integrated-apps';
 import { app } from 'electron';
 
 import { MainAppLauncher } from './bootstrap/MainAppLauncher';
+import {
+  attachNebulaRemoteProtocolHandler,
+  nebulaRemoteOrigin,
+} from './federation/registerNebulaRemoteProtocol';
 import { AppearanceSettingsModule } from './modules/AppearanceSettingsModule';
 import { ApplicationLogger } from './modules/ApplicationLogger';
 import { ApplicationTerminatorOnLastWindowCloseModule } from './modules/ApplicationTerminatorOnLastWindowCloseModule';
@@ -39,8 +40,8 @@ app.whenReady().then(async () => {
   const allowedOrigins = new Set<string>([
     'file://',
     nebulaRemoteOrigin('docs'),
-    nebulaRemoteOrigin('settings'),
     nebulaRemoteOrigin('integration'),
+    nebulaRemoteOrigin('settings'),
   ]);
   if (is.dev && process.env.ELECTRON_RENDERER_URL) {
     allowedOrigins.add(new URL(process.env.ELECTRON_RENDERER_URL).origin);

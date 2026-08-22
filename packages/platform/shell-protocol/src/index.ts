@@ -31,6 +31,13 @@ export type {
   ShellEmbedResetPayload,
 } from './embedMessaging';
 export {
+  getWebShellEmbedSurface,
+  isShellIframeEmbed,
+  isSurfaceEmbed,
+  isSurfaceIframeEmbed,
+  WEB_SHELL_EMBED_QUERY,
+} from './embedSurface';
+export {
   createEventBus,
   resolveShellEventBus,
   wireShellEventBus,
@@ -41,6 +48,19 @@ export type {
   WireShellEventBusOptions,
 } from './eventBus';
 export {
+  __resetShellHostBridgeForTests,
+  getShellHostBridge,
+  setShellHostBridge,
+} from './hostBridge';
+export type { ShellHostBridge, ShellHostKind } from './hostBridge';
+export {
+  getLayoutHostMode,
+  isShellEmbedSurface,
+  LAYOUT_PREFERENCES_STORAGE_KEY,
+  layoutHostModeFromRuntimeMode,
+} from './layoutHost';
+export type { LayoutHostMode, ShellEmbedSurface } from './layoutHost';
+export {
   getPresentationHost,
   isWebPresentationHost,
   isWebShellHost,
@@ -49,30 +69,15 @@ export {
 } from './presentationHost';
 export type { PresentationHostKind } from './presentationHost';
 export {
-  __resetShellHostBridgeForTests,
-  getShellHostBridge,
-  setShellHostBridge,
-} from './hostBridge';
-export type { ShellHostBridge, ShellHostKind } from './hostBridge';
-export { SHELL_ACTIVE_VIEW_STORAGE_KEY } from './storageKeys';
-export {
-  getWebShellEmbedSurface,
-  isShellIframeEmbed,
-  isSurfaceEmbed,
-  isSurfaceIframeEmbed,
-  WEB_SHELL_EMBED_QUERY,
-} from './embedSurface';
-export {
-  getLayoutHostMode,
-  isShellEmbedSurface,
-  LAYOUT_PREFERENCES_STORAGE_KEY,
-  layoutHostModeFromRuntimeMode,
-} from './layoutHost';
-export type { LayoutHostMode, ShellEmbedSurface } from './layoutHost';
-export type { RuntimeMode } from './runtimeMode';
-export { requireRuntimeMode, stampFederationRuntimeMode } from './runtimeMode';
+  applyRemoteMountAppearance,
+  clearRemoteMountAppearance,
+} from './remoteMountAppearance';
+export type { RemoteMountAppearance } from './remoteMountAppearance';
 export {
   __resetResolvedRuntimeModeForTests,
   getResolvedRuntimeMode,
   setResolvedRuntimeMode,
 } from './resolvedMode';
+export type { RuntimeMode } from './runtimeMode';
+export { requireRuntimeMode, stampFederationRuntimeMode } from './runtimeMode';
+export { SHELL_ACTIVE_VIEW_STORAGE_KEY } from './storageKeys';

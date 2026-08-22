@@ -8,7 +8,6 @@ import type {
   GeneratedShellApp,
   GeneratedUser,
 } from '../generated/facade.ts';
-
 import type {
   ConfigItem,
   FrontendAppDriver,

@@ -1,8 +1,9 @@
+import type { ResourceSummaryViewModel } from '../types';
+
 import { describe, expect, it } from 'vitest';
 
-import { filterCatalogItems } from '../useResourceCatalogPage';
-import type { ResourceSummaryViewModel } from '../types';
 import { DEFAULT_CATALOG_QUERY } from '../types';
+import { filterCatalogItems } from '../useResourceCatalogPage';
 
 const sampleItems: ResourceSummaryViewModel[] = [
   {

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, reactive } from 'vue';
 
-import { isWebPresentationHost } from '@nebula-studio/app-shell';
+import { isWebPresentationHost } from '@nebula-studio/shell-protocol';
+
 import { resolveRendererProcess } from '@nebula-studio-electron/electron-bridge/vue';
 
 const process = resolveRendererProcess();

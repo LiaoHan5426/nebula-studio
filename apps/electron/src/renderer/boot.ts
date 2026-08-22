@@ -1,11 +1,10 @@
-import { WEB_SHELL_EMBED_QUERY } from '@nebula-studio/shell-protocol';
 import { installShellIframeElectronBridge } from '@nebula-studio/shell-host';
+import { WEB_SHELL_EMBED_QUERY } from '@nebula-studio/shell-protocol';
+import '@nebula-studio/styles/document';
 
 import appConfig from '../../app.config';
 import { resolveRendererEntry } from '../main/windowRegistry';
 import { bootFederationRenderer } from './bootFederation';
-
-import '@nebula-studio-internal/tailwind/electron';
 
 import './styles/electron-overrides.css';
 

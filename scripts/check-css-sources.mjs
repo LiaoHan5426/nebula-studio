@@ -29,6 +29,35 @@ if (/@source\s+['"][^'"]*(?:\/packages\/?['"]|\/apps\/?['"])/.test(theme)) {
   failures.push('theme.css still contains a repo-wide @source');
 }
 
+const remoteCss = readFileSync(
+  join(root, 'tools/tailwindcss/src/remote.css'),
+  'utf8',
+);
+if (remoteCss.includes('preflight') || remoteCss.includes('@layer base')) {
+  failures.push('remote.css must not include preflight or @layer base');
+}
+const documentCss = readFileSync(
+  join(root, 'tools/tailwindcss/src/document.css'),
+  'utf8',
+);
+if (!documentCss.includes('preflight')) {
+  failures.push('document.css must include Tailwind preflight for Host/standalone');
+}
+
+for (const remoteFed of [
+  'apps/sub-web/docs/src/federation.ts',
+  'apps/sub-web/settings/src/federation.ts',
+  'apps/sub-web/integration/src/federation.ts',
+]) {
+  const source = readFileSync(join(root, remoteFed), 'utf8');
+  if (
+    source.includes('styles/document') ||
+    source.includes('tailwind/electron')
+  ) {
+    failures.push(`${remoteFed} must import @nebula-studio/styles/remote only`);
+  }
+}
+
 if (failures.length) {
   console.error('[check:css-sources]');
   for (const message of failures) {

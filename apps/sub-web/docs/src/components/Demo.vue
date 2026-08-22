@@ -5,6 +5,19 @@ import { markRaw, onMounted, ref, shallowRef, watch } from 'vue';
 
 import { renderShikiHtml } from '@/utils/shikiRender';
 
+const props = withDefaults(
+  defineProps<{
+    component?: Component | Record<string, unknown>;
+    id?: string;
+    showSource?: boolean;
+    source?: string;
+  }>(),
+  {
+    source: '',
+    showSource: true,
+  },
+);
+
 function resolveVueComponent(input: unknown): Component | undefined {
   if (input === null || input === undefined) return undefined;
   if (typeof input === 'function') return input as Component;
@@ -24,19 +37,6 @@ function resolveVueComponent(input: unknown): Component | undefined {
   }
   return undefined;
 }
-
-const props = withDefaults(
-  defineProps<{
-    component?: Component | Record<string, unknown>;
-    id?: string;
-    showSource?: boolean;
-    source?: string;
-  }>(),
-  {
-    source: '',
-    showSource: true,
-  },
-);
 
 const highlightedCode = ref('');
 const demoComponent = shallowRef<Component | undefined>();

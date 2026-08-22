@@ -3,6 +3,25 @@ import type { BreadcrumbSegment } from '@nebula-studio/nebula-layout';
 
 import { computed, ref, watch } from 'vue';
 
+import {
+  getShellIntegratedAppMeta,
+  isShellIntegrableAppId,
+  isShellStandaloneSidebarApp,
+  shellPresentationConfig,
+} from '@nebula-studio/app-shell';
+import {
+  clearWebAuthSession,
+  hasValidShellAuthSession,
+  writeWebAuthSession,
+} from '@nebula-studio/auth-provider/storage';
+import { ACCENT_PRESETS } from '@nebula-studio/nebula-layout';
+import {
+  getShellHostBridge,
+  postShellEmbedReset,
+  SHELL_SURFACE_WORKSPACE,
+  WEB_SHELL_EMBED_QUERY,
+} from '@nebula-studio/shell-protocol';
+
 /**
  * Shell 生命周期 composable。
  *
@@ -11,24 +30,6 @@ import { computed, ref, watch } from 'vue';
  * 并管理主题、标签、面包屑、认证会话、IPC 事件等。
  */
 import { resolveRendererIpc } from '@nebula-studio-electron/electron-bridge/vue';
-import {
-  clearWebAuthSession,
-  hasValidShellAuthSession,
-  writeWebAuthSession,
-} from '@nebula-studio/auth-provider/storage';
-import {
-  getShellHostBridge,
-  postShellEmbedReset,
-  SHELL_SURFACE_WORKSPACE,
-  WEB_SHELL_EMBED_QUERY,
-} from '@nebula-studio/shell-protocol';
-import {
-  getShellIntegratedAppMeta,
-  isShellIntegrableAppId,
-  isShellStandaloneSidebarApp,
-  shellPresentationConfig,
-} from '@nebula-studio/app-shell';
-import { ACCENT_PRESETS } from '@nebula-studio/nebula-layout';
 
 import { useAppIntegration } from './useAppIntegration.js';
 import { useEmbeddedViews } from './useEmbeddedViews.js';
@@ -517,7 +518,7 @@ export function useAppLifecycle(opts: UseAppLifecycleOptions) {
 
   // ─── IPC handlers ──────────────────────────────────────
   const onThemeChanged = (_e: unknown, ...args: unknown[]): void => {
-    const p = args[0] as { theme?: ThemeMode } | undefined;
+    const p = args[0] as undefined | { theme?: ThemeMode };
     if (p?.theme === 'light' || p?.theme === 'dark') {
       isThemeSwitching.value = true;
       theme.value = p.theme;

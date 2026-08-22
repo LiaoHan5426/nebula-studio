@@ -71,7 +71,7 @@ export interface ShellAppRecord {
 }
 
 /** Mapped from generated FrontendApplicationView / FrontendRuntimeEntryView. */
-export type FrontendAppDriver = 'native' | 'federation' | 'iframe' | 'external';
+export type FrontendAppDriver = 'external' | 'federation' | 'iframe' | 'native';
 
 export interface FrontendApplicationRecord {
   category?: string;
@@ -109,17 +109,21 @@ export interface FrontendApplicationVersionRecord {
 }
 
 export interface FrontendRuntimeEntry {
+  allowedOrigins?: string[];
   category?: string;
   channel?: string;
   contractVersion?: number;
+  defaultEnabled?: boolean;
   defaultPath?: string;
   description?: string;
   driver: FrontendAppDriver;
   electronEnabled: boolean;
   exposedModule?: string;
+  helpKey?: string;
   hostVersionRange?: string;
   icon?: string;
   id: string;
+  integratable?: boolean;
   integrity?: string;
   manifestUrl?: string;
   name: string;
@@ -133,14 +137,10 @@ export interface FrontendRuntimeEntry {
   routeBase?: string;
   searchKeywords?: string[];
   signature?: string;
-  allowedOrigins?: string[];
   sortOrder?: number;
   source: 'frontend' | 'shell-app';
   version?: string;
   webEnabled: boolean;
-  defaultEnabled?: boolean;
-  helpKey?: string;
-  integratable?: boolean;
 }
 
 export interface ConfigItem {

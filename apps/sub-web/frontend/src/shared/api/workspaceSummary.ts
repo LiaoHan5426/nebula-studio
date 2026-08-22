@@ -1,8 +1,8 @@
 import type { ApiResponse } from '@nebula-studio/api-client';
 
 import { createStudioApiClient } from '@nebula-studio/api-client';
-import { handleShellAuthUnauthorized } from '@nebula-studio/app-shell';
 import { globalAuthProvider } from '@nebula-studio/auth-provider';
+import { handleShellAuthUnauthorized } from '@nebula-studio/auth-provider/web';
 
 import { ensureAuthMode, isSessionAuthMode } from '@/shared/auth/authMode';
 

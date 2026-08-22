@@ -1,7 +1,7 @@
-import { defineAsyncComponent } from 'vue';
-
 import type BpmnEditorSfc from './components/BpmnEditor.vue';
 import type IntegrationBpmnEditorSfc from './components/IntegrationBpmnEditor.vue';
+
+import { defineAsyncComponent } from 'vue';
 
 export const BpmnEditor = defineAsyncComponent(
   () => import('./components/BpmnEditor.vue'),

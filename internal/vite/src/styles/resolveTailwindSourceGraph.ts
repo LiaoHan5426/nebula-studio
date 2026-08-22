@@ -17,9 +17,9 @@ const SKIP_PACKAGES = new Set([
 ]);
 
 export interface TailwindSourceEntry {
-  packageName: string;
   /** Absolute directory Tailwind should scan. */
   absoluteDir: string;
+  packageName: string;
   /** Repo-relative POSIX path for reports. */
   repoRelativeDir: string;
 }
@@ -52,7 +52,7 @@ function isRepoWideScanDir(dir: string, repoRoot: string): boolean {
   );
 }
 
-function readJson(path: string): Record<string, unknown> | null {
+function readJson(path: string): null | Record<string, unknown> {
   if (!existsSync(path)) {
     return null;
   }
@@ -84,7 +84,7 @@ function workspacePackageNames(manifest: Record<string, unknown>): string[] {
 function resolveInstalledPackageDir(
   fromDir: string,
   packageName: string,
-): string | null {
+): null | string {
   let current = fromDir;
   while (true) {
     const candidate = join(current, 'node_modules', ...packageName.split('/'));
@@ -99,7 +99,7 @@ function resolveInstalledPackageDir(
   }
 }
 
-function sourceDirForPackage(packageDir: string): string | null {
+function sourceDirForPackage(packageDir: string): null | string {
   const src = join(packageDir, 'src');
   return existsSync(src) ? src : null;
 }

@@ -5,10 +5,10 @@ export interface CreateNebulaSharedConfigOptions {
 }
 
 export interface NebulaSharedEntry {
-  singleton?: boolean;
-  requiredVersion?: string | false;
-  strictVersion?: boolean;
   eager?: boolean;
+  requiredVersion?: false | string;
+  singleton?: boolean;
+  strictVersion?: boolean;
 }
 
 const PACKAGE_NAME: Record<NebulaSharedLibrary, string> = {

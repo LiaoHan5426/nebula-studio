@@ -1,15 +1,15 @@
-import type { RuntimeMode } from '@nebula-studio/runtime';
+import type { RuntimeMode } from '@nebula-studio/shell-protocol';
 
 import { bootMicroApp } from '@nebula-studio/runtime';
 import { installWebPresentationUnlessElectron } from '@nebula-studio/shell-host';
+import '@nebula-studio/styles/document';
+
 import {
   installAssemblyForSubApp,
   wrapSubAppWithAssembly,
 } from '@nebula-studio-renderer/assembly-boot';
 
 import AppComponent from './App.vue';
-
-import '@nebula-studio-internal/tailwind/electron';
 
 /**
  * Login 子应用统一启动入口。

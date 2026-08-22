@@ -1,7 +1,7 @@
 const ENVELOPE =
   /^nebula-sig-v1;alg=(Ed25519|ECDSA-P256-SHA256);pk=([A-Za-z0-9_-]+);sig=([A-Za-z0-9_-]+)$/;
 
-export type ManifestSignatureAlgorithm = 'Ed25519' | 'ECDSA-P256-SHA256';
+export type ManifestSignatureAlgorithm = 'ECDSA-P256-SHA256' | 'Ed25519';
 
 export interface ParsedManifestSignature {
   algorithm: ManifestSignatureAlgorithm;

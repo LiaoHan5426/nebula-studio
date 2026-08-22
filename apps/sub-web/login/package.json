@@ -26,7 +26,6 @@
     "./boot": "./src/boot.ts"
   },
   "dependencies": {
-    "@nebula-studio-internal/tailwind": "workspace:^",
     "@nebula-studio-renderer/assembly-boot": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
     "@nebula-studio/auth-provider": "workspace:^",
@@ -36,6 +35,8 @@
     "@nebula-studio/nebula-ui": "workspace:^",
     "@nebula-studio/runtime": "workspace:^",
     "@nebula-studio/shell-host": "workspace:^",
+    "@nebula-studio/shell-protocol": "workspace:^",
+    "@nebula-studio/styles": "workspace:^",
     "vue": "catalog:vue"
   },
   "devDependencies": {

@@ -1,6 +1,8 @@
-import { overlayContainerKey } from '@nebula-studio/nebula-ui';
-import { createApp, defineComponent, h, inject, nextTick } from 'vue';
 import type { Ref } from 'vue';
+
+import { createApp, defineComponent, h, inject, nextTick } from 'vue';
+
+import { overlayContainerKey } from '@nebula-studio/nebula-ui';
 
 import { describe, expect, it } from 'vitest';
 

@@ -35,13 +35,18 @@
       "types": "./src/electron.ts",
       "default": "./src/electron.ts"
     },
+    "./document": {
+      "default": "./src/document.css"
+    },
+    "./remote": {
+      "default": "./src/remote.css"
+    },
     "./theme": {
       "default": "./src/theme.css"
     }
   },
   "dependencies": {
     "@iconify/tailwind4": "catalog:style",
-    "@nebula-studio/styles": "workspace:^",
     "@tailwindcss/typography": "catalog:style",
     "@tailwindcss/vite": "catalog:style",
     "tailwindcss": "catalog:style",

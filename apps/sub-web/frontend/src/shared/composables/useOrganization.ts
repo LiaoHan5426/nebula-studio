@@ -5,7 +5,7 @@ import { computed, ref } from 'vue';
 import {
   readWebAuthSession,
   writeWebAuthSession,
-} from '@nebula-studio/app-shell';
+} from '@nebula-studio/auth-provider/storage';
 
 import { setCurrentOrgId } from '@/shared/api/client';
 import { authMeApi, authModeApi, switchOrgApi } from '@/shared/api/systemAuth';

@@ -386,9 +386,6 @@ importers:
       '@nebula-studio-electron/electron-bridge':
         specifier: workspace:^
         version: link:../../packages/core/electron-shared
-      '@nebula-studio-internal/node':
-        specifier: workspace:^
-        version: link:../../internal/node
       '@nebula-studio/app-shell':
         specifier: workspace:^
         version: link:../../packages/core/app-shell
@@ -420,9 +417,6 @@ importers:
         specifier: catalog:parser
         version: 2.9.0
     devDependencies:
-      '@nebula-studio-internal/tailwind':
-        specifier: workspace:^
-        version: link:../../tools/tailwindcss
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
         version: link:../../tools/tsconfig
@@ -450,6 +444,9 @@ importers:
       '@nebula-studio/runtime':
         specifier: workspace:^
         version: link:../../packages/core/runtime
+      '@nebula-studio/styles':
+        specifier: workspace:^
+        version: link:../../packages/styles
       '@nebula-studio/types':
         specifier: workspace:^
         version: link:../../packages/types
@@ -686,9 +683,6 @@ importers:
       '@nebula-studio-electron/electron-bridge':
         specifier: workspace:^
         version: link:../../../packages/core/electron-shared
-      '@nebula-studio-internal/tailwind':
-        specifier: workspace:^
-        version: link:../../../tools/tailwindcss
       '@nebula-studio-renderer/assembly-boot':
         specifier: workspace:^
         version: link:../../../packages/platform/assembly-boot
@@ -725,6 +719,12 @@ importers:
       '@nebula-studio/shell-host':
         specifier: workspace:^
         version: link:../../../packages/platform/shell-host
+      '@nebula-studio/shell-protocol':
+        specifier: workspace:^
+        version: link:../../../packages/platform/shell-protocol
+      '@nebula-studio/styles':
+        specifier: workspace:^
+        version: link:../../../packages/styles
       vue:
         specifier: catalog:vue
         version: 3.5.41(typescript@6.0.3)
@@ -765,9 +765,6 @@ importers:
 
   apps/sub-web/integration:
     dependencies:
-      '@nebula-studio-internal/tailwind':
-        specifier: workspace:^
-        version: link:../../../tools/tailwindcss
       '@nebula-studio-renderer/assembly-boot':
         specifier: workspace:^
         version: link:../../../packages/platform/assembly-boot
@@ -822,6 +819,9 @@ importers:
       '@nebula-studio/sse-events':
         specifier: workspace:^
         version: link:../../../packages/core/sse-events
+      '@nebula-studio/styles':
+        specifier: workspace:^
+        version: link:../../../packages/styles
       '@nebula-studio/tenant':
         specifier: workspace:^
         version: link:../../../packages/core/tenant
@@ -868,9 +868,6 @@ importers:
 
   apps/sub-web/login:
     dependencies:
-      '@nebula-studio-internal/tailwind':
-        specifier: workspace:^
-        version: link:../../../tools/tailwindcss
       '@nebula-studio-renderer/assembly-boot':
         specifier: workspace:^
         version: link:../../../packages/platform/assembly-boot
@@ -898,6 +895,12 @@ importers:
       '@nebula-studio/shell-host':
         specifier: workspace:^
         version: link:../../../packages/platform/shell-host
+      '@nebula-studio/shell-protocol':
+        specifier: workspace:^
+        version: link:../../../packages/platform/shell-protocol
+      '@nebula-studio/styles':
+        specifier: workspace:^
+        version: link:../../../packages/styles
       vue:
         specifier: catalog:vue
         version: 3.5.41(typescript@6.0.3)
@@ -929,9 +932,6 @@ importers:
 
   apps/sub-web/settings:
     dependencies:
-      '@nebula-studio-internal/tailwind':
-        specifier: workspace:^
-        version: link:../../../tools/tailwindcss
       '@nebula-studio-renderer/assembly-boot':
         specifier: workspace:^
         version: link:../../../packages/platform/assembly-boot
@@ -965,6 +965,9 @@ importers:
       '@nebula-studio/shell-protocol':
         specifier: workspace:^
         version: link:../../../packages/platform/shell-protocol
+      '@nebula-studio/styles':
+        specifier: workspace:^
+        version: link:../../../packages/styles
       '@nebula-studio/use-confirm':
         specifier: workspace:^
         version: link:../../../packages/features/use-confirm
@@ -1008,9 +1011,6 @@ importers:
       '@nebula-studio-electron/electron-bridge':
         specifier: workspace:^
         version: link:../../packages/core/electron-shared
-      '@nebula-studio-internal/tailwind':
-        specifier: workspace:^
-        version: link:../../tools/tailwindcss
       '@nebula-studio-renderer/assembly-boot':
         specifier: workspace:^
         version: link:../../packages/platform/assembly-boot
@@ -1047,6 +1047,12 @@ importers:
       '@nebula-studio/shell-host':
         specifier: workspace:^
         version: link:../../packages/platform/shell-host
+      '@nebula-studio/shell-protocol':
+        specifier: workspace:^
+        version: link:../../packages/platform/shell-protocol
+      '@nebula-studio/styles':
+        specifier: workspace:^
+        version: link:../../packages/styles
       marked:
         specifier: catalog:markdown
         version: 18.0.10
@@ -1179,13 +1185,6 @@ importers:
         version: 4.1.10(@types/node@26.2.0)(@vitest/browser-preview@4.1.10)(happy-dom@20.11.2)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))
 
   packages/core/app-shell:
-    dependencies:
-      '@nebula-studio/auth-provider':
-        specifier: workspace:^
-        version: link:../auth-provider
-      '@nebula-studio/shell-protocol':
-        specifier: workspace:^
-        version: link:../../platform/shell-protocol
     devDependencies:
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
@@ -1594,7 +1593,11 @@ importers:
         specifier: ^4.1.10
         version: 4.1.10(@types/node@26.2.0)(@vitest/browser-preview@4.1.10)(happy-dom@20.11.2)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))
 
-  packages/styles: {}
+  packages/styles:
+    dependencies:
+      '@nebula-studio-internal/tailwind':
+        specifier: workspace:^
+        version: link:../../tools/tailwindcss
 
   packages/testing/msw:
     dependencies:
@@ -1939,9 +1942,6 @@ importers:
       '@iconify/tailwind4':
         specifier: catalog:style
         version: 1.2.3(tailwindcss@4.3.3)
-      '@nebula-studio/styles':
-        specifier: workspace:^
-        version: link:../../packages/styles
       '@tailwindcss/typography':
         specifier: catalog:style
         version: 0.5.20(tailwindcss@4.3.3)

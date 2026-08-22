@@ -1,15 +1,16 @@
 import type { FrontendRuntimeEntry } from '@nebula-studio/contracts/system';
 
+import type { StaticRemoteRegistration } from './frontendRuntime.ts';
+import type { RemoteTelemetryReporter } from './remoteTelemetry.ts';
+
 import {
   federationRegistrationFromRuntime,
+  findFederationRuntimeEntry,
   isLocalFederationFallbackId,
   localFederationRegistration,
-  findFederationRuntimeEntry,
 } from './frontendRuntime.ts';
-import type { StaticRemoteRegistration } from './frontendRuntime.ts';
 import { assertHttpManifestIntegrity } from './manifestIntegrity.ts';
 import { reportRemoteTelemetry } from './remoteTelemetry.ts';
-import type { RemoteTelemetryReporter } from './remoteTelemetry.ts';
 
 export const FRONTEND_LKG_STORAGE_KEY = 'nebula.frontend.lkg.v1';
 export const FRONTEND_BREAKER_STORAGE_KEY = 'nebula.frontend.breaker.v1';

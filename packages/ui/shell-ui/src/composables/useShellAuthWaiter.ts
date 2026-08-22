@@ -1,5 +1,6 @@
 import type { ShellAuthSessionPayload } from '@nebula-studio/auth-provider/storage';
 
+import { embeddedViewRequiresShellAuth } from '@nebula-studio/app-shell';
 /**
  * Shell 认证等待 composable。
  *
@@ -13,7 +14,6 @@ import {
   readWebAuthSession,
 } from '@nebula-studio/auth-provider/storage';
 import { getShellHostBridge } from '@nebula-studio/shell-protocol';
-import { embeddedViewRequiresShellAuth } from '@nebula-studio/app-shell';
 
 const SHELL_AUTH_WAIT_TIMEOUT_MS = 120_000;
 

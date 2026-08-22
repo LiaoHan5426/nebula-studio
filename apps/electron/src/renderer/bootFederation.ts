@@ -1,4 +1,3 @@
-import { readWebAuthSession } from '@nebula-studio/auth-provider/storage';
 import {
   createFrontendTelemetryReporter,
   fetchFrontendRuntimeEntries,
@@ -11,6 +10,7 @@ import {
   registerStaticRemotes,
   resolveFederationRegistrationWithPolicy,
 } from '@nebula-studio/application-runtime';
+import { readWebAuthSession } from '@nebula-studio/auth-provider/storage';
 import { createWebEmbedHostCapabilities } from '@nebula-studio/host-capabilities';
 
 function hostRuntimeAuth(): { tenantId: string; token?: string } {

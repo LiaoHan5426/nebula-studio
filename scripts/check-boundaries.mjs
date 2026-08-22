@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -246,7 +246,7 @@ for (const shim of [
 ]) {
   if (existsSync(join(root, 'packages/core/app-shell/src', shim))) {
     fail(
-      `app-shell shim ${shim} must be deleted; re-export shell-protocol from index`,
+      `app-shell shim ${shim} must stay deleted; import shell-protocol directly`,
     );
   }
 }
@@ -262,9 +262,156 @@ const shellHost = readManifest('packages/platform/shell-host/package.json');
 
 if (
   appShell &&
-  !depNames(appShell, ['dependencies']).has('@nebula-studio/shell-protocol')
+  depNames(appShell, ['dependencies']).has('@nebula-studio/shell-protocol')
 ) {
-  fail('app-shell must depend on @nebula-studio/shell-protocol');
+  fail(
+    'app-shell must not depend on shell-protocol; callers import it directly',
+  );
+}
+if (
+  appShell &&
+  depNames(appShell, ['dependencies']).has('@nebula-studio/auth-provider')
+) {
+  fail(
+    'app-shell must not depend on auth-provider; callers import it directly',
+  );
+}
+const runtimeIndex = readFileSync(
+  join(root, 'packages/core/runtime/src/index.ts'),
+  'utf8',
+);
+if (
+  /export\s+(type\s+)?\{[^}]*RuntimeMode/.test(runtimeIndex) ||
+  runtimeIndex.includes('stampFederationRuntimeMode')
+) {
+  fail(
+    'runtime/src/index.ts must not re-export shell-protocol symbols; keep bootMicroApp only',
+  );
+}
+
+const internalRuntimeBan = /@nebula-studio-internal\/(node|vite)(?:\/|'|"|$)/;
+const skipDirNames = new Set([
+  '.git',
+  '__tests__',
+  'dev-dist',
+  'dist',
+  'node_modules',
+  'out',
+]);
+
+function scanProductRuntimeImports(relDir) {
+  const abs = join(root, relDir);
+  if (!existsSync(abs)) {
+    return;
+  }
+  const stack = [abs];
+  while (stack.length > 0) {
+    const dir = stack.pop();
+    let entries;
+    try {
+      entries = readdirSync(dir, { withFileTypes: true });
+    } catch {
+      continue;
+    }
+    for (const entry of entries) {
+      const path = join(dir, entry.name);
+      if (entry.isDirectory()) {
+        if (!skipDirNames.has(entry.name)) {
+          stack.push(path);
+        }
+        continue;
+      }
+      if (
+        /\.(config|config\.mts)$/.test(entry.name) ||
+        entry.name.includes('.test.') ||
+        entry.name.includes('.spec.') ||
+        entry.name === 'electron.vite.config.ts' ||
+        entry.name === 'vite.config.ts'
+      ) {
+        continue;
+      }
+      if (!/\.(ts|tsx|js|mjs)$/.test(entry.name)) {
+        continue;
+      }
+      const source = readFileSync(path, 'utf8');
+      if (internalRuntimeBan.test(source)) {
+        fail(
+          `${relativePosix(path)} must not import @nebula-studio-internal/node or vite at runtime`,
+        );
+      }
+    }
+  }
+}
+
+function relativePosix(absPath) {
+  return absPath.slice(root.length + 1).replaceAll('\\', '/');
+}
+
+scanProductRuntimeImports('apps');
+scanProductRuntimeImports('packages');
+
+for (const rel of [
+  'apps/web/package.json',
+  'apps/electron/package.json',
+  'apps/sub-web/docs/package.json',
+  'apps/sub-web/settings/package.json',
+  'apps/sub-web/integration/package.json',
+  'apps/sub-web/frontend/package.json',
+  'apps/sub-web/login/package.json',
+  'packages/core/app-shell/package.json',
+  'packages/core/runtime/package.json',
+  'packages/platform/shell-host/package.json',
+  'packages/platform/shell-protocol/package.json',
+  'packages/platform/application-runtime/package.json',
+  'packages/styles/package.json',
+]) {
+  const manifest = readManifest(rel);
+  if (
+    manifest &&
+    depNames(manifest, ['dependencies']).has('@nebula-studio-internal/node')
+  ) {
+    fail(`${rel} production deps must not include @nebula-studio-internal/node`);
+  }
+  if (
+    manifest &&
+    depNames(manifest, ['dependencies']).has('@nebula-studio-internal/vite')
+  ) {
+    fail(`${rel} production deps must not include @nebula-studio-internal/vite`);
+  }
+}
+const appShellIndex = readFileSync(
+  join(root, 'packages/core/app-shell/src/index.ts'),
+  'utf8',
+);
+if (appShellIndex.includes("from '@nebula-studio/shell-protocol'")) {
+  fail('app-shell/src/index.ts must not re-export shell-protocol');
+}
+if (appShellIndex.includes("from '@nebula-studio/auth-provider")) {
+  fail('app-shell/src/index.ts must not re-export auth-provider');
+}
+if (
+  electron &&
+  depNames(electron, ['dependencies']).has('@nebula-studio-internal/node')
+) {
+  fail(
+    'Electron production dependencies must not include @nebula-studio-internal/node',
+  );
+}
+for (const remoteFed of [
+  'apps/sub-web/docs/src/federation.ts',
+  'apps/sub-web/settings/src/federation.ts',
+  'apps/sub-web/integration/src/federation.ts',
+]) {
+  const source = readFileSync(join(root, remoteFed), 'utf8');
+  if (
+    source.includes("styles/document") ||
+    source.includes("tailwind/electron") ||
+    source.includes('document.documentElement.dataset.nebulaCss')
+  ) {
+    fail(
+      `${remoteFed} must use styles/remote and container-only cssNamespace`,
+    );
+  }
 }
 if (
   assemblyBootManifest &&

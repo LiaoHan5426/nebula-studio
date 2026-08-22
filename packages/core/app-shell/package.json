@@ -1,7 +1,7 @@
 {
   "name": "@nebula-studio/app-shell",
   "version": "0.0.0",
-  "description": "Shared shell runtime SDK: window config, auth helpers, and protocol re-exports.",
+  "description": "Shared shell runtime SDK: window config, help center, and integration registry.",
   "private": true,
   "homepage": "https://github.com/LiaoHan5426/nebula-studio#readme",
   "bugs": {
@@ -31,10 +31,7 @@
       "default": "./src/common/shellIntegration.ts"
     }
   },
-  "dependencies": {
-    "@nebula-studio/auth-provider": "workspace:^",
-    "@nebula-studio/shell-protocol": "workspace:^"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@nebula-studio-internal/tsconfig": "workspace:^",
     "@nebula-studio/types": "workspace:^"

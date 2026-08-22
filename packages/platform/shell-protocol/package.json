@@ -15,19 +15,19 @@
   "license": "UNLICENSED",
   "author": "Liao Han <liaohan5426@gmail.com>",
   "type": "module",
+  "scripts": {
+    "test": "vp test run"
+  },
   "exports": {
     ".": {
       "types": "./src/index.ts",
       "default": "./src/index.ts"
     }
   },
-  "scripts": {
-    "test": "vp test run"
-  },
   "devDependencies": {
     "@nebula-studio-internal/tsconfig": "workspace:^",
-    "typescript": "catalog:types",
     "happy-dom": "catalog:vite",
+    "typescript": "catalog:types",
     "vitest": "catalog:vite"
   }
 }

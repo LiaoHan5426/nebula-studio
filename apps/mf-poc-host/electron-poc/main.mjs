@@ -7,12 +7,12 @@
  */
 import { existsSync } from 'node:fs';
 
-import { app, BrowserWindow, net, protocol } from 'electron';
-
 import {
   federationProtocolPrivileges,
   MF_POC_SCHEME,
 } from '@nebula-studio/federation-protocol';
+
+import { app, BrowserWindow, net, protocol } from 'electron';
 
 import { createPocResponse, pocDistRoots } from './poc-protocol.mjs';
 

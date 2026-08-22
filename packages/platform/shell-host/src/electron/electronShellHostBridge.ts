@@ -1,5 +1,6 @@
-import { isElectronIframeEmbedPresentation } from '@nebula-studio/app-shell/shell-config';
 import type { ShellHostBridge } from '@nebula-studio/shell-protocol';
+
+import { isElectronIframeEmbedPresentation } from '@nebula-studio/app-shell/shell-config';
 import {
   persistActiveViewPreference,
   persistShellSurfacePreference,

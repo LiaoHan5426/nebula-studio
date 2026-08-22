@@ -9,22 +9,22 @@ export type GeneratedPreloadCapability =
 
 export interface GeneratedWindowEntry {
   preload: string;
-  renderer: string;
-  webEmbedEntry?: string;
-  webLoad?: 'embed' | 'federation' | 'host';
   preloadCapabilities: GeneratedPreloadCapability[];
   proxyPreset?: 'integration' | 'standard';
-  standalone?: { host?: string; port: number; basePath?: string };
+  renderer: string;
+  standalone?: { basePath?: string; host?: string; port: number; };
+  webEmbedEntry?: string;
+  webLoad?: 'embed' | 'federation' | 'host';
 }
 
 export interface GeneratedModalRendererEntry {
   preload: string;
-  renderer: string;
-  webEmbedEntry?: string;
-  webLoad?: 'embed' | 'federation' | 'host';
   preloadCapabilities: GeneratedPreloadCapability[];
   proxyPreset?: 'integration' | 'standard';
-  standalone?: { host?: string; port: number; basePath?: string };
+  renderer: string;
+  standalone?: { basePath?: string; host?: string; port: number; };
+  webEmbedEntry?: string;
+  webLoad?: 'embed' | 'federation' | 'host';
 }
 
 export const GENERATED_SHELL_CONFIG = {
@@ -209,4 +209,4 @@ export const GENERATED_E2E = {
   mockRoutePatterns: ['**/api/**'],
 } as const;
 
-export type GeneratedWindowId = 'main' | 'docs' | 'settings' | 'integration';
+export type GeneratedWindowId = 'docs' | 'integration' | 'main' | 'settings';

@@ -2,6 +2,12 @@ import type { EmbeddedShellWindowId } from '@nebula-studio/app-shell';
 
 import { computed, ref } from 'vue';
 
+import { getEmbeddedShellWindowIds } from '@nebula-studio/app-shell';
+import {
+  getShellHostBridge,
+  WEB_SHELL_EMBED_QUERY,
+} from '@nebula-studio/shell-protocol';
+
 /**
  * 嵌入视图状态管理 composable。
  *
@@ -9,11 +15,6 @@ import { computed, ref } from 'vue';
  * 管理 iframe 嵌入的 URL 构建、加载状态、生命周期。
  */
 import { resolveRendererIpc } from '@nebula-studio-electron/electron-bridge/vue';
-import { getEmbeddedShellWindowIds } from '@nebula-studio/app-shell';
-import {
-  getShellHostBridge,
-  WEB_SHELL_EMBED_QUERY,
-} from '@nebula-studio/shell-protocol';
 
 export interface EmbeddedViewsOptions {
   /** 集成面板是否打开 */

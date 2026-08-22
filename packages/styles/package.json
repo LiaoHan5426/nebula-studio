@@ -16,14 +16,23 @@
   "author": "Liao Han <liaohan5426@gmail.com>",
   "type": "module",
   "sideEffects": [
-    "**/*.css"
+    "**/*.css",
+    "./src/index.ts",
+    "./src/electron.ts",
+    "./src/document.ts",
+    "./src/remote.ts"
   ],
   "exports": {
     ".": "./src/index.css",
     "./index.css": "./src/index.css",
+    "./document": "./src/document.ts",
+    "./remote": "./src/remote.ts",
     "./tokens/root.css": "./src/tokens/root.css",
     "./tokens/semantic-light.css": "./src/tokens/semantic-light.css",
     "./tokens/semantic-dark.css": "./src/tokens/semantic-dark.css",
     "./foundations/theme-motion.css": "./src/foundations/theme-motion.css"
+  },
+  "dependencies": {
+    "@nebula-studio-internal/tailwind": "workspace:^"
   }
 }

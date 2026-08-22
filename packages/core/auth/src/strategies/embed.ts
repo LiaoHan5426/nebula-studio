@@ -12,15 +12,15 @@ import type { AuthBootstrapOptions, AuthStrategy } from '../types';
  */
 import { globalAuthProvider } from '@nebula-studio/auth-provider';
 import {
-  readParentShellAuthSession,
-  SHELL_AUTH_UNAUTHORIZED_EVENT,
-} from '@nebula-studio/auth-provider/web';
-import { isSurfaceEmbed } from '@nebula-studio/shell-protocol';
-import {
   getAuthToken,
   hasValidAuthToken,
   setAuthSession,
 } from '@nebula-studio/auth-provider/session';
+import {
+  readParentShellAuthSession,
+  SHELL_AUTH_UNAUTHORIZED_EVENT,
+} from '@nebula-studio/auth-provider/web';
+import { isSurfaceEmbed } from '@nebula-studio/shell-protocol';
 
 export class EmbedStrategy implements AuthStrategy {
   private _allowShellLogin = true;

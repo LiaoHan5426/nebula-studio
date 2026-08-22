@@ -13,6 +13,7 @@ import {
   GENERATED_API_NAMESPACES,
   GENERATED_API_TARGETS,
 } from '@nebula-studio/contracts/generated';
+
 import { BrowserWindow, ipcMain, net } from 'electron';
 
 /**

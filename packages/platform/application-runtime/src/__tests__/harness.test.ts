@@ -1,8 +1,9 @@
-import { describe, expect, it } from 'vitest';
+import type { NebulaRemoteApplication } from '@nebula-studio/application-contract';
 
 import { CONTRACT_VERSION } from '@nebula-studio/application-contract';
-import type { NebulaRemoteApplication } from '@nebula-studio/application-contract';
 import { createPocHostCapabilities } from '@nebula-studio/host-capabilities';
+
+import { describe, expect, it } from 'vitest';
 
 import {
   asNebulaRemoteApplication,
@@ -56,5 +57,26 @@ describe('runRemoteContractHarness', () => {
       createPocHostCapabilities(),
     );
     expect(document.body.children.length).toBe(0);
+  });
+});
+
+describe('cssNamespace registry', () => {
+  it('rejects a duplicate namespace until released', async () => {
+    const {
+      __resetMountedCssNamespacesForTests,
+      claimCssNamespace,
+      releaseCssNamespace,
+      resolveRemoteCssNamespace,
+    } = await import('../index.ts');
+    __resetMountedCssNamespacesForTests();
+    expect(resolveRemoteCssNamespace({ name: 'docs' })).toBe('docs');
+    expect(
+      resolveRemoteCssNamespace({ application: { id: 'settings' }, name: 'x' }),
+    ).toBe('settings');
+    claimCssNamespace('docs');
+    expect(() => claimCssNamespace('docs')).toThrow(/duplicate cssNamespace/);
+    releaseCssNamespace('docs');
+    claimCssNamespace('docs');
+    releaseCssNamespace('docs');
   });
 });

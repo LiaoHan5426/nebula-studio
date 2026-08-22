@@ -1,23 +1,23 @@
-import type { FrontendRuntimeEntry } from '@nebula-studio/contracts/system';
 import type {
   EmbeddedShellWindowId,
   ShellIntegratedAppMeta,
 } from '@nebula-studio/app-shell';
+import type { FrontendRuntimeEntry } from '@nebula-studio/contracts/system';
 
 import {
   getEmbeddedShellWindowIds,
-  readWebAuthSession,
   registerShellIntegratedApps,
   resetShellIntegratedAppRegistry,
   setShellIntegrableOrder,
 } from '@nebula-studio/app-shell';
 import {
+  fetchFrontendRuntimeEntries,
   iframeRegistrationFromRuntime,
   isExternalRuntimeEntry,
   isIframeRuntimeEntry,
   resolveExternalHref,
-  fetchFrontendRuntimeEntries,
 } from '@nebula-studio/application-runtime';
+import { readWebAuthSession } from '@nebula-studio/auth-provider/storage';
 
 import {
   SHELL_CHROME_CATALOG,

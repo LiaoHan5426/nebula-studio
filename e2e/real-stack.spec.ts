@@ -1,9 +1,8 @@
-import { expect, test } from '@playwright/test';
-
 import {
   resolveHealthChecks,
   resolveShellEmbedPath,
 } from '@nebula-studio-internal/vite';
+import { expect, test } from '@playwright/test';
 
 type ApiEnvelope<T> = {
   code?: number;

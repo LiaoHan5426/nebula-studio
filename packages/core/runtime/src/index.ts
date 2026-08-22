@@ -57,10 +57,3 @@ export interface BootMicroAppOptions {
   /** shellEventBus 标准事件处理器；由 bootMicroApp 注册并在 dispose 时释放 */
   shellEventBusHandlers?: WireShellEventBusOptions;
 }
-
-export type { RuntimeMode } from '@nebula-studio/shell-protocol';
-export {
-  getResolvedRuntimeMode,
-  requireRuntimeMode,
-  stampFederationRuntimeMode,
-} from '@nebula-studio/shell-protocol';

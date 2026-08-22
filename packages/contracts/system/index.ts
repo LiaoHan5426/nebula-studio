@@ -8,5 +8,5 @@
  * FrontendApplication / runtime 入口经 `FrontendRuntimeEntryView` generated schema 映射。
  */
 
-export * from './models.ts';
 export * from './mappers.ts';
+export * from './models.ts';

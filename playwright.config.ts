@@ -1,6 +1,5 @@
-import { defineConfig, devices } from '@playwright/test';
-
 import { resolveShellWeb } from '@nebula-studio-internal/vite';
+import { defineConfig, devices } from '@playwright/test';
 
 const executablePath = process.env.PLAYWRIGHT_EXECUTABLE_PATH;
 const skipWebServer = process.env.NEBULA_E2E_EXTERNAL_WEB === 'true';

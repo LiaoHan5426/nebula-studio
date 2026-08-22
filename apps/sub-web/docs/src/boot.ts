@@ -1,7 +1,10 @@
-import type { MicroAppHandle, RuntimeMode } from '@nebula-studio/runtime';
+import type { MicroAppHandle } from '@nebula-studio/runtime';
+import type { RuntimeMode } from '@nebula-studio/shell-protocol';
 
 import { bootMicroApp } from '@nebula-studio/runtime';
 import { installWebPresentationUnlessElectron } from '@nebula-studio/shell-host';
+import '@nebula-studio/styles/document';
+
 import {
   installAssemblyForSubApp,
   wrapSubAppWithAssembly,
@@ -9,8 +12,6 @@ import {
 
 import AppComponent from './App.vue';
 import router from './router';
-
-import '@nebula-studio-internal/tailwind/electron';
 
 /**
  * Docs standalone 启动入口（`src/main.ts`）。

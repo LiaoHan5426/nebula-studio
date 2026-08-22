@@ -1,5 +1,7 @@
 import type { Plugin, ResolvedConfig } from 'vite';
 
+import type { TailwindSourceGraph } from '../styles/resolveTailwindSourceGraph.ts';
+
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -8,7 +10,6 @@ import {
   formatTailwindSourceDirectives,
   resolveTailwindSourceGraph,
 } from '../styles/resolveTailwindSourceGraph.ts';
-import type { TailwindSourceGraph } from '../styles/resolveTailwindSourceGraph.ts';
 
 const THEME_CSS_SUFFIX = '/tools/tailwindcss/src/theme.css';
 const REPORT_NAME = 'nebula-css-source-report.json';
@@ -22,7 +23,7 @@ function isSharedThemeCss (id: string): boolean {
 function countUtilitySelectors (css: string): number {
   const names = new Set<string>();
   const re = /\.(-?[_a-zA-Z]+[_a-zA-Z0-9-]*)/g;
-  let match: RegExpExecArray | null;
+  let match: null | RegExpExecArray;
   while ((match = re.exec(css))) {
     names.add(match[1] ?? '');
   }
@@ -87,6 +88,11 @@ export function nebulaTailwindSourcePlugin (appRoot: string): Plugin {
       const report = {
         packageName: graph.packageName,
         appRoot: graph.appRoot.replace(/\\/g, '/'),
+        cssNamespace: graph.appRoot
+          .replace(/\\/g, '/')
+          .split('/')
+          .filter(Boolean)
+          .at(-1),
         sourceCount: graph.sources.length,
         sources: graph.sources.map((source) => ({
           packageName: source.packageName,

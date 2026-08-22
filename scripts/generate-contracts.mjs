@@ -12,8 +12,8 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { joinOrigin } from '@nebula-studio-internal/node/join-origin';
 import { ensureFrontendApplicationOpenApi } from '@nebula-studio-internal/node/frontend-openapi';
+import { joinOrigin } from '@nebula-studio-internal/node/join-origin';
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const root = join(scriptDir, '..');

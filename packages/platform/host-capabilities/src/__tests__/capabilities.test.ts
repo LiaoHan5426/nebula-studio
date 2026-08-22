@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
-
 import { CONTRACT_VERSION } from '@nebula-studio/application-contract';
+
+import { describe, expect, it } from 'vitest';
 
 import { createPocHostCapabilities } from '../index.ts';
 

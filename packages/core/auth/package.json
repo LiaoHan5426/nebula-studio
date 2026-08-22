@@ -28,8 +28,8 @@
   },
   "dependencies": {
     "@nebula-studio/auth-provider": "workspace:^",
-    "@nebula-studio/shell-protocol": "workspace:^",
-    "@nebula-studio/contracts": "workspace:^"
+    "@nebula-studio/contracts": "workspace:^",
+    "@nebula-studio/shell-protocol": "workspace:^"
   },
   "devDependencies": {
     "@nebula-studio-internal/tsconfig": "workspace:^",

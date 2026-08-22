@@ -29,19 +29,20 @@
   },
   "dependencies": {
     "@nebula-studio-electron/electron-bridge": "workspace:^",
-    "@nebula-studio-internal/tailwind": "workspace:^",
     "@nebula-studio-renderer/assembly-boot": "workspace:^",
     "@nebula-studio/api-client": "workspace:^",
-    "@nebula-studio/application-runtime": "workspace:^",
-    "@nebula-studio/host-capabilities": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
+    "@nebula-studio/application-runtime": "workspace:^",
     "@nebula-studio/auth-provider": "workspace:^",
     "@nebula-studio/contracts": "workspace:^",
+    "@nebula-studio/host-capabilities": "workspace:^",
     "@nebula-studio/nebula-layout": "workspace:^",
     "@nebula-studio/nebula-shell": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
     "@nebula-studio/runtime": "workspace:^",
     "@nebula-studio/shell-host": "workspace:^",
+    "@nebula-studio/shell-protocol": "workspace:^",
+    "@nebula-studio/styles": "workspace:^",
     "vue": "catalog:vue"
   },
   "devDependencies": {

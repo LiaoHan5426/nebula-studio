@@ -1,5 +1,5 @@
-/// <reference types="vite/client" />
-/// <reference types="@nebula-studio/types/sub-web" />
+// / <reference types="vite/client" />
+// / <reference types="@nebula-studio/types/sub-web" />
 
 import type { ElectronAPI } from '@electron-toolkit/preload';
 

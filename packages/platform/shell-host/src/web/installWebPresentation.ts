@@ -1,6 +1,16 @@
 import type { PreferenceIpcListener } from './webShellEmbeddedState';
 
 import { loginWithBackendAuth } from '@nebula-studio/auth-provider/backend';
+import {
+  clearWebAuthSession,
+  readWebAuthSession,
+  writeWebAuthSession,
+} from '@nebula-studio/auth-provider/storage';
+import { redirectShellToWebLogin } from '@nebula-studio/auth-provider/web';
+import {
+  markWebPresentationHost,
+  markWebShellHost,
+} from '@nebula-studio/shell-protocol';
 
 import {
   createWebPreferenceBridge,
@@ -8,16 +18,6 @@ import {
   mergeWebPreferenceBridges,
 } from '@nebula-studio-electron/electron-bridge/vue';
 
-import {
-  markWebPresentationHost,
-  markWebShellHost,
-} from '@nebula-studio/shell-protocol';
-import {
-  clearWebAuthSession,
-  readWebAuthSession,
-  writeWebAuthSession,
-} from '@nebula-studio/auth-provider/storage';
-import { redirectShellToWebLogin } from '@nebula-studio/auth-provider/web';
 import { createWebNotifyApi } from './webNotify';
 import { createWebShellEmbeddedStateHandlers } from './webShellEmbeddedState';
 
@@ -63,9 +63,9 @@ export function installWebPresentation(
 ): void {
   const g = globalThis as typeof globalThis & {
     api?: {
+      [key: string]: unknown;
       auth?: unknown;
       ipc?: unknown;
-      [key: string]: unknown;
     };
   };
   if (g.api?.ipc && g.api?.auth) return;

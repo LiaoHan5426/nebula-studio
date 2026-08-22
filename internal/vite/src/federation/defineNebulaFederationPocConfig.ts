@@ -1,5 +1,6 @@
-import { defineNebulaRemoteConfig } from './defineNebulaRemoteConfig.ts';
 import type { DefineNebulaRemoteConfigOptions } from './defineNebulaRemoteConfig.ts';
+
+import { defineNebulaRemoteConfig } from './defineNebulaRemoteConfig.ts';
 
 export type DefineNebulaFederationPocConfigOptions = {
   configModuleUrl: string | URL;

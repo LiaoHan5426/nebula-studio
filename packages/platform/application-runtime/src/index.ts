@@ -1,6 +1,3 @@
-import { createInstance } from '@module-federation/runtime';
-
-import { CONTRACT_VERSION } from '@nebula-studio/application-contract';
 import type {
   HostCapabilities,
   NebulaRemoteApplication,
@@ -8,6 +5,11 @@ import type {
 } from '@nebula-studio/application-contract';
 
 import type { StaticRemoteRegistration } from './frontendRuntime.ts';
+
+import { CONTRACT_VERSION } from '@nebula-studio/application-contract';
+
+import { createInstance } from '@module-federation/runtime';
+
 import { FEDERATION_LOAD_TIMEOUT_MS, withTimeout } from './remoteResilience.ts';
 
 export type { StaticRemoteRegistration } from './frontendRuntime.ts';
@@ -31,6 +33,8 @@ export {
   resolveRemoteManifestEntry,
   runtimeEmbedUrl,
 } from './frontendRuntime.ts';
+/** @deprecated Use LOCAL_DOCS_FEDERATION_FALLBACK; Host loads remotes from /api/system/frontend-apps/runtime */
+export { LOCAL_DOCS_FEDERATION_FALLBACK as DOCS_FEDERATION_REMOTE } from './frontendRuntime.ts';
 export {
   alignLoopbackIframeSrc,
   applyHostFrameSrcPolicy,
@@ -57,16 +61,19 @@ export {
 } from './packagedRemoteUpdate.ts';
 export type { PackagedRemoteUpdatePolicy } from './packagedRemoteUpdate.ts';
 export {
-  createFrontendTelemetryReporter,
-  FRONTEND_TELEMETRY_PATH,
-  REMOTE_TELEMETRY_EVENT_TYPES,
-  reportRemoteTelemetry,
-} from './remoteTelemetry.ts';
-export type {
-  RemoteTelemetryEvent,
-  RemoteTelemetryEventType,
-  RemoteTelemetryReporter,
-} from './remoteTelemetry.ts';
+  browserKvStore,
+  createMemoryKv,
+  FEDERATION_LOAD_TIMEOUT_MS,
+  isCircuitOpen,
+  isInRolloutCohort,
+  mountWithLastKnownGood,
+  readLastKnownGood,
+  recordRemoteFailure,
+  recordRemoteSuccess,
+  resolveFederationRegistrationWithPolicy,
+  withTimeout,
+  writeLastKnownGood,
+} from './remoteResilience.ts';
 
 export function asNebulaRemoteApplication(
   module: unknown,
@@ -95,7 +102,7 @@ const federationHost = createInstance({
 });
 
 export function registerStaticRemotes(
-  registry: readonly Pick<StaticRemoteRegistration, 'name' | 'entry'>[],
+  registry: readonly Pick<StaticRemoteRegistration, 'entry' | 'name'>[],
 ): void {
   federationHost.registerRemotes(
     registry.map((item) => ({
@@ -106,30 +113,68 @@ export function registerStaticRemotes(
   );
 }
 
-export async function mountFederationRemote(options: {
+const mountedCssNamespaces = new Set<string>();
+
+export function __resetMountedCssNamespacesForTests(): void {
+  mountedCssNamespaces.clear();
+}
+
+export function resolveRemoteCssNamespace(options: {
+  application?: { id: string };
   name: string;
-  expose: string;
-  container: HTMLElement;
+}): string {
+  return options.application?.id ?? options.name;
+}
+
+export function claimCssNamespace(cssNamespace: string): void {
+  if (mountedCssNamespaces.has(cssNamespace)) {
+    throw new Error(`duplicate cssNamespace: ${cssNamespace}`);
+  }
+  mountedCssNamespaces.add(cssNamespace);
+}
+
+export function releaseCssNamespace(cssNamespace: string): void {
+  mountedCssNamespaces.delete(cssNamespace);
+}
+
+export async function mountFederationRemote(options: {
+  application?: { id: string; runtimeConfig?: unknown; version: string; };
   capabilities: HostCapabilities;
-  application?: { id: string; version: string; runtimeConfig?: unknown };
+  container: HTMLElement;
+  expose: string;
   initialPath?: string;
+  name: string;
   timeoutMs?: number;
 }): Promise<RemoteHandle> {
-  const module = await withTimeout(
-    federationHost.loadRemote(`${options.name}/${options.expose}`),
-    options.timeoutMs ?? FEDERATION_LOAD_TIMEOUT_MS,
-    `federation load timed out after ${String(options.timeoutMs ?? FEDERATION_LOAD_TIMEOUT_MS)}ms`,
-  );
-  const remote = asNebulaRemoteApplication(module);
-  return remote.mount({
-    container: options.container,
-    initialPath: options.initialPath ?? '/',
-    application: options.application ?? {
-      id: options.name,
-      version: '0.0.0',
-    },
-    capabilities: options.capabilities,
-  });
+  const cssNamespace = resolveRemoteCssNamespace(options);
+  claimCssNamespace(cssNamespace);
+  try {
+    const module = await withTimeout(
+      federationHost.loadRemote(`${options.name}/${options.expose}`),
+      options.timeoutMs ?? FEDERATION_LOAD_TIMEOUT_MS,
+      `federation load timed out after ${String(options.timeoutMs ?? FEDERATION_LOAD_TIMEOUT_MS)}ms`,
+    );
+    const remote = asNebulaRemoteApplication(module);
+    const handle = await remote.mount({
+      container: options.container,
+      initialPath: options.initialPath ?? '/',
+      application: options.application ?? {
+        id: options.name,
+        version: '0.0.0',
+      },
+      capabilities: options.capabilities,
+    });
+    return {
+      navigate: handle.navigate.bind(handle),
+      async unmount() {
+        releaseCssNamespace(cssNamespace);
+        await handle.unmount();
+      },
+    };
+  } catch (error) {
+    releaseCssNamespace(cssNamespace);
+    throw error;
+  }
 }
 
 export async function runRemoteContractHarness(
@@ -153,21 +198,16 @@ export async function runRemoteContractHarness(
 
 export { CONTRACT_VERSION };
 
-export {
-  browserKvStore,
-  createMemoryKv,
-  FEDERATION_LOAD_TIMEOUT_MS,
-  isCircuitOpen,
-  isInRolloutCohort,
-  mountWithLastKnownGood,
-  readLastKnownGood,
-  recordRemoteFailure,
-  recordRemoteSuccess,
-  resolveFederationRegistrationWithPolicy,
-  withTimeout,
-  writeLastKnownGood,
-} from './remoteResilience.ts';
 export type { KvStore } from './remoteResilience.ts';
+export {
+  createFrontendTelemetryReporter,
+  FRONTEND_TELEMETRY_PATH,
+  REMOTE_TELEMETRY_EVENT_TYPES,
+  reportRemoteTelemetry,
+} from './remoteTelemetry.ts';
 
-/** @deprecated Use LOCAL_DOCS_FEDERATION_FALLBACK; Host loads remotes from /api/system/frontend-apps/runtime */
-export { LOCAL_DOCS_FEDERATION_FALLBACK as DOCS_FEDERATION_REMOTE } from './frontendRuntime.ts';
+export type {
+  RemoteTelemetryEvent,
+  RemoteTelemetryEventType,
+  RemoteTelemetryReporter,
+} from './remoteTelemetry.ts';

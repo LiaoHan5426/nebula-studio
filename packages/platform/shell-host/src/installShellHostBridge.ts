@@ -1,8 +1,9 @@
-import { setShellHostBridge } from '@nebula-studio/shell-protocol';
 import type {
   ShellHostBridge,
   ShellHostKind,
 } from '@nebula-studio/shell-protocol';
+
+import { setShellHostBridge } from '@nebula-studio/shell-protocol';
 
 import { createElectronShellHostBridge } from './electron/electronShellHostBridge';
 import { createWebShellHostBridge } from './web/webShellHostBridge';

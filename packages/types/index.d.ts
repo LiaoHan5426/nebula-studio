@@ -22,10 +22,14 @@ interface Window {
 /**
  * 工作区侧效 CSS / 工具链入口：无运行时导出，由 `compilerOptions.types` 挂到各 renderer（见 `tools/tsconfig/web.json`）。
  */
+declare module '@nebula-studio/styles/document';
+declare module '@nebula-studio/styles/remote';
 declare module '@nebula-studio-internal/tailwind/electron';
+declare module '@nebula-studio-internal/tailwind/document';
+declare module '@nebula-studio-internal/tailwind/remote';
 
 /**
- * 全局设计令牌与基础样式（`packages/styles`），由 `@nebula-studio-internal/tailwind/electron` 链式引入。
+ * 全局设计令牌（`packages/styles`）。Host/standalone 用 `./document`，Federation 用 `./remote`。
  */
 declare module '@nebula-studio/styles';
 

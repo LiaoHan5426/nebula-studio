@@ -1,12 +1,12 @@
 import { createApp, defineComponent, h, nextTick } from 'vue';
 
-import { describe, expect, it } from 'vitest';
-
 import {
   createHostAdapter,
   createNebulaComponentContext,
   provideNebulaAssembly,
 } from '@nebula-studio/nebula-assembly';
+
+import { describe, expect, it } from 'vitest';
 
 import { useShellHosted } from '../useShellHosted';
 

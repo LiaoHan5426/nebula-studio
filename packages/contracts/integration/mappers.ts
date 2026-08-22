@@ -3,7 +3,6 @@ import type {
   GeneratedTaskCreateRequest,
   GeneratedTaskUpdateRequest,
 } from '../generated/facade.ts';
-
 import type { FlowCreateRequest } from './flow.js';
 import type { TaskCreateRequest, TaskUpdateRequest } from './task.js';
 

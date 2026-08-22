@@ -58,7 +58,7 @@ const configureAuthProxyLog: NonNullable<ProxyOptions['configure']> = (
 };
 
 function chainProxyConfigure(
-  ...fns: Array<undefined | ProxyOptions['configure']>
+  ...fns: Array<ProxyOptions['configure'] | undefined>
 ): ProxyOptions['configure'] | undefined {
   const present = fns.filter(
     (fn): fn is NonNullable<ProxyOptions['configure']> => Boolean(fn),

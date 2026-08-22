@@ -20,19 +20,19 @@ export interface AuthFlowState {
 }
 
 export type AuthFlowAction =
+  | { account: string; type: 'RECOVERY_STARTED'; }
+  | { failure: AuthFailure; type: 'FAILURE'; }
+  | { orgId: string; type: 'ORG_SELECTED'; }
+  | { result: BackendLoginResult; type: 'CREDENTIALS_SUBMITTED'; }
+  | { result: BackendLoginResult; type: 'ORG_SUBMITTED'; }
   | { type: 'BACK_TO_CREDENTIALS' }
-  | { type: 'CREDENTIALS_SUBMITTED'; result: BackendLoginResult }
-  | { type: 'FAILURE'; failure: AuthFailure }
   | { type: 'MFA_CODE_CHANGED'; value: string }
   | { type: 'MFA_SUBMITTED' }
-  | { type: 'ORG_SELECTED'; orgId: string }
-  | { type: 'ORG_SUBMITTED'; result: BackendLoginResult }
-  | { type: 'RECOVERY_STARTED'; account: string }
   | { type: 'SUCCESS' };
 
 export function resolveAuthNextStep(
   code: AuthNextStepCode,
-): AuthFlowStep | 'token-ready' {
+): 'token-ready' | AuthFlowStep {
   switch (code) {
     case 'COMPLETE':
       return 'token-ready';
@@ -101,13 +101,14 @@ export function authFlowReducer(
         failure: null,
       };
     }
-    case 'ORG_SUBMITTED':
+    case 'FAILURE':
       return {
         ...state,
-        pendingLogin: action.result,
-        step: action.result.token ? 'success' : 'mfa',
-        failure: null,
+        failure: action.failure,
+        step: action.failure.kind === 'mfa-required' ? 'mfa' : 'failure',
       };
+    case 'MFA_CODE_CHANGED':
+      return { ...state, mfaCode: action.value };
     case 'MFA_SUBMITTED':
       return {
         ...state,
@@ -115,20 +116,19 @@ export function authFlowReducer(
       };
     case 'ORG_SELECTED':
       return { ...state, selectedOrgId: action.orgId };
-    case 'MFA_CODE_CHANGED':
-      return { ...state, mfaCode: action.value };
+    case 'ORG_SUBMITTED':
+      return {
+        ...state,
+        pendingLogin: action.result,
+        step: action.result.token ? 'success' : 'mfa',
+        failure: null,
+      };
     case 'RECOVERY_STARTED':
       return {
         ...state,
         recoveryAccount: action.account,
         step: 'recovery',
         failure: null,
-      };
-    case 'FAILURE':
-      return {
-        ...state,
-        failure: action.failure,
-        step: action.failure.kind === 'mfa-required' ? 'mfa' : 'failure',
       };
     case 'SUCCESS':
       return { ...state, step: 'success', failure: null };

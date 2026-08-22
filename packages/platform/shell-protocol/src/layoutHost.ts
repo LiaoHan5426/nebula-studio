@@ -1,5 +1,6 @@
-import { getWebShellEmbedSurface, isShellIframeEmbed } from './embedSurface';
 import type { RuntimeMode } from './runtimeMode';
+
+import { getWebShellEmbedSurface, isShellIframeEmbed } from './embedSurface';
 
 export type LayoutHostMode = 'shell-hosted' | 'standalone';
 

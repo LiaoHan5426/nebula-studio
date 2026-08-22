@@ -33,6 +33,8 @@ export function federationProtocolPrivileges(): {
   supportFetchAPI: boolean;
 };
 
+export function findMonorepoRoot(cwd?: string): string;
+
 export function pickFederationRemoteRoots(options: {
   hasManifest: (dir: string) => boolean;
   isDev: boolean;

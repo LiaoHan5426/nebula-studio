@@ -1,3 +1,8 @@
+import { computed, nextTick, ref } from 'vue';
+
+import { isShellIntegratableAppId } from '@nebula-studio/app-shell';
+import { persistShellSurfacePreference } from '@nebula-studio/shell-protocol';
+
 /**
  * 应用集成状态管理 composable。
  *
@@ -5,10 +10,6 @@
  * 管理集成面板的打开/关闭、应用启用/隐藏、拖拽排序等状态。
  */
 import { resolveRendererIpc } from '@nebula-studio-electron/electron-bridge/vue';
-import { computed, nextTick, ref } from 'vue';
-
-import { persistShellSurfacePreference } from '@nebula-studio/shell-protocol';
-import { isShellIntegratableAppId } from '@nebula-studio/app-shell';
 
 export interface UseAppIntegrationOptions {
   /** 当前激活的视图 ID（响应式） */
