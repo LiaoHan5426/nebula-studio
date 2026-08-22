@@ -17,6 +17,7 @@
 - **`defineNebulaConfig`**（根 `defineNebulaConfig.ts`）：按 `platform: 'web' \| 'electron'` 分流；Electron 路径 **动态 `import('electron-vite')`**，避免 Web 包硬依赖。
 - **Renderer 分包**：`src/config/chunks/` 下规则（含 `nebulaWorkspace.ts` 对 `packages/nebula-ui`、`packages/styles` 等路径的匹配）；**改包物理路径**时检查 chunk 规则是否仍命中。
 - **Node 版本 define**：`nebulaBuildNodeVersionDefine()` 与各 renderer 约定 `__NEBULA_BUILD_NODE_VERSION__`（类型在 `@nebula-studio/types`）。
+- **Tailwind `@source`**：`nebulaTailwindSourcePlugin` 按制品 workspace 依赖注入扫描目录，禁止共享 `theme.css` 扫描整个 `packages/` / `apps/`。
 
 ## peer 依赖
 

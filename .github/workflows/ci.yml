@@ -42,7 +42,15 @@ jobs:
       - name: Build web shell
         run: vp run build:web
 
-      - name: Enforce web bundle budgets
+      - name: Build federation remotes
+        run: vp run build:federation-remotes
+
+      - name: Enforce Tailwind source isolation
+        run: vp run check:css-sources
+
+      - name: Enforce web and remote bundle budgets
+        env:
+          NEBULA_CHECK_REMOTE_BUNDLES: 'true'
         run: vp run check:bundle
 
       - name: Verify generated configs and contracts are up to date

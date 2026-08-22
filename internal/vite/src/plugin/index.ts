@@ -1,4 +1,5 @@
 export { nebulaClientDefinePlugin } from './nebulaClientDefine.ts';
+export { nebulaTailwindSourcePlugin } from './nebulaTailwindSourcePlugin.ts';
 export {
   applyProductionScriptNonceToHtml,
   NEBULA_CSP_NONCE_PLACEHOLDER,

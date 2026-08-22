@@ -7,6 +7,7 @@ import type {
 import type { NebulaRendererPluginSelection } from './nebulaRendererPlugins.ts';
 import type { NebulaRendererOnWarn } from './nebulaRendererWarnings.ts';
 
+import tailwindcss from '@tailwindcss/vite';
 import { mergeConfig } from 'vite';
 
 import {
@@ -15,6 +16,7 @@ import {
 } from '../env/nebulaBuildDefines.ts';
 import { nebulaClientDefinePlugin } from '../plugin/nebulaClientDefine.ts';
 import { nebulaSubWebAliasPlugin } from '../plugin/nebulaSubWebAlias.ts';
+import { nebulaTailwindSourcePlugin } from '../plugin/nebulaTailwindSourcePlugin.ts';
 import { nebulaVueDemoPlugin } from '../plugin/nebulaVueDemoPlugin.ts';
 import { nebulaRendererChunkBuildPartial } from './chunks/index.ts';
 import { nebulaRendererOptimizeDeps } from './nebulaRendererOptimizeDeps.ts';
@@ -44,6 +46,8 @@ export type NebulaElectronRendererPatch = Pick<
 };
 
 export interface NebulaElectronRendererOptions {
+  /** Electron app root (`apps/electron`); used for per-artifact Tailwind `@source`. */
+  appRoot?: string;
   /** Renderer 产物 chunk 策略；默认开启，可用 `enabled: false` 关闭。 */
   chunks?: NebulaRendererChunksOptions;
   /**
@@ -68,6 +72,9 @@ export function nebulaElectronRendererPartial(
     plugins: resolveNebulaRendererPluginList({
       ...options.plugins,
       extra: [
+        ...(options.appRoot
+          ? [nebulaTailwindSourcePlugin(options.appRoot), tailwindcss()]
+          : [tailwindcss()]),
         nebulaClientDefinePlugin(),
         nebulaVueDemoPlugin(),
         nebulaSubWebAliasPlugin(),

@@ -70,6 +70,9 @@ jobs:
           NEBULA_MSW_BASE_PATH: ${{ steps.vars.outputs.base_path }}
         run: vp run web#build
 
+      - name: Enforce Tailwind source isolation
+        run: vp run check:css-sources
+
       - name: Enforce bundle budgets
         run: vp run check:bundle
 

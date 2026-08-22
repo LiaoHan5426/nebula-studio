@@ -1,0 +1,27 @@
+{
+  "description": "A-track Host/Remote gzip ceilings after Federation migration. Host must not ship Integration editor chunks.",
+  "hostInitialSyncJsGzipKibMax": 350,
+  "hostMustNotContainEditorChunkPrefixes": [
+    "integration-domain-",
+    "editor-flow-",
+    "editor-code-"
+  ],
+  "shared": {
+    "vue": { "singleton": true, "eager": false, "requiredVersion": "^3.5.0" },
+    "vue-router": {
+      "singleton": true,
+      "eager": false,
+      "requiredVersion": "^4.6.0",
+      "optional": true
+    },
+    "@nebula-studio/application-contract": {
+      "singleton": true,
+      "eager": false
+    }
+  },
+  "remotes": {
+    "docs": { "totalJsGzipKibMax": 3000 },
+    "settings": { "totalJsGzipKibMax": 800 },
+    "integration": { "totalJsGzipKibMax": 5000 }
+  }
+}

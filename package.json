@@ -29,6 +29,7 @@
     "dev:web": "vp run web#dev",
     "build:web": "vp run web#build",
     "check:bundle": "node ./scripts/check-bundle-budget.mjs",
+    "check:css-sources": "node ./scripts/check-css-sources.mjs",
     "check:boundaries": "node ./scripts/check-boundaries.mjs",
     "check:editors": "node ./scripts/check-editor-boundaries.mjs && vp run @nebula-studio/nebula-code-editor#typecheck && vp run @nebula-studio/nebula-code-editor#test && vp run @nebula-studio/nebula-code-editor#build && vp run @nebula-studio/nebula-code-editor#check:bundle",
     "check:mf-poc": "node ./scripts/check-mf-poc.mjs",

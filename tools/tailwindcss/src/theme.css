@@ -5,12 +5,9 @@
 @plugin '@iconify/tailwind4';
 
 /*
- * Monorepo source detection: scan packages/apps for utility classes.
- * Tailwind @source only accepts filesystem directories (not npm package specifiers);
- * paths stay repo-relative from this file (`tools/tailwindcss/src/` → repo root).
+ * Tailwind @source is injected per Host/Remote by nebulaTailwindSourcePlugin.
+ * Do not scan ../../../packages or ../../../apps from this shared theme.
  */
-@source '../../../packages/';
-@source '../../../apps/';
 
 /* Dark mode uses .dark class selector, not prefers-color-scheme */
 @custom-variant dark (&:is(.dark *));

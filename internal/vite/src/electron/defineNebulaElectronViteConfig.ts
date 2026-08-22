@@ -161,7 +161,10 @@ export async function defineNebulaElectronViteConfig(
       opts.preload ?? {},
     ),
     renderer: mergeConfig(
-      nebulaElectronRendererPartial({ chunks: opts.chunks }),
+      nebulaElectronRendererPartial({
+        chunks: opts.chunks,
+        appRoot: electronAppDir,
+      }),
       {
         build: {
           rollupOptions: {

@@ -57,6 +57,11 @@ export {
 } from './federation/createNebulaSharedConfig.ts';
 export { nebulaFederationHostPlugin } from './federation/nebulaFederationHostPlugin.ts';
 export { nebulaCssNamespacePlugin } from './federation/nebulaCssNamespacePlugin.ts';
+export {
+  resolveTailwindSourceGraph,
+  assertTailwindSourceGraphIsolated,
+  isRepoWideTailwindSourceCss,
+} from './styles/resolveTailwindSourceGraph.ts';
 export { applyCssNamespace } from './federation/applyCssNamespace.ts';
 export * from './env/index.ts';
 export * from './plugin/index.ts';

@@ -219,8 +219,23 @@ if (
 ) {
   fail('layoutHost helpers must live in @nebula-studio/shell-protocol');
 }
-if (existsSync(join(root, 'packages/core/runtime/src/detectMode.ts'))) {
+if (
+  existsSync(join(root, 'packages/core/runtime/src/detectMode.ts'))
+) {
   fail('packages/core/runtime/src/detectMode.ts must stay deleted');
+}
+
+const themeCss = readFileSync(
+  join(root, 'tools/tailwindcss/src/theme.css'),
+  'utf8',
+);
+if (
+  themeCss.includes("@source '../../../packages/'") ||
+  themeCss.includes("@source '../../../apps/'")
+) {
+  fail(
+    'theme.css must not scan ../../../packages or ../../../apps; use nebulaTailwindSourcePlugin',
+  );
 }
 for (const shim of [
   'common/presentationHost.ts',

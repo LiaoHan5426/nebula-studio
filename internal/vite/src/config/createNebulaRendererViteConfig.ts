@@ -12,6 +12,7 @@ import {
   nebulaMswDefine,
 } from '../env/nebulaBuildDefines.ts';
 import { nebulaClientDefinePlugin } from '../plugin/nebulaClientDefine.ts';
+import { nebulaTailwindSourcePlugin } from '../plugin/nebulaTailwindSourcePlugin.ts';
 import { nebulaRendererChunkBuildPartial } from './chunks/index.ts';
 import { nebulaRendererOptimizeDeps } from './nebulaRendererOptimizeDeps.ts';
 import { resolveNebulaRendererPluginList } from './nebulaRendererPlugins.ts';
@@ -66,6 +67,7 @@ export function createNebulaRendererViteConfig(
 
   let baseConfig: UserConfig = {
     plugins: [
+      nebulaTailwindSourcePlugin(root),
       nebulaClientDefinePlugin(),
       tailwindcss(),
       ...resolveNebulaRendererPluginList(pluginSelection),
