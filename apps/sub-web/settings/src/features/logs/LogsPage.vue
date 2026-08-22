@@ -94,10 +94,6 @@ function applyFilters() {
   void loadLogs();
 }
 
-function search() {
-  applyFilters();
-}
-
 function prevPage() {
   if (page.value <= 1) return;
   page.value -= 1;

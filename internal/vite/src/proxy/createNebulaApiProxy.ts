@@ -39,7 +39,37 @@ function resolveTargets(
   return merged;
 }
 
-function isSseRequest (url?: string): boolean {
+function isAuthProxyUrl(url?: string): boolean {
+  return Boolean(url && url.includes('/api/auth'));
+}
+
+const configureAuthProxyLog: NonNullable<ProxyOptions['configure']> = (
+  proxy,
+  options,
+) => {
+  proxy.on('proxyReq', (_proxyReq, req) => {
+    const request = req as { method?: string; url?: string };
+    if (!isAuthProxyUrl(request.url)) return;
+    const target = typeof options.target === 'string' ? options.target : '';
+    console.info(
+      `[nebula-vite] ${request.method ?? 'GET'} ${request.url} -> ${target}`,
+    );
+  });
+};
+
+function chainProxyConfigure(
+  ...fns: Array<undefined | ProxyOptions['configure']>
+): ProxyOptions['configure'] | undefined {
+  const present = fns.filter(
+    (fn): fn is NonNullable<ProxyOptions['configure']> => Boolean(fn),
+  );
+  if (present.length === 0) return undefined;
+  return (proxy, options) => {
+    for (const fn of present) fn(proxy, options);
+  };
+}
+
+function isSseRequest(url?: string): boolean {
   return url?.includes('/events') ?? false;
 }
 
@@ -76,16 +106,20 @@ const configureSseProxy: NonNullable<ProxyOptions['configure']> = (
   });
 };
 
-function buildProxyEntry (target: string, sse: boolean): ProxyOptions {
+function buildProxyEntry(target: string, sse: boolean): ProxyOptions {
   if (!sse) {
-    return { target, changeOrigin: true };
+    return {
+      target,
+      changeOrigin: true,
+      configure: configureAuthProxyLog,
+    };
   }
   return {
     target,
     changeOrigin: true,
     timeout: 0,
     proxyTimeout: 0,
-    configure: configureSseProxy,
+    configure: chainProxyConfigure(configureSseProxy, configureAuthProxyLog),
   };
 }
 
@@ -93,14 +127,14 @@ function buildProxyEntry (target: string, sse: boolean): ProxyOptions {
  * Executor 管理 API 使用服务身份（X-Service-Token），浏览器不应持有该令牌。
  * 开发代理在转发时注入，与 platform-integration / executor 的默认值对齐。
  */
-function resolveExecutorServiceToken (): string {
+function resolveExecutorServiceToken(): string {
   return (
     process.env.NEBULA_EXECUTOR_SERVICE_TOKEN ??
     'change-me-platform-executor-service-token'
   );
 }
 
-function buildExecutorProxyEntry (target: string, sse: boolean): ProxyOptions {
+function buildExecutorProxyEntry(target: string, sse: boolean): ProxyOptions {
   const serviceToken = resolveExecutorServiceToken();
   const injectServiceToken: NonNullable<ProxyOptions['configure']> = (
     proxy,

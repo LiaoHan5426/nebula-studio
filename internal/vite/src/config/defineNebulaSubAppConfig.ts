@@ -7,11 +7,16 @@ import type {
 
 import { fileURLToPath } from 'node:url';
 
+import { federation } from '@module-federation/vite';
+
 import { resolveSubAppRoot } from '../plugin/nebulaWorkspaceManifestPlugin.ts';
 import { createNebulaApiProxy } from '../proxy/createNebulaApiProxy.ts';
 import { createNebulaRendererViteConfig } from './createNebulaRendererViteConfig.ts';
 import { resolveStandaloneApp } from './studioRuntime.ts';
 import { loadWindowsConfig } from './windowsManifest.ts';
+import { asVitePlugins } from '../federation/asVitePlugins.ts';
+import { createNebulaSharedConfig } from '../federation/createNebulaSharedConfig.ts';
+import { nebulaCssNamespacePlugin } from '../federation/nebulaCssNamespacePlugin.ts';
 
 export interface DefineNebulaSubAppConfigOptions {
   /** Sub-app directory name under apps/sub-web (e.g. integration). */
@@ -22,13 +27,20 @@ export interface DefineNebulaSubAppConfigOptions {
   devPort?: number;
   /** Extra Vite plugins appended to the sub-app config. */
   plugins?: Plugin[];
+  /** Renderer chunk splitting. Federation remotes default to off unless set. */
+  chunks?: import('./chunks/types.ts').NebulaRendererChunksOptions;
   /** Options forwarded to createNebulaApiProxy when proxyPreset is set. */
   proxyOptions?: Omit<CreateNebulaApiProxyOptions, 'preset'>;
   /** Proxy preset; set false to disable. Defaults to the renderer proxyPreset in windows.json. */
   proxyPreset?: false | NebulaApiProxyPreset;
+  federation?: {
+    cssNamespace?: string;
+    exposes: Record<string, string>;
+    name: string;
+  };
 }
 
-export function defineNebulaSubAppConfig (
+export function defineNebulaSubAppConfig(
   options: DefineNebulaSubAppConfigOptions,
 ) {
   const { root } = resolveSubAppRoot(options.configModuleUrl);
@@ -68,15 +80,41 @@ export function defineNebulaSubAppConfig (
     });
   }
 
+  const plugins: Plugin[] = [...(options.plugins ?? [])];
+  if (options.federation) {
+    const cssNamespace = options.federation.cssNamespace ?? options.appId;
+    plugins.unshift(
+      nebulaCssNamespacePlugin(cssNamespace),
+      ...asVitePlugins(
+        federation({
+          name: options.federation.name,
+          filename: 'remoteEntry.js',
+          manifest: true,
+          exposes: options.federation.exposes,
+          shared: createNebulaSharedConfig(),
+        }),
+      ),
+    );
+    server.cors = true;
+    if (port !== undefined) {
+      server.origin = `http://localhost:${port}`;
+    }
+    server.headers = {
+      ...server.headers,
+      'Access-Control-Allow-Origin': '*',
+    };
+  }
+
   return createNebulaRendererViteConfig({
     root,
     base: process.env.VITE_BASE_PATH ?? standalone?.basePath ?? '/',
+    chunks: options.chunks ?? { enabled: false },
     build: {
       outDir: 'dist',
       emptyOutDir: true,
     },
     merge: {
-      plugins: options.plugins,
+      plugins,
       resolve: {
         alias: {
           '@': srcRoot,

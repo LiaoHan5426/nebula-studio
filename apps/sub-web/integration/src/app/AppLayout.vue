@@ -24,9 +24,16 @@ const router = useRouter();
 const { isShellHosted } = useShellHosted();
 const { isPlatformAdmin, isLoggedIn, username, logout } = useAuth();
 
-const surface = computed(() =>
-  resolveIntegrationSurface(route.meta.surface, isPlatformAdmin.value),
-);
+const surface = computed(() => {
+  const resolved = resolveIntegrationSurface(
+    route.meta.surface,
+    isPlatformAdmin.value,
+  );
+  if (resolved === 'portal') return resolved;
+  // 管理员进入提供方路由时仍保留治理侧栏，否则看不到流程 / DAG 入口。
+  if (isPlatformAdmin.value) return 'admin';
+  return resolved;
+});
 const managementNavItems = computed(() =>
   isPlatformAdmin.value ? platformAdminNavItems : userManageNavItems,
 );

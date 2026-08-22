@@ -37,8 +37,8 @@ export const INTEGRATION_STARTER_BPMN = `<?xml version="1.0" encoding="UTF-8"?>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>`;
 
-export function isBlankBpmn(xml?: null | string): boolean {
-  if (xml === null || xml === undefined) return true;
+export function isBlankBpmn(xml?: unknown): boolean {
+  if (typeof xml !== 'string') return true;
   const trimmed = xml.trim();
   if (!trimmed) return true;
   return (

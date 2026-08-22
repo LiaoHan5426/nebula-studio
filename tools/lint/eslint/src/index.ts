@@ -5,6 +5,7 @@ import {
   ignores,
   javascript,
   jsonc,
+  mfBoundary,
   node,
   perfectionist,
   pnpm,
@@ -35,6 +36,7 @@ async function defineConfig(config: FlatConfig[] = []) {
     pnpm(),
     ...customConfig,
     hostBoundary(),
+    mfBoundary(),
     ...config,
   ];
 

@@ -31,8 +31,8 @@ Nebula Studio 是一个基于 **Vue 3 + TypeScript** 的企业级全栈组件库
 nebula-studio/
 ├── packages/
 │   ├── ui/nebula-ui/       # 核心组件库
-│   ├── core/app-shell/     # 应用壳层
-│   ├── core/shell/         # Shell 集成
+│   ├── ui/shell-ui/        # Shell UI（@nebula-studio/nebula-shell）
+│   ├── core/app-shell/     # 应用壳层 SDK
 │   └── core/runtime/       # 运行时
 ├── apps/
 │   ├── web/                # 主应用

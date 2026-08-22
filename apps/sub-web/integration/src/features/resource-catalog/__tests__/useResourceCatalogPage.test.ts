@@ -7,23 +7,29 @@ import { DEFAULT_CATALOG_QUERY } from '../types';
 const sampleItems: ResourceSummaryViewModel[] = [
   {
     id: 'a',
+    sourceId: 'source-a',
     kind: 'API',
     name: 'Alpha API',
     description: 'first',
     provider: 'team-a',
+    version: '1.0.0',
     tags: ['orders'],
     availability: 'AVAILABLE',
     updatedAt: '2026-01-02T00:00:00Z',
+    detail: {},
   },
   {
     id: 'b',
+    sourceId: 'source-b',
     kind: 'TABLE',
     name: 'Beta Table',
     description: 'second',
     provider: 'team-b',
+    version: '1.0.0',
     tags: ['inventory'],
     availability: 'APPROVAL_REQUIRED',
     updatedAt: '2026-01-01T00:00:00Z',
+    detail: {},
   },
 ];
 

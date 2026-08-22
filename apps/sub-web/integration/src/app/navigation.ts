@@ -71,6 +71,8 @@ export const platformAdminNavItems: NavItem[] = [
     icon: 'layout-dashboard',
     to: PLATFORM_ADMIN_HOME,
   },
+  serviceManagement,
+  integrationCore,
   {
     key: 'plugins',
     label: '插件中心',

@@ -1,6 +1,6 @@
 import type { Linter } from 'eslint';
 
-import { contractBoundaryConfig } from './configs/contract-boundary.ts';
+import { contractBoundaryConfig } from './configs/contract-boundary';
 
 const restrictedImportIgnores = [
   '**/*.config.ts',
@@ -63,6 +63,14 @@ const customConfig: Linter.Config[] = [
                 '@nebula-studio/nebula-low-render',
               ],
               message: 'contracts 禁止引用 editors 包',
+            },
+            {
+              group: ['vue', 'vue-router'],
+              message: 'contracts 禁止依赖 Vue',
+            },
+            {
+              group: ['@nebula-studio/runtime', '@nebula-studio/app-shell'],
+              message: 'contracts 禁止依赖 runtime / app-shell',
             },
           ],
         },
@@ -189,6 +197,12 @@ const customConfig: Linter.Config[] = [
       'no-restricted-imports': [
         'error',
         {
+          paths: [
+            {
+              name: 'electron',
+              message: 'Remote 禁止依赖 electron 运行时包',
+            },
+          ],
           patterns: [
             {
               group: ['@nebula-studio-renderer/settings'],
@@ -197,6 +211,19 @@ const customConfig: Linter.Config[] = [
             {
               group: ['@nebula-studio-renderer/main'],
               message: 'integration 禁止引用 frontend(main) renderer',
+            },
+            {
+              group: ['@nebula-studio/app-shell'],
+              message:
+                'Remote 禁止依赖 app-shell；embed/会话用 shell-protocol 或 auth-provider',
+            },
+            {
+              group: [
+                '@nebula-studio/web',
+                '@nebula-studio/electron',
+                '@nebula-studio-electron/electron-bridge',
+              ],
+              message: 'Remote 禁止依赖 Host',
             },
           ],
         },
@@ -212,6 +239,12 @@ const customConfig: Linter.Config[] = [
       'no-restricted-imports': [
         'error',
         {
+          paths: [
+            {
+              name: 'electron',
+              message: 'Remote 禁止依赖 electron 运行时包',
+            },
+          ],
           patterns: [
             {
               group: ['@nebula-studio-renderer/integration'],
@@ -220,6 +253,20 @@ const customConfig: Linter.Config[] = [
             {
               group: ['@nebula-studio/contracts/integration'],
               message: 'settings 禁止引用 contracts/integration',
+            },
+            {
+              group: ['@nebula-studio/app-shell'],
+              message:
+                'Remote 禁止依赖 app-shell；embed/会话用 shell-protocol 或 auth-provider',
+            },
+            {
+              group: [
+                '@nebula-studio/web',
+                '@nebula-studio/electron',
+                '@nebula-studio-electron/electron-bridge',
+                '@nebula-studio-renderer/main',
+              ],
+              message: 'Remote 禁止依赖 Host / frontend(main)',
             },
           ],
         },
@@ -341,6 +388,11 @@ const customConfig: Linter.Config[] = [
               message: 'packages/core 禁止引用 web 业务页',
             },
             {
+              group: ['@nebula-studio/app-shell'],
+              message:
+                'packages/core 禁止依赖 app-shell；协议用 shell-protocol，会话用 auth-provider',
+            },
+            {
               group: ['../../../apps/*', '../../apps/*'],
               message: 'packages 禁止通过相对路径引用 apps',
             },
@@ -368,10 +420,12 @@ const customConfig: Linter.Config[] = [
       'internal/**/**',
       'scripts/**/**',
       'apps/electron/**/**',
+      'apps/mf-poc-host/**/**',
       'packages/editors/code-editor/**/**',
     ],
     rules: {
       'no-console': 'off',
+      'unicorn/no-process-exit': 'off',
     },
   },
   contractBoundaryConfig,

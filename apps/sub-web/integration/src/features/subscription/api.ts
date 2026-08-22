@@ -13,6 +13,7 @@ export type {
   SubscriptionAccessRequestCreatePayload,
   SubscriptionAccessRequestRecord,
 } from '@nebula-studio/contracts/integration';
+export type { SubscriptionAccessRequestRecord as SubscriptionRequestRecord };
 
 export const subscriptionApi = {
   create(

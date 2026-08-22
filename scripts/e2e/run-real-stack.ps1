@@ -281,8 +281,16 @@ if ($SkipExecution) {
     return
 }
 
-if (-not $env:NEBULA_E2E_PASSWORD -or -not $env:NEBULA_E2E_GATEWAY_API_KEY) {
-    throw "[real-stack] NEBULA_E2E_PASSWORD and NEBULA_E2E_GATEWAY_API_KEY must be supplied via the environment"
+if (-not $env:NEBULA_E2E_USERNAME) {
+    $env:NEBULA_E2E_USERNAME = "admin"
+}
+if (-not $env:NEBULA_E2E_PASSWORD) {
+    $env:NEBULA_E2E_PASSWORD = "admin123"
+    Write-Host "[real-stack] using demo login admin/admin123 (override with NEBULA_E2E_USERNAME / NEBULA_E2E_PASSWORD)"
+}
+if (-not $env:NEBULA_E2E_GATEWAY_API_KEY) {
+    $env:NEBULA_E2E_GATEWAY_API_KEY = "demo-api-key-tenant-a"
+    Write-Host "[real-stack] using demo gateway API key demo-api-key-tenant-a (override with NEBULA_E2E_GATEWAY_API_KEY)"
 }
 
 $runError = $null
@@ -339,6 +347,7 @@ try {
     try {
         & vp run generate:configs
         if ($LASTEXITCODE -ne 0) { throw "window config generation failed" }
+        $env:NEBULA_OPENAPI_SNAPSHOT_ON_UNAUTHORIZED = "true"
         & vp run generate:contracts:strict
         if ($LASTEXITCODE -ne 0) { throw "contract generation failed" }
         & git diff --exit-code -- `

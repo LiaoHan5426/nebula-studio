@@ -16,10 +16,13 @@ vi.mock('@nebula-studio/auth-provider', () => ({
   },
 }));
 
-vi.mock('@nebula-studio/app-shell', () => ({
+vi.mock('@nebula-studio/auth-provider/web', () => ({
   readParentShellAuthSession: vi.fn(() => null),
-  isSurfaceEmbed: vi.fn(() => false),
   SHELL_AUTH_UNAUTHORIZED_EVENT: 'shell:auth:unauthorized',
+}));
+
+vi.mock('@nebula-studio/shell-protocol', () => ({
+  isSurfaceEmbed: vi.fn(() => false),
 }));
 
 const { hasValidAuthToken } =

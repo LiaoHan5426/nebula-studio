@@ -35,6 +35,7 @@
         "target": "executor",
         "injectExecutorServiceToken": true
       },
+      { "prefix": "/api/system/frontend-apps", "target": "console" },
       { "prefix": "/api/system", "target": "platform" },
       { "prefix": "/api/platform", "target": "platform" },
       { "prefix": "/api/security/governance", "target": "platform" },
@@ -46,6 +47,7 @@
       { "prefix": "/api", "target": "console" }
     ],
     "standard": [
+      { "prefix": "/api/system/frontend-apps", "target": "console" },
       { "prefix": "/api/system", "target": "platform" },
       { "prefix": "/api/platform", "target": "platform" },
       { "prefix": "/api/security/governance", "target": "platform" },

@@ -1,0 +1,36 @@
+{
+  "name": "@nebula-studio/host-capabilities",
+  "version": "0.0.0",
+  "description": "Host-side capability adapters for Nebula Remote applications.",
+  "private": true,
+  "homepage": "https://github.com/LiaoHan5426/nebula-studio#readme",
+  "bugs": {
+    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LiaoHan5426/nebula-studio.git",
+    "directory": "packages/platform/host-capabilities"
+  },
+  "license": "UNLICENSED",
+  "author": "Liao Han <liaohan5426@gmail.com>",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "test": "vp test run"
+  },
+  "dependencies": {
+    "@nebula-studio/application-contract": "workspace:^",
+    "@nebula-studio/auth-provider": "workspace:^"
+  },
+  "devDependencies": {
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "typescript": "catalog:types",
+    "vitest": "catalog:vite"
+  }
+}

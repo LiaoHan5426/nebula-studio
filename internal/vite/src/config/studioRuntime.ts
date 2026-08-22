@@ -1,12 +1,13 @@
 import type {
   ApiProxyRouteConfig,
   NebulaApiProxyPresetName,
+} from './apiContext.ts';
+import { requireApiProxyPreset } from './apiContext.ts';
+import { hasWebShellPath, loadWindowsConfig } from './windowsManifest.ts';
+import type {
   RendererRuntimeFields,
   WindowsConfig,
 } from './windowsManifest.ts';
-
-import { requireApiProxyPreset } from './apiContext.ts';
-import { loadWindowsConfig } from './windowsManifest.ts';
 
 export interface ResolvedDevServer {
   basePath: string;
@@ -29,30 +30,23 @@ export interface ResolvedHealthCheck {
   target: string;
 }
 
-function joinOrigin (origin: string, path = '/'): string {
+function joinOrigin(origin: string, path = '/'): string {
   const base = origin.replace(/\/$/, '');
   if (!path || path === '/') return base;
   return `${base}${path.startsWith('/') ? path : `/${path}`}`;
 }
 
-export function httpOrigin (
-  host: string,
-  port: number,
-  basePath = '/',
-): string {
+export function httpOrigin(host: string, port: number, basePath = '/'): string {
   return joinOrigin(`http://${host}:${port}`, basePath);
 }
 
-export function rewriteOriginHost (origin: string, host: string): string {
+export function rewriteOriginHost(origin: string, host: string): string {
   const url = new URL(origin);
   url.hostname = host;
   return url.origin;
 }
 
-export function requireApiTarget (
-  config: WindowsConfig,
-  name: string,
-): string {
+export function requireApiTarget(config: WindowsConfig, name: string): string {
   const target = config.apiTargets?.[name];
   if (!target) {
     throw new Error(`[nebula-vite] Missing apiTargets.${name} in windows.json`);
@@ -60,7 +54,7 @@ export function requireApiTarget (
   return target;
 }
 
-export function resolveShellWeb (
+export function resolveShellWeb(
   config: WindowsConfig = loadWindowsConfig(),
 ): ResolvedDevServer {
   const web = config.shell?.web;
@@ -76,7 +70,7 @@ export function resolveShellWeb (
   };
 }
 
-function collectRendererEntries (
+function collectRendererEntries(
   config: WindowsConfig,
 ): Array<{ embedPath?: string; fields: RendererRuntimeFields }> {
   const entries: Array<{
@@ -86,7 +80,7 @@ function collectRendererEntries (
   for (const win of Object.values(config.windows)) {
     entries.push({
       fields: win,
-      embedPath: win.webEmbedEntry
+      embedPath: hasWebShellPath(win)
         ? `/?${config.shell?.embedQuery ?? 'embed'}=${win.renderer}`
         : undefined,
     });
@@ -95,7 +89,7 @@ function collectRendererEntries (
     for (const modal of Object.values(config.modalRenderers)) {
       entries.push({
         fields: modal,
-        embedPath: modal.webEmbedEntry
+        embedPath: hasWebShellPath(modal)
           ? `/?${config.shell?.embedQuery ?? 'embed'}=${modal.renderer}`
           : undefined,
       });
@@ -104,7 +98,7 @@ function collectRendererEntries (
   return entries;
 }
 
-export function resolveStandaloneApp (
+export function resolveStandaloneApp(
   appId: string,
   config: WindowsConfig = loadWindowsConfig(),
 ): ResolvedStandaloneApp {
@@ -131,7 +125,7 @@ export function resolveStandaloneApp (
   };
 }
 
-export function resolveShellEmbedPath (
+export function resolveShellEmbedPath(
   renderer: string,
   config: WindowsConfig = loadWindowsConfig(),
 ): string {
@@ -139,7 +133,7 @@ export function resolveShellEmbedPath (
   return `/?${query}=${encodeURIComponent(renderer)}`;
 }
 
-export function tryResolveStandalonePort (
+export function tryResolveStandalonePort(
   appId: string,
   config: WindowsConfig = loadWindowsConfig(),
 ): number | undefined {
@@ -150,13 +144,13 @@ export function tryResolveStandalonePort (
   }
 }
 
-export function resolveApiProxyRoutes (
+export function resolveApiProxyRoutes(
   preset: NebulaApiProxyPresetName,
 ): ApiProxyRouteConfig[] {
   return requireApiProxyPreset(preset);
 }
 
-export function resolveOpenApiUrl (
+export function resolveOpenApiUrl(
   config: WindowsConfig = loadWindowsConfig(),
 ): string {
   const spec = config.realStack?.openapi.platform;
@@ -168,7 +162,7 @@ export function resolveOpenApiUrl (
   return joinOrigin(requireApiTarget(config, spec.target), spec.path);
 }
 
-export function resolveHealthChecks (
+export function resolveHealthChecks(
   config: WindowsConfig = loadWindowsConfig(),
   options: { host?: string } = {},
 ): ResolvedHealthCheck[] {
@@ -192,7 +186,7 @@ export function resolveHealthChecks (
   });
 }
 
-export function resolveUnauthorizedProbeUrl (
+export function resolveUnauthorizedProbeUrl(
   config: WindowsConfig = loadWindowsConfig(),
 ): string {
   const probe = config.realStack?.unauthorizedProbe;
@@ -204,7 +198,7 @@ export function resolveUnauthorizedProbeUrl (
   return joinOrigin(requireApiTarget(config, probe.target), probe.path);
 }
 
-export function resolveE2eMockRoutePatterns (
+export function resolveE2eMockRoutePatterns(
   config: WindowsConfig = loadWindowsConfig(),
 ): string[] {
   const patterns = config.e2e?.mockRoutePatterns;
@@ -216,7 +210,7 @@ export function resolveE2eMockRoutePatterns (
   return patterns;
 }
 
-export function resolvePlaywrightWeb (
+export function resolvePlaywrightWeb(
   config: WindowsConfig = loadWindowsConfig(),
 ): ResolvedDevServer {
   return resolveShellWeb(config);

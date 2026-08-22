@@ -1,6 +1,7 @@
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 
 import { IPC_CHANNELS } from './rendererPreferences/ipcChannels.ts';
+import { resolveRendererIpc } from './resolveRendererIpc.ts';
 import { setupRendererThemeSync } from './setupRendererThemeSync.ts';
 
 type ThemeMode = 'dark' | 'light';
@@ -12,32 +13,6 @@ interface ThemeChangePayload {
 
 const THEME = IPC_CHANNELS.theme;
 
-interface IpcRendererLike {
-  invoke(channel: string, ...args: unknown[]): Promise<unknown>;
-  on(
-    channel: string,
-    listener: (event: unknown, payload: ThemeChangePayload) => void,
-  ): void;
-  removeListener(
-    channel: string,
-    listener: (event: unknown, payload: ThemeChangePayload) => void,
-  ): void;
-}
-
-interface ElectronLike {
-  ipcRenderer: IpcRendererLike;
-}
-
-function resolveElectronLike(): ElectronLike {
-  const g = globalThis as { electron?: ElectronLike };
-  if (!g.electron) {
-    throw new Error(
-      'window.electron is unavailable. Ensure preload exposes Electron API.',
-    );
-  }
-  return g.electron;
-}
-
 export interface UseRendererThemeSyncOptions {
   manageDom?: boolean;
 }
@@ -45,16 +20,14 @@ export interface UseRendererThemeSyncOptions {
 export function useRendererThemeSync(
   options: UseRendererThemeSyncOptions = {},
 ) {
-  const electron = resolveElectronLike();
+  const electron = { ipcRenderer: resolveRendererIpc() };
   const theme = ref<ThemeMode>('dark');
   const appMode = ref<AppMode>('build');
   const isDark = computed(() => theme.value === 'dark');
   let disposeDomSync: (() => void) | undefined;
 
-  const onThemeChanged = (
-    _event: unknown,
-    payload: ThemeChangePayload,
-  ): void => {
+  const onThemeChanged = (_event: unknown, ...args: unknown[]): void => {
+    const payload = args[0] as ThemeChangePayload | undefined;
     theme.value = payload?.theme === 'light' ? 'light' : 'dark';
   };
 

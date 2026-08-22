@@ -6,8 +6,8 @@ import type { PluginNodeSchema } from '@nebula-studio/nebula-low-render';
 
 import { computed, onMounted, ref } from 'vue';
 
-import { DagEditor } from '@nebula-studio/nebula-dag-editor';
 import { useNebulaAssembly } from '@nebula-studio/nebula-assembly';
+import { DagEditor } from '@nebula-studio/nebula-dag-editor';
 import {
   NebulaButton,
   NebulaDialog,
@@ -57,24 +57,51 @@ async function loadDags() {
     if (isApiSuccess(response)) {
       dags.value = response.data ?? [];
     }
+  } catch (error) {
+    actionError.value =
+      error instanceof Error ? error.message : '加载 DAG 列表失败';
   } finally {
     loading.value = false;
   }
 }
 
+function openDraftEditor(name: string) {
+  editingDag.value = {
+    id: '',
+    dagName: name,
+    tenantId: currentTenantId.value || undefined,
+    status: 'DRAFT',
+    version: 1,
+  };
+  dagDefinition.value = { nodes: {} };
+  editorHost.configure({
+    size: { height: 'min(72vh, 720px)', width: '100%' },
+    readonly: false,
+    save: saveEditor,
+  });
+  showEditor.value = true;
+}
+
 async function handleCreate() {
   actionError.value = null;
-  const response = await dagApi.create({
-    dagName: `DAG ${new Date().toLocaleString()}`,
-    tenantId: currentTenantId.value || undefined,
-    dagDefinition: JSON.stringify({ nodes: {} }),
-  });
-  if (!isApiSuccess(response)) {
-    actionError.value = response.error ?? response.message ?? '创建 DAG 失败';
-    return;
+  const dagName = `DAG ${new Date().toLocaleString()}`;
+  openDraftEditor(dagName);
+  try {
+    const response = await dagApi.create({
+      dagName,
+      tenantId: currentTenantId.value || undefined,
+      dagDefinition: JSON.stringify({ nodes: {} }),
+    });
+    if (!isApiSuccess(response) || !response.data?.id) {
+      actionError.value = response.error ?? response.message ?? '创建 DAG 失败';
+      return;
+    }
+    editingDag.value = response.data;
+    await loadDags();
+  } catch (error) {
+    actionError.value =
+      error instanceof Error ? error.message : '创建 DAG 失败';
   }
-  await openEditor(response.data);
-  await loadDags();
 }
 
 async function openEditor(dag: DagDefinitionRecord) {
@@ -99,9 +126,29 @@ async function saveEditor() {
     typeof dagDefinition.value === 'string'
       ? dagDefinition.value
       : JSON.stringify(dagDefinition.value);
-  await dagApi.update(editingDag.value.id, { dagDefinition: definition });
-  showEditor.value = false;
-  await loadDags();
+  try {
+    if (!editingDag.value.id) {
+      const response = await dagApi.create({
+        dagName: editingDag.value.dagName,
+        tenantId:
+          editingDag.value.tenantId || currentTenantId.value || undefined,
+        dagDefinition: definition,
+      });
+      if (!isApiSuccess(response) || !response.data?.id) {
+        actionError.value =
+          response.error ?? response.message ?? '保存 DAG 失败';
+        return;
+      }
+      editingDag.value = response.data;
+    } else {
+      await dagApi.update(editingDag.value.id, { dagDefinition: definition });
+    }
+    showEditor.value = false;
+    await loadDags();
+  } catch (error) {
+    actionError.value =
+      error instanceof Error ? error.message : '保存 DAG 失败';
+  }
 }
 
 async function handlePublish(dag: DagDefinitionRecord) {

@@ -4,11 +4,11 @@
 
 ## 入口
 
-| 路径              | 说明                                           |
-| ----------------- | ---------------------------------------------- |
-| `src/main.ts`     | 生产入口；保持与仓库一致的 tailwind 全局链引入 |
-| `src/dev/main.ts` | 仅本地独立 `vite dev` 使用                     |
-| `vite.config.ts`  | 独立调试时的 Vite 配置                         |
+| 路径              | 说明                       |
+| ----------------- | -------------------------- |
+| `src/main.ts`     | 仅 standalone `vite dev`   |
+| `src/dev/main.ts` | 仅本地独立 `vite dev` 使用 |
+| `vite.config.ts`  | 独立调试时的 Vite 配置     |
 
 ## 脚本
 
@@ -16,9 +16,8 @@
 
 ## 改名 / 迁目录必查
 
-- `apps/electron/app.config.ts` → `modalRenderers.login.renderer` 字段（当前为 **`login`** 即目录 `apps/sub-web/login`）。
-- `boot.ts` glob 下是否存在 `apps/sub-web/login/src/main.ts`。
-- `apps/web/src/embed/login-entry.ts` 及壳配置中的标识（若有硬编码字符串）。
+- `configs/windows.json` → `modalRenderers.login`（`renderer=login`，`webLoad=host`）。不要删 preload / Electron 登录窗映射。
+- Electron 登录窗与 Web `/?embed=login` 走 Host `bootHostLogin(mode)`，不再 glob `apps/sub-web/login/src/main.ts`，也没有 `apps/web/src/embed/login-entry.ts`。
 
 ## 相关
 

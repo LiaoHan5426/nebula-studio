@@ -15,6 +15,14 @@ export type {
   WebPreferenceBridge,
   WebPreferenceChannels,
 } from './rendererPreferences/index.ts';
+export type {
+  RendererIpcRenderer,
+  RendererProcessVersions,
+} from './resolveRendererIpc.ts';
+export {
+  resolveRendererIpc,
+  resolveRendererProcess,
+} from './resolveRendererIpc.ts';
 export { setupRendererThemeSync } from './setupRendererThemeSync.ts';
 export { useConfig } from './useConfig.ts';
 export { useElectronNotify } from './useElectronNotify.ts';

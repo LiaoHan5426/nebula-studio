@@ -1,14 +1,9 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Nebula Studio Windows Configuration",
-  "description": "Centralized window/renderer and runtime-address configuration for Nebula Studio Electron and Web modes.",
+  "description": "Electron window/preload/renderer, apiTargets, realStack probes, and E2E patterns. Product labels, categories, and display order live in the backend application registry, not on WindowConfig.",
   "type": "object",
-  "required": [
-    "windows",
-    "apiTargets",
-    "realStack",
-    "e2e"
-  ],
+  "required": ["windows", "apiTargets", "realStack", "e2e"],
   "additionalProperties": false,
   "properties": {
     "$schema": {
@@ -89,14 +84,6 @@
         "$ref": "#/definitions/ModalRendererConfig"
       },
       "description": "Modal renderer definitions (non-window, overlay renderers)."
-    },
-    "displayOrder": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "uniqueItems": true,
-      "description": "Ordered list of window IDs for display in navigation."
     }
   },
   "definitions": {
@@ -177,7 +164,7 @@
     },
     "WindowConfig": {
       "type": "object",
-      "required": ["preload", "renderer", "label", "preloadCapabilities"],
+      "required": ["preload", "renderer", "preloadCapabilities"],
       "additionalProperties": false,
       "properties": {
         "preload": {
@@ -193,57 +180,10 @@
           "pattern": "^\\./embed/.+-entry\\.js$",
           "description": "Optional Web shell embed entry, relative to apps/web/src."
         },
-        "label": {
+        "webLoad": {
           "type": "string",
-          "description": "Human-readable window label."
-        },
-        "description": {
-          "type": "string",
-          "description": "Short task-oriented description used by Shell search and launch surfaces."
-        },
-        "category": {
-          "type": "string",
-          "enum": ["workspace", "product", "support", "settings"],
-          "description": "Shell navigation and launcher category."
-        },
-        "helpKey": {
-          "type": "string",
-          "description": "Stable contextual help key."
-        },
-        "searchKeywords": {
-          "type": "array",
-          "items": { "type": "string" },
-          "uniqueItems": true,
-          "description": "Additional global-search keywords."
-        },
-        "roles": {
-          "type": "array",
-          "items": { "type": "string" },
-          "uniqueItems": true,
-          "description": "Roles allowed to discover this Shell entry."
-        },
-        "returnTo": {
-          "type": "string",
-          "description": "Default route or Shell surface used when returning to this entry."
-        },
-        "iconSvg": {
-          "type": "string",
-          "description": "Inline SVG markup for the window icon."
-        },
-        "defaultEnabled": {
-          "type": "boolean",
-          "default": true,
-          "description": "Whether this window is enabled by default."
-        },
-        "integratable": {
-          "type": "boolean",
-          "default": false,
-          "description": "Whether this window can be embedded inside the integration sub-app."
-        },
-        "requiresAuth": {
-          "type": "boolean",
-          "default": false,
-          "description": "Whether this window requires authentication to access."
+          "enum": ["embed", "federation", "host"],
+          "description": "Web shell load driver. host is owned by apps/web boot (no generated embed entry). federation uses a Remote manifest instead of webEmbedEntry."
         },
         "preloadCapabilities": {
           "type": "array",
@@ -280,6 +220,11 @@
           "type": "string",
           "pattern": "^\\./embed/.+-entry\\.js$",
           "description": "Optional Web shell embed entry, relative to apps/web/src."
+        },
+        "webLoad": {
+          "type": "string",
+          "enum": ["embed", "federation", "host"],
+          "description": "Web shell load driver. host is owned by apps/web boot (no generated embed entry). federation uses a Remote manifest instead of webEmbedEntry."
         },
         "preloadCapabilities": {
           "type": "array",

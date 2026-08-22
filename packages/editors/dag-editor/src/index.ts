@@ -1,4 +1,4 @@
-export { default as DagEditor } from './components/DagEditor.vue';
+export { DagEditor } from './asyncComponents';
 export type {
   DagDefinition,
   DagNodeConfig,

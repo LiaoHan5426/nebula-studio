@@ -127,8 +127,21 @@ export async function defineNebulaElectronViteConfig(
       {
         build: {
           watch: {},
+          // 这些包的 exports 指向 .ts；externalize 后 Electron 会用 Node ESM
+          // 加载源码，相对导入无扩展名会 ERR_MODULE_NOT_FOUND。
           externalizeDeps: {
-            exclude: ['@nebula-studio/app-shell'],
+            exclude: [
+              '@nebula-studio-electron/electron-bridge',
+              '@nebula-studio-internal/node',
+              '@nebula-studio/app-shell',
+              '@nebula-studio/application-runtime',
+              '@nebula-studio/auth-provider',
+              '@nebula-studio/contracts',
+              '@nebula-studio/federation-protocol',
+              '@nebula-studio/host-capabilities',
+              '@nebula-studio/shell-host',
+              '@nebula-studio/shell-protocol',
+            ],
           },
         },
       },

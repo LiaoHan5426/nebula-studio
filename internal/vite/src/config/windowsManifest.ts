@@ -32,11 +32,11 @@ export interface RendererRuntimeFields {
   renderer: string;
   standalone?: StandaloneRuntimeConfig;
   webEmbedEntry?: string;
+  webLoad?: 'embed' | 'federation' | 'host';
 }
 
 export interface WindowsConfig {
   apiTargets?: Record<string, string>;
-  displayOrder?: string[];
   e2e?: { mockRoutePatterns: string[] };
   electronEmbeddedPresentation?: 'browser-view' | 'iframe';
   modalRenderers?: Record<string, RendererRuntimeFields>;
@@ -53,21 +53,14 @@ export interface WindowsConfig {
     topInsetPx?: number;
     web?: { basePath?: string; host: string; port: number };
   };
-  windows: Record<
-    string,
-    RendererRuntimeFields & {
-      defaultEnabled?: boolean;
-      iconSvg?: string;
-      integratable?: boolean;
-      label: string;
-      requiresAuth?: boolean;
-    }
-  >;
+  windows: Record<string, RendererRuntimeFields>;
 }
 
 export interface NebulaAppManifest {
   /** Map embed surface → relative boot entry path from apps/web/src */
   embedBootEntries: Record<string, string>;
+  /** Surfaces that load via Module Federation instead of a static embed entry */
+  federationSurfaces: string[];
   /** Surfaces available for ?embed= query in Web shell */
   embedSurfaces: string[];
   /** Preload ID → union of capabilities declared by all surfaces using it */
@@ -118,6 +111,8 @@ export function buildAppManifest(
   const preloadIds = new Set<string>();
   const preloadCapabilities = new Map<string, Set<PreloadCapability>>();
   const embedBootEntries: Record<string, string> = {};
+  const federationSurfaces = new Set<string>();
+  const hostSurfaces = new Set<string>();
 
   for (const win of Object.values(config.windows)) {
     subApps.add(win.renderer);
@@ -128,11 +123,13 @@ export function buildAppManifest(
       preloadCapabilities,
     );
     assertRendererPackage(rootDir, win.renderer);
-    registerWebEmbedEntry(
+    registerWebSurface(
       rootDir,
       win.renderer,
-      win.webEmbedEntry,
+      win,
       embedBootEntries,
+      federationSurfaces,
+      hostSurfaces,
     );
   }
 
@@ -146,16 +143,24 @@ export function buildAppManifest(
         preloadCapabilities,
       );
       assertRendererPackage(rootDir, modal.renderer);
-      registerWebEmbedEntry(
+      registerWebSurface(
         rootDir,
         modal.renderer,
-        modal.webEmbedEntry,
+        modal,
         embedBootEntries,
+        federationSurfaces,
+        hostSurfaces,
       );
     }
   }
 
-  const embedSurfaces = Object.keys(embedBootEntries).toSorted();
+  const embedSurfaces = [
+    ...new Set([
+      ...Object.keys(embedBootEntries),
+      ...federationSurfaces,
+      ...hostSurfaces,
+    ]),
+  ].toSorted();
 
   return {
     subApps: [...subApps].toSorted(),
@@ -171,6 +176,7 @@ export function buildAppManifest(
     ),
     embedSurfaces,
     embedBootEntries,
+    federationSurfaces: [...federationSurfaces].toSorted(),
   };
 }
 
@@ -187,6 +193,48 @@ function registerPreload(
     registered.add(capability);
   }
   capabilityMap.set(preloadId, registered);
+}
+
+export function hasWebShellPath(entry: RendererRuntimeFields): boolean {
+  return Boolean(
+    entry.webEmbedEntry ||
+    entry.webLoad === 'federation' ||
+    entry.webLoad === 'host',
+  );
+}
+
+function registerWebSurface(
+  rootDir: string,
+  renderer: string,
+  entry: RendererRuntimeFields,
+  embedBootEntries: Record<string, string>,
+  federationSurfaces: Set<string>,
+  hostSurfaces: Set<string>,
+): void {
+  if (entry.webLoad === 'host') {
+    if (entry.webEmbedEntry) {
+      throw new Error(
+        `[nebula-vite] renderer "${renderer}" cannot set both webLoad=host and webEmbedEntry`,
+      );
+    }
+    hostSurfaces.add(renderer);
+    return;
+  }
+  if (entry.webLoad === 'federation') {
+    if (entry.webEmbedEntry) {
+      throw new Error(
+        `[nebula-vite] renderer "${renderer}" cannot set both webLoad=federation and webEmbedEntry`,
+      );
+    }
+    federationSurfaces.add(renderer);
+    return;
+  }
+  registerWebEmbedEntry(
+    rootDir,
+    renderer,
+    entry.webEmbedEntry,
+    embedBootEntries,
+  );
 }
 
 function registerWebEmbedEntry(

@@ -3,19 +3,16 @@ import type { App } from 'vue';
 import type { BootMicroAppOptions } from './index';
 
 import {
+  __resetResolvedRuntimeModeForTests,
   installShellEmbedNavigationListener,
-  installWebPresentation,
   postShellEmbedPageMeta,
+  requireRuntimeMode,
+  setResolvedRuntimeMode,
   wireShellEventBus,
-} from '@nebula-studio/app-shell';
+} from '@nebula-studio/shell-protocol';
+import type { RuntimeMode } from '@nebula-studio/shell-protocol';
 
 import { bootSubApp } from '@nebula-studio-electron/electron-bridge/vue';
-
-import { detectRuntimeMode } from './detectMode';
-import {
-  __resetResolvedRuntimeModeForTests,
-  setResolvedRuntimeMode,
-} from './resolvedMode';
 
 export interface MicroAppHandle {
   app: App;
@@ -26,13 +23,16 @@ export interface MicroAppHandle {
 let activeHandle: MicroAppHandle | null = null;
 
 /**
- * 统一微应用启动入口。
+ * 统一微应用启动入口（兼容 adapter）。
+ *
+ * Federation Remote 使用 `NebulaRemoteApplication`（application-contract），不要新增 bootMicroApp 调用方。
  *
  * 内部启动顺序：
- * 1. bridge 注入（Web 模式 → installWebPresentation；Electron → 跳过）
- * 2. auth（AuthBootstrap）
- * 3. beforeMountAsync（可选，异步）
- * 4. 委托 bootSubApp（ConfigProvider + mount）
+ * 1. auth（AuthBootstrap）
+ * 2. beforeMountAsync（可选，异步）
+ * 3. 委托 bootSubApp（ConfigProvider + mount）
+ *
+ * Web `installWebPresentation` 由 Host / standalone composition root 在调用本函数之前完成。
  *
  * 返回 MicroAppHandle，调用 dispose() 可释放 auth 监听、event bus 订阅与 Vue 实例。
  */
@@ -41,17 +41,9 @@ export async function bootMicroApp(
 ): Promise<MicroAppHandle | undefined> {
   activeHandle?.dispose();
 
-  const mode = options.mode ?? detectRuntimeMode();
+  const mode = requireRuntimeMode(options.mode);
   setResolvedRuntimeMode(mode);
   const disposers: Array<() => void> = [];
-
-  if (mode !== 'electron' && options.webPresentation) {
-    installWebPresentation({
-      scope: options.webPresentation.scope,
-      registerShellHostIpc: options.webPresentation.registerShellHostIpc,
-      processVersions: options.webPresentation.processVersions,
-    });
-  }
 
   if (options.shellEventBus && options.shellEventBusHandlers) {
     disposers.push(
@@ -169,7 +161,7 @@ async function runAuth(
     try {
       const { AuthBootstrap } = await import('@nebula-studio/auth');
       const { ok, dispose } = await AuthBootstrap.register(
-        mode as import('./detectMode').RuntimeMode,
+        mode as RuntimeMode,
         {
           appId: options.appId,
           surfaceId: options.appId,

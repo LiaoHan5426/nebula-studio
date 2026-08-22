@@ -2,7 +2,7 @@ import type { ElectronAuthSession } from '@nebula-studio/contracts/auth';
 
 import type { AuthBootstrapOptions, AuthStrategy } from '../types';
 
-import { SHELL_AUTH_UNAUTHORIZED_EVENT } from '@nebula-studio/app-shell';
+import { SHELL_AUTH_UNAUTHORIZED_EVENT } from '@nebula-studio/auth-provider/web';
 import { globalAuthProvider } from '@nebula-studio/auth-provider';
 /**
  * ElectronStrategy — Electron 桌面模式认证策略。

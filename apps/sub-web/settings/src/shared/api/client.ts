@@ -1,7 +1,7 @@
 import type { ApiRequestOptions, ApiResponse } from '@nebula-studio/api-client';
 
 import { createStudioApiClient } from '@nebula-studio/api-client';
-import { handleShellAuthUnauthorized } from '@nebula-studio/app-shell';
+import { handleShellAuthUnauthorized } from '@nebula-studio/auth-provider/web';
 import { GENERATED_API_NAMESPACES } from '@nebula-studio/contracts/generated';
 
 import {

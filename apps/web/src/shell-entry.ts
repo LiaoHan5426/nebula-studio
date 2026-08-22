@@ -1,3 +1,3 @@
-import { bootFrontend } from '@nebula-studio-renderer/main/boot';
+import { bootHostWorkspace } from './workspace/bootHostWorkspace';
 
-void bootFrontend();
+void bootHostWorkspace('standalone');

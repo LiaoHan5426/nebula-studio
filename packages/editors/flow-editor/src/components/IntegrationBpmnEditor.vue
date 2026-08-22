@@ -18,7 +18,7 @@ const emit = defineEmits<{
   (e: 'changed'): void;
 }>();
 
-const xml = defineModel<string>('xml');
+const xml = defineModel<string>('xml', { required: true });
 
 const hints = computed(() => [
   '从左侧调色板拖拽 Service Task 编排原子接口调用',

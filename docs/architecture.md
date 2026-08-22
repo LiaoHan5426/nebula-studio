@@ -27,7 +27,7 @@ Electron 主进程 / Web 宿主
 
 ### Electron
 
-`apps/electron` 管理主进程和窗口生命周期。renderer 使用共同的引导入口，根据窗口配置加载 `apps/sub-web/*/src/main.ts`；`apps/electron-preload/*` 只暴露声明过的能力，业务 renderer 不直接依赖 Electron API。
+`apps/electron` 管理主进程和窗口生命周期。renderer 使用共同的引导入口：Federation 应用走 runtime Remote；工作台与登录走 Host `bootHostWorkspace` / `bootHostLogin`。`apps/electron-preload/*` 只暴露声明过的能力，业务 renderer 不直接依赖 Electron API。
 
 ### Web
 

@@ -1,6 +1,10 @@
 # @nebula-studio/app-shell
 
-**壳层集成**：为 **Electron** 与 **Web** 提供同一套「窗口/视图布局、认证、通知、主题」等配置与桥接实现。
+**壳层运行时 SDK**：窗口/视图配置、认证会话、集成注册表，以及 `@nebula-studio/shell-protocol` 的兼容再导出。
+
+登录 API（`loginWithBackendAuth` 等）从 `@nebula-studio/auth-provider/backend` 直接导入，不经本包再导出。
+
+Web/Electron composition-root 适配器（`installWebPresentation`、`installShellHostBridge`）在 `@nebula-studio/shell-host`。
 
 ## 导出（稳定 API 面）
 
@@ -12,8 +16,8 @@
 
 ## 依赖关系
 
-- 依赖 `@nebula-studio-electron/electron-bridge`（包含 `./vue` 子路径）提供类型与运行时桥。
-- **不**应反向依赖具体 renderer 包（`@nebula-studio-renderer/*`），避免环。
+- 依赖 `@nebula-studio/shell-protocol` 与 `@nebula-studio/auth-provider`。
+- **不**应反向依赖 `@nebula-studio/shell-host`、具体 Host 或 renderer 包，避免环。
 
 ## 恢复 / 迁移时注意
 

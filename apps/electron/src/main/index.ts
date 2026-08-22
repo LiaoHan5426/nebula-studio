@@ -1,3 +1,8 @@
+import { GENERATED_STANDALONE_APPS } from '@nebula-studio/contracts/generated';
+import {
+  attachNebulaRemoteProtocolHandler,
+  nebulaRemoteOrigin,
+} from './federation/registerNebulaRemoteProtocol';
 import { electronApp, is, optimizer } from '@electron-toolkit/utils';
 import { bootstrapShellIntegratedApps } from '@nebula-studio-renderer/main/platform/integrated-apps';
 import { app } from 'electron';
@@ -31,10 +36,20 @@ app.whenReady().then(async () => {
   });
   logger.info(`Log file path: ${logger.getLogFilePath()}`);
 
-  const allowedOrigins = new Set<string>(['file://']);
+  const allowedOrigins = new Set<string>([
+    'file://',
+    nebulaRemoteOrigin('docs'),
+    nebulaRemoteOrigin('settings'),
+    nebulaRemoteOrigin('integration'),
+  ]);
   if (is.dev && process.env.ELECTRON_RENDERER_URL) {
     allowedOrigins.add(new URL(process.env.ELECTRON_RENDERER_URL).origin);
+    allowedOrigins.add(GENERATED_STANDALONE_APPS.docs.baseUrl);
+    allowedOrigins.add(GENERATED_STANDALONE_APPS.settings.baseUrl);
+    allowedOrigins.add(GENERATED_STANDALONE_APPS.integration.baseUrl);
   }
+
+  attachNebulaRemoteProtocolHandler();
 
   const windowManager = new WindowManager([
     allowInternalOrigins(allowedOrigins),

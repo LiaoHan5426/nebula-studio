@@ -31,6 +31,8 @@ export default defineConfig({
         /resource-performance\.spec\.ts/,
         /real-stack\.spec\.ts/,
         /electron\.spec\.ts/,
+        /phase7-web\.spec\.ts/,
+        /standalone\.spec\.ts/,
       ],
       use: { ...devices['Desktop Chrome'] },
     },
@@ -41,6 +43,16 @@ export default defineConfig({
         /resource-performance\.spec\.ts/,
       ],
       use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'live-web',
+      testMatch: /phase7-web\.spec\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+        channel: 'chrome',
+        video: 'off',
+        trace: 'off',
+      },
     },
     {
       name: 'real-stack',

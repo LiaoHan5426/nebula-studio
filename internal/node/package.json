@@ -1,7 +1,7 @@
 {
   "name": "@nebula-studio-internal/node",
   "version": "0.0.0",
-  "description": "Internal Node.js utilities for the Nebula Studio monorepo.",
+  "description": "Internal Node.js utilities for the Nebula Studio monorepo (workspace graph, window-config generation).",
   "private": true,
   "homepage": "https://github.com/LiaoHan5426/nebula-studio#readme",
   "bugs": {
@@ -23,14 +23,23 @@
     "./monorepo": {
       "types": "./src/monorepo.ts",
       "default": "./src/monorepo.ts"
-    }
+    },
+    "./join-origin": "./src/joinOrigin.mjs",
+    "./window-config": "./src/windowConfig.mjs",
+    "./runtime-address-drift": "./src/runtimeAddressDrift.mjs",
+    "./frontend-openapi": "./src/frontendOpenApi.mjs"
+  },
+  "scripts": {
+    "test": "vp test run"
   },
   "dependencies": {
-    "@manypkg/get-packages": "catalog:utils"
+    "@manypkg/get-packages": "catalog:utils",
+    "ajv": "catalog:"
   },
   "devDependencies": {
     "@nebula-studio-internal/tsconfig": "workspace:^",
     "@types/node": "catalog:types",
-    "typescript": "catalog:types"
+    "typescript": "catalog:types",
+    "vitest": "catalog:vite"
   }
 }

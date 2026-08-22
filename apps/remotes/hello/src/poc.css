@@ -1,0 +1,23 @@
+.poc-box {
+  display: inline-block;
+  margin: 0.25rem 0;
+  padding: 0.35rem 0.6rem;
+  border-radius: 4px;
+  color: rgb(220, 38, 38);
+  background: rgb(254, 226, 226);
+  font: 16px/1.4 sans-serif;
+  text-decoration: none;
+  cursor: default;
+  pointer-events: none;
+  animation-name: poc-pulse;
+  animation-duration: 1s;
+}
+
+@keyframes poc-pulse {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.2;
+  }
+}

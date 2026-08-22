@@ -38,6 +38,26 @@ export {
   type DefineNebulaElectronConfigOptions,
   type DefineNebulaWebConfigOptions,
 } from './defineNebulaConfig.ts';
+export {
+  defineNebulaFederationPocConfig,
+  type DefineNebulaFederationPocConfigOptions,
+} from './federation/defineNebulaFederationPocConfig.ts';
+export {
+  defineNebulaHostConfig,
+  type DefineNebulaHostConfigOptions,
+} from './federation/defineNebulaHostConfig.ts';
+export {
+  defineNebulaRemoteConfig,
+  type DefineNebulaRemoteConfigOptions,
+} from './federation/defineNebulaRemoteConfig.ts';
+export {
+  createNebulaSharedConfig,
+  type CreateNebulaSharedConfigOptions,
+  type NebulaSharedLibrary,
+} from './federation/createNebulaSharedConfig.ts';
+export { nebulaFederationHostPlugin } from './federation/nebulaFederationHostPlugin.ts';
+export { nebulaCssNamespacePlugin } from './federation/nebulaCssNamespacePlugin.ts';
+export { applyCssNamespace } from './federation/applyCssNamespace.ts';
 export * from './env/index.ts';
 export * from './plugin/index.ts';
 export { createNebulaApiProxy } from './proxy/createNebulaApiProxy.ts';

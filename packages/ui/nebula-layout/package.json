@@ -48,8 +48,8 @@
     }
   },
   "dependencies": {
-    "@nebula-studio/app-shell": "workspace:^",
     "@nebula-studio/nebula-assembly": "workspace:^",
+    "@nebula-studio/shell-protocol": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
     "vue": "catalog:vue",
     "vue-router": "catalog:vue"

@@ -152,6 +152,13 @@ const overrides: OxlintConfig = {
       },
     },
     {
+      files: ['apps/mf-poc-host/**/*'],
+      rules: {
+        'no-console': 'off',
+        'unicorn/no-process-exit': 'off',
+      },
+    },
+    {
       files: [
         'scripts/**/*.js',
         'scripts/**/*.cjs',

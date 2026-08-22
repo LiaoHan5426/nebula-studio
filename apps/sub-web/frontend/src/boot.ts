@@ -5,16 +5,23 @@ import {
   resolveShellEventBus,
   shouldRedirectUnauthenticatedWebShell,
 } from '@nebula-studio/app-shell';
+import {
+  installShellHostBridge,
+  installWebPresentationUnlessElectron,
+} from '@nebula-studio/shell-host';
 import '@nebula-studio/nebula-layout';
 import '@nebula-studio/nebula-ui';
 import {
   installAssemblyForSubApp,
   wrapSubAppWithAssembly,
 } from '@nebula-studio-renderer/assembly-boot';
-import { bootMicroApp, detectRuntimeMode } from '@nebula-studio/runtime';
+import { bootMicroApp } from '@nebula-studio/runtime';
 
 import AppComponent from './App.vue';
-import { bootstrapShellIntegratedApps } from './platform/integratedApps';
+import {
+  bootstrapShellIntegratedApps,
+  hydrateShellIntegratedAppsFromRuntime,
+} from './platform/integratedApps';
 
 import '@nebula-studio-internal/tailwind/electron';
 
@@ -22,13 +29,11 @@ import '@nebula-studio-internal/tailwind/electron';
  * Frontend (Shell) 子应用统一启动入口。
  *
  * 由以下入口调用：
- * - `src/main.ts` — Vite standalone dev / Electron renderer
- * - `apps/web/src/shell-entry.ts` — Web shell 薄 re-export
+ * - `src/main.ts` — Vite standalone `dev` only
+ * Host Web / Electron 工作台走 `apps/web/src/workspace/bootHostWorkspace.ts`，不再调用本文件。
  */
-export async function bootFrontend(opts?: {
-  mode?: RuntimeMode;
-}): Promise<void> {
-  const mode = opts?.mode ?? detectRuntimeMode();
+export async function bootFrontend(opts: { mode: RuntimeMode }): Promise<void> {
+  const mode = opts.mode;
 
   // MSW mock：仅 GitHub demo 部署时启用（构建时由 NEBULA_MSW_ENABLED 环境变量注入）
   if (__NEBULA_MSW_ENABLED__) {
@@ -42,6 +47,7 @@ export async function bootFrontend(opts?: {
   }
 
   bootstrapShellIntegratedApps();
+  await hydrateShellIntegratedAppsFromRuntime();
 
   const shellEventBus = resolveShellEventBus();
 
@@ -51,26 +57,26 @@ export async function bootFrontend(opts?: {
     return;
   }
 
+  installShellHostBridge(mode);
+  installWebPresentationUnlessElectron(mode, {
+    scope: 'web-shell',
+    registerShellHostIpc: mode !== 'platform-embed',
+    processVersions: { node: __NEBULA_BUILD_NODE_VERSION__ },
+  });
+
   await bootMicroApp({
     appId: 'frontend',
     mode,
     rootComponent: wrapSubAppWithAssembly(AppComponent),
-    webPresentation:
-      mode === 'electron'
-        ? undefined
-        : {
-            scope: 'web-shell',
-            registerShellHostIpc: mode !== 'platform-embed',
-            processVersions: { node: __NEBULA_BUILD_NODE_VERSION__ },
-          },
     // Electron shell owns the login UI and must mount before a session exists.
     // Gating it here makes a fresh desktop launch return without mounting Vue,
     // leaving an intentional-but-silent blank window.
     auth: { enabled: mode !== 'electron' },
     shellEventBus,
     beforeMountAsync: async () => {
-      // 动态导入 registerIntegratedApps（保持原有副作用）
-      await import('./runtime/registerIntegratedApps');
+      const { registerIntegratedApps } =
+        await import('./runtime/registerIntegratedApps');
+      await registerIntegratedApps();
     },
     beforeMount(app) {
       installAssemblyForSubApp(app, mode);

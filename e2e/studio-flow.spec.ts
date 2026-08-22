@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import { expectAssemblyMarkers } from './helpers/expectAssemblyMarkers';
+import { expectEmbedShellReady } from './helpers/expectEmbedShellReady';
 
 /**
  * Studio flow E2E — navigation smoke across login, settings, and integration.
@@ -16,19 +17,19 @@ test.describe('Studio navigation flow', () => {
   test('login surface is reachable', async ({ page }) => {
     await page.goto('/?embed=login');
     await page.waitForLoadState('domcontentloaded');
-    await expect(page.locator('body')).not.toBeEmpty();
+    await expectEmbedShellReady(page);
   });
 
   test('settings surfaces are reachable', async ({ page }) => {
     const paths = [
-      '/settings?embed=settings',
-      '/settings/config?embed=settings',
-      '/settings/users?embed=settings',
+      '/?embed=settings',
+      '/?embed=settings#/appearance',
+      '/?embed=settings#/organization/users',
     ];
     for (const path of paths) {
       await page.goto(path);
       await page.waitForLoadState('domcontentloaded');
-      await expect(page.locator('body')).not.toBeEmpty();
+      await expectEmbedShellReady(page);
     }
   });
 
@@ -43,19 +44,21 @@ test.describe('Studio navigation flow', () => {
       '/?embed=integration#/service/releases',
       '/?embed=integration#/service/versions',
       '/?embed=integration#/subscriptions',
+      '/?embed=integration#/flows',
+      '/?embed=integration#/dag',
     ];
 
     for (const path of paths) {
       await page.goto(path);
       await page.waitForLoadState('domcontentloaded');
-      await expect(page.locator('body')).not.toBeEmpty();
+      await expectEmbedShellReady(page);
     }
   });
 
   test('docs embed surface is reachable', async ({ page }) => {
     await page.goto('/?embed=docs');
     await page.waitForLoadState('domcontentloaded');
-    await expect(page.locator('body')).not.toBeEmpty();
+    await expectEmbedShellReady(page);
   });
 
   test('embedded sub-app exposes assembly mount root', async ({ page }) => {
@@ -97,6 +100,20 @@ test.describe('Integration page headings', () => {
     await page.goto('/?embed=integration#/subscriptions');
     await expect(page.getByRole('heading', { name: '库表订阅' })).toBeVisible({
       timeout: 10_000,
+    });
+  });
+
+  test('flow definition page shows title', async ({ page }) => {
+    await page.goto('/?embed=integration#/flows');
+    await expect(page.getByRole('heading', { name: '流程定义' })).toBeVisible({
+      timeout: 15_000,
+    });
+  });
+
+  test('dag orchestration page shows title', async ({ page }) => {
+    await page.goto('/?embed=integration#/dag');
+    await expect(page.getByRole('heading', { name: 'DAG 编排' })).toBeVisible({
+      timeout: 15_000,
     });
   });
 });

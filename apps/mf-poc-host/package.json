@@ -1,0 +1,39 @@
+{
+  "name": "@nebula-studio/mf-poc-host",
+  "version": "0.0.0",
+  "description": "Phase 0 Module Federation Web Host vehicle (not the production shell).",
+  "private": true,
+  "homepage": "https://github.com/LiaoHan5426/nebula-studio#readme",
+  "bugs": {
+    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LiaoHan5426/nebula-studio.git",
+    "directory": "apps/mf-poc-host"
+  },
+  "license": "UNLICENSED",
+  "author": "Liao Han <liaohan5426@gmail.com>",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false"
+  },
+  "dependencies": {
+    "@nebula-studio/federation-protocol": "workspace:^",
+    "@nebula-studio/application-runtime": "workspace:^",
+    "@nebula-studio/host-capabilities": "workspace:^",
+    "vue": "catalog:vue"
+  },
+  "devDependencies": {
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "@nebula-studio-internal/vite": "workspace:^",
+    "@module-federation/vite": "catalog:vite",
+    "typescript": "catalog:types",
+    "vite": "catalog:vite",
+    "vite-plus": "catalog:vite",
+    "vue-tsc": "catalog:vue"
+  }
+}

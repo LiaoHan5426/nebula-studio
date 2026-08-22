@@ -1,4 +1,5 @@
-import type { PageResult, UserRecord } from '@nebula-studio/contracts/system';
+import type { PageResult } from '@nebula-studio/contracts/common';
+import type { UserRecord } from '@nebula-studio/contracts/system';
 
 import type { ApiResponse } from '@/shared/types';
 

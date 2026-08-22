@@ -4187,6 +4187,405 @@
           }
         }
       }
+    },
+    "/api/system/frontend-apps/runtime": {
+      "get": {
+        "tags": ["frontend-application-rest-service"],
+        "operationId": "listFrontendRuntime",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FrontendRuntimeEntryView"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/system/frontend-apps/page": {
+      "get": {
+        "tags": ["frontend-application-rest-service"],
+        "operationId": "pageFrontendApplications",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/frontend-apps": {
+      "get": {
+        "tags": ["frontend-application-rest-service"],
+        "operationId": "listFrontendApplications",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FrontendApplicationView"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["frontend-application-rest-service"],
+        "operationId": "createFrontendApplication",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FrontendApplicationCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FrontendApplicationView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/system/frontend-apps/{id}": {
+      "get": {
+        "tags": ["frontend-application-rest-service"],
+        "operationId": "getFrontendApplication",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FrontendApplicationView"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["frontend-application-rest-service"],
+        "operationId": "deleteFrontendApplication",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/system/frontend-apps/{id}/versions": {
+      "get": {
+        "tags": ["frontend-application-rest-service"],
+        "operationId": "listFrontendApplicationVersions",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FrontendApplicationVersionView"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["frontend-application-rest-service"],
+        "operationId": "createFrontendApplicationVersion",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FrontendApplicationVersionCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FrontendApplicationVersionView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/system/frontend-apps/{id}/validate": {
+      "post": {
+        "tags": ["frontend-application-rest-service"],
+        "operationId": "validateFrontendApplication",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FrontendApplicationValidateResultView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/system/frontend-apps/{id}/rollout": {
+      "put": {
+        "tags": ["frontend-application-rest-service"],
+        "operationId": "rolloutFrontendApplication",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FrontendApplicationRolloutRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FrontendApplicationVersionView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/system/frontend-apps/{id}/status": {
+      "put": {
+        "tags": ["frontend-application-rest-service"],
+        "operationId": "updateFrontendApplicationStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FrontendApplicationStatusBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FrontendApplicationView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/system/frontend-apps/telemetry": {
+      "post": {
+        "tags": ["frontend-application-rest-service"],
+        "operationId": "ingestFrontendTelemetry",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FrontendRemoteTelemetryRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FrontendRemoteTelemetryResultView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/system/frontend-apps/{id}/telemetry": {
+      "get": {
+        "tags": ["frontend-application-rest-service"],
+        "operationId": "listFrontendTelemetry",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FrontendRemoteTelemetryEventView"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -4792,6 +5191,463 @@
           "pageSize": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "FrontendRuntimeEntryView": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "driver": {
+            "type": "string"
+          },
+          "routeBase": {
+            "type": "string"
+          },
+          "defaultPath": {
+            "type": "string"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "webEnabled": {
+            "type": "boolean"
+          },
+          "electronEnabled": {
+            "type": "boolean"
+          },
+          "sortOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "version": {
+            "type": "string"
+          },
+          "channel": {
+            "type": "string"
+          },
+          "manifestUrl": {
+            "type": "string"
+          },
+          "remoteName": {
+            "type": "string"
+          },
+          "exposedModule": {
+            "type": "string"
+          },
+          "contractVersion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hostVersionRange": {
+            "type": "string"
+          },
+          "rolloutPercent": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "integrity": {
+            "type": "string"
+          },
+          "signature": {
+            "type": "string"
+          },
+          "allowedOrigins": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "source": {
+            "type": "string"
+          },
+          "renderer": {
+            "type": "string"
+          },
+          "preload": {
+            "type": "string"
+          },
+          "integratable": {
+            "type": "boolean"
+          },
+          "defaultEnabled": {
+            "type": "boolean"
+          },
+          "requiresAuth": {
+            "type": "boolean"
+          },
+          "helpKey": {
+            "type": "string"
+          },
+          "searchKeywords": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "returnTo": {
+            "type": "string"
+          }
+        }
+      },
+      "FrontendApplicationView": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "sortOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "driver": {
+            "type": "string"
+          },
+          "routeBase": {
+            "type": "string"
+          },
+          "defaultPath": {
+            "type": "string"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tenantPolicy": {
+            "type": "string"
+          },
+          "webEnabled": {
+            "type": "boolean"
+          },
+          "electronEnabled": {
+            "type": "boolean"
+          }
+        }
+      },
+      "FrontendApplicationVersionView": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "applicationId": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "channel": {
+            "type": "string"
+          },
+          "manifestUrl": {
+            "type": "string"
+          },
+          "remoteName": {
+            "type": "string"
+          },
+          "exposedModule": {
+            "type": "string"
+          },
+          "contractVersion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hostVersionRange": {
+            "type": "string"
+          },
+          "integrity": {
+            "type": "string"
+          },
+          "allowedOrigins": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rolloutPercent": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "publishedAt": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "FrontendApplicationVersionCreateRequest": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string"
+          },
+          "channel": {
+            "type": "string"
+          },
+          "manifestUrl": {
+            "type": "string"
+          },
+          "remoteName": {
+            "type": "string"
+          },
+          "exposedModule": {
+            "type": "string"
+          },
+          "contractVersion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hostVersionRange": {
+            "type": "string"
+          },
+          "integrity": {
+            "type": "string"
+          },
+          "signature": {
+            "type": "string"
+          },
+          "allowedOrigins": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rolloutPercent": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "FrontendApplicationCreateRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "sortOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "driver": {
+            "type": "string"
+          },
+          "routeBase": {
+            "type": "string"
+          },
+          "defaultPath": {
+            "type": "string"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tenantPolicy": {
+            "type": "string"
+          },
+          "webEnabled": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "electronEnabled": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "renderer": {
+            "type": "string"
+          },
+          "preload": {
+            "type": "string"
+          },
+          "integratable": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "defaultEnabled": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "requiresAuth": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "helpKey": {
+            "type": "string"
+          },
+          "searchKeywords": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "returnTo": {
+            "type": "string"
+          },
+          "version": {
+            "$ref": "#/components/schemas/FrontendApplicationVersionCreateRequest"
+          }
+        }
+      },
+      "FrontendApplicationRolloutRequest": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string"
+          },
+          "rolloutPercent": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "FrontendApplicationValidateResultView": {
+        "type": "object",
+        "properties": {
+          "valid": {
+            "type": "boolean"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "FrontendRemoteTelemetryRequest": {
+        "type": "object",
+        "properties": {
+          "applicationId": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "eventType": {
+            "type": "string"
+          },
+          "entry": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "FrontendRemoteTelemetryResultView": {
+        "type": "object",
+        "properties": {
+          "ingested": {
+            "type": "boolean"
+          },
+          "autoRolledBack": {
+            "type": "boolean"
+          },
+          "restoredVersion": {
+            "type": "string"
+          }
+        }
+      },
+      "FrontendRemoteTelemetryEventView": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "applicationId": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "eventType": {
+            "type": "string"
+          },
+          "entry": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "autoRolledBack": {
+            "type": "boolean"
+          },
+          "restoredVersion": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        }
+      },
+      "FrontendApplicationStatusBody": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
           }
         }
       }

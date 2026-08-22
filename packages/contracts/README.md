@@ -13,6 +13,8 @@
 
 业务代码不得直接导入 `generated/platform-api.ts`。生成文件名和 OpenAPI operation 命名只允许在 `generated/facade.ts` 内出现，对外使用 `PlatformApiPaths`、`PlatformApiOperation` 以及 `GeneratedUser` / `GeneratedTaskCreateRequest` 等稳定 schema 别名。
 
+`generated/api-namespaces.ts` 还包含 `GENERATED_API_TARGETS`、`GENERATED_STANDALONE_APPS` 与 `GENERATED_FEDERATION_DEV_ENTRIES`（来自 `windows.json`，由 `vp run generate:configs` 写出）。
+
 **F1 首批迁移（2026-08-19）：** `packages/contracts/system` 与 `integration/task|flow|subscription` 经 `mappers.ts` 对齐 generated；Settings `configApi` 与 Integration `taskApi` / `subscription/api` 消费稳定路径。Auth、Camel-only DTO、governance/monitor 的 `Record<string, unknown>` 仍手写直至 OpenAPI 覆盖。
 
 **新 API 门禁：** ESLint `contract-boundary` 禁止在 `apps/sub-web/**/shared/api` 与 `features/**/api.ts` 新增手写 `*Request`/`*Record` interface（auth 与遗留 governance/monitor 白名单除外）；CI 仍跑 `vp run check:generated`。
@@ -42,6 +44,7 @@
 | `PermissionNode` | `PermissionRestService` | `/api/system/permissions/**` | platform-console |
 | `OrganizationNode` | `OrganizationRestService` | `/api/system/organizations/**` | platform-console |
 | `ShellAppRecord` | `ShellAppRestService` | `/api/system/apps/**` | platform-console |
+| `FrontendApplicationRecord` / `FrontendRuntimeEntry` | `FrontendApplicationRestService` | `/api/system/frontend-apps/**` | platform-integration `:8080`（Host 代理）/ platform-console；runtime DTO 经 `FrontendRuntimeEntryView` generated + mapper |
 | `LogRecord` | `LogRestService` | `/api/system/logs/**` | platform-console |
 
 ### integration（camel-console :8080 / executor :8088）

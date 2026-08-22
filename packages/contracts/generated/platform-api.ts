@@ -2116,6 +2116,166 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/system/frontend-apps/runtime': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['listFrontendRuntime'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/system/frontend-apps/page': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['pageFrontendApplications'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/system/frontend-apps': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['listFrontendApplications'];
+    put?: never;
+    post: operations['createFrontendApplication'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/system/frontend-apps/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['getFrontendApplication'];
+    put?: never;
+    post?: never;
+    delete: operations['deleteFrontendApplication'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/system/frontend-apps/{id}/versions': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['listFrontendApplicationVersions'];
+    put?: never;
+    post: operations['createFrontendApplicationVersion'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/system/frontend-apps/{id}/validate': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['validateFrontendApplication'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/system/frontend-apps/{id}/rollout': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations['rolloutFrontendApplication'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/system/frontend-apps/{id}/status': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations['updateFrontendApplicationStatus'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/system/frontend-apps/telemetry': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations['ingestFrontendTelemetry'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/system/frontend-apps/{id}/telemetry': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['listFrontendTelemetry'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2362,6 +2522,162 @@ export interface components {
       pageNum?: number;
       /** Format: int32 */
       pageSize?: number;
+    };
+    FrontendRuntimeEntryView: {
+      id?: string;
+      name?: string;
+      description?: string;
+      icon?: string;
+      category?: string;
+      driver?: string;
+      routeBase?: string;
+      defaultPath?: string;
+      roles?: string[];
+      webEnabled?: boolean;
+      electronEnabled?: boolean;
+      /** Format: int32 */
+      sortOrder?: number;
+      version?: string;
+      channel?: string;
+      manifestUrl?: string;
+      remoteName?: string;
+      exposedModule?: string;
+      /** Format: int32 */
+      contractVersion?: number;
+      hostVersionRange?: string;
+      /** Format: int32 */
+      rolloutPercent?: number;
+      integrity?: string;
+      signature?: string;
+      allowedOrigins?: string[];
+      source?: string;
+      renderer?: string;
+      preload?: string;
+      integratable?: boolean;
+      defaultEnabled?: boolean;
+      requiresAuth?: boolean;
+      helpKey?: string;
+      searchKeywords?: string[];
+      returnTo?: string;
+    };
+    FrontendApplicationView: {
+      id?: string;
+      name?: string;
+      description?: string;
+      icon?: string;
+      category?: string;
+      status?: string;
+      /** Format: int32 */
+      sortOrder?: number;
+      driver?: string;
+      routeBase?: string;
+      defaultPath?: string;
+      roles?: string[];
+      tenantPolicy?: string;
+      webEnabled?: boolean;
+      electronEnabled?: boolean;
+    };
+    FrontendApplicationVersionView: {
+      id?: string;
+      applicationId?: string;
+      version?: string;
+      channel?: string;
+      manifestUrl?: string;
+      remoteName?: string;
+      exposedModule?: string;
+      /** Format: int32 */
+      contractVersion?: number;
+      hostVersionRange?: string;
+      integrity?: string;
+      allowedOrigins?: string[];
+      /** Format: int32 */
+      rolloutPercent?: number;
+      publishedAt?: string;
+      status?: string;
+    };
+    FrontendApplicationVersionCreateRequest: {
+      version?: string;
+      channel?: string;
+      manifestUrl?: string;
+      remoteName?: string;
+      exposedModule?: string;
+      /** Format: int32 */
+      contractVersion?: number;
+      hostVersionRange?: string;
+      integrity?: string;
+      signature?: string;
+      allowedOrigins?: string[];
+      /** Format: int32 */
+      rolloutPercent?: number;
+      status?: string;
+    };
+    FrontendApplicationCreateRequest: {
+      id?: string;
+      name?: string;
+      description?: string;
+      icon?: string;
+      category?: string;
+      status?: string;
+      /** Format: int32 */
+      sortOrder?: number;
+      driver?: string;
+      routeBase?: string;
+      defaultPath?: string;
+      roles?: string[];
+      tenantPolicy?: string;
+      /** Format: int32 */
+      webEnabled?: number;
+      /** Format: int32 */
+      electronEnabled?: number;
+      renderer?: string;
+      preload?: string;
+      /** Format: int32 */
+      integratable?: number;
+      /** Format: int32 */
+      defaultEnabled?: number;
+      /** Format: int32 */
+      requiresAuth?: number;
+      helpKey?: string;
+      searchKeywords?: string[];
+      returnTo?: string;
+      version?: components['schemas']['FrontendApplicationVersionCreateRequest'];
+    };
+    FrontendApplicationRolloutRequest: {
+      version?: string;
+      /** Format: int32 */
+      rolloutPercent?: number;
+      status?: string;
+    };
+    FrontendApplicationValidateResultView: {
+      valid?: boolean;
+      errors?: string[];
+      warnings?: string[];
+    };
+    FrontendRemoteTelemetryRequest: {
+      applicationId?: string;
+      version?: string;
+      eventType?: string;
+      entry?: string;
+      message?: string;
+    };
+    FrontendRemoteTelemetryResultView: {
+      ingested?: boolean;
+      autoRolledBack?: boolean;
+      restoredVersion?: string;
+    };
+    FrontendRemoteTelemetryEventView: {
+      id?: string;
+      applicationId?: string;
+      version?: string;
+      eventType?: string;
+      entry?: string;
+      message?: string;
+      autoRolledBack?: boolean;
+      restoredVersion?: string;
+      createdAt?: string;
+    };
+    FrontendApplicationStatusBody: {
+      status?: string;
     };
   };
   responses: never;
@@ -6016,6 +6332,305 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  listFrontendRuntime: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['FrontendRuntimeEntryView'][];
+        };
+      };
+    };
+  };
+  pageFrontendApplications: {
+    parameters: {
+      query?: {
+        page?: number;
+        size?: number;
+        keyword?: string;
+        status?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  listFrontendApplications: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['FrontendApplicationView'][];
+        };
+      };
+    };
+  };
+  createFrontendApplication: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['FrontendApplicationCreateRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['FrontendApplicationView'];
+        };
+      };
+    };
+  };
+  getFrontendApplication: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['FrontendApplicationView'];
+        };
+      };
+    };
+  };
+  deleteFrontendApplication: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  listFrontendApplicationVersions: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['FrontendApplicationVersionView'][];
+        };
+      };
+    };
+  };
+  createFrontendApplicationVersion: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['FrontendApplicationVersionCreateRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['FrontendApplicationVersionView'];
+        };
+      };
+    };
+  };
+  validateFrontendApplication: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['FrontendApplicationValidateResultView'];
+        };
+      };
+    };
+  };
+  rolloutFrontendApplication: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['FrontendApplicationRolloutRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['FrontendApplicationVersionView'];
+        };
+      };
+    };
+  };
+  updateFrontendApplicationStatus: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['FrontendApplicationStatusBody'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['FrontendApplicationView'];
+        };
+      };
+    };
+  };
+  ingestFrontendTelemetry: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['FrontendRemoteTelemetryRequest'];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['FrontendRemoteTelemetryResultView'];
+        };
+      };
+    };
+  };
+  listFrontendTelemetry: {
+    parameters: {
+      query?: {
+        limit?: number;
+      };
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['FrontendRemoteTelemetryEventView'][];
+        };
       };
     };
   };

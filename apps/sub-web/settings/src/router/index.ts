@@ -6,10 +6,12 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 import { hasValidAuthToken } from '@nebula-studio/auth-provider/session';
 import { defineExperiencePageMeta } from '@nebula-studio/nebula-layout';
-import { getResolvedRuntimeMode } from '@nebula-studio/runtime';
+import { getResolvedRuntimeMode } from '@nebula-studio/shell-protocol';
 
 import SettingsLayout from '@/layout/SettingsLayout.vue';
 import { canAccessSettings } from '@/shared/auth/access';
+
+const LoginApp = () => import('@nebula-studio-renderer/login/app');
 
 function settingsMeta(
   title: string,
@@ -32,6 +34,12 @@ function settingsMeta(
 }
 
 const routes: RouteRecordRaw[] = [
+  {
+    path: '/login',
+    name: 'login',
+    component: LoginApp,
+    meta: { title: '登录', public: true },
+  },
   {
     path: '/',
     component: SettingsLayout,
@@ -192,10 +200,24 @@ const router = createRouter({
 router.beforeEach((to, _from, next) => {
   document.title = `${to.meta.title ?? '设置'} - Nebula Studio`;
 
-  // standalone 模式下无 token 拦截访问，embed/electron 不拦截（Shell 层管认证）
-  if (getResolvedRuntimeMode() === 'standalone' && !hasValidAuthToken()) {
-    // standalone 下由当前 dev server 的 proxy/base path 处理登录入口。
-    window.location.href = '/login';
+  const standalone = getResolvedRuntimeMode() === 'standalone';
+  const isPublic = to.meta.public === true || to.path === '/login';
+
+  if (isPublic) {
+    if (standalone && hasValidAuthToken() && to.path === '/login') {
+      const redirect =
+        typeof to.query.redirect === 'string' ? to.query.redirect : '/';
+      next(redirect.startsWith('/') ? redirect : '/');
+      return;
+    }
+    next();
+    return;
+  }
+
+  // standalone 无会话时进入本应用 /login，禁止 location.href='/login'
+  // （同域没有登录文档，Vite 会回退 index.html 导致整页刷新循环）
+  if (standalone && !hasValidAuthToken()) {
+    next({ path: '/login', query: { redirect: to.fullPath } });
     return;
   }
 

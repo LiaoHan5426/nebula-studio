@@ -6,7 +6,7 @@ export interface ShellIntegratedAppMeta {
   description?: string;
   helpKey?: string;
   iconSvg: string;
-  id: EmbeddedShellWindowId;
+  id: string;
   /** 为 false 时仅作为嵌入子应用（如侧栏「设置」），不出现在「应用集成」网格 */
   integratable?: boolean;
   label: string;
@@ -17,13 +17,18 @@ export interface ShellIntegratedAppMeta {
   searchKeywords?: string[];
 }
 
-export type ShellIntegratedAppRegistry = Partial<
-  Record<EmbeddedShellWindowId, ShellIntegratedAppMeta>
->;
+export type ShellIntegratedAppRegistry = Record<string, ShellIntegratedAppMeta>;
 
 const shellIntegratedAppRegistry: ShellIntegratedAppRegistry = {};
 
-let shellIntegrableOrder: EmbeddedShellWindowId[] = [];
+let shellIntegrableOrder: string[] = [];
+
+export function resetShellIntegratedAppRegistry(): void {
+  for (const id of Object.keys(shellIntegratedAppRegistry)) {
+    delete shellIntegratedAppRegistry[id];
+  }
+  shellIntegrableOrder = [];
+}
 
 export function registerShellIntegratedApp(meta: ShellIntegratedAppMeta): void {
   shellIntegratedAppRegistry[meta.id] = meta;
@@ -37,7 +42,7 @@ export function registerShellIntegratedApps(
   }
 }
 
-export function setShellIntegrableOrder(order: EmbeddedShellWindowId[]): void {
+export function setShellIntegrableOrder(order: string[]): void {
   shellIntegrableOrder = order;
 }
 
@@ -45,8 +50,8 @@ export function getShellIntegratedAppRegistry(): ShellIntegratedAppRegistry {
   return shellIntegratedAppRegistry;
 }
 
-export function listShellIntegrableAppIds(): EmbeddedShellWindowId[] {
-  const isIntegratable = (id: EmbeddedShellWindowId): boolean => {
+export function listShellIntegrableAppIds(): string[] {
+  const isIntegratable = (id: string): boolean => {
     const meta = shellIntegratedAppRegistry[id];
     return meta !== undefined && meta.integratable !== false;
   };
@@ -54,38 +59,30 @@ export function listShellIntegrableAppIds(): EmbeddedShellWindowId[] {
     (id) => id in shellIntegratedAppRegistry && isIntegratable(id),
   );
   const unorderedIds = Object.keys(shellIntegratedAppRegistry).filter(
-    (id) =>
-      !orderedIds.includes(id as EmbeddedShellWindowId) &&
-      isIntegratable(id as EmbeddedShellWindowId),
-  ) as EmbeddedShellWindowId[];
+    (id) => !orderedIds.includes(id) && isIntegratable(id),
+  );
   return [...orderedIds, ...unorderedIds];
 }
 
-export function isShellIntegratableAppId(
-  id: string,
-): id is EmbeddedShellWindowId {
+export function isShellIntegratableAppId(id: string): boolean {
   return (
     isShellIntegrableAppId(id) &&
     shellIntegratedAppRegistry[id]?.integratable !== false
   );
 }
 
-export function isShellIntegrableAppId(
-  id: string,
-): id is EmbeddedShellWindowId {
+export function isShellIntegrableAppId(id: string): boolean {
   return id in shellIntegratedAppRegistry;
 }
 
-export function getDefaultEnabledShellIntegrableIds(): EmbeddedShellWindowId[] {
+export function getDefaultEnabledShellIntegrableIds(): string[] {
   return listShellIntegrableAppIds().filter((id) => {
     const meta = shellIntegratedAppRegistry[id];
     return meta !== undefined && meta.defaultEnabled !== false;
   });
 }
 
-export function getShellIntegratedAppMeta(
-  id: EmbeddedShellWindowId,
-): ShellIntegratedAppMeta {
+export function getShellIntegratedAppMeta(id: string): ShellIntegratedAppMeta {
   const meta = shellIntegratedAppRegistry[id];
   if (meta !== undefined) {
     return meta;
@@ -98,7 +95,7 @@ export function getShellIntegratedAppMeta(
 }
 
 export function tryGetShellIntegratedAppMeta(
-  id: EmbeddedShellWindowId,
+  id: string,
 ): ShellIntegratedAppMeta | undefined {
   return shellIntegratedAppRegistry[id];
 }
@@ -111,17 +108,15 @@ export function embeddedViewRequiresShellAuth(viewId: string): boolean {
 /**
  * 判断给定 viewId 是否为独立侧边栏应用（非工作台、非应用集成网格项）。
  *
- * 依据 `windows.json` 中 `integratable: false` 的嵌入窗口自动推导，
- * 新增子应用只需在 `windows.json` 中声明 `integratable: false`，
- * 无需修改壳层代码。
+ * 依据 registry `integratable: false` 的嵌入窗口自动推导，
+ * 新增子应用在后端 FrontendApplication 声明即可，无需写入 `windows.json`。
  */
-export function isShellStandaloneSidebarApp(
-  id: string,
-): id is EmbeddedShellWindowId {
+export function isShellStandaloneSidebarApp(id: string): boolean {
   return (
     id !== 'main' &&
     id in shellIntegratedAppRegistry &&
-    shellIntegratedAppRegistry[id as EmbeddedShellWindowId]?.integratable ===
-      false
+    shellIntegratedAppRegistry[id]?.integratable === false
   );
 }
+
+export type { EmbeddedShellWindowId };

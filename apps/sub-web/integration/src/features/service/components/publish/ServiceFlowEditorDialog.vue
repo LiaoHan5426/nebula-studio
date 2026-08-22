@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ApiInterface } from '@/shared/types';
 
-import IntegrationBpmnEditor from '@nebula-studio/nebula-flow-editor/components/IntegrationBpmnEditor.vue';
+import { IntegrationBpmnEditor } from '@nebula-studio/nebula-flow-editor';
 import { NebulaButton, NebulaDialog } from '@nebula-studio/nebula-ui';
 
 defineProps<{

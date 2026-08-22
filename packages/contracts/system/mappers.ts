@@ -1,5 +1,7 @@
 import type {
   GeneratedConfigItem,
+  GeneratedFrontendApplicationView,
+  GeneratedFrontendRuntimeEntryView,
   GeneratedOrganization,
   GeneratedPermission,
   GeneratedRole,
@@ -9,6 +11,9 @@ import type {
 
 import type {
   ConfigItem,
+  FrontendAppDriver,
+  FrontendApplicationRecord,
+  FrontendRuntimeEntry,
   OrganizationNode,
   PermissionNode,
   RoleRecord,
@@ -114,5 +119,77 @@ export function mapConfigItemFromGenerated(
     tenantId: item.tenantId,
     type: item.type,
     updatedAt: item.updatedAt,
+  };
+}
+
+function mapFrontendDriver(value?: string): FrontendAppDriver {
+  if (
+    value === 'federation' ||
+    value === 'iframe' ||
+    value === 'external' ||
+    value === 'native'
+  ) {
+    return value;
+  }
+  return 'native';
+}
+
+export function mapFrontendApplicationFromGenerated(
+  app: GeneratedFrontendApplicationView,
+): FrontendApplicationRecord {
+  return {
+    id: app.id ?? '',
+    name: app.name ?? '',
+    driver: mapFrontendDriver(app.driver),
+    electronEnabled: app.electronEnabled ?? true,
+    roles: app.roles ?? [],
+    webEnabled: app.webEnabled ?? true,
+    category: app.category,
+    defaultPath: app.defaultPath,
+    description: app.description,
+    icon: app.icon,
+    routeBase: app.routeBase,
+    sortOrder: app.sortOrder,
+    status: app.status,
+    tenantPolicy: app.tenantPolicy,
+  };
+}
+
+export function mapFrontendRuntimeEntryFromGenerated(
+  entry: GeneratedFrontendRuntimeEntryView,
+): FrontendRuntimeEntry {
+  return {
+    id: entry.id ?? '',
+    name: entry.name ?? '',
+    driver: mapFrontendDriver(entry.driver),
+    electronEnabled: entry.electronEnabled ?? true,
+    roles: entry.roles ?? [],
+    source: entry.source === 'shell-app' ? 'shell-app' : 'frontend',
+    webEnabled: entry.webEnabled ?? true,
+    allowedOrigins: entry.allowedOrigins,
+    category: entry.category,
+    channel: entry.channel,
+    contractVersion: entry.contractVersion,
+    defaultEnabled: entry.defaultEnabled,
+    defaultPath: entry.defaultPath,
+    description: entry.description,
+    exposedModule: entry.exposedModule,
+    helpKey: entry.helpKey,
+    hostVersionRange: entry.hostVersionRange,
+    icon: entry.icon,
+    integratable: entry.integratable,
+    integrity: entry.integrity,
+    manifestUrl: entry.manifestUrl,
+    preload: entry.preload,
+    remoteName: entry.remoteName,
+    renderer: entry.renderer,
+    requiresAuth: entry.requiresAuth,
+    returnTo: entry.returnTo,
+    rolloutPercent: entry.rolloutPercent,
+    routeBase: entry.routeBase,
+    searchKeywords: entry.searchKeywords,
+    signature: entry.signature,
+    sortOrder: entry.sortOrder,
+    version: entry.version,
   };
 }

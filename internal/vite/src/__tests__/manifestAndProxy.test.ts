@@ -22,12 +22,13 @@ describe('windows manifest', () => {
     const manifest = buildAppManifest(config, root);
     expect(manifest.subApps).toContain('integration');
     expect(manifest.embedSurfaces).toContain('docs');
-    expect(manifest.embedBootEntries).toEqual({
-      docs: './embed/docs-entry.js',
-      integration: './embed/integration-entry.js',
-      login: './embed/login-entry.js',
-      settings: './embed/settings-entry.js',
-    });
+    expect(manifest.federationSurfaces).toEqual([
+      'docs',
+      'integration',
+      'settings',
+    ]);
+    expect(manifest.embedSurfaces).toContain('login');
+    expect(manifest.embedBootEntries).toEqual({});
     expect(manifest.preloadIds).toContain('main');
     expect(manifest.preloadCapabilities).toEqual({
       docs: ['notify'],
@@ -55,7 +56,6 @@ describe('windows manifest', () => {
             custom: {
               preload: 'main',
               renderer: 'custom',
-              label: 'Custom',
               webEmbedEntry: './embed/custom-entry.js',
               preloadCapabilities: ['auth'],
             },
@@ -100,8 +100,13 @@ describe('createNebulaApiProxy', () => {
     const keys = Object.keys(proxy);
     expect(keys.indexOf('/api/executor')).toBeLessThan(keys.indexOf('/api'));
     expect(proxy['/api']?.target).toBe('http://console.test');
+    expect(proxy['/api/system/frontend-apps']?.target).toBe(
+      'http://console.test',
+    );
+    expect(proxy['/api/system']?.target).toBe('http://platform.test');
     expect(proxy['/api/executor']?.target).toBe('http://executor.test');
     expect(typeof proxy['/api/executor']?.configure).toBe('function');
+    expect(typeof proxy['/api']?.configure).toBe('function');
   });
 
   it('rejects an explicitly empty proxy target', () => {

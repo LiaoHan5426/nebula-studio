@@ -32,6 +32,22 @@ describe('integration navigation model', () => {
       ...expandedMenuForPath(platformAdminNavItems, PLATFORM_ADMIN_HOME),
     ]).toEqual([]);
     expect([...expandedMenuForPath(portalNavItems, PORTAL_HOME)]).toEqual([]);
+    expect([...expandedMenuForPath(platformAdminNavItems, '/dag')]).toEqual([
+      'integration-core',
+    ]);
+    expect([...expandedMenuForPath(platformAdminNavItems, '/flows')]).toEqual([
+      'integration-core',
+    ]);
+  });
+
+  it('exposes flow and DAG entries for platform admins', () => {
+    const labels = platformAdminNavItems.flatMap((item) => [
+      item.label,
+      ...(item.children?.map((child) => child.label) ?? []),
+    ]);
+    expect(labels).toContain('流程定义');
+    expect(labels).toContain('DAG 编排');
+    expect(labels).toContain('服务发布');
   });
 
   it('assigns an explicit experience contract to every named page', () => {

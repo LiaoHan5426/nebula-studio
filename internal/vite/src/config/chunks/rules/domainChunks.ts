@@ -1,14 +1,19 @@
 import type { NebulaManualChunkRule } from '../types.ts';
 
-import { nebulaChunkNormalizeId } from '../pathUtils.ts';
+import {
+  nebulaChunkIsFromNodeModulePackage,
+  nebulaChunkNormalizeId,
+} from '../pathUtils.ts';
 
 export const nebulaChunkRuleShellCore: NebulaManualChunkRule = (id) => {
   const n = nebulaChunkNormalizeId(id);
   if (n.includes('/packages/core/app-shell/')) return 'shell-core';
+  if (n.includes('/packages/platform/shell-protocol/')) return 'shell-core';
+  if (n.includes('/packages/platform/shell-host/')) return 'shell-core';
   if (n.includes('/packages/core/runtime/')) return 'shell-core';
   if (n.includes('/packages/core/auth-provider/')) return 'shell-core';
   if (n.includes('/packages/core/auth/')) return 'shell-core';
-  if (n.includes('/packages/core/shell/')) return 'shell-core';
+  if (n.includes('/packages/ui/shell-ui/')) return 'shell-core';
 };
 
 export const nebulaChunkRuleUiCore: NebulaManualChunkRule = (id) => {
@@ -23,6 +28,12 @@ export const nebulaChunkRuleEditorCode: NebulaManualChunkRule = (id) => {
   if (n.includes('/packages/editors/code-editor/')) return 'editor-code';
   if (n.includes('/@codemirror/') || n.includes('/codemirror/'))
     return 'editor-code';
+  if (
+    nebulaChunkIsFromNodeModulePackage(n, 'monaco-editor') ||
+    nebulaChunkIsFromNodeModulePackage(n, 'monaco-editor-vue3')
+  ) {
+    return 'editor-code';
+  }
 };
 
 export const nebulaChunkRuleEditorFlow: NebulaManualChunkRule = (id) => {
@@ -30,6 +41,14 @@ export const nebulaChunkRuleEditorFlow: NebulaManualChunkRule = (id) => {
   if (n.includes('/packages/editors/dag-editor/')) return 'editor-flow';
   if (n.includes('/packages/editors/flow-editor/')) return 'editor-flow';
   if (n.includes('/@vue-flow/')) return 'editor-flow';
+  if (
+    nebulaChunkIsFromNodeModulePackage(n, 'bpmn-js') ||
+    nebulaChunkIsFromNodeModulePackage(n, 'bpmn-js-properties-panel') ||
+    nebulaChunkIsFromNodeModulePackage(n, 'camunda-bpmn-moddle') ||
+    nebulaChunkIsFromNodeModulePackage(n, '@bpmn-io/cm-theme')
+  ) {
+    return 'editor-flow';
+  }
 };
 
 export const nebulaChunkRuleIntegrationDomain: NebulaManualChunkRule = (id) => {

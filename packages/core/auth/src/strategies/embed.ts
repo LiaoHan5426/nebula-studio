@@ -10,12 +10,12 @@ import type { AuthBootstrapOptions, AuthStrategy } from '../types';
  * 4. 监听 `auth:session-changed` 事件同步 session 变更
  * 5. 监听 SHELL_AUTH_UNAUTHORIZED_EVENT 处理 401
  */
+import { globalAuthProvider } from '@nebula-studio/auth-provider';
 import {
-  isSurfaceEmbed,
   readParentShellAuthSession,
   SHELL_AUTH_UNAUTHORIZED_EVENT,
-} from '@nebula-studio/app-shell';
-import { globalAuthProvider } from '@nebula-studio/auth-provider';
+} from '@nebula-studio/auth-provider/web';
+import { isSurfaceEmbed } from '@nebula-studio/shell-protocol';
 import {
   getAuthToken,
   hasValidAuthToken,

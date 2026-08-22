@@ -31,6 +31,7 @@ export const nebulaPreloadIds = nebulaAppManifest.preloadIds;
 export const nebulaPreloadCapabilities = nebulaAppManifest.preloadCapabilities;
 export const nebulaEmbedSurfaces = nebulaAppManifest.embedSurfaces;
 export const nebulaEmbedBootEntries = nebulaAppManifest.embedBootEntries;
+export const nebulaFederationSurfaces = nebulaAppManifest.federationSurfaces;
 
 export default nebulaAppManifest;
 `;

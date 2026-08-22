@@ -9,7 +9,10 @@ test('launch, preload capabilities, auth restoration and view switching', async 
 }, testInfo) => {
   const launchStarted = performance.now();
   const electronApp = await electron.launch({
-    args: [join(process.cwd(), 'apps/electron/out/main/index.js')],
+    args: [
+      join(process.cwd(), 'apps/electron/out/main/index.js'),
+      `--user-data-dir=${testInfo.outputPath('user-data')}`,
+    ],
   });
 
   try {
@@ -152,6 +155,18 @@ test('launch, preload capabilities, auth restoration and view switching', async 
       'Electron resource catalog first-screen budget',
     ).toBeLessThan(4_000);
 
+    await window.evaluate(async () => {
+      const ipc = (
+        window as Window & {
+          electron: {
+            ipcRenderer: {
+              invoke(channel: string, payload?: unknown): Promise<unknown>;
+            };
+          };
+        }
+      ).electron.ipcRenderer;
+      await ipc.invoke('settings:theme:set', { theme: 'light' });
+    });
     await expect(window).toHaveScreenshot('electron-portal-light.png', {
       animations: 'disabled',
       caret: 'hide',
@@ -175,6 +190,21 @@ test('launch, preload capabilities, auth restoration and view switching', async 
       caret: 'hide',
       maxDiffPixelRatio: 0.02,
     });
+
+    const docsUrl = new URL(window.url());
+    docsUrl.searchParams.set('renderer', 'docs');
+    await window.goto(docsUrl.toString());
+    await expect(
+      window.locator('[data-nebula-assembly], [role="alert"]').first(),
+    ).toBeVisible({ timeout: 20_000 });
+
+    const shellUrl = new URL(window.url());
+    shellUrl.searchParams.delete('renderer');
+    await window.goto(shellUrl.toString());
+    await expect(window.locator('[data-nebula-surface="shell"]')).toBeVisible({
+      timeout: 20_000,
+    });
+    await expectAssemblyMarkers(window);
   } finally {
     await electronApp.close();
   }

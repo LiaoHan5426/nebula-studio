@@ -14,15 +14,19 @@ vi.mock('@nebula-studio-internal/tailwind/electron', () => ({}));
 vi.mock('../App.vue', () => ({ default: {} }));
 vi.mock('../platform/integratedApps', () => ({
   bootstrapShellIntegratedApps: vi.fn(),
+  hydrateShellIntegratedAppsFromRuntime: vi.fn(async () => undefined),
 }));
 vi.mock('@nebula-studio/app-shell', () => ({
   redirectShellToWebLogin: vi.fn(),
   resolveShellEventBus: vi.fn(() => ({})),
   shouldRedirectUnauthenticatedWebShell: vi.fn(() => false),
 }));
+vi.mock('@nebula-studio/shell-host', () => ({
+  installShellHostBridge: vi.fn(),
+  installWebPresentationUnlessElectron: vi.fn(),
+}));
 vi.mock('@nebula-studio/runtime', () => ({
   bootMicroApp: vi.fn(),
-  detectRuntimeMode: vi.fn(() => 'standalone'),
 }));
 
 const mockBootMicroApp = vi.mocked(bootMicroApp);

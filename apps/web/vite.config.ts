@@ -3,6 +3,8 @@ import { fileURLToPath } from 'node:url';
 import {
   createNebulaApiProxy,
   defineNebulaConfig,
+  nebulaFederationHostPlugin,
+  nebulaHostCspNoncePlugin,
   nebulaSubWebAliasPlugin,
   nebulaVueDemoPlugin,
   nebulaWorkspaceManifestPlugin,
@@ -26,11 +28,16 @@ export default defineNebulaConfig({
   },
   merge: {
     plugins: [
+      ...nebulaFederationHostPlugin('nebula_web_host'),
+      nebulaHostCspNoncePlugin(),
       nebulaWorkspaceManifestPlugin(),
       nebulaSubWebAliasPlugin(),
       nebulaVueDemoPlugin(),
     ],
     server: {
+      // Listen on IPv4 as well as localhost so iframe-cross-demo (127.0.0.1) can load.
+      host: true,
+      allowedHosts: ['localhost', '127.0.0.1'],
       port: shellWeb.port,
       proxy: createNebulaApiProxy({ preset: 'integration' }),
     },

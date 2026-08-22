@@ -1,4 +1,4 @@
-import type { BackendLoginResult } from '@nebula-studio/app-shell';
+import type { BackendLoginResult } from '@nebula-studio/auth-provider/backend';
 
 import type { AuthFailure, AuthFlowStep } from './authFlow';
 

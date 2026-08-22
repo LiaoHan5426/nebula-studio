@@ -9,6 +9,7 @@ export const nebulaChunkRuleVxe: NebulaManualChunkRule = (id) => {
   const n = nebulaChunkNormalizeId(id);
   if (
     nebulaChunkIsFromNodeModulePackage(n, 'vxe-table') ||
+    nebulaChunkIsFromNodeModulePackage(n, 'vxe-pc-ui') ||
     nebulaChunkIsFromNodeModulePackage(n, 'xe-utils')
   ) {
     return 'vendor-vxe';

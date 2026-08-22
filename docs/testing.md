@@ -11,6 +11,7 @@
 | 体验 E2E | `vp run test:e2e:experience` | 视觉、响应式、键盘焦点和性能 |
 | Electron E2E | `vp run test:e2e:electron` | 桌面启动、会话、Preload 与窗口切换 |
 | 真实栈 E2E | `vp run test:e2e:real` | 后端 reactor、三服务、Web、契约与真实 API |
+| Standalone E2E | `vp run test:e2e:standalone` | Docs/Settings/Integration 独立 Vite 源（非 Host embed） |
 | 全量构建 | `vp run build` | 验证 workspace 构建与 Electron 文档复制 |
 | 完整就绪检查 | `vp run ready` | 格式化、lint、测试和构建 |
 
@@ -43,7 +44,7 @@ Playwright 配置位于 `playwright.config.ts`，默认：
 - 无头运行，单项测试超时 45 秒；
 - 失败保留 trace、截图、录像和 HTML report。
 
-当前共枚举 24 项测试：Mock 12 项、体验/性能 10 项、real-stack 1 项和 Electron 1 项。Mock 负责快速回归，不能替代 real-stack；体验 project 固定在 Windows runner 比较 48 张视觉基线，避免跨操作系统字体渲染差异造成噪声。
+当前共枚举：Mock 回归（含 Federation 隔离/恢复）、体验/性能、real-stack 1 项、Electron 1 项，以及独立配置的 standalone 5 项。Mock 负责快速回归，不能替代 real-stack；体验 project 固定在 Windows runner 比较视觉基线，避免跨操作系统字体渲染差异造成噪声。
 
 真实后端验收优先运行 `vp run test:e2e:real`，由脚本按 [后端联调](./backend-integration.md) 的拓扑构建并启动服务。测试失败时先查看 `test-results/real-stack` 判断 Platform、Console 或 Executor，再查看 Playwright trace。
 
@@ -80,20 +81,28 @@ vp run build
 
 ## Phase 8 验收矩阵
 
-浏览器验收分为互不混跑的四个 Playwright project：
+浏览器验收分为互不混跑的 Playwright project：
 
 | Project | 命令 | 责任边界 |
 | --- | --- | --- |
 | `mock-regression` | `vp run test:e2e:mock` | 快速回归，允许通过 `page.route` 固定数据 |
 | `experience` | `vp run test:e2e:experience` | 六类界面的亮暗主题、响应式、键盘焦点、视觉和资源首屏预算 |
-| `real-stack` | `vp run test:e2e:real` | 启动 Platform Console、Platform Integration、Platform Integration Executor 和 Web，不允许网络 Mock |
-| `electron` | `vp run test:e2e:electron` | Electron 启动、认证会话、Preload capability、窗口切换、截图和性能附件 |
+| `real-stack` | `vp run test:e2e:real` | 启动 Platform Console、Platform Integration、Platform Integration Executor 和 Web，不允许网络 Mock；覆盖 Host 嵌入 docs/`#/flows` 与 runtime registry |
+| `electron` | `vp run test:e2e:electron` | Electron 启动、认证会话、Preload capability、窗口切换、docs renderer 后回到 shell、截图和性能附件 |
+| standalone（独立 config） | `vp run test:e2e:standalone` | 三 Remote 各自 `boot.ts` 源；Settings/Integration `/login` 复用 Login 子应用 |
 
-真实栈脚本默认从同级 `../nebula` 读取后端。自定义后端目录时直接调用脚本：
+真实栈默认使用演示账号 `admin` / `admin123` 和网关 Key `demo-api-key-tenant-a`（与 Host 登录说明一致）。非演示环境用环境变量覆盖：
 
 ```powershell
-$env:NEBULA_E2E_PASSWORD = "[REDACTED]"
-$env:NEBULA_E2E_GATEWAY_API_KEY = "[REDACTED]"
+$env:NEBULA_E2E_USERNAME = "admin"
+$env:NEBULA_E2E_PASSWORD = "admin123"
+$env:NEBULA_E2E_GATEWAY_API_KEY = "demo-api-key-tenant-a"
+vp run test:e2e:real
+```
+
+自定义后端目录时直接调用脚本：
+
+```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/e2e/run-real-stack.ps1 -BackendRoot F:\path\to\nebula
 ```
 

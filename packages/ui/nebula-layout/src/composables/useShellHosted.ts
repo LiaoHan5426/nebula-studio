@@ -1,13 +1,13 @@
 import type { ComputedRef } from 'vue';
 
-import type { LayoutHostMode } from '@nebula-studio/app-shell';
+import type { LayoutHostMode } from '@nebula-studio/shell-protocol';
 
 import { computed } from 'vue';
 
 import {
   getLayoutHostMode,
   getWebShellEmbedSurface,
-} from '@nebula-studio/app-shell';
+} from '@nebula-studio/shell-protocol';
 import { tryUseNebulaAssembly } from '@nebula-studio/nebula-assembly';
 
 export function useShellHosted(): {

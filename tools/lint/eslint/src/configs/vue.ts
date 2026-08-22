@@ -99,6 +99,16 @@ export async function vue(): Promise<Linter.Config[]> {
           'DebuggerStatement',
           'LabeledStatement',
           'WithStatement',
+          {
+            selector: "ImportSpecifier[imported.name='detectRuntimeMode']",
+            message:
+              'detectRuntimeMode is removed. Stamp RuntimeMode in Host or standalone main.ts and pass it to boot.',
+          },
+          {
+            selector: "CallExpression[callee.name='detectRuntimeMode']",
+            message:
+              'detectRuntimeMode is removed. Stamp RuntimeMode in Host or standalone main.ts and pass it to boot.',
+          },
         ],
         'vue/no-restricted-v-bind': ['error', '/^v-/'],
         'vue/no-sparse-arrays': 'error',

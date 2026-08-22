@@ -35,6 +35,14 @@
       "types": "./src/env/index.ts",
       "default": "./src/env/index.ts"
     },
+    "./host": {
+      "types": "./src/federation/defineNebulaHostConfig.ts",
+      "default": "./src/federation/defineNebulaHostConfig.ts"
+    },
+    "./remote": {
+      "types": "./src/federation/defineNebulaRemoteConfig.ts",
+      "default": "./src/federation/defineNebulaRemoteConfig.ts"
+    },
     "./electron": {
       "types": "./src/electron/index.ts",
       "default": "./src/electron/index.ts"
@@ -49,6 +57,7 @@
     }
   },
   "dependencies": {
+    "@module-federation/vite": "catalog:vite",
     "@tailwindcss/vite": "catalog:style",
     "@vitejs/plugin-vue": "catalog:vite",
     "sass": "catalog:style",

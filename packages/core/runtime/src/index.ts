@@ -1,10 +1,7 @@
 import type { Component } from 'vue';
 import type { Router } from 'vue-router';
 
-import type {
-  InstallWebPresentationOptions,
-  WireShellEventBusOptions,
-} from '@nebula-studio/app-shell';
+import type { WireShellEventBusOptions } from '@nebula-studio/shell-protocol';
 
 export type { MicroAppHandle } from './bootMicroApp';
 export { bootMicroApp } from './bootMicroApp';
@@ -42,8 +39,8 @@ export interface BootMicroAppOptions {
    */
   embedDefaultRoute?: string;
 
-  /** 运行时模式；不传则自动检测 */
-  mode?: import('./detectMode').RuntimeMode;
+  /** 运行时模式；Host / standalone 入口必须传入 */
+  mode: import('@nebula-studio/shell-protocol').RuntimeMode;
 
   /** 认证失败回调 */
   onAuthFailed?: () => void;
@@ -55,22 +52,15 @@ export interface BootMicroAppOptions {
   router?: Router;
 
   /** Shell 事件总线，用于跨子应用 tenant/auth 同步 */
-  shellEventBus?: import('@nebula-studio/app-shell').ShellEventBus;
+  shellEventBus?: import('@nebula-studio/shell-protocol').ShellEventBus;
 
   /** shellEventBus 标准事件处理器；由 bootMicroApp 注册并在 dispose 时释放 */
   shellEventBusHandlers?: WireShellEventBusOptions;
-
-  /**
-   * Web 模式下的 installWebPresentation 选项。
-   * electron 模式不需要（preload 已注入）。
-   */
-  webPresentation?: {
-    processVersions?: InstallWebPresentationOptions['processVersions'];
-    registerShellHostIpc?: boolean;
-    scope: string;
-  };
 }
 
-export type { RuntimeMode } from './detectMode';
-export { detectRuntimeMode } from './detectMode';
-export { getResolvedRuntimeMode } from './resolvedMode';
+export type { RuntimeMode } from '@nebula-studio/shell-protocol';
+export {
+  getResolvedRuntimeMode,
+  requireRuntimeMode,
+  stampFederationRuntimeMode,
+} from '@nebula-studio/shell-protocol';

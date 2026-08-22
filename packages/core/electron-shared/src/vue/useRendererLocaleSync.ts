@@ -1,35 +1,10 @@
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 import { IPC_CHANNELS } from './rendererPreferences/ipcChannels.ts';
+import { resolveRendererIpc } from './resolveRendererIpc.ts';
 
 interface LocaleChangePayload {
   locale?: string;
-}
-
-interface IpcRendererLike {
-  invoke(channel: string, ...args: unknown[]): Promise<unknown>;
-  on(
-    channel: string,
-    listener: (event: unknown, payload: LocaleChangePayload) => void,
-  ): void;
-  removeListener(
-    channel: string,
-    listener: (event: unknown, payload: LocaleChangePayload) => void,
-  ): void;
-}
-
-interface ElectronLike {
-  ipcRenderer: IpcRendererLike;
-}
-
-function resolveElectronLike(): ElectronLike {
-  const g = globalThis as { electron?: ElectronLike };
-  if (!g.electron) {
-    throw new Error(
-      'window.electron is unavailable. Ensure preload exposes Electron API.',
-    );
-  }
-  return g.electron;
 }
 
 function normalizeLocale(raw: unknown, fallback: string): string {
@@ -47,7 +22,7 @@ export interface UseRendererLocaleSyncOptions {
 export function useRendererLocaleSync(
   options: UseRendererLocaleSyncOptions = {},
 ) {
-  const electron = resolveElectronLike();
+  const electron = { ipcRenderer: resolveRendererIpc() };
   const fallback = options.fallbackLocale?.trim() || 'zh-CN';
   const locale = ref(fallback);
   const channels = IPC_CHANNELS.locale;
@@ -57,10 +32,8 @@ export function useRendererLocaleSync(
     document.documentElement.setAttribute('lang', value);
   };
 
-  const onLocaleChanged = (
-    _event: unknown,
-    payload: LocaleChangePayload,
-  ): void => {
+  const onLocaleChanged = (_event: unknown, ...args: unknown[]): void => {
+    const payload = args[0] as LocaleChangePayload | undefined;
     locale.value = normalizeLocale(payload?.locale, fallback);
     applyDomLocale(locale.value);
   };

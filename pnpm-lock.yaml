@@ -58,9 +58,6 @@ catalogs:
     electron-builder:
       specifier: ^26.15.7
       version: 26.15.7
-    electron-updater:
-      specifier: ^6.8.9
-      version: 6.8.9
     electron-vite:
       specifier: ^5.0.0
       version: 5.0.0
@@ -271,6 +268,12 @@ catalogs:
       specifier: ^7.5.0
       version: 7.5.0
   vite:
+    '@module-federation/runtime':
+      specifier: ^0.21.6
+      version: 0.21.6
+    '@module-federation/vite':
+      specifier: ^1.11.0
+      version: 1.20.7
     '@vitejs/plugin-vue':
       specifier: ^6.0.8
       version: 6.0.8
@@ -305,6 +308,7 @@ overrides:
   '@codemirror/view': ^6.43.9
   vite: ^8.1.3
   vitest: ^4.1.10
+  '@electron/get': ^5.0.0
 
 importers:
 
@@ -313,6 +317,9 @@ importers:
       '@nebula-studio-internal/eslint':
         specifier: workspace:^
         version: link:tools/lint/eslint
+      '@nebula-studio-internal/node':
+        specifier: workspace:^
+        version: link:internal/node
       '@nebula-studio-internal/oxfmt':
         specifier: workspace:^
         version: link:tools/lint/oxfmt
@@ -379,22 +386,40 @@ importers:
       '@nebula-studio-electron/electron-bridge':
         specifier: workspace:^
         version: link:../../packages/core/electron-shared
+      '@nebula-studio-internal/node':
+        specifier: workspace:^
+        version: link:../../internal/node
       '@nebula-studio/app-shell':
         specifier: workspace:^
         version: link:../../packages/core/app-shell
+      '@nebula-studio/application-runtime':
+        specifier: workspace:^
+        version: link:../../packages/platform/application-runtime
+      '@nebula-studio/auth-provider':
+        specifier: workspace:^
+        version: link:../../packages/core/auth-provider
       '@nebula-studio/contracts':
         specifier: workspace:^
         version: link:../../packages/contracts
+      '@nebula-studio/federation-protocol':
+        specifier: workspace:^
+        version: link:../../packages/platform/federation-protocol
+      '@nebula-studio/host-capabilities':
+        specifier: workspace:^
+        version: link:../../packages/platform/host-capabilities
+      '@nebula-studio/shell-host':
+        specifier: workspace:^
+        version: link:../../packages/platform/shell-host
+      '@nebula-studio/shell-protocol':
+        specifier: workspace:^
+        version: link:../../packages/platform/shell-protocol
       electron-updater:
-        specifier: catalog:electron
+        specifier: ^6.8.9
         version: 6.8.9(supports-color@10.2.2)
       yaml:
         specifier: catalog:parser
         version: 2.9.0
     devDependencies:
-      '@nebula-studio-internal/node':
-        specifier: workspace:^
-        version: link:../../internal/node
       '@nebula-studio-internal/tailwind':
         specifier: workspace:^
         version: link:../../tools/tailwindcss
@@ -404,9 +429,27 @@ importers:
       '@nebula-studio-internal/vite':
         specifier: workspace:^
         version: link:../../internal/vite
+      '@nebula-studio-renderer/assembly-boot':
+        specifier: workspace:^
+        version: link:../../packages/platform/assembly-boot
+      '@nebula-studio-renderer/login':
+        specifier: workspace:^
+        version: link:../sub-web/login
       '@nebula-studio-renderer/main':
         specifier: workspace:^
         version: link:../sub-web/frontend
+      '@nebula-studio/msw':
+        specifier: workspace:^
+        version: link:../../packages/testing/msw
+      '@nebula-studio/nebula-layout':
+        specifier: workspace:^
+        version: link:../../packages/ui/nebula-layout
+      '@nebula-studio/nebula-ui':
+        specifier: workspace:^
+        version: link:../../packages/ui/nebula-ui
+      '@nebula-studio/runtime':
+        specifier: workspace:^
+        version: link:../../packages/core/runtime
       '@nebula-studio/types':
         specifier: workspace:^
         version: link:../../packages/types
@@ -435,36 +478,144 @@ importers:
         specifier: catalog:vue
         version: 3.3.10(typescript@6.0.3)
 
-  apps/sub-web/assembly-boot:
+  apps/mf-poc-host:
     dependencies:
-      '@nebula-studio/nebula-assembly':
+      '@nebula-studio/application-runtime':
         specifier: workspace:^
-        version: link:../../../packages/ui/nebula-assembly
-      '@nebula-studio/runtime':
+        version: link:../../packages/platform/application-runtime
+      '@nebula-studio/federation-protocol':
         specifier: workspace:^
-        version: link:../../../packages/core/runtime
+        version: link:../../packages/platform/federation-protocol
+      '@nebula-studio/host-capabilities':
+        specifier: workspace:^
+        version: link:../../packages/platform/host-capabilities
+      vue:
+        specifier: catalog:vue
+        version: 3.5.41(typescript@6.0.3)
+    devDependencies:
+      '@module-federation/vite':
+        specifier: catalog:vite
+        version: 1.20.7(typescript@6.0.3)(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))(vue-tsc@3.3.10(typescript@6.0.3))
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../tools/tsconfig
+      '@nebula-studio-internal/vite':
+        specifier: workspace:^
+        version: link:../../internal/vite
+      typescript:
+        specifier: catalog:types
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.3
+        version: 8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0)
+      vite-plus:
+        specifier: catalog:vite
+        version: 0.2.9(@types/node@26.2.0)(esbuild@0.28.2)(happy-dom@20.11.2)(jiti@2.7.0)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(sass@1.102.0)(tsx@4.23.12)(typescript@6.0.3)(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))(yaml@2.9.0)
+      vue-tsc:
+        specifier: catalog:vue
+        version: 3.3.10(typescript@6.0.3)
+
+  apps/remotes/hello:
+    dependencies:
+      '@nebula-studio/application-contract':
+        specifier: workspace:^
+        version: link:../../../packages/platform/application-contract
+      '@nebula-studio/host-capabilities':
+        specifier: workspace:^
+        version: link:../../../packages/platform/host-capabilities
+      vue:
+        specifier: catalog:vue
+        version: 3.5.41(typescript@6.0.3)
     devDependencies:
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
         version: link:../../../tools/tsconfig
-      '@nebula-studio/types':
+      '@nebula-studio-internal/vite':
         specifier: workspace:^
-        version: link:../../../packages/types
+        version: link:../../../internal/vite
       typescript:
         specifier: catalog:types
         version: 6.0.3
+      vite:
+        specifier: ^8.1.3
+        version: 8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0)
+      vite-plus:
+        specifier: catalog:vite
+        version: 0.2.9(@types/node@26.2.0)(esbuild@0.28.2)(happy-dom@20.11.2)(jiti@2.7.0)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(sass@1.102.0)(tsx@4.23.12)(typescript@6.0.3)(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))(yaml@2.9.0)
+      vue-tsc:
+        specifier: catalog:vue
+        version: 3.3.10(typescript@6.0.3)
+
+  apps/remotes/hello-dual:
+    dependencies:
+      '@nebula-studio/application-contract':
+        specifier: workspace:^
+        version: link:../../../packages/platform/application-contract
+      '@nebula-studio/host-capabilities':
+        specifier: workspace:^
+        version: link:../../../packages/platform/host-capabilities
+      vue:
+        specifier: catalog:vue
+        version: 3.5.41(typescript@6.0.3)
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../../tools/tsconfig
+      '@nebula-studio-internal/vite':
+        specifier: workspace:^
+        version: link:../../../internal/vite
+      typescript:
+        specifier: catalog:types
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.3
+        version: 8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0)
+      vite-plus:
+        specifier: catalog:vite
+        version: 0.2.9(@types/node@26.2.0)(esbuild@0.28.2)(happy-dom@20.11.2)(jiti@2.7.0)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(sass@1.102.0)(tsx@4.23.12)(typescript@6.0.3)(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))(yaml@2.9.0)
+      vue-tsc:
+        specifier: catalog:vue
+        version: 3.3.10(typescript@6.0.3)
+
+  apps/remotes/hello-style-b:
+    dependencies:
+      '@nebula-studio/application-contract':
+        specifier: workspace:^
+        version: link:../../../packages/platform/application-contract
+      '@nebula-studio/host-capabilities':
+        specifier: workspace:^
+        version: link:../../../packages/platform/host-capabilities
+      vue:
+        specifier: catalog:vue
+        version: 3.5.41(typescript@6.0.3)
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../../tools/tsconfig
+      '@nebula-studio-internal/vite':
+        specifier: workspace:^
+        version: link:../../../internal/vite
+      typescript:
+        specifier: catalog:types
+        version: 6.0.3
+      vite:
+        specifier: ^8.1.3
+        version: 8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0)
+      vite-plus:
+        specifier: catalog:vite
+        version: 0.2.9(@types/node@26.2.0)(esbuild@0.28.2)(happy-dom@20.11.2)(jiti@2.7.0)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(sass@1.102.0)(tsx@4.23.12)(typescript@6.0.3)(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))(yaml@2.9.0)
+      vue-tsc:
+        specifier: catalog:vue
+        version: 3.3.10(typescript@6.0.3)
 
   apps/sub-web/docs:
     dependencies:
-      '@nebula-studio-internal/tailwind':
-        specifier: workspace:^
-        version: link:../../../tools/tailwindcss
       '@nebula-studio-renderer/assembly-boot':
         specifier: workspace:^
-        version: link:../assembly-boot
-      '@nebula-studio/app-shell':
+        version: link:../../../packages/platform/assembly-boot
+      '@nebula-studio/application-contract':
         specifier: workspace:^
-        version: link:../../../packages/core/app-shell
+        version: link:../../../packages/platform/application-contract
       '@nebula-studio/nebula-layout':
         specifier: workspace:^
         version: link:../../../packages/ui/nebula-layout
@@ -474,6 +625,12 @@ importers:
       '@nebula-studio/runtime':
         specifier: workspace:^
         version: link:../../../packages/core/runtime
+      '@nebula-studio/shell-host':
+        specifier: workspace:^
+        version: link:../../../packages/platform/shell-host
+      '@nebula-studio/shell-protocol':
+        specifier: workspace:^
+        version: link:../../../packages/platform/shell-protocol
       '@nebula-studio/styles':
         specifier: workspace:^
         version: link:../../../packages/styles
@@ -526,36 +683,48 @@ importers:
 
   apps/sub-web/frontend:
     dependencies:
+      '@nebula-studio-electron/electron-bridge':
+        specifier: workspace:^
+        version: link:../../../packages/core/electron-shared
       '@nebula-studio-internal/tailwind':
         specifier: workspace:^
         version: link:../../../tools/tailwindcss
       '@nebula-studio-renderer/assembly-boot':
         specifier: workspace:^
-        version: link:../assembly-boot
+        version: link:../../../packages/platform/assembly-boot
       '@nebula-studio/api-client':
         specifier: workspace:^
         version: link:../../../packages/core/api-client
       '@nebula-studio/app-shell':
         specifier: workspace:^
         version: link:../../../packages/core/app-shell
+      '@nebula-studio/application-runtime':
+        specifier: workspace:^
+        version: link:../../../packages/platform/application-runtime
       '@nebula-studio/auth-provider':
         specifier: workspace:^
         version: link:../../../packages/core/auth-provider
       '@nebula-studio/contracts':
         specifier: workspace:^
         version: link:../../../packages/contracts
+      '@nebula-studio/host-capabilities':
+        specifier: workspace:^
+        version: link:../../../packages/platform/host-capabilities
       '@nebula-studio/nebula-layout':
         specifier: workspace:^
         version: link:../../../packages/ui/nebula-layout
       '@nebula-studio/nebula-shell':
         specifier: workspace:^
-        version: link:../../../packages/core/shell
+        version: link:../../../packages/ui/shell-ui
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
         version: link:../../../packages/ui/nebula-ui
       '@nebula-studio/runtime':
         specifier: workspace:^
         version: link:../../../packages/core/runtime
+      '@nebula-studio/shell-host':
+        specifier: workspace:^
+        version: link:../../../packages/platform/shell-host
       vue:
         specifier: catalog:vue
         version: 3.5.41(typescript@6.0.3)
@@ -571,10 +740,13 @@ importers:
         version: link:../../../internal/vite
       '@nebula-studio/msw':
         specifier: workspace:^
-        version: link:../../../packages/core/msw
+        version: link:../../../packages/testing/msw
       '@nebula-studio/types':
         specifier: workspace:^
         version: link:../../../packages/types
+      happy-dom:
+        specifier: catalog:vite
+        version: 20.11.2
       typescript:
         specifier: catalog:types
         version: 6.0.3
@@ -584,6 +756,9 @@ importers:
       vite-plus:
         specifier: catalog:vite
         version: 0.2.9(@types/node@26.2.0)(esbuild@0.28.2)(happy-dom@20.11.2)(jiti@2.7.0)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(sass@1.102.0)(tsx@4.23.12)(typescript@6.0.3)(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))(yaml@2.9.0)
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.10(@types/node@26.2.0)(@vitest/browser-preview@4.1.10)(happy-dom@20.11.2)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))
       vue-tsc:
         specifier: catalog:vue
         version: 3.3.10(typescript@6.0.3)
@@ -595,22 +770,25 @@ importers:
         version: link:../../../tools/tailwindcss
       '@nebula-studio-renderer/assembly-boot':
         specifier: workspace:^
-        version: link:../assembly-boot
+        version: link:../../../packages/platform/assembly-boot
       '@nebula-studio-renderer/login':
         specifier: workspace:^
         version: link:../login
       '@nebula-studio/api-client':
         specifier: workspace:^
         version: link:../../../packages/core/api-client
-      '@nebula-studio/app-shell':
+      '@nebula-studio/application-contract':
         specifier: workspace:^
-        version: link:../../../packages/core/app-shell
+        version: link:../../../packages/platform/application-contract
       '@nebula-studio/auth-provider':
         specifier: workspace:^
         version: link:../../../packages/core/auth-provider
       '@nebula-studio/contracts':
         specifier: workspace:^
         version: link:../../../packages/contracts
+      '@nebula-studio/host-capabilities':
+        specifier: workspace:^
+        version: link:../../../packages/platform/host-capabilities
       '@nebula-studio/nebula-assembly':
         specifier: workspace:^
         version: link:../../../packages/ui/nebula-assembly
@@ -635,6 +813,12 @@ importers:
       '@nebula-studio/runtime':
         specifier: workspace:^
         version: link:../../../packages/core/runtime
+      '@nebula-studio/shell-host':
+        specifier: workspace:^
+        version: link:../../../packages/platform/shell-host
+      '@nebula-studio/shell-protocol':
+        specifier: workspace:^
+        version: link:../../../packages/platform/shell-protocol
       '@nebula-studio/sse-events':
         specifier: workspace:^
         version: link:../../../packages/core/sse-events
@@ -659,7 +843,7 @@ importers:
         version: link:../../../internal/vite
       '@nebula-studio/msw':
         specifier: workspace:^
-        version: link:../../../packages/core/msw
+        version: link:../../../packages/testing/msw
       '@nebula-studio/types':
         specifier: workspace:^
         version: link:../../../packages/types
@@ -689,7 +873,7 @@ importers:
         version: link:../../../tools/tailwindcss
       '@nebula-studio-renderer/assembly-boot':
         specifier: workspace:^
-        version: link:../assembly-boot
+        version: link:../../../packages/platform/assembly-boot
       '@nebula-studio/app-shell':
         specifier: workspace:^
         version: link:../../../packages/core/app-shell
@@ -701,7 +885,7 @@ importers:
         version: link:../../../packages/contracts
       '@nebula-studio/msw':
         specifier: workspace:^
-        version: link:../../../packages/core/msw
+        version: link:../../../packages/testing/msw
       '@nebula-studio/nebula-layout':
         specifier: workspace:^
         version: link:../../../packages/ui/nebula-layout
@@ -711,6 +895,9 @@ importers:
       '@nebula-studio/runtime':
         specifier: workspace:^
         version: link:../../../packages/core/runtime
+      '@nebula-studio/shell-host':
+        specifier: workspace:^
+        version: link:../../../packages/platform/shell-host
       vue:
         specifier: catalog:vue
         version: 3.5.41(typescript@6.0.3)
@@ -742,21 +929,21 @@ importers:
 
   apps/sub-web/settings:
     dependencies:
-      '@nebula-studio-electron/electron-bridge':
-        specifier: workspace:^
-        version: link:../../../packages/core/electron-shared
       '@nebula-studio-internal/tailwind':
         specifier: workspace:^
         version: link:../../../tools/tailwindcss
       '@nebula-studio-renderer/assembly-boot':
         specifier: workspace:^
-        version: link:../assembly-boot
+        version: link:../../../packages/platform/assembly-boot
+      '@nebula-studio-renderer/login':
+        specifier: workspace:^
+        version: link:../login
       '@nebula-studio/api-client':
         specifier: workspace:^
         version: link:../../../packages/core/api-client
-      '@nebula-studio/app-shell':
+      '@nebula-studio/application-contract':
         specifier: workspace:^
-        version: link:../../../packages/core/app-shell
+        version: link:../../../packages/platform/application-contract
       '@nebula-studio/auth-provider':
         specifier: workspace:^
         version: link:../../../packages/core/auth-provider
@@ -772,6 +959,12 @@ importers:
       '@nebula-studio/runtime':
         specifier: workspace:^
         version: link:../../../packages/core/runtime
+      '@nebula-studio/shell-host':
+        specifier: workspace:^
+        version: link:../../../packages/platform/shell-host
+      '@nebula-studio/shell-protocol':
+        specifier: workspace:^
+        version: link:../../../packages/platform/shell-protocol
       '@nebula-studio/use-confirm':
         specifier: workspace:^
         version: link:../../../packages/features/use-confirm
@@ -793,7 +986,7 @@ importers:
         version: link:../../../internal/vite
       '@nebula-studio/msw':
         specifier: workspace:^
-        version: link:../../../packages/core/msw
+        version: link:../../../packages/testing/msw
       '@nebula-studio/types':
         specifier: workspace:^
         version: link:../../../packages/types
@@ -818,30 +1011,42 @@ importers:
       '@nebula-studio-internal/tailwind':
         specifier: workspace:^
         version: link:../../tools/tailwindcss
-      '@nebula-studio-renderer/docs':
+      '@nebula-studio-renderer/assembly-boot':
         specifier: workspace:^
-        version: link:../sub-web/docs
-      '@nebula-studio-renderer/integration':
-        specifier: workspace:^
-        version: link:../sub-web/integration
+        version: link:../../packages/platform/assembly-boot
       '@nebula-studio-renderer/login':
         specifier: workspace:^
         version: link:../sub-web/login
       '@nebula-studio-renderer/main':
         specifier: workspace:^
         version: link:../sub-web/frontend
-      '@nebula-studio-renderer/settings':
-        specifier: workspace:^
-        version: link:../sub-web/settings
       '@nebula-studio/app-shell':
         specifier: workspace:^
         version: link:../../packages/core/app-shell
+      '@nebula-studio/application-runtime':
+        specifier: workspace:^
+        version: link:../../packages/platform/application-runtime
       '@nebula-studio/auth-provider':
         specifier: workspace:^
         version: link:../../packages/core/auth-provider
+      '@nebula-studio/host-capabilities':
+        specifier: workspace:^
+        version: link:../../packages/platform/host-capabilities
+      '@nebula-studio/msw':
+        specifier: workspace:^
+        version: link:../../packages/testing/msw
+      '@nebula-studio/nebula-layout':
+        specifier: workspace:^
+        version: link:../../packages/ui/nebula-layout
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
         version: link:../../packages/ui/nebula-ui
+      '@nebula-studio/runtime':
+        specifier: workspace:^
+        version: link:../../packages/core/runtime
+      '@nebula-studio/shell-host':
+        specifier: workspace:^
+        version: link:../../packages/platform/shell-host
       marked:
         specifier: catalog:markdown
         version: 18.0.10
@@ -876,6 +1081,9 @@ importers:
       '@manypkg/get-packages':
         specifier: catalog:utils
         version: 2.2.2
+      ajv:
+        specifier: 'catalog:'
+        version: 8.20.0
     devDependencies:
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
@@ -886,9 +1094,15 @@ importers:
       typescript:
         specifier: catalog:types
         version: 6.0.3
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.10(@types/node@24.13.3)(@vitest/browser-preview@4.1.10)(happy-dom@20.11.2)(msw@2.15.0(@types/node@24.13.3)(typescript@6.0.3))(vite@8.1.3(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))
 
   internal/vite:
     dependencies:
+      '@module-federation/vite':
+        specifier: catalog:vite
+        version: 1.20.7(typescript@6.0.3)(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))(vue-tsc@3.3.10(typescript@6.0.3))
       '@tailwindcss/vite':
         specifier: catalog:style
         version: 4.3.3(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))
@@ -966,15 +1180,12 @@ importers:
 
   packages/core/app-shell:
     dependencies:
-      '@nebula-studio-electron/electron-bridge':
-        specifier: workspace:^
-        version: link:../electron-shared
       '@nebula-studio/auth-provider':
         specifier: workspace:^
         version: link:../auth-provider
-      '@nebula-studio/contracts':
+      '@nebula-studio/shell-protocol':
         specifier: workspace:^
-        version: link:../../contracts
+        version: link:../../platform/shell-protocol
     devDependencies:
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
@@ -985,15 +1196,15 @@ importers:
 
   packages/core/auth:
     dependencies:
-      '@nebula-studio/app-shell':
-        specifier: workspace:^
-        version: link:../app-shell
       '@nebula-studio/auth-provider':
         specifier: workspace:^
         version: link:../auth-provider
       '@nebula-studio/contracts':
         specifier: workspace:^
         version: link:../../contracts
+      '@nebula-studio/shell-protocol':
+        specifier: workspace:^
+        version: link:../../platform/shell-protocol
     devDependencies:
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
@@ -1016,10 +1227,16 @@ importers:
       '@nebula-studio/contracts':
         specifier: workspace:^
         version: link:../../contracts
+      '@nebula-studio/shell-protocol':
+        specifier: workspace:^
+        version: link:../../platform/shell-protocol
       vue:
         specifier: catalog:vue
         version: 3.5.41(typescript@6.0.3)
     devDependencies:
+      happy-dom:
+        specifier: catalog:vite
+        version: 20.11.2
       vitest:
         specifier: ^4.1.10
         version: 4.1.10(@types/node@26.2.0)(@vitest/browser-preview@4.1.10)(happy-dom@20.11.2)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))
@@ -1030,67 +1247,23 @@ importers:
         specifier: catalog:vue
         version: 3.5.41(typescript@6.0.3)
 
-  packages/core/msw:
-    dependencies:
-      msw:
-        specifier: catalog:utils
-        version: 2.15.0(@types/node@26.2.0)(typescript@6.0.3)
-    devDependencies:
-      '@nebula-studio-internal/tsconfig':
-        specifier: workspace:^
-        version: link:../../../tools/tsconfig
-      typescript:
-        specifier: catalog:types
-        version: 6.0.3
-
   packages/core/runtime:
     dependencies:
       '@nebula-studio-electron/electron-bridge':
         specifier: workspace:^
         version: link:../electron-shared
-      '@nebula-studio/app-shell':
-        specifier: workspace:^
-        version: link:../app-shell
       '@nebula-studio/auth':
         specifier: workspace:^
         version: link:../auth
+      '@nebula-studio/shell-protocol':
+        specifier: workspace:^
+        version: link:../../platform/shell-protocol
       vue:
         specifier: catalog:vue
         version: 3.5.41(typescript@6.0.3)
       vue-router:
         specifier: catalog:vue
         version: 4.6.4(vue@3.5.41(typescript@6.0.3))
-    devDependencies:
-      '@nebula-studio-internal/tsconfig':
-        specifier: workspace:^
-        version: link:../../../tools/tsconfig
-      '@nebula-studio/types':
-        specifier: workspace:^
-        version: link:../../types
-      happy-dom:
-        specifier: catalog:vite
-        version: 20.11.2
-      typescript:
-        specifier: catalog:types
-        version: 6.0.3
-      vitest:
-        specifier: ^4.1.10
-        version: 4.1.10(@types/node@26.2.0)(@vitest/browser-preview@4.1.10)(happy-dom@20.11.2)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))
-
-  packages/core/shell:
-    dependencies:
-      '@nebula-studio/app-shell':
-        specifier: workspace:^
-        version: link:../app-shell
-      '@nebula-studio/nebula-layout':
-        specifier: workspace:^
-        version: link:../../ui/nebula-layout
-      '@nebula-studio/nebula-ui':
-        specifier: workspace:^
-        version: link:../../ui/nebula-ui
-      vue:
-        specifier: catalog:vue
-        version: 3.5.41(typescript@6.0.3)
     devDependencies:
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
@@ -1294,7 +1467,147 @@ importers:
         specifier: ^4.1.10
         version: 4.1.10(@types/node@26.2.0)(@vitest/browser-preview@4.1.10)(happy-dom@20.11.2)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))
 
+  packages/platform/application-contract:
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../../tools/tsconfig
+      typescript:
+        specifier: catalog:types
+        version: 6.0.3
+
+  packages/platform/application-runtime:
+    dependencies:
+      '@module-federation/runtime':
+        specifier: catalog:vite
+        version: 0.21.6
+      '@nebula-studio/application-contract':
+        specifier: workspace:^
+        version: link:../application-contract
+      '@nebula-studio/contracts':
+        specifier: workspace:^
+        version: link:../../contracts
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../../tools/tsconfig
+      '@nebula-studio/host-capabilities':
+        specifier: workspace:^
+        version: link:../host-capabilities
+      happy-dom:
+        specifier: catalog:vite
+        version: 20.11.2
+      typescript:
+        specifier: catalog:types
+        version: 6.0.3
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.10(@types/node@26.2.0)(@vitest/browser-preview@4.1.10)(happy-dom@20.11.2)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))
+
+  packages/platform/assembly-boot:
+    dependencies:
+      '@nebula-studio/nebula-assembly':
+        specifier: workspace:^
+        version: link:../../ui/nebula-assembly
+      '@nebula-studio/shell-protocol':
+        specifier: workspace:^
+        version: link:../shell-protocol
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../../tools/tsconfig
+      '@nebula-studio/types':
+        specifier: workspace:^
+        version: link:../../types
+      typescript:
+        specifier: catalog:types
+        version: 6.0.3
+
+  packages/platform/federation-protocol:
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../../tools/tsconfig
+      typescript:
+        specifier: catalog:types
+        version: 6.0.3
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.10(@types/node@26.2.0)(@vitest/browser-preview@4.1.10)(happy-dom@20.11.2)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))
+
+  packages/platform/host-capabilities:
+    dependencies:
+      '@nebula-studio/application-contract':
+        specifier: workspace:^
+        version: link:../application-contract
+      '@nebula-studio/auth-provider':
+        specifier: workspace:^
+        version: link:../../core/auth-provider
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../../tools/tsconfig
+      typescript:
+        specifier: catalog:types
+        version: 6.0.3
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.10(@types/node@26.2.0)(@vitest/browser-preview@4.1.10)(happy-dom@20.11.2)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))
+
+  packages/platform/shell-host:
+    dependencies:
+      '@nebula-studio-electron/electron-bridge':
+        specifier: workspace:^
+        version: link:../../core/electron-shared
+      '@nebula-studio/app-shell':
+        specifier: workspace:^
+        version: link:../../core/app-shell
+      '@nebula-studio/auth-provider':
+        specifier: workspace:^
+        version: link:../../core/auth-provider
+      '@nebula-studio/shell-protocol':
+        specifier: workspace:^
+        version: link:../shell-protocol
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../../tools/tsconfig
+      '@nebula-studio/types':
+        specifier: workspace:^
+        version: link:../../types
+      typescript:
+        specifier: catalog:types
+        version: 6.0.3
+
+  packages/platform/shell-protocol:
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../../tools/tsconfig
+      happy-dom:
+        specifier: catalog:vite
+        version: 20.11.2
+      typescript:
+        specifier: catalog:types
+        version: 6.0.3
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.10(@types/node@26.2.0)(@vitest/browser-preview@4.1.10)(happy-dom@20.11.2)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))
+
   packages/styles: {}
+
+  packages/testing/msw:
+    dependencies:
+      msw:
+        specifier: catalog:utils
+        version: 2.15.0(@types/node@26.2.0)(typescript@6.0.3)
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../../tools/tsconfig
+      typescript:
+        specifier: catalog:types
+        version: 6.0.3
 
   packages/types: {}
 
@@ -1356,15 +1669,15 @@ importers:
       '@nebula-studio-electron/electron-bridge':
         specifier: workspace:^
         version: link:../../core/electron-shared
-      '@nebula-studio/app-shell':
-        specifier: workspace:^
-        version: link:../../core/app-shell
       '@nebula-studio/nebula-assembly':
         specifier: workspace:^
         version: link:../nebula-assembly
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
         version: link:../nebula-ui
+      '@nebula-studio/shell-protocol':
+        specifier: workspace:^
+        version: link:../../platform/shell-protocol
       vue:
         specifier: catalog:vue
         version: 3.5.41(typescript@6.0.3)
@@ -1448,6 +1761,46 @@ importers:
       sass:
         specifier: catalog:style
         version: 1.102.0
+
+  packages/ui/shell-ui:
+    dependencies:
+      '@nebula-studio-electron/electron-bridge':
+        specifier: workspace:^
+        version: link:../../core/electron-shared
+      '@nebula-studio/app-shell':
+        specifier: workspace:^
+        version: link:../../core/app-shell
+      '@nebula-studio/auth-provider':
+        specifier: workspace:^
+        version: link:../../core/auth-provider
+      '@nebula-studio/nebula-layout':
+        specifier: workspace:^
+        version: link:../nebula-layout
+      '@nebula-studio/nebula-ui':
+        specifier: workspace:^
+        version: link:../nebula-ui
+      '@nebula-studio/shell-protocol':
+        specifier: workspace:^
+        version: link:../../platform/shell-protocol
+      vue:
+        specifier: catalog:vue
+        version: 3.5.41(typescript@6.0.3)
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../../tools/tsconfig
+      '@nebula-studio/types':
+        specifier: workspace:^
+        version: link:../../types
+      happy-dom:
+        specifier: catalog:vite
+        version: 20.11.2
+      typescript:
+        specifier: catalog:types
+        version: 6.0.3
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.10(@types/node@26.2.0)(@vitest/browser-preview@4.1.10)(happy-dom@20.11.2)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))
 
   tools/lint/eslint:
     dependencies:
@@ -1912,10 +2265,6 @@ packages:
   '@electron/fuses@1.8.0':
     resolution: {integrity: sha512-zx0EIq78WlY/lBb1uXlziZmDZI4ubcCXIMJ4uGjXzZW0nS19TjSPeXPAjzzTmKQlJUZm0SbmZhPKP7tuQ1SsEw==}
     hasBin: true
-
-  '@electron/get@3.0.0':
-    resolution: {integrity: sha512-hLv4BYFiyrNRI+U0Mm2X7RxCCdJLkDUn8GCEp9QJzbLpZRko+UaLlCjOMkj6TEtirNLPyBA7y1SeGfnpOB21aQ==}
-    engines: {node: '>=14'}
 
   '@electron/get@5.0.0':
     resolution: {integrity: sha512-pjoBpru1KdEtcExBnuHAP1cAc/5faoedw0hzJkL3o4/IJp7HNF1+fbrdxT3gMYRX2oJfvnA/WXeCTVQpYYxyJA==}
@@ -2514,6 +2863,51 @@ packages:
 
   '@marijn/find-cluster-break@1.0.3':
     resolution: {integrity: sha512-FY+MKLBoTsLNJF/eLWaOsXGdz6uh3Iu1axjPf6TUq92IYumcTcXWHoS747JARLkcdlJ/Waiaxc5wQfFO8jC6NA==}
+
+  '@module-federation/dts-plugin@2.8.2':
+    resolution: {integrity: sha512-pwZFW8b2LZTymMMC+o2M9xMXDIQKAHGtCRqj/IkOp0jHRYrKjK9cma9xoUNst8/R3sEn878/i9wgv/43BnCEyg==}
+    peerDependencies:
+      typescript: ^4.9.0 || ^5.0.0 || ^6.0.0 || ^7.0.0
+      vue-tsc: '>=1.0.24'
+    peerDependenciesMeta:
+      vue-tsc:
+        optional: true
+
+  '@module-federation/error-codes@0.21.6':
+    resolution: {integrity: sha512-MLJUCQ05KnoVl8xd6xs9a5g2/8U+eWmVxg7xiBMeR0+7OjdWUbHwcwgVFatRIwSZvFgKHfWEiI7wsU1q1XbTRQ==}
+
+  '@module-federation/error-codes@2.8.2':
+    resolution: {integrity: sha512-8inlDv48QOjA//CLQ3epjoHEiMQGsz1Pmtu2N+s7gQVggn6AYHpjnMe8AsyGxtpaPg3wbX0HmBZtRFggpXUB9A==}
+
+  '@module-federation/managers@2.8.2':
+    resolution: {integrity: sha512-OQfnoUwy1IUfn6DaI2S/DPKgnElkYlP+gG8mbUQlJVEW1Zg/8V/dZbNgJUKikTJly6yR1r08PK59g7239ITYMw==}
+
+  '@module-federation/runtime-core@0.21.6':
+    resolution: {integrity: sha512-5Hd1Y5qp5lU/aTiK66lidMlM/4ji2gr3EXAtJdreJzkY+bKcI5+21GRcliZ4RAkICmvdxQU5PHPL71XmNc7Lsw==}
+
+  '@module-federation/runtime-core@2.8.2':
+    resolution: {integrity: sha512-PEkkK9MUp+nUCeQMS4ox3QGZfwwxgfjGA7P4umEnr5c3y8DLNDR+26tyHf/Gkjen2VsjlcyL+mEAQo1Zi4IE3g==}
+
+  '@module-federation/runtime@0.21.6':
+    resolution: {integrity: sha512-+caXwaQqwTNh+CQqyb4mZmXq7iEemRDrTZQGD+zyeH454JAYnJ3s/3oDFizdH6245pk+NiqDyOOkHzzFQorKhQ==}
+
+  '@module-federation/runtime@2.8.2':
+    resolution: {integrity: sha512-SUoP+PD5EjSPSi6FxEPGIZoRkFifxdeYcVQbJE9mO0VEjF51gAk3/TgX8k0vzUryOBPmXekLr9SfQXU6DqUtvA==}
+
+  '@module-federation/sdk@0.21.6':
+    resolution: {integrity: sha512-x6hARETb8iqHVhEsQBysuWpznNZViUh84qV2yE7AD+g7uIzHKiYdoWqj10posbo5XKf/147qgWDzKZoKoEP2dw==}
+
+  '@module-federation/sdk@2.8.2':
+    resolution: {integrity: sha512-OPS/lbQjraLXoWniQpCwQ/vqgURHTrhsackSNcOPmcJHM3LyR+DabxUc0pl8jAqExsW2l+uepQq7+/Gkei871w==}
+
+  '@module-federation/third-party-dts-extractor@2.8.2':
+    resolution: {integrity: sha512-Xf3iZ4iDi972XMOMbmUm/c5Vwwb6cTsU+Jpoz96lUom6Yps9FQX48elIdhgcQsL7/K64PqdOONsrlZVo8zphKA==}
+
+  '@module-federation/vite@1.20.7':
+    resolution: {integrity: sha512-Mto7P+4k+vXZYuQ6AjDMhVjp5uo/u0G+gLsJLVw6vkibvG2kcwvTmVLoHUBhQ2tj01onohajAxIs9X7H9G4FSg==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    peerDependencies:
+      vite: ^8.1.3
 
   '@mswjs/interceptors@0.41.9':
     resolution: {integrity: sha512-VVPPgHyQ6ShqnrmDWuxjmUIsO9gWyOZFmuOfLd9LfBGQJwZfy0gvv9pbHSJuoFNIYC7ZDX9aoFwowjcdSC4E8w==}
@@ -3356,10 +3750,6 @@ packages:
   '@shikijs/vscode-textmate@10.0.2':
     resolution: {integrity: sha512-83yeghZ2xxin3Nj8z1NMd/NCuca+gsYXswywDy5bHvwlWL8tpTQmzGeUuHd9FC3E/SBEMvzJRwWEOz5gGes9Qg==}
 
-  '@sindresorhus/is@4.0.0':
-    resolution: {integrity: sha512-FyD2meJpDPjyNQejSjvnhpgI/azsQkA4lGbuu5BQZfjvJ9cbRZXzeWL2HceCekW4lixO9JPesIIQkSoLjeJHNQ==}
-    engines: {node: '>=10'}
-
   '@sindresorhus/merge-streams@4.0.0':
     resolution: {integrity: sha512-tlqY9xq5ukxTUZBmoOp+m61cqwQD5pHJtFY3Mn8CA8ps6yghLH/Hw8UPdqg4OLmFW3IFlcXnQNmo/dh8HzXYIQ==}
     engines: {node: '>=18'}
@@ -3374,10 +3764,6 @@ packages:
 
   '@swc/helpers@0.5.23':
     resolution: {integrity: sha512-5lSsMOTXURePglDfvuAQUqkGek9Hg2kksOYay2m0+XR++b2NWYL/4sWyuvVBIs8oKnJaxkdi9whaL/sqN13afw==}
-
-  '@szmarczak/http-timer@4.0.6':
-    resolution: {integrity: sha512-4BAffykYOgO+5nzBWYwE3W90sBgLJoUPRWWcL8wlyiM8IB8ipJz3UMJ9KXQd1RKQXpKp8Tutn80HZtWsu2u76w==}
-    engines: {node: '>=10'}
 
   '@tailwindcss/node@4.3.3':
     resolution: {integrity: sha512-/T8IKEsf9VTU6tLjgC7+sv2mOPtQxzE2jMw7u4Tt40Tx+QSZxpzh95/H6cMKoja9XuW7iMdLJYBB0o9G1CaAgg==}
@@ -3502,9 +3888,6 @@ packages:
   '@types/aria-query@5.0.4':
     resolution: {integrity: sha512-rfT93uj5s0PRL7EzccGMs3brplhcrghnDoV26NqKhCAS1hVo+WdNsPvE/yb6ilfr5hi2MEk6d5EWJTKdxg8jVw==}
 
-  '@types/cacheable-request@6.0.3':
-    resolution: {integrity: sha512-IQ3EbTzGxIigb1I3qPZc1rWJnH0BmSKv5QYTalEwweFvyBDLSAe24zP0le/hyi7ecGfZVlIVAg4BZqb8WBwKqw==}
-
   '@types/chai@5.2.3':
     resolution: {integrity: sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA==}
 
@@ -3529,9 +3912,6 @@ packages:
   '@types/hast@3.0.5':
     resolution: {integrity: sha512-rp/ezSWaD1m44dPKICGhiskI13nVr7qTloFwDa/IYkhhf5nzwP+zIQcIJh3WIFSBOy/H1PzB40jPjMDksN4F+g==}
 
-  '@types/http-cache-semantics@4.2.0':
-    resolution: {integrity: sha512-L3LgimLHXtGkWikKnsPg0/VFx9OGZaC+eN1u4r+OB1XRqH3meBIAVC2zr1WdMH+RHmnRkqliQAOHNJ/E0j/e0Q==}
-
   '@types/istanbul-lib-coverage@2.0.6':
     resolution: {integrity: sha512-2QF/t/auWm0lsy8XtKVPG19v3sSOQlJe/YHZgfjb/KBBHOGSV+J2q/S671rcq9uTBrLAXmZpqJiaQbMT+zNU1w==}
 
@@ -3543,9 +3923,6 @@ packages:
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
-
-  '@types/keyv@3.1.4':
-    resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
 
   '@types/linkify-it@5.0.0':
     resolution: {integrity: sha512-sVDA58zAw4eWAffKOaQH5/5j3XeayukzDk+ewSsnv3p4yJEZHCCzMDiZM8e0OUrRvmpGZ85jf4yDHkHsgBNr9Q==}
@@ -3583,9 +3960,6 @@ packages:
 
   '@types/pegjs@0.10.6':
     resolution: {integrity: sha512-eLYXDbZWXh2uxf+w8sXS8d6KSoXTswfps6fvCUuVAGN8eRpfe7h9eSRydxiSJvo9Bf+GzifsDOr9TMQlmJdmkw==}
-
-  '@types/responselike@1.0.3':
-    resolution: {integrity: sha512-H/+L+UkTV33uf49PH5pCAUBVPNj2nDBXTN+qS1dOwyyg24l3CcicicCA7ca+HMvJBZcFgl5r8e+RR6elsb4Lyw==}
 
   '@types/set-cookie-parser@2.4.10':
     resolution: {integrity: sha512-GGmQVGpQWUe5qglJozEjZV/5dyxbOOZ0LHe/lqyWssB88Y4svNfst0uqBVscdDeIKl5Jy5+aPSvy7mI9tYRguw==}
@@ -4181,6 +4555,10 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
+  adm-zip@0.6.0:
+    resolution: {integrity: sha512-XleryMhbuksdKtofnWZ9Sk+4CUTbms4Mb/EU32SZwToAyZ5RgVos/ki8n+yr0LWHOGKuakbXTuuYNHLQjhddgg==}
+    engines: {node: '>=14.0'}
+
   agent-base@7.0.2:
     resolution: {integrity: sha512-k2/tQ1+8Zf50dEUJWklUP80LcE/+Ph+OJ6cf2Ff2fD/c/TtCe6ofnCoNMz9UnyxOQYlaAALZtEWETzn+1JjfHg==}
     engines: {node: '>= 14'}
@@ -4319,10 +4697,6 @@ packages:
   boolbase@1.0.0:
     resolution: {integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==}
 
-  boolean@3.2.0:
-    resolution: {integrity: sha512-d0II/GO9uf9lfUHH2BQsjxzRJZBdsjgsBiW4BvhWk/3qoKwQFjIDVN19PfX8F2D/r9PCMTtLWjYVCFrpeYUzsw==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
   bpmn-js-properties-panel@5.64.0:
     resolution: {integrity: sha512-DtHzzXLrfKz+/OM1E5a9hOqeIkNm/E5AnCTJ8SpMF088WnrWt0disMeE0Rjg43nyArPJoa+pQ/pTAiX4WJ/F6g==}
     peerDependencies:
@@ -4378,14 +4752,6 @@ packages:
 
   cac@6.7.14:
     resolution: {integrity: sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==}
-    engines: {node: '>=8'}
-
-  cacheable-lookup@5.0.4:
-    resolution: {integrity: sha512-2/kNscPhpcxrOigMZzbiWF7dz8ilhb/nIHU3EyZiXWXpeq/au8qJ8VhdftMkty3n7Gj6HIGalQG8oiBNB3AJgA==}
-    engines: {node: '>=10.6.0'}
-
-  cacheable-request@7.0.2:
-    resolution: {integrity: sha512-pouW8/FmiPQbuGpkXQ9BAPv/Mo5xDGANgSNXzTzJ8DrKGuXOssM4wIQRjfanNRh3Yu5cfYPvcorqbhg2KIJtew==}
     engines: {node: '>=8'}
 
   cacheable@2.5.0:
@@ -4472,9 +4838,6 @@ packages:
   cliui@8.0.1:
     resolution: {integrity: sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ==}
     engines: {node: '>=12'}
-
-  clone-response@1.0.3:
-    resolution: {integrity: sha512-ROoL94jJH2dUVML2Y/5PEDNaSHgeOdSDicUyS7izcF63G6sTc/FTjLub4b8Il9S8S0beOfYt0TaA5qvFK+w0wA==}
 
   clsx@2.1.1:
     resolution: {integrity: sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==}
@@ -4646,24 +5009,8 @@ packages:
       supports-color:
         optional: true
 
-  decompress-response@6.0.0:
-    resolution: {integrity: sha512-aW35yZM6Bb/4oJlZncMH2LCoZtJXTRxES17vE3hoRiowU2kWHaJKFkSBDnDR+cm9J+9QhXmREyIfv0pji9ejCQ==}
-    engines: {node: '>=10'}
-
   deep-is@0.1.4:
     resolution: {integrity: sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==}
-
-  defer-to-connect@2.0.1:
-    resolution: {integrity: sha512-4tvttepXG1VaYGrRibk5EwJd1t4udunSOVMdLSAL6mId1ix438oPwPZMALY41FCijukO1L0twNcGsdzS7dHgDg==}
-    engines: {node: '>=10'}
-
-  define-data-property@1.1.4:
-    resolution: {integrity: sha512-rBMvIzlpA8v6E+SJZoo++HAYqsLrkg7MSfIinMPFhmkorw7X+dOXVJQs+QT69zGkzMyfDnIMN2Wid1+NbL3T+A==}
-    engines: {node: '>= 0.4'}
-
-  define-properties@1.2.1:
-    resolution: {integrity: sha512-8QmQKqEASLd5nx0U1B1okLElbUuuttJ/AnYmRXbbbGDWh6uS208EjD4Xqq/I9wK7u0v6O08XhTWnt5XtEbR6Dg==}
-    engines: {node: '>= 0.4'}
 
   defu@6.1.7:
     resolution: {integrity: sha512-7z22QmUWiQ/2d0KkdYmANbRUVABpZ9SNYyH5vx6PZ+nE5bcC0l7uFvEfHlyld/HcGBFTL536ClDt3DEcSlEJAQ==}
@@ -4679,9 +5026,6 @@ packages:
   detect-libc@2.1.2:
     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
     engines: {node: '>=8'}
-
-  detect-node@2.1.0:
-    resolution: {integrity: sha512-T0NIuQpnTvFDATNuHN5roPwSBG83rFsuO+MXXH9/3N1eFbn4wcPjttvjMLEPWJ0RGUYgQE7cGgS3tNxbqCGM7g==}
 
   devlop@1.1.0:
     resolution: {integrity: sha512-RWmIqhcFf1lRYBvNmr7qTNuyCt/7/ns2jbpp1+PalgE/rDQcBT0fioSMUpJ93irlUhC5hrg4cYqe6U+0ImW0rA==}
@@ -4813,9 +5157,6 @@ packages:
     resolution: {integrity: sha512-YGRs8knHhKHVShLkFET/rWAU8kmHbOV5LwN938RHI0pljAJ1Gf6SzXsSmRaEzcXTtOOmVqJ5+WtQPL5uigY50Q==}
     engines: {node: '>=14'}
 
-  end-of-stream@1.4.5:
-    resolution: {integrity: sha512-ooEGc6HP26xXq/N+GCGOT0JKCLDGrq2bQUZrQ7gyrJiZANJ/8YDTxTpQBXGMn+WbIQXNVpyWymm7KYVICQnyOg==}
-
   enhanced-resolve@5.24.5:
     resolution: {integrity: sha512-L1l8TNvomm6UVW5B253AGxQagSQr+vGwhMlrrfRS2qmhx46AMpMVJKQYLvWYbysTMY8VoicOvzHzoHMbyzB+4A==}
     engines: {node: '>=10.13.0'}
@@ -4868,9 +5209,6 @@ packages:
   es-set-tostringtag@2.1.0:
     resolution: {integrity: sha512-j6vWzfrGVfyXxge+O0x5sh6cvxAog0a/4Rdd2K36zCMV5eJ+/+tOAngRO8cODMNWbVRdVlmGZQL2YS3yR8bIUA==}
     engines: {node: '>= 0.4'}
-
-  es6-error@4.1.1:
-    resolution: {integrity: sha512-Um/+FxMr9CISWh0bi5Zv0iOD+4cFh5qLeks1qhAopKVAJw3drgKbKySikp7wGhDL0HPeaja0P5ULZrxLkniUVg==}
 
   esbuild@0.25.11:
     resolution: {integrity: sha512-KohQwyzrKTQmhXDW1PjCv3Tyspn9n5GcY2RTDqeORIdIJY8yKIF7sTSopFmn/wpMPW4rdPXI0UE5LJLuq3bx0Q==}
@@ -5210,10 +5548,6 @@ packages:
     resolution: {integrity: sha512-sTSfBjoXBp89JvIKIefqw7U2CCebsc74kiY6awiGogKtoSGbgjYE/G/+l9sF3MWFPNc9IcoOC4ODfKHfxFmp0g==}
     engines: {node: '>= 0.4'}
 
-  get-stream@5.2.0:
-    resolution: {integrity: sha512-nBF+F1rAZVCu/p7rjzgA+Yb4lfYXrpl7a6VmJrU8wF9I1CKvP/QwPNZHnOlwbTkY6dvtFIzFMSyQXbLoTQPRpA==}
-    engines: {node: '>=8'}
-
   get-tsconfig@4.14.0:
     resolution: {integrity: sha512-yTb+8DXzDREzgvYmh6s9vHsSVCHeC0G3PI5bEXNBHtmshPnO+S5O7qgLEOn0I5QvMy6kpZN8K1NKGyilLb93wA==}
 
@@ -5239,10 +5573,6 @@ packages:
     engines: {node: '>=12'}
     deprecated: Glob versions prior to v9 are no longer supported
 
-  global-agent@3.0.0:
-    resolution: {integrity: sha512-PT6XReJ+D07JvGoxQMkT6qji/jVNfX/h364XHZOWeRzy64sSFr+xJ5OX7LI3b4MPQzdL4H8Y8M0xzPpsVMwA8Q==}
-    engines: {node: '>=10.0'}
-
   global-modules@2.0.0:
     resolution: {integrity: sha512-NGbfmJBp9x8IxyJSd1P+otYK8vonoJactOogrVfFRIAEY1ukil8RSKDz2Yo7wh1oihl51l/r6W4epkeKJHqL8A==}
     engines: {node: '>=6'}
@@ -5258,10 +5588,6 @@ packages:
   globals@17.11.0:
     resolution: {integrity: sha512-Z2I8hM+PbJDXQDq3Icgpzv+mPdwr68iZUU9d5WW4FuXfDUQfkZaZuvjMv42/5crNyw154+9+VWXbYrUgDXbxNw==}
     engines: {node: '>=18'}
-
-  globalthis@1.0.4:
-    resolution: {integrity: sha512-DpLKbNU4WylpxJykQujfCcwYWiV/Jhm50Goo0wrVILAv5jOr9d+H+UR3PhSCD2rCCEIg0uc+G+muBTwD54JhDQ==}
-    engines: {node: '>= 0.4'}
 
   globby@11.0.0:
     resolution: {integrity: sha512-iuehFnR3xu5wBBtm4xi0dMe92Ob87ufyu/dHwpDYfbcpYpIbrO5OnS8M1vWvrBhSGEJ3/Ecj7gnX76P8YxpPEg==}
@@ -5281,10 +5607,6 @@ packages:
     resolution: {integrity: sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg==}
     engines: {node: '>= 0.4'}
 
-  got@11.8.5:
-    resolution: {integrity: sha512-o0Je4NvQObAuZPHLFoRSkdG2lTgtcynqymzg2Vupdx6PorhaT5MCbIyXG6d4D94kk8ZG57QeosgdiqfJWhEhlQ==}
-    engines: {node: '>=10.19.0'}
-
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
@@ -5303,9 +5625,6 @@ packages:
   has-flag@5.0.1:
     resolution: {integrity: sha512-CsNUt5x9LUdx6hnk/E2SZLsDyvfqANZSUq4+D3D8RzDJ2M+HDTIkF60ibS1vHaK55vzgiZw1bEPFG9yH7l33wA==}
     engines: {node: '>=12'}
-
-  has-property-descriptors@1.0.2:
-    resolution: {integrity: sha512-55JNKuIW+vq4Ke1BjOTjM2YctQIvCT7GFzHwmfZPGo5wnrgkid0YQtnAleFSqumZm4az3n2BS+erby5ipJdgrg==}
 
   has-symbols@1.1.0:
     resolution: {integrity: sha512-1cDNdwJ2Jaohmb3sg4OmKaMBwuC48sYni5HUw2DvsC8LjGTLK9h+eb1X6RyuOHe4hT0ULCW68iomhjUoKUqlPQ==}
@@ -5358,16 +5677,9 @@ packages:
   htmlparser2@8.0.0:
     resolution: {integrity: sha512-4wbT2/t9kITgTLhFoPPzIh4xW/fDXE4NKQDcBhWC0fPCraSA5K26W8D09K5NAqNqsBp/f7wDN2LR2rA4GhlGhA==}
 
-  http-cache-semantics@4.2.0:
-    resolution: {integrity: sha512-dTxcvPXqPvXBQpq5dUr6mEMJX4oIEFv6bwom3FDwKRDsuIjjJGANqhBuoAn9c1RQJIdAKav33ED65E2ys+87QQ==}
-
   http-proxy-agent@7.0.0:
     resolution: {integrity: sha512-+ZT+iBxVUQ1asugqnD6oWoRiS25AkjNfG085dKJGtGxkdwLQrMKU5wJr2bOOFAXzKcTuqq+7fZlTMgG3SRfIYQ==}
     engines: {node: '>= 14'}
-
-  http2-wrapper@1.0.3:
-    resolution: {integrity: sha512-V+23sDMr12Wnz7iTcDeJr3O6AIxlnvT/bmaAAAP/Xda35C90p9599p0F1eHR/N1KILWSoWVAiOMFjBBXaXSMxg==}
-    engines: {node: '>=10.19.0'}
 
   https-proxy-agent@7.0.0:
     resolution: {integrity: sha512-0euwPCRyAPSgGdzD1IVN9nJYHtBhJwb6XPfbpQcYbPCwrBidX6GzxmchnaF4sfF/jPb74Ojx5g4yTg3sixlyPw==}
@@ -5489,6 +5801,11 @@ packages:
     resolution: {integrity: sha512-FFUtZMpoZ8RqHS3XeXEmHWLA4thH+ZxCv2lOiPIn1Xc7CxrqhWzNSDzD+/chS/zbYezmiwWLdQC09JdQKmthOw==}
     engines: {node: '>=20'}
 
+  isomorphic-ws@5.0.0:
+    resolution: {integrity: sha512-muId7Zzn9ywDsyXgTIafTry2sV3nySZeUDe6YedVd1Hvuuep5AsIlqK+XefWpYTyJG5e503F2xIuT2lcU6rCSw==}
+    peerDependencies:
+      ws: '*'
+
   jackspeak@3.1.2:
     resolution: {integrity: sha512-kWmLKn2tRtfYMF/BakihVVRzBKOxz4gJMiL2Rj91WnAB5TPZumSH99R/Yf1qE1u4uRimvCSJfm6hnxohXeEXjQ==}
     engines: {node: '>=14'}
@@ -5524,10 +5841,6 @@ packages:
     resolution: {integrity: sha512-ttBQIIQPDeLjpPOohtUdXuXUVoA2uIB6fEH9HyJ7234s5mBJ5wTx20njxplLZQgLaOfpmPQA7X2t5AX6tIPbog==}
     hasBin: true
 
-  js-yaml@4.3.0:
-    resolution: {integrity: sha512-1td788aAnnZ5qs7V2QIRl1owjtYpbKt749Y3xauqQgwIIGF/xXWz1wMTEBx5O3LK3lXLVuqXPdPxj2BoFHaW9Q==}
-    hasBin: true
-
   js-yaml@4.3.1:
     resolution: {integrity: sha512-CY6crGq313MX8GkwvB7tzgp99vjQxY1++5y10/BKN/GUfHqWaOGQMNZkBvqSzsZKWk/ijwHlWzzkLulsGHhjWQ==}
     hasBin: true
@@ -5556,9 +5869,6 @@ packages:
   json-stable-stringify-without-jsonify@1.0.1:
     resolution: {integrity: sha512-Bdboy+l7tA3OGW6FjyFHWkP5LuByj1Tk33Ljyq0axyzdk9//JSi2u3fP1QSmd1KNwq6VOKYGlAu87CisVir6Pw==}
 
-  json-stringify-safe@5.0.1:
-    resolution: {integrity: sha512-ZClg6AaYvamvYEE82d3Iyd3vSSIjQ+odgjaTzRuO3s7toCdFKczob2i0zCh7JE8kWn17yvAWhUVxvqGwUalsRA==}
-
   json5@2.2.3:
     resolution: {integrity: sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==}
     engines: {node: '>=6'}
@@ -5577,9 +5887,6 @@ packages:
 
   jsonfile@6.2.1:
     resolution: {integrity: sha512-zwOTdL3rFQ/lRdBnntKVOX6k5cKJwEc1HdilT71BWEu7J41gXIB2MRp+vxduPSwZJPWBxEzv4yH1wYLJGUHX4Q==}
-
-  keyv@4.0.0:
-    resolution: {integrity: sha512-U7ioE8AimvRVLfw4LffyOIRhL2xVgmE8T22L6i0BucSnBUyv4w+I7VN/zVZwRKHOI6ZRUcdMdWHQ8KSUvGpEog==}
 
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
@@ -5772,10 +6079,6 @@ packages:
   lodash@4.18.1:
     resolution: {integrity: sha512-dMInicTPVE8d1e5otfwmmjlxkZoUpiVLwyeTdUsi/Caj/gfzzblBcCE5sRHV/AsjuCmxWrte2TNGSYuCeCq+0Q==}
 
-  lowercase-keys@2.0.0:
-    resolution: {integrity: sha512-tqNXrS78oMOE73NMxK4EMLQsQowWf8jKooH9g7xPavRT706R6bkQJ6DY2Te7QukaZsulxa30wQ7bk0pm4XiHmA==}
-    engines: {node: '>=8'}
-
   lru-cache@10.2.0:
     resolution: {integrity: sha512-2bIM8x+VAf6JT4bKAljS1qUWgMsqZRPGJS6FSahIMPVvctcNhyVp7AJu7quxOW9jwkryBReKZY5tY5JYv2n/7Q==}
     engines: {node: 14 || >=16.14}
@@ -5807,10 +6110,6 @@ packages:
     resolution: {integrity: sha512-FJeH4bRpYoXiggcgriCGItKCSv3xkngJc4QCZ/rkQCogU3VYaLxYJoZl8Nw/b4+x7iij/pd+09mZ6A1dXzpL0A==}
     engines: {node: '>= 20'}
     hasBin: true
-
-  matcher@3.0.0:
-    resolution: {integrity: sha512-OkeDaAZ/bQCxeFAozM55PKcKU0yJMPGifLwV4Qgjitu+5MoAfSQN4lsLJeXZ1b8w0x+/Emda6MZgXS1jvsapng==}
-    engines: {node: '>=10'}
 
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
@@ -5873,14 +6172,6 @@ packages:
     resolution: {integrity: sha512-USPkMeET31rOMiarsBNIHZKLGgvKc/LrjofAnBlOttf5ajRvqiRA8QsenbcooctK6d6Ts6aqZXBA+XbkKthiQg==}
     engines: {node: '>=4.0.0'}
     hasBin: true
-
-  mimic-response@1.0.1:
-    resolution: {integrity: sha512-j5EctnkH7amfV/q5Hgmoal1g2QHFJRraOtmx0JpIqkxhBhI/lJSl1nMpQ45hVarwNETOoWEimndZ4QK0RHxuxQ==}
-    engines: {node: '>=4'}
-
-  mimic-response@3.1.0:
-    resolution: {integrity: sha512-z0yWI+4FDrrweS8Zmt4Ej5HdJmky15+L2e6Wgn3+iK5fWzb6T3fhNFq2+MeTRb064c6Wr4N/wv0DzQTjNzHNGQ==}
-    engines: {node: '>=10'}
 
   min-dash@5.1.0:
     resolution: {integrity: sha512-HAvN6XzmCQj+js43G9sJRRw8kj/7DvoxN7qhoIN9Xo5ZN1NMljtpyKs/NunXmw0QSWwlgZzNv6tLeEa4xaZ0tg==}
@@ -6023,10 +6314,6 @@ packages:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
     engines: {node: '>=0.10.0'}
 
-  normalize-url@6.0.1:
-    resolution: {integrity: sha512-VU4pzAuh7Kip71XEmO9aNREYAdMHFGTVj/i+CaTImS8x0i1d3jUZkXhqluy/PRgjPLMgsLQulYY3PJ/aSbSjpQ==}
-    engines: {node: '>=10'}
-
   nprogress@0.2.0:
     resolution: {integrity: sha512-I19aIingLgR1fmhftnbWWO3dXc0hSxqHQHQb3H8m+K3TnEn/iSeTZZOyvKXWqQESMwuUVnatlCnZdLBZZt2VSA==}
 
@@ -6035,10 +6322,6 @@ packages:
 
   nth-check@2.1.1:
     resolution: {integrity: sha512-lqjrjmaOoAnWfMmBPL+XNnynZh2+swxiX3WUE0s4yEHI6m+AwrK2UZOimIRl3X/4QctVqS8AiZjFqyOGrMXb/w==}
-
-  object-keys@1.1.1:
-    resolution: {integrity: sha512-NuAESUOUMrlIXOfHKzD6bpPu3tYt3xvjNdRIQ+FeT0lNb4K8WR70CaDxhuNguS2XG+GjkyMwOzsN5ZktImfhLA==}
-    engines: {node: '>= 0.4'}
 
   object-refs@0.4.0:
     resolution: {integrity: sha512-6kJqKWryKZmtte6QYvouas0/EIJKPI1/MMIuRsiBlNuhIMfqYTggzX2F1AJ2+cDs288xyi9GL7FyasHINR98BQ==}
@@ -6127,10 +6410,6 @@ packages:
         optional: true
       vite-plus:
         optional: true
-
-  p-cancelable@2.1.1:
-    resolution: {integrity: sha512-BZOr3nRQHOntUjTrH8+Lh54smKHoHyur8We1V8DSMVrl5A2malOOwuJRnKRDjSnkoeBh4at6BwEnb5I7Jl31wg==}
-    engines: {node: '>=8'}
 
   p-limit@3.0.2:
     resolution: {integrity: sha512-iwqZSOoWIW+Ew4kAGUlN16J4M7OB3ysMLSZtnhmqx7njIHFPlxWBX8xo3lVTyFVq6mI/lL9qt2IsN1sHwaxJkg==}
@@ -6346,9 +6625,6 @@ packages:
   proto-list@1.2.4:
     resolution: {integrity: sha512-vtK/94akxsTMhe0/cbfpR+syPuszcuwhqVjJq26CuNDgFGj682oRBXOP5MJpv2r7JtE8MsiepGIqvvOTBwn2vA==}
 
-  pump@3.0.4:
-    resolution: {integrity: sha512-VS7sjc6KR7e1ukRFhQSY5LM2uBWAUPiOPa/A3mkKmiMwSmRFUITt0xuj+/lesgnCv+dPIEYlkzrcyXgquIHMcA==}
-
   punycode.js@2.3.1:
     resolution: {integrity: sha512-uxFIHU0YlHYhDQtV4R9J6a52SLx28BCjT+4ieh7IGbgwVJWO+km431c4yRlREUAsAmt/uMjQUyQHNEPf0M39CA==}
     engines: {node: '>=6'}
@@ -6373,10 +6649,6 @@ packages:
 
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
-
-  quick-lru@5.1.1:
-    resolution: {integrity: sha512-WuyALRjWPDGtt/wzJiadO5AXY+8hZ80hVpe6MyivgraREW751X3SbhRvG3eLKOYN+8VEvqLcf3wdnt44Z4S4SA==}
-    engines: {node: '>=10'}
 
   react-is@17.0.1:
     resolution: {integrity: sha512-NAnt2iGDXohE5LI7uBnLnqvLQMtzhkiAOLXTmv+qnF9Ky7xAPcX8Up/xWIhxvLVGJvuLiNc4xQLtuqDRzb4fSA==}
@@ -6422,18 +6694,12 @@ packages:
     resolution: {integrity: sha512-dbsZ0gk5opWPFlKMqvxCrLCuMZUVmsW3yTPT0tT4mYwo5fjQM8c4HMN9ZJt6dRDqDV/78m9SU4rv24PN4NiYaA==}
     engines: {node: '>=12', npm: '>=6'}
 
-  resolve-alpn@1.2.1:
-    resolution: {integrity: sha512-0a1F4l73/ZFZOakJnQ3FvkJ2+gSTQWz/r2KE5OdDY0TxPm5h4GkqkWWfM47T7HsbnOtcJVEF4epCVy6u7Q3K+g==}
-
   resolve-from@4.0.0:
     resolution: {integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==}
     engines: {node: '>=4'}
 
   resolve-pkg-maps@1.0.0:
     resolution: {integrity: sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw==}
-
-  responselike@2.0.1:
-    resolution: {integrity: sha512-4gl03wn3hj1HP3yzgdI7d3lCkF95F21Pz4BPGvKHinyQzALR5CapwC8yIi0Rh58DEMQ/SguC03wFj2k0M/mHhw==}
 
   retry@0.12.0:
     resolution: {integrity: sha512-9LkiTwjUh6rT555DtE9rTX+BKByPfrMzEAtnlEtdEwr3Nkffwiihqe2bWADg+OQRjt9gl6ICdmB/ZFDCGAtSow==}
@@ -6458,10 +6724,6 @@ packages:
     resolution: {integrity: sha512-CqDakW+hMe/Bz202FPEymy68P+G50RfMQK+Qo5YUqc9SPipvbGjCGKd0RSKEelbsfQuw3g5NZDSrlZZAJurH1A==}
     engines: {node: '>=14'}
     hasBin: true
-
-  roarr@2.15.3:
-    resolution: {integrity: sha512-AEjYvmAhlyxOeB9OqPUzQCo3kuAkNfuDk/HqWbZdFsqDFpapkTjiw+p4svNEoRLvuqNTxqfL+s+gtD4eDgZ+CA==}
-    engines: {node: '>=8.0'}
 
   rolldown@1.1.4:
     resolution: {integrity: sha512-IjZYiLxZwpnhwhdBH2ugdTGVSdhCQUmLxLoqyjiL0JxYjyRst+5a0P3xfrTxJ5F638j4Mvvw5FAX5XE6eHpXbA==}
@@ -6490,15 +6752,8 @@ packages:
     resolution: {integrity: sha512-WDb4gqac8uiJzOdOdVpr9NWh9NrJMm7Brn5GX2Poj+mjE/QTXqYQENr8T/mom54dDDgbd3QjwTg23TRHYiWXRA==}
     engines: {node: '>= 20.12'}
 
-  semver-compare@1.0.0:
-    resolution: {integrity: sha512-YM3/ITh2MJ5MtzaM429anh+x2jiLVjqILF4m4oyQB18W7Ggea7BfqdH/wGMK7dDiMghv/6WG7znWMwUDzJiXow==}
-
   semver@5.5.0:
     resolution: {integrity: sha512-4SJ3dm0WAwWy/NVeioZh5AntkdJoWKxHxcmyP622fOkgHa4z3R0TdBJICINyaSDE6uNwVc8gZr+ZinwZAH4xIA==}
-    hasBin: true
-
-  semver@6.2.0:
-    resolution: {integrity: sha512-jdFC1VdUGT/2Scgbimf7FSx9iJLXoqfglSF+gJeuNWVpiE37OIbc1jywR/GJyFdz3mnkz2/id0L0J/cr0izR5A==}
     hasBin: true
 
   semver@6.3.1:
@@ -6514,10 +6769,6 @@ packages:
     resolution: {integrity: sha512-Y7/KDsb8LjooZpwaqGyulO6DQlksgCncchHGk+sZIY4SBvUocMBEFH5Ur1fI4dV+Jvl0w6cjvucaIi40puRioA==}
     engines: {node: '>=10'}
     hasBin: true
-
-  serialize-error@7.0.1:
-    resolution: {integrity: sha512-8I8TjW5KMOKsZQTvoxjuSIa7foAwPWGOts+6o7sgjz41/qMD9VQHEDxi6PBvK2l0MXUmqZyNpUK+T2tQaaElvw==}
-    engines: {node: '>=10'}
 
   set-cookie-parser@3.1.1:
     resolution: {integrity: sha512-vM9SUhjsUYs6UeJUmygc5Ofm5eQGe85riob5ju6XCgFGJI5PLV4nrDAQpQjd+LkFBpAkADn5BQQpZ9EUNkyLuA==}
@@ -6587,9 +6838,6 @@ packages:
 
   sprintf-js@1.0.3:
     resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==}
-
-  sprintf-js@1.1.3:
-    resolution: {integrity: sha512-Oo+0REFV59/rz3gfJNKQiBlwfHaSESl1pcGyABQsnnIfWOFt6JNj5gCog2U6MLZ//IGYD+nA8nI+mTShREReaA==}
 
   stackback@0.0.2:
     resolution: {integrity: sha512-1XMJE5fQo1jGH6Y/7ebnwPOBEkIEnT4QF32d5R1+VXdXveM0IBMJt8zfaxX1P3QhVwrYe+576+jkANtSS2mBbw==}
@@ -6870,10 +7118,6 @@ packages:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
     engines: {node: '>= 0.8.0'}
 
-  type-fest@0.13.1:
-    resolution: {integrity: sha512-34R7HTnG0XIJcBSn5XhDd7nNFPRcXYRZrBB2O2jdKqYODldSzBAqzsWoZYYvduky73toYS/ESqxPvkDf/F0XMg==}
-    engines: {node: '>=10'}
-
   type-fest@4.39.1:
     resolution: {integrity: sha512-uW9qzd66uyHYxwyVBYiwS4Oi0qZyUqwjU+Oevr6ZogYiXt99EOYtwvzMSLw1c3lYo2HzJsep/NB23iEVEgjG/w==}
     engines: {node: '>=16'}
@@ -6913,6 +7157,10 @@ packages:
 
   undici@7.28.0:
     resolution: {integrity: sha512-cRZYrTDwWznlnRiPjggAGxZXanty6M8RV1ff8Wm4LWXBp7/IG8v5DnOm74DtUBp9OONpK75YlPnIjQqX0dBDtA==}
+    engines: {node: '>=20.18.1'}
+
+  undici@7.29.0:
+    resolution: {integrity: sha512-IDxfleLmmbSskfWSUATiN1nfn2rDuvnMOqb5CWR92iIfojA0Ud+ulOAAEQ57LPr9rWmsreUyf5lwyao+7GNNVw==}
     engines: {node: '>=20.18.1'}
 
   unicorn-magic@0.4.0:
@@ -7195,6 +7443,18 @@ packages:
   write-file-atomic@7.0.1:
     resolution: {integrity: sha512-OTIk8iR8/aCRWBqvxrzxR0hgxWpnYBblY1S5hDWBQfk/VFmJwzmJgQFN3WsoUKHISv2eAwe+PpbUzyL1CKTLXg==}
     engines: {node: ^20.17.0 || >=22.9.0}
+
+  ws@8.21.0:
+    resolution: {integrity: sha512-Vsp28b7DRcimFQvrqu2Wek3z1iYxDCWqHYB8Qsnk/S4RfaCQzPGPyBNuVjJV3cd6UiKtUtp6sNM77gWvzcCH+g==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
 
   ws@8.21.3:
     resolution: {integrity: sha512-201TZ/kPWxoPr/OKWjquZR1SWKXcvxdH+e1xrx89b3YbmzLMFCLfnaG1HFIgWzJOEWZ7MvpK++odZufgYR50Rw==}
@@ -7696,20 +7956,6 @@ snapshots:
       chalk: 4.1.2
       fs-extra: 9.0.1
       minimist: 1.2.8
-
-  '@electron/get@3.0.0(supports-color@10.2.2)':
-    dependencies:
-      debug: 4.4.3(supports-color@10.2.2)
-      env-paths: 2.2.0
-      fs-extra: 8.1.0
-      got: 11.8.5
-      progress: 2.0.3
-      semver: 6.2.0
-      sumchecker: 3.0.1(supports-color@10.2.2)
-    optionalDependencies:
-      global-agent: 3.0.0
-    transitivePeerDependencies:
-      - supports-color
 
   '@electron/get@5.0.0(supports-color@10.2.2)':
     dependencies:
@@ -8257,9 +8503,74 @@ snapshots:
     dependencies:
       fast-glob: 3.3.3
       jju: 1.4.0
-      js-yaml: 4.3.0
+      js-yaml: 4.3.1
 
   '@marijn/find-cluster-break@1.0.3': {}
+
+  '@module-federation/dts-plugin@2.8.2(typescript@6.0.3)(vue-tsc@3.3.10(typescript@6.0.3))':
+    dependencies:
+      '@module-federation/error-codes': 2.8.2
+      '@module-federation/managers': 2.8.2
+      '@module-federation/sdk': 2.8.2
+      '@module-federation/third-party-dts-extractor': 2.8.2
+      adm-zip: 0.6.0
+      isomorphic-ws: 5.0.0(ws@8.21.0)
+      typescript: 6.0.3
+      undici: 7.29.0
+      ws: 8.21.0
+    optionalDependencies:
+      vue-tsc: 3.3.10(typescript@6.0.3)
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
+  '@module-federation/error-codes@0.21.6': {}
+
+  '@module-federation/error-codes@2.8.2': {}
+
+  '@module-federation/managers@2.8.2':
+    dependencies:
+      '@module-federation/sdk': 2.8.2
+
+  '@module-federation/runtime-core@0.21.6':
+    dependencies:
+      '@module-federation/error-codes': 0.21.6
+      '@module-federation/sdk': 0.21.6
+
+  '@module-federation/runtime-core@2.8.2':
+    dependencies:
+      '@module-federation/error-codes': 2.8.2
+      '@module-federation/sdk': 2.8.2
+
+  '@module-federation/runtime@0.21.6':
+    dependencies:
+      '@module-federation/error-codes': 0.21.6
+      '@module-federation/runtime-core': 0.21.6
+      '@module-federation/sdk': 0.21.6
+
+  '@module-federation/runtime@2.8.2':
+    dependencies:
+      '@module-federation/error-codes': 2.8.2
+      '@module-federation/runtime-core': 2.8.2
+      '@module-federation/sdk': 2.8.2
+
+  '@module-federation/sdk@0.21.6': {}
+
+  '@module-federation/sdk@2.8.2': {}
+
+  '@module-federation/third-party-dts-extractor@2.8.2': {}
+
+  '@module-federation/vite@1.20.7(typescript@6.0.3)(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))(vue-tsc@3.3.10(typescript@6.0.3))':
+    dependencies:
+      '@module-federation/dts-plugin': 2.8.2(typescript@6.0.3)(vue-tsc@3.3.10(typescript@6.0.3))
+      '@module-federation/runtime': 2.8.2
+      '@module-federation/sdk': 2.8.2
+      vite: 8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0)
+    transitivePeerDependencies:
+      - bufferutil
+      - typescript
+      - utf-8-validate
+      - vue-tsc
 
   '@mswjs/interceptors@0.41.9':
     dependencies:
@@ -8774,8 +9085,6 @@ snapshots:
 
   '@shikijs/vscode-textmate@10.0.2': {}
 
-  '@sindresorhus/is@4.0.0': {}
-
   '@sindresorhus/merge-streams@4.0.0': {}
 
   '@standard-schema/spec@1.1.0': {}
@@ -8794,10 +9103,6 @@ snapshots:
   '@swc/helpers@0.5.23':
     dependencies:
       tslib: 2.8.1
-
-  '@szmarczak/http-timer@4.0.6':
-    dependencies:
-      defer-to-connect: 2.0.1
 
   '@tailwindcss/node@4.3.3':
     dependencies:
@@ -8901,13 +9206,6 @@ snapshots:
 
   '@types/aria-query@5.0.4': {}
 
-  '@types/cacheable-request@6.0.3':
-    dependencies:
-      '@types/http-cache-semantics': 4.2.0
-      '@types/keyv': 3.1.4
-      '@types/node': 26.2.0
-      '@types/responselike': 1.0.3
-
   '@types/chai@5.2.3':
     dependencies:
       '@types/deep-eql': 4.0.2
@@ -8937,8 +9235,6 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.3
 
-  '@types/http-cache-semantics@4.2.0': {}
-
   '@types/istanbul-lib-coverage@2.0.6': {}
 
   '@types/istanbul-lib-report@3.0.3':
@@ -8950,10 +9246,6 @@ snapshots:
       '@types/istanbul-lib-report': 3.0.3
 
   '@types/json-schema@7.0.15': {}
-
-  '@types/keyv@3.1.4':
-    dependencies:
-      '@types/node': 26.2.0
 
   '@types/linkify-it@5.0.0': {}
 
@@ -8992,10 +9284,6 @@ snapshots:
   '@types/nprogress@0.2.3': {}
 
   '@types/pegjs@0.10.6': {}
-
-  '@types/responselike@1.0.3':
-    dependencies:
-      '@types/node': 26.2.0
 
   '@types/set-cookie-parser@2.4.10':
     dependencies:
@@ -9765,6 +10053,8 @@ snapshots:
 
   acorn@8.18.0: {}
 
+  adm-zip@0.6.0: {}
+
   agent-base@7.0.2(supports-color@10.2.2):
     dependencies:
       debug: 4.4.3(supports-color@10.2.2)
@@ -9823,7 +10113,7 @@ snapshots:
     dependencies:
       '@electron/asar': 3.4.1
       '@electron/fuses': 1.8.0
-      '@electron/get': 3.0.0(supports-color@10.2.2)
+      '@electron/get': 5.0.0(supports-color@10.2.2)
       '@electron/notarize': 2.5.0(supports-color@10.2.2)
       '@electron/osx-sign': 1.3.3(supports-color@10.2.2)
       '@electron/rebuild': 4.1.0(supports-color@10.2.2)
@@ -9921,9 +10211,6 @@ snapshots:
 
   boolbase@1.0.0: {}
 
-  boolean@3.2.0:
-    optional: true
-
   bpmn-js-properties-panel@5.64.0(@bpmn-io/properties-panel@3.47.0(@bpmn-io/cm-theme@0.2.2(@codemirror/state@6.7.1)(@codemirror/view@6.43.9)))(bpmn-js@18.24.0)(camunda-bpmn-js-behaviors@1.18.0(bpmn-js@18.24.0)(camunda-bpmn-moddle@7.0.1)(zeebe-bpmn-moddle@1.16.0))(diagram-js@15.24.0):
     dependencies:
       '@bpmn-io/extract-process-variables': 2.2.1
@@ -10014,18 +10301,6 @@ snapshots:
 
   cac@6.7.14: {}
 
-  cacheable-lookup@5.0.4: {}
-
-  cacheable-request@7.0.2:
-    dependencies:
-      clone-response: 1.0.3
-      get-stream: 5.2.0
-      http-cache-semantics: 4.2.0
-      keyv: 4.0.0
-      lowercase-keys: 2.0.0
-      normalize-url: 6.0.1
-      responselike: 2.0.1
-
   cacheable@2.5.0:
     dependencies:
       '@cacheable/memory': 2.2.0
@@ -10104,10 +10379,6 @@ snapshots:
       strip-ansi: 6.0.1
       wrap-ansi: 7.0.0
 
-  clone-response@1.0.3:
-    dependencies:
-      mimic-response: 1.0.1
-
   clsx@2.1.1: {}
 
   color-convert@2.0.1:
@@ -10160,7 +10431,7 @@ snapshots:
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.0
-      js-yaml: 4.3.0
+      js-yaml: 4.3.1
       parse-json: 5.2.0
     optionalDependencies:
       typescript: 6.0.3
@@ -10253,27 +10524,7 @@ snapshots:
     optionalDependencies:
       supports-color: 10.2.2
 
-  decompress-response@6.0.0:
-    dependencies:
-      mimic-response: 3.1.0
-
   deep-is@0.1.4: {}
-
-  defer-to-connect@2.0.1: {}
-
-  define-data-property@1.1.4:
-    dependencies:
-      es-define-property: 1.0.1
-      es-errors: 1.3.0
-      gopd: 1.2.0
-    optional: true
-
-  define-properties@1.2.1:
-    dependencies:
-      define-data-property: 1.1.4
-      has-property-descriptors: 1.0.2
-      object-keys: 1.1.1
-    optional: true
 
   defu@6.1.7: {}
 
@@ -10282,9 +10533,6 @@ snapshots:
   dequal@2.0.3: {}
 
   detect-libc@2.1.2: {}
-
-  detect-node@2.1.0:
-    optional: true
 
   devlop@1.1.0:
     dependencies:
@@ -10433,7 +10681,7 @@ snapshots:
     dependencies:
       builder-util-runtime: 9.7.0(supports-color@10.2.2)
       fs-extra: 10.1.0
-      js-yaml: 4.3.0
+      js-yaml: 4.3.1
       lazy-val: 1.0.5
       lodash.escaperegexp: 4.1.2
       lodash.isequal: 4.5.0
@@ -10492,10 +10740,6 @@ snapshots:
 
   empathic@2.0.1: {}
 
-  end-of-stream@1.4.5:
-    dependencies:
-      once: 1.4.0
-
   enhanced-resolve@5.24.5:
     dependencies:
       graceful-fs: 4.2.11
@@ -10535,9 +10779,6 @@ snapshots:
       get-intrinsic: 1.3.0
       has-tostringtag: 1.0.2
       hasown: 2.0.4
-
-  es6-error@4.1.1:
-    optional: true
 
   esbuild@0.25.11:
     optionalDependencies:
@@ -10986,10 +11227,6 @@ snapshots:
       dunder-proto: 1.0.1
       es-object-atoms: 1.1.2
 
-  get-stream@5.2.0:
-    dependencies:
-      pump: 3.0.4
-
   get-tsconfig@4.14.0:
     dependencies:
       resolve-pkg-maps: 1.0.0
@@ -11028,16 +11265,6 @@ snapshots:
       minimatch: 5.1.9
       once: 1.4.0
 
-  global-agent@3.0.0:
-    dependencies:
-      boolean: 3.2.0
-      es6-error: 4.1.1
-      matcher: 3.0.0
-      roarr: 2.15.3
-      semver: 7.8.5
-      serialize-error: 7.0.1
-    optional: true
-
   global-modules@2.0.0:
     dependencies:
       global-prefix: 3.0.0
@@ -11051,12 +11278,6 @@ snapshots:
   globals@15.11.0: {}
 
   globals@17.11.0: {}
-
-  globalthis@1.0.4:
-    dependencies:
-      define-properties: 1.2.1
-      gopd: 1.2.0
-    optional: true
 
   globby@11.0.0:
     dependencies:
@@ -11082,20 +11303,6 @@ snapshots:
 
   gopd@1.2.0: {}
 
-  got@11.8.5:
-    dependencies:
-      '@sindresorhus/is': 4.0.0
-      '@szmarczak/http-timer': 4.0.6
-      '@types/cacheable-request': 6.0.3
-      '@types/responselike': 1.0.3
-      cacheable-lookup: 5.0.4
-      cacheable-request: 7.0.2
-      decompress-response: 6.0.0
-      http2-wrapper: 1.0.3
-      lowercase-keys: 2.0.0
-      p-cancelable: 2.1.1
-      responselike: 2.0.1
-
   graceful-fs@4.2.11: {}
 
   graphql@16.14.2: {}
@@ -11116,11 +11323,6 @@ snapshots:
   has-flag@4.0.0: {}
 
   has-flag@5.0.1: {}
-
-  has-property-descriptors@1.0.2:
-    dependencies:
-      es-define-property: 1.0.1
-    optional: true
 
   has-symbols@1.1.0: {}
 
@@ -11182,19 +11384,12 @@ snapshots:
       domutils: 3.0.1
       entities: 4.3.0
 
-  http-cache-semantics@4.2.0: {}
-
   http-proxy-agent@7.0.0(supports-color@10.2.2):
     dependencies:
       agent-base: 7.1.0(supports-color@10.2.2)
       debug: 4.4.3(supports-color@10.2.2)
     transitivePeerDependencies:
       - supports-color
-
-  http2-wrapper@1.0.3:
-    dependencies:
-      quick-lru: 5.1.1
-      resolve-alpn: 1.2.1
 
   https-proxy-agent@7.0.0(supports-color@10.2.2):
     dependencies:
@@ -11278,6 +11473,10 @@ snapshots:
 
   isexe@4.0.0: {}
 
+  isomorphic-ws@5.0.0(ws@8.21.0):
+    dependencies:
+      ws: 8.21.0
+
   jackspeak@3.1.2:
     dependencies:
       '@isaacs/cliui': 8.0.2
@@ -11313,10 +11512,6 @@ snapshots:
       argparse: 1.0.10
       esprima: 4.0.1
 
-  js-yaml@4.3.0:
-    dependencies:
-      argparse: 2.0.1
-
   js-yaml@4.3.1:
     dependencies:
       argparse: 2.0.1
@@ -11334,9 +11529,6 @@ snapshots:
   json-schema-traverse@1.0.0: {}
 
   json-stable-stringify-without-jsonify@1.0.1: {}
-
-  json-stringify-safe@5.0.1:
-    optional: true
 
   json5@2.2.3: {}
 
@@ -11361,10 +11553,6 @@ snapshots:
       universalify: 2.0.1
     optionalDependencies:
       graceful-fs: 4.2.11
-
-  keyv@4.0.0:
-    dependencies:
-      json-buffer: 3.0.1
 
   keyv@4.5.4:
     dependencies:
@@ -11501,8 +11689,6 @@ snapshots:
 
   lodash@4.18.1: {}
 
-  lowercase-keys@2.0.0: {}
-
   lru-cache@10.2.0: {}
 
   lru-cache@5.1.1:
@@ -11531,11 +11717,6 @@ snapshots:
   marked@14.0.0: {}
 
   marked@18.0.10: {}
-
-  matcher@3.0.0:
-    dependencies:
-      escape-string-regexp: 4.0.0
-    optional: true
 
   math-intrinsics@1.1.0: {}
 
@@ -11594,10 +11775,6 @@ snapshots:
       mime-db: 1.52.0
 
   mime@2.6.0: {}
-
-  mimic-response@1.0.1: {}
-
-  mimic-response@3.1.0: {}
 
   min-dash@5.1.0: {}
 
@@ -11794,8 +11971,6 @@ snapshots:
 
   normalize-path@3.0.0: {}
 
-  normalize-url@6.0.1: {}
-
   nprogress@0.2.0: {}
 
   nth-check@2.0.1:
@@ -11805,9 +11980,6 @@ snapshots:
   nth-check@2.1.1:
     dependencies:
       boolbase: 1.0.0
-
-  object-keys@1.1.1:
-    optional: true
 
   object-refs@0.4.0: {}
 
@@ -12053,8 +12225,6 @@ snapshots:
       oxlint-tsgolint: 7.0.2001
       vite-plus: 0.2.9(@types/node@24.13.3)(esbuild@0.28.2)(happy-dom@20.11.2)(jiti@2.7.0)(msw@2.15.0(@types/node@24.13.3)(typescript@6.0.3))(sass@1.102.0)(tsx@4.23.12)(typescript@6.0.3)(vite@8.1.3(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))(yaml@2.9.0)
 
-  p-cancelable@2.1.1: {}
-
   p-limit@3.0.2:
     dependencies:
       p-try: 2.2.0
@@ -12247,11 +12417,6 @@ snapshots:
 
   proto-list@1.2.4: {}
 
-  pump@3.0.4:
-    dependencies:
-      end-of-stream: 1.4.5
-      once: 1.4.0
-
   punycode.js@2.3.1: {}
 
   punycode@2.3.1: {}
@@ -12269,8 +12434,6 @@ snapshots:
   quansync@1.0.0: {}
 
   queue-microtask@1.2.3: {}
-
-  quick-lru@5.1.1: {}
 
   react-is@17.0.1: {}
 
@@ -12333,15 +12496,9 @@ snapshots:
     dependencies:
       pe-library: 0.4.1
 
-  resolve-alpn@1.2.1: {}
-
   resolve-from@4.0.0: {}
 
   resolve-pkg-maps@1.0.0: {}
-
-  responselike@2.0.1:
-    dependencies:
-      lowercase-keys: 2.0.0
 
   retry@0.12.0: {}
 
@@ -12358,16 +12515,6 @@ snapshots:
   rimraf@5.0.5:
     dependencies:
       glob: 10.5.0
-
-  roarr@2.15.3:
-    dependencies:
-      boolean: 3.2.0
-      detect-node: 2.1.0
-      globalthis: 1.0.4
-      json-stringify-safe: 5.0.1
-      semver-compare: 1.0.0
-      sprintf-js: 1.1.3
-    optional: true
 
   rolldown@1.1.4:
     dependencies:
@@ -12412,23 +12559,13 @@ snapshots:
 
   saxen@11.0.2: {}
 
-  semver-compare@1.0.0:
-    optional: true
-
   semver@5.5.0: {}
-
-  semver@6.2.0: {}
 
   semver@6.3.1: {}
 
   semver@7.7.4: {}
 
   semver@7.8.5: {}
-
-  serialize-error@7.0.1:
-    dependencies:
-      type-fest: 0.13.1
-    optional: true
 
   set-cookie-parser@3.1.1: {}
 
@@ -12491,9 +12628,6 @@ snapshots:
   speakingurl@14.0.1: {}
 
   sprintf-js@1.0.3: {}
-
-  sprintf-js@1.1.3:
-    optional: true
 
   stackback@0.0.2: {}
 
@@ -12804,9 +12938,6 @@ snapshots:
     dependencies:
       prelude-ls: 1.2.1
 
-  type-fest@0.13.1:
-    optional: true
-
   type-fest@4.39.1: {}
 
   type-fest@5.7.0:
@@ -12840,6 +12971,8 @@ snapshots:
 
   undici@7.28.0:
     optional: true
+
+  undici@7.29.0: {}
 
   unicorn-magic@0.4.0: {}
 
@@ -13358,6 +13491,8 @@ snapshots:
   write-file-atomic@7.0.1:
     dependencies:
       signal-exit: 4.1.0
+
+  ws@8.21.0: {}
 
   ws@8.21.3: {}
 

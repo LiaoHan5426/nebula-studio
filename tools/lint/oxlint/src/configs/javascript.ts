@@ -79,6 +79,8 @@ const javascript: OxlintConfig = {
           '__NEBULA_MSW_ENABLED__',
           '__NEBULA_MSW_BASE_PATH__',
           '__NEBULA_EMBED_SURFACE__',
+          '__resetShellHostBridgeForTests',
+          '__resetResolvedRuntimeModeForTests',
         ],
       },
     ],

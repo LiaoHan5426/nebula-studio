@@ -47,11 +47,13 @@ export interface ApiContext {
 
 const API_CONTEXT_FILE = 'api-context.json';
 
-export function apiContextPath (fromDir = dirname(fileURLToPath(import.meta.url))): string {
+export function apiContextPath(
+  fromDir = dirname(fileURLToPath(import.meta.url)),
+): string {
   return join(fromDir, API_CONTEXT_FILE);
 }
 
-export function loadApiContext (rootDir?: string): ApiContext {
+export function loadApiContext(rootDir?: string): ApiContext {
   const candidates = [
     rootDir
       ? join(rootDir, 'internal', 'vite', 'src', 'config', API_CONTEXT_FILE)
@@ -75,7 +77,7 @@ export const API_NAMESPACES = apiContext.namespaces;
 /** Dev-proxy prefix → `apiTargets` key. Not operator configuration. */
 export const API_PROXY_PRESETS = apiContext.proxyPresets;
 
-export function requireApiProxyPreset (
+export function requireApiProxyPreset(
   preset: NebulaApiProxyPresetName,
 ): ApiProxyRouteConfig[] {
   const routes = API_PROXY_PRESETS[preset];

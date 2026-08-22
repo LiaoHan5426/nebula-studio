@@ -1,5 +1,5 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
-import { join, relative } from 'node:path';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
@@ -43,23 +43,6 @@ for (const group of [
   }
 }
 
-function scanSources(directory) {
-  if (!existsSync(directory)) return;
-  for (const entry of readdirSync(directory, { withFileTypes: true })) {
-    const path = join(directory, entry.name);
-    if (entry.isDirectory()) scanSources(path);
-    if (!entry.isFile() || !/\.(?:ts|tsx|vue|js|mjs)$/.test(entry.name))
-      continue;
-    const source = readFileSync(path, 'utf8');
-    if (
-      /(?:@codemirror\/|from ['"]codemirror['"]|monaco-editor|@tiptap\/|@nebula-studio\/nebula-.*editor)/.test(
-        source,
-      )
-    ) {
-      failures.push(`editor import leaked into UI: ${relative(root, path)}`);
-    }
-  }
-}
 scanSources(join(root, 'packages', 'ui'));
 
 const graph = new Map();

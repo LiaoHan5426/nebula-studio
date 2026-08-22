@@ -35,6 +35,7 @@
     "@nebula-studio/nebula-layout": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
     "@nebula-studio/runtime": "workspace:^",
+    "@nebula-studio/shell-host": "workspace:^",
     "vue": "catalog:vue"
   },
   "devDependencies": {

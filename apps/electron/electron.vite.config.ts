@@ -4,6 +4,8 @@ import {
   createNebulaApiProxy,
   defineNebulaConfig,
   getNebulaAppManifest,
+  nebulaFederationHostPlugin,
+  nebulaHostCspNoncePlugin,
   nebulaWorkspaceManifestPlugin,
 } from '@nebula-studio-internal/vite';
 
@@ -23,8 +25,27 @@ export default defineNebulaConfig({
   },
   merge: {
     renderer: {
-      plugins: [nebulaWorkspaceManifestPlugin()],
+      resolve: {
+        alias: {
+          '@nebula-host-boot/workspace': resolve(
+            import.meta.dirname,
+            '../web/src/workspace/bootHostWorkspace.ts',
+          ),
+          '@nebula-host-boot/login': resolve(
+            import.meta.dirname,
+            '../web/src/auth/bootHostLogin.ts',
+          ),
+        },
+      },
+      plugins: [
+        ...nebulaFederationHostPlugin('nebula_electron_host'),
+        nebulaHostCspNoncePlugin(),
+        nebulaWorkspaceManifestPlugin(),
+      ],
+      publicDir: resolve(import.meta.dirname, 'public'),
       server: {
+        host: true,
+        allowedHosts: ['localhost', '127.0.0.1'],
         proxy: createNebulaApiProxy({ preset: 'integration' }),
       },
     },

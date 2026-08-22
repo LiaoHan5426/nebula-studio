@@ -1,4 +1,4 @@
-import type { BundledLanguage, Highlighter } from 'shiki';
+import type { BundledLanguage, Highlighter, SpecialLanguage } from 'shiki';
 
 import { getHighlighter } from './highlighter';
 
@@ -30,7 +30,10 @@ export async function renderShikiHtml(
   }
 }
 
-function resolveLang(h: Highlighter, lang?: string): BundledLanguage {
+function resolveLang(
+  h: Highlighter,
+  lang?: string,
+): BundledLanguage | SpecialLanguage {
   const normalized = (lang || 'text').trim().toLowerCase();
   const aliases: Record<string, BundledLanguage> = {
     ts: 'typescript',

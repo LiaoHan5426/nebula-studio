@@ -38,13 +38,19 @@
     "./backend": {
       "types": "./src/backend.ts",
       "default": "./src/backend.ts"
+    },
+    "./web": {
+      "types": "./src/web.ts",
+      "default": "./src/web.ts"
     }
   },
   "dependencies": {
     "@nebula-studio/contracts": "workspace:^",
+    "@nebula-studio/shell-protocol": "workspace:^",
     "vue": "catalog:vue"
   },
   "devDependencies": {
+    "happy-dom": "catalog:vite",
     "vitest": "catalog:vite"
   }
 }

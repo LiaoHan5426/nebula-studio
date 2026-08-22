@@ -3,7 +3,7 @@ import type { ApiInterface, FlowDefinition } from '@/shared/types';
 
 import { onMounted, ref } from 'vue';
 
-import IntegrationBpmnEditor from '@nebula-studio/nebula-flow-editor/components/IntegrationBpmnEditor.vue';
+import { IntegrationBpmnEditor } from '@nebula-studio/nebula-flow-editor';
 import {
   NebulaButton,
   NebulaDialog,
@@ -72,7 +72,10 @@ async function handleCreate() {
 async function openDesign(flow: FlowDefinition) {
   editingFlow.value = flow;
   const response = await flowsApi.getXml(flow.id);
-  bpmnXml.value = isApiSuccess(response) ? (response.data ?? '') : '';
+  bpmnXml.value =
+    isApiSuccess(response) && typeof response.data === 'string'
+      ? response.data
+      : '';
   showEditor.value = true;
 }
 

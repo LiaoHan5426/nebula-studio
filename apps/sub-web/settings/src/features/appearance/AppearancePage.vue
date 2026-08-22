@@ -1,18 +1,37 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 
+import { HOST_CAPABILITIES_KEY } from '@nebula-studio/application-contract';
+import type { HostCapabilities } from '@nebula-studio/application-contract';
 import { NebulaButton, NebulaPane } from '@nebula-studio/nebula-ui';
 
-import { useConfig } from '@nebula-studio-electron/electron-bridge/vue';
+const capabilities = inject<HostCapabilities | undefined>(
+  HOST_CAPABILITIES_KEY,
+  undefined,
+);
 
-const { theme, setTheme } = useConfig();
+function readScheme(): 'dark' | 'light' {
+  const fromHost = capabilities?.theme?.scheme;
+  if (fromHost === 'dark' || fromHost === 'light') {
+    return fromHost;
+  }
+  return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+}
+
+const theme = ref<'dark' | 'light'>(readScheme());
 const saving = ref(false);
 
 async function applyTheme(next: 'dark' | 'light'): Promise<void> {
   if (saving.value) return;
   saving.value = true;
   try {
-    await setTheme(next);
+    if (capabilities?.theme?.setScheme) {
+      await capabilities.theme.setScheme(next);
+    } else {
+      document.documentElement.classList.toggle('dark', next === 'dark');
+      document.documentElement.dataset.nebulaTheme = next;
+    }
+    theme.value = next;
   } finally {
     saving.value = false;
   }
@@ -67,9 +86,8 @@ async function applyTheme(next: 'dark' | 'light'): Promise<void> {
       </NebulaButton>
     </div>
     <p class="hint">
-      当前：<strong>{{ theme === 'dark' ? '深色' : '浅色' }}</strong> >{{
-        saving ? '（保存中…）' : ''
-      }}
+      当前：<strong>{{ theme === 'dark' ? '深色' : '浅色' }}</strong>
+      {{ saving ? '（保存中…）' : '' }}
     </p>
   </NebulaPane>
 </template>

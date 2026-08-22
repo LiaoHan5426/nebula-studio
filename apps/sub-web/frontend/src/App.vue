@@ -18,6 +18,7 @@ import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
  * Plan-11: 组件已拆出至 `@nebula-studio/nebula-shell`。
  * 本文件负责组装 OrgSwitcher / IframeHost / AppDock 并保留生命周期与 IPC 胶水逻辑。
  */
+import { resolveRendererIpc } from '@nebula-studio-electron/electron-bridge/vue';
 import {
   embeddedViewRequiresShellAuth,
   getShellIntegratedAppMeta,
@@ -25,6 +26,8 @@ import {
   isShellStandaloneSidebarApp,
   postShellEmbedNavigate,
 } from '@nebula-studio/app-shell';
+import { connectIframeCapabilityBridge } from '@nebula-studio/host-capabilities';
+import type { IframeCapabilityBridge } from '@nebula-studio/host-capabilities';
 import {
   NebulaShellLayout,
   useLayoutPreferences,
@@ -40,6 +43,15 @@ import {
 } from '@nebula-studio/nebula-shell';
 
 import TaskGuidePanel from '@/components/TaskGuidePanel.vue';
+import {
+  hydrateShellIntegratedAppsFromRuntime,
+  isRememberedExternalApp,
+  isRememberedIframeApp,
+  listRememberedExternalAppIds,
+  listRememberedIframeAppIds,
+  resolveRememberedExternalHref,
+  resolveRememberedIframeSrc,
+} from '@/platform/integratedApps';
 import { useOrganization } from '@/shared/composables/useOrganization';
 import { useWorkspaceSummary } from '@/shared/composables/useWorkspaceSummary';
 
@@ -145,7 +157,28 @@ const {
   },
   resetOrganizationSession,
   layoutPreferences,
+  resolveIframeSrc: resolveRememberedIframeSrc,
+  isExternalView: isRememberedExternalApp,
+  extraAvailableViewIds: () => [
+    ...listRememberedIframeAppIds(),
+    ...listRememberedExternalAppIds(),
+  ],
+  openExternalView: (viewId) => {
+    const href = resolveRememberedExternalHref(viewId);
+    if (!href) return;
+    window.open(href, '_blank', 'noopener,noreferrer');
+  },
 });
+
+async function refreshIntegratedCatalog(): Promise<void> {
+  await hydrateShellIntegratedAppsFromRuntime();
+  await loadShellState();
+}
+
+function onShellAuthSessionChanged(event: unknown, ...args: unknown[]): void {
+  onAuthSessionChanged(event, ...args);
+  void refreshIntegratedCatalog();
+}
 
 // ── Computed helpers ────────────────────────────────────
 // `standaloneSidebarAppIds` 由 useAppLifecycle 提供，
@@ -162,6 +195,7 @@ const currentHelpKey = computed(
       : 'shell.workspace'),
 );
 const pendingEmbedPaths = new Map<string, string>();
+const iframeCapabilityBridges = new Map<string, IframeCapabilityBridge>();
 const shellRecoveryKind = computed(() =>
   activeViewId.value &&
   embeddedViewRequiresShellAuth(activeViewId.value) &&
@@ -366,19 +400,14 @@ watch(activeViewId, (viewId) => {
 // ─── Lifecycle hooks ─────────────────────────────────────
 onMounted(async () => {
   shellHost.onBeforeShellHydrate();
+  const ipc = resolveRendererIpc();
 
   // 认证恢复必须先于 Shell 状态和组织上下文加载：这些步骤可能访问受保护
   // API，也可能在等待期间收到登录窗口广播。先订阅再读取可避免丢失事件。
-  window.electron.ipcRenderer.on('settings:theme:changed', onThemeChanged);
+  ipc.on('settings:theme:changed', onThemeChanged);
   if (shellHost.shouldSubscribeAuthSessionChannel) {
-    window.electron.ipcRenderer.on(
-      'auth:session-changed',
-      onAuthSessionChanged,
-    );
-    window.electron.ipcRenderer.on(
-      'auth:login-dismissed',
-      onAuthLoginDismissed,
-    );
+    ipc.on('auth:session-changed', onShellAuthSessionChanged);
+    ipc.on('auth:login-dismissed', onAuthLoginDismissed);
   }
   try {
     authSession.value = await window.api.auth.getSession();
@@ -388,7 +417,7 @@ onMounted(async () => {
     syncShellAuthSessionStorage(null);
   }
 
-  await loadShellState();
+  await refreshIntegratedCatalog();
 
   const preferredSurface = shellHost.shouldRestoreActiveViewFromPreference
     ? (await import('@nebula-studio/app-shell')).readShellSurfacePreference()
@@ -400,10 +429,9 @@ onMounted(async () => {
     preferredSurface.viewId !== activeViewId.value
   ) {
     if (!usesIframeEmbed) reportShellViewport();
-    const ok = await window.electron.ipcRenderer.invoke(
-      'shell:set-active-view',
-      { viewId: preferredSurface.viewId },
-    );
+    const ok = await ipc.invoke('shell:set-active-view', {
+      viewId: preferredSurface.viewId,
+    });
     if (ok) {
       activeViewId.value = preferredSurface.viewId;
       ensureEmbedSurfaceLoading(preferredSurface.viewId);
@@ -450,21 +478,17 @@ onUnmounted(() => {
   shellHost.onShellUnmount();
   if (!usesIframeEmbed)
     window.removeEventListener('resize', reportShellViewport);
-  window.electron.ipcRenderer.removeListener(
-    'settings:theme:changed',
-    onThemeChanged,
-  );
+  const ipc = resolveRendererIpc();
+  ipc.removeListener('settings:theme:changed', onThemeChanged);
   if (shellHost.shouldSubscribeAuthSessionChannel) {
-    window.electron.ipcRenderer.removeListener(
-      'auth:session-changed',
-      onAuthSessionChanged,
-    );
-    window.electron.ipcRenderer.removeListener(
-      'auth:login-dismissed',
-      onAuthLoginDismissed,
-    );
+    ipc.removeListener('auth:session-changed', onShellAuthSessionChanged);
+    ipc.removeListener('auth:login-dismissed', onAuthLoginDismissed);
   }
   window.removeEventListener('keydown', onGlobalKeydown);
+  for (const bridge of iframeCapabilityBridges.values()) {
+    bridge.dispose();
+  }
+  iframeCapabilityBridges.clear();
 });
 
 function onGlobalKeydown(event: KeyboardEvent): void {
@@ -501,12 +525,32 @@ async function navigateFromTaskGuide(target: {
   });
 }
 
-function onEmbedLoadWithNavigation(viewId: string): void {
+async function onEmbedLoadWithNavigation(viewId: string): Promise<void> {
   onEmbedIframeLoad(viewId);
   const path = pendingEmbedPaths.get(viewId);
-  if (!path) return;
-  postShellEmbedNavigate(getEmbedIframe(viewId)?.contentWindow, path);
-  pendingEmbedPaths.delete(viewId);
+  if (path) {
+    postShellEmbedNavigate(getEmbedIframe(viewId)?.contentWindow, path);
+    pendingEmbedPaths.delete(viewId);
+  }
+  if (!isRememberedIframeApp(viewId)) return;
+  const frame = getEmbedIframe(viewId);
+  const src = resolveRememberedIframeSrc(viewId);
+  if (!frame || !src) return;
+  iframeCapabilityBridges.get(viewId)?.dispose();
+  iframeCapabilityBridges.delete(viewId);
+  try {
+    const bridge = await connectIframeCapabilityBridge({
+      iframe: frame,
+      appId: viewId,
+      allowedOrigin: new URL(src).origin,
+    });
+    iframeCapabilityBridges.set(viewId, bridge);
+    await bridge.request('ping');
+  } catch (error) {
+    iframeCapabilityBridges.get(viewId)?.dispose();
+    iframeCapabilityBridges.delete(viewId);
+    console.warn('[iframe-driver] capability handshake failed', error);
+  }
 }
 
 function onPageMeta(viewId: string, payload: ShellEmbedPageMetaPayload): void {
@@ -515,7 +559,7 @@ function onPageMeta(viewId: string, payload: ShellEmbedPageMetaPayload): void {
 
 function retryEmbed(viewId: string): void {
   const frame = getEmbedIframe(viewId);
-  if (frame) frame.src = embedSrc.value[viewId as EmbeddedShellWindowId];
+  if (frame) frame.src = embedSrc.value[viewId] ?? frame.src;
 }
 
 async function onOrgChange(orgId: string): Promise<void> {

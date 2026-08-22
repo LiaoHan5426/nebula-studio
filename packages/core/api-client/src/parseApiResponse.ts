@@ -31,7 +31,6 @@ export async function parseApiResponse<T>(
   if (
     json &&
     typeof json === 'object' &&
-    'data' in json &&
     ('isSuccess' in json || 'code' in json)
   ) {
     return json as unknown as ApiResponse<T>;

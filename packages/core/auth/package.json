@@ -27,8 +27,8 @@
     }
   },
   "dependencies": {
-    "@nebula-studio/app-shell": "workspace:^",
     "@nebula-studio/auth-provider": "workspace:^",
+    "@nebula-studio/shell-protocol": "workspace:^",
     "@nebula-studio/contracts": "workspace:^"
   },
   "devDependencies": {

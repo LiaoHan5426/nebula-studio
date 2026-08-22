@@ -1,6 +1,7 @@
-import type { RuntimeMode } from '@nebula-studio/runtime';
+import type { MicroAppHandle, RuntimeMode } from '@nebula-studio/runtime';
 
-import { bootMicroApp, detectRuntimeMode } from '@nebula-studio/runtime';
+import { bootMicroApp } from '@nebula-studio/runtime';
+import { installWebPresentationUnlessElectron } from '@nebula-studio/shell-host';
 import {
   installAssemblyForSubApp,
   wrapSubAppWithAssembly,
@@ -12,30 +13,44 @@ import router from './router';
 import '@nebula-studio-internal/tailwind/electron';
 
 /**
- * Docs 子应用统一启动入口。
+ * Docs standalone 启动入口（`src/main.ts`）。
  *
- * 由以下入口调用：
- * - `src/main.ts` — Vite standalone dev / Electron renderer
- * - `apps/web/src/embed/docs-entry.ts` — Web shell iframe embed
+ * Host Federation 走 `src/federation.ts`，不再经过 bootMicroApp。
  */
-export async function bootDocs(opts?: { mode?: RuntimeMode }): Promise<void> {
-  const mode = opts?.mode ?? detectRuntimeMode();
+export async function bootDocs(opts: {
+  mode: RuntimeMode;
+}): Promise<MicroAppHandle | undefined> {
+  const mode = opts.mode;
+  document.documentElement.dataset.nebulaCss = 'docs';
 
-  await bootMicroApp({
+  installWebPresentationUnlessElectron(mode, {
+    scope: 'docs-standalone',
+    processVersions: { node: __NEBULA_BUILD_NODE_VERSION__ },
+  });
+
+  const handle = await bootMicroApp({
     appId: 'docs',
     mode,
     rootComponent: wrapSubAppWithAssembly(AppComponent),
     router,
-    webPresentation:
-      mode === 'electron'
-        ? undefined
-        : {
-            scope: 'docs-standalone',
-            processVersions: { node: __NEBULA_BUILD_NODE_VERSION__ },
-          },
     auth: { enabled: false },
     beforeMount(app) {
       installAssemblyForSubApp(app, mode);
     },
   });
+
+  if (!handle) {
+    delete document.documentElement.dataset.nebulaCss;
+    return handle;
+  }
+
+  const dispose = (): void => {
+    delete document.documentElement.dataset.nebulaCss;
+    handle.dispose();
+  };
+  return {
+    ...handle,
+    dispose,
+    unmount: dispose,
+  };
 }

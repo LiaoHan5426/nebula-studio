@@ -6,7 +6,7 @@ import {
   getLayoutHostMode,
   isWebShellHost,
   LAYOUT_PREFERENCES_STORAGE_KEY,
-} from '@nebula-studio/app-shell';
+} from '@nebula-studio/shell-protocol';
 
 import { ACCENT_PRESETS, DEFAULT_LAYOUT_PREFERENCES } from '../types/layout';
 

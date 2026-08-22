@@ -19,7 +19,8 @@
     "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false",
     "dev": "vite dev",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vp test run"
   },
   "exports": {
     "./app": "./src/App.vue",
@@ -27,9 +28,12 @@
     "./boot": "./src/boot.ts"
   },
   "dependencies": {
+    "@nebula-studio-electron/electron-bridge": "workspace:^",
     "@nebula-studio-internal/tailwind": "workspace:^",
     "@nebula-studio-renderer/assembly-boot": "workspace:^",
     "@nebula-studio/api-client": "workspace:^",
+    "@nebula-studio/application-runtime": "workspace:^",
+    "@nebula-studio/host-capabilities": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
     "@nebula-studio/auth-provider": "workspace:^",
     "@nebula-studio/contracts": "workspace:^",
@@ -37,6 +41,7 @@
     "@nebula-studio/nebula-shell": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
     "@nebula-studio/runtime": "workspace:^",
+    "@nebula-studio/shell-host": "workspace:^",
     "vue": "catalog:vue"
   },
   "devDependencies": {
@@ -45,9 +50,11 @@
     "@nebula-studio-internal/vite": "workspace:^",
     "@nebula-studio/msw": "workspace:^",
     "@nebula-studio/types": "workspace:^",
+    "happy-dom": "catalog:vite",
     "typescript": "catalog:types",
     "vite": "catalog:vite",
     "vite-plus": "catalog:vite",
+    "vitest": "catalog:vite",
     "vue-tsc": "catalog:vue"
   }
 }

@@ -1,5 +1,4 @@
-export { default as BpmnEditor } from './components/BpmnEditor.vue';
-export { default as IntegrationBpmnEditor } from './components/IntegrationBpmnEditor.vue';
+export { BpmnEditor, IntegrationBpmnEditor } from './asyncComponents';
 export {
   INTEGRATION_STARTER_BPMN,
   isBlankBpmn,

@@ -12,7 +12,7 @@ import {
   createWebHistory,
 } from 'vue-router';
 
-import { WEB_SHELL_EMBED_QUERY } from '@nebula-studio/app-shell';
+import { WEB_SHELL_EMBED_QUERY } from '@nebula-studio/shell-protocol';
 import { defineExperiencePageMeta } from '@nebula-studio/nebula-layout';
 
 import { PLATFORM_ADMIN_HOME, PORTAL_HOME } from '@/app/navigation';
@@ -37,7 +37,7 @@ function createIntegrationHistory() {
   return createWebHistory();
 }
 
-// 登录页：复用 login 子应用组件（@nebula-studio-renderer/login/app）
+// standalone `/login` 复用 Login 子应用（单一 UI）。Host 嵌入守卫跳过此路由，不在此维护第二套登录页。
 const LoginApp = () => import('@nebula-studio-renderer/login/app');
 
 // 插件管理页面

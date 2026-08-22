@@ -1,17 +1,10 @@
-import type { ShellAuthSessionPayload } from '@nebula-studio/app-shell';
+import type { ShellAuthSessionPayload } from '@nebula-studio/auth-provider/storage';
 
-/**
- * Shell embed detection for integration sub-web.
- *
- * Delegates to `@nebula-studio/app-shell` which provides the generic
- * `isSurfaceEmbed` / `isSurfaceIframeEmbed` / `readParentShellAuthSession`
- * helpers.  This file keeps thin wrappers for backward compatibility.
- */
+import { readParentShellAuthSession as _readParent } from '@nebula-studio/auth-provider/web';
 import {
-  readParentShellAuthSession as _readParent,
   isSurfaceEmbed,
   isSurfaceIframeEmbed,
-} from '@nebula-studio/app-shell';
+} from '@nebula-studio/shell-protocol';
 
 export function isIntegrationShellEmbed(): boolean {
   return isSurfaceEmbed('integration');

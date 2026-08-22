@@ -24,6 +24,15 @@ describe('parseApiResponse', () => {
     expect(result.data).toEqual({ id: '1' });
   });
 
+  it('treats nebula envelopes without a data field as success with empty data', async () => {
+    const result = await parseApiResponse<string>(
+      jsonResponse({ code: 200, isSuccess: true }),
+    );
+
+    expect(result.isSuccess).toBe(true);
+    expect(result.data).toBeUndefined();
+  });
+
   it('wraps raw JSON bodies', async () => {
     const result = await parseApiResponse<{ name: string }>(
       jsonResponse({ name: 'demo' }),

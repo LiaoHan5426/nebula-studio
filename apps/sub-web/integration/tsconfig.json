@@ -8,11 +8,5 @@
     "noUnusedParameters": false,
     "skipLibCheck": true
   },
-  "include": [
-    "index.html",
-    "src/env.d.ts",
-    "src/**/*",
-    "src/**/*.vue",
-    "__tests__/**/*"
-  ]
+  "include": ["index.html", "src/env.d.ts", "src/**/*", "src/**/*.vue"]
 }

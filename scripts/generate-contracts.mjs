@@ -4,13 +4,16 @@
  * 用法:
  *   node scripts/generate-contracts.mjs
  *   node scripts/generate-contracts.mjs --url=<openapi-url>
- *   node scripts/generate-contracts.mjs --strict --url=<openapi-url>
+ *   node scripts/generate-contracts.mjs --strict --snapshot-on-unauthorized
  *   node scripts/generate-contracts.mjs --file=packages/contracts/generated/openapi.json
  */
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+import { joinOrigin } from '@nebula-studio-internal/node/join-origin';
+import { ensureFrontendApplicationOpenApi } from '@nebula-studio-internal/node/frontend-openapi';
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const root = join(scriptDir, '..');
@@ -18,12 +21,9 @@ const outDir = join(root, 'packages/contracts/generated');
 const windowsConfigPath = join(root, 'configs/windows.json');
 const fileArg = process.argv.find((a) => a.startsWith('--file='))?.slice(7);
 const strict = process.argv.includes('--strict');
-
-function joinOrigin(origin, path = '/') {
-  const base = String(origin).replace(/\/$/, '');
-  if (!path || path === '/') return base;
-  return `${base}${path.startsWith('/') ? path : `/${path}`}`;
-}
+const snapshotOnUnauthorized =
+  process.argv.includes('--snapshot-on-unauthorized') ||
+  process.env.NEBULA_OPENAPI_SNAPSHOT_ON_UNAUTHORIZED === 'true';
 
 function resolveDefaultOpenApiUrl() {
   const config = JSON.parse(readFileSync(windowsConfigPath, 'utf8'));
@@ -41,7 +41,39 @@ const apiDocsUrl =
   process.argv.find((a) => a.startsWith('--url='))?.slice(6) ??
   process.env.NEBULA_OPENAPI_URL ??
   resolveDefaultOpenApiUrl();
+const specFile = join(outDir, 'openapi.json');
 const outFile = join(outDir, 'platform-api.ts');
+
+function loadSnapshotSpec(reason) {
+  if (!existsSync(specFile)) {
+    throw new Error(`OpenAPI snapshot missing at ${specFile} (${reason})`);
+  }
+  console.warn(`${reason}; using checked-in ${specFile}`);
+  return JSON.parse(readFileSync(specFile, 'utf8'));
+}
+
+async function fetchLiveSpec(url) {
+  const res = await fetch(url);
+  if (res.ok) {
+    return await res.json();
+  }
+  const status = `${res.status} ${res.statusText}`.trim();
+  const unauthorized = res.status === 401 || res.status === 403;
+  if (unauthorized && snapshotOnUnauthorized) {
+    return loadSnapshotSpec(`Failed to fetch OpenAPI: ${status}`);
+  }
+  if (!strict) {
+    console.warn(`Fetch failed (${res.status}); trying fallback ${specFile}`);
+    try {
+      return JSON.parse(readFileSync(specFile, 'utf8'));
+    } catch {
+      throw new Error(
+        `Failed to fetch OpenAPI: ${status}. Ensure platform-console is running at configs/windows.json realStack.openapi.platform, pass --url=, or --file=`,
+      );
+    }
+  }
+  throw new Error(`Failed to fetch OpenAPI: ${status}`);
+}
 
 mkdirSync(outDir, { recursive: true });
 
@@ -52,29 +84,11 @@ if (fileArg) {
   spec = JSON.parse(readFileSync(specPath, 'utf8'));
 } else {
   console.log(`Fetching OpenAPI from ${apiDocsUrl} ...`);
-  const res = await fetch(apiDocsUrl);
-  if (!res.ok) {
-    if (strict) {
-      console.error(`Failed to fetch OpenAPI: ${res.status} ${res.statusText}`);
-      process.exit(1);
-    }
-    const fallback = join(outDir, 'openapi.json');
-    console.warn(`Fetch failed (${res.status}); trying fallback ${fallback}`);
-    try {
-      spec = JSON.parse(readFileSync(fallback, 'utf8'));
-    } catch {
-      console.error(`Failed to fetch OpenAPI: ${res.status} ${res.statusText}`);
-      console.error(
-        'Ensure platform-console is running at configs/windows.json realStack.openapi.platform, pass --url=, or --file=',
-      );
-      process.exit(1);
-    }
-  } else {
-    spec = await res.json();
-  }
+  spec = await fetchLiveSpec(apiDocsUrl);
 }
 
-const specFile = join(outDir, 'openapi.json');
+spec = ensureFrontendApplicationOpenApi(spec);
+
 writeFileSync(specFile, `${JSON.stringify(spec, null, 2)}\n`);
 
 console.log('Running openapi-typescript ...');
@@ -85,7 +99,7 @@ execFileSync('vp', ['exec', 'openapi-typescript', specFile, '-o', outFile], {
 
 writeFileSync(
   join(outDir, 'index.ts'),
-  `/** Auto-generated export surface. Run: vp run generate:contracts */\nexport type {\n  PlatformApiComponents,\n  PlatformApiOperation,\n  PlatformApiOperationId,\n  PlatformApiOperations,\n  PlatformApiPath,\n  PlatformApiPaths,\n} from './facade.ts';\n\nexport {\n  GENERATED_API_NAMESPACES,\n  GENERATED_API_TARGETS,\n} from './api-namespaces.ts';\nexport type { GeneratedApiTarget } from './api-namespaces.ts';\n`,
+  `/** Auto-generated export surface. Run: vp run generate:contracts */\nexport type {\n  GeneratedFrontendRuntimeEntryView,\n  PlatformApiComponents,\n  PlatformApiOperation,\n  PlatformApiOperationId,\n  PlatformApiOperations,\n  PlatformApiPath,\n  PlatformApiPaths,\n} from './facade.ts';\n\nexport {\n  GENERATED_API_NAMESPACES,\n  GENERATED_API_TARGETS,\n  GENERATED_FEDERATION_DEV_ENTRIES,\n  GENERATED_STANDALONE_APPS,\n} from './api-namespaces.ts';\nexport type { GeneratedApiTarget } from './api-namespaces.ts';\n`,
 );
 execFileSync(
   'vp',

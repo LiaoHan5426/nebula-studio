@@ -1,6 +1,6 @@
-import type { AuthMode } from '@nebula-studio/app-shell';
+import type { AuthMode } from '@nebula-studio/auth-provider/backend';
 
-import { fetchAuthMode } from '@nebula-studio/app-shell';
+import { fetchAuthMode } from '@nebula-studio/auth-provider/backend';
 
 let cachedMode: AuthMode | null = null;
 

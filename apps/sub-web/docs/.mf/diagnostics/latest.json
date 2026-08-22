@@ -1,0 +1,10 @@
+{
+  "latestErrorEvent": {
+    "code": "TYPE-001",
+    "message": "Failed to generate type declaration. Execute the below cmd to reproduce and fix the error. #TYPE-001\nargs: {\"cmd\":\"E:\\\\developer\\\\VitePlus\\\\js_runtime\\\\node\\\\24.19.0\\\\node.exe F:\\\\nebula-workspace\\\\nebula-studio\\\\node_modules\\\\.pnpm\\\\typescript@6.0.3\\\\node_modules\\\\typescript\\\\bin\\\\tsc --project F:\\\\nebula-workspace\\\\nebula-studio\\\\apps\\\\sub-web\\\\docs\\\\node_modules\\\\.federation\\\\tsconfig.b1f0201b667510027a8b794974373147.json\"}\nView the docs to see how to solve: https://module-federation.io/guide/troubleshooting/type#type-001",
+    "args": {
+      "cmd": "E:\\developer\\VitePlus\\js_runtime\\node\\24.19.0\\node.exe F:\\nebula-workspace\\nebula-studio\\node_modules\\.pnpm\\typescript@6.0.3\\node_modules\\typescript\\bin\\tsc --project F:\\nebula-workspace\\nebula-studio\\apps\\sub-web\\docs\\node_modules\\.federation\\tsconfig.b1f0201b667510027a8b794974373147.json"
+    },
+    "timestamp": 1787418876585
+  }
+}

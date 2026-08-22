@@ -78,10 +78,9 @@ function handleOpenChange(open: boolean) {
           {{ title }}
         </DialogTitle>
         <DialogDescription
-          v-if="description"
-          class="text-sm text-muted-foreground"
+          :class="description ? 'text-sm text-muted-foreground' : 'sr-only'"
         >
-          {{ description }}
+          {{ description || title || '对话框' }}
         </DialogDescription>
 
         <slot></slot>

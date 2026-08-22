@@ -17,7 +17,7 @@ import {
  */
 export default {
   electron: import.meta.dirname,
-  /** 相对 `apps/`：子应用 renderer 包所在目录名（须与 `src/renderer/boot.ts` 的 glob 一致）。 */
+  /** 相对 `apps/`：standalone Remote / 子应用包所在目录名。 */
   renderers: 'sub-web',
   ...shellPresentationConfig,
   modalRenderers: modalRenderersConfig,

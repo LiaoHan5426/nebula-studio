@@ -6,6 +6,7 @@ declare module 'virtual:nebula-app-manifest' {
     preloadCapabilities: Record<string, string[]>;
     embedSurfaces: string[];
     embedBootEntries: Record<string, string>;
+    federationSurfaces: string[];
   }
 
   export const nebulaAppManifest: NebulaAppManifest;
@@ -15,5 +16,6 @@ declare module 'virtual:nebula-app-manifest' {
   export const nebulaPreloadCapabilities: Record<string, string[]>;
   export const nebulaEmbedSurfaces: string[];
   export const nebulaEmbedBootEntries: Record<string, string>;
+  export const nebulaFederationSurfaces: string[];
   export default nebulaAppManifest;
 }

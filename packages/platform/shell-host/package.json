@@ -1,0 +1,37 @@
+{
+  "name": "@nebula-studio/shell-host",
+  "version": "0.0.0",
+  "description": "Web and Electron shell host adapters (presentation stub, ShellHostBridge install).",
+  "private": true,
+  "homepage": "https://github.com/LiaoHan5426/nebula-studio#readme",
+  "bugs": {
+    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LiaoHan5426/nebula-studio.git",
+    "directory": "packages/platform/shell-host"
+  },
+  "license": "UNLICENSED",
+  "author": "Liao Han <liaohan5426@gmail.com>",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@nebula-studio-electron/electron-bridge": "workspace:^",
+    "@nebula-studio/app-shell": "workspace:^",
+    "@nebula-studio/auth-provider": "workspace:^",
+    "@nebula-studio/shell-protocol": "workspace:^"
+  },
+  "devDependencies": {
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "@nebula-studio/types": "workspace:^",
+    "typescript": "catalog:types"
+  }
+}

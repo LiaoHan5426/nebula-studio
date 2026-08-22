@@ -27,3 +27,11 @@ export type GeneratedShellApp = Schemas['ShellApp'];
 export type GeneratedTaskCreateRequest = Schemas['TaskCreateRequest'];
 export type GeneratedTaskUpdateRequest = Schemas['TaskUpdateRequest'];
 export type GeneratedUser = Schemas['User'];
+export type GeneratedFrontendRuntimeEntryView =
+  Schemas['FrontendRuntimeEntryView'];
+export type GeneratedFrontendApplicationView =
+  Schemas['FrontendApplicationView'];
+export type GeneratedFrontendApplicationVersionView =
+  Schemas['FrontendApplicationVersionView'];
+export type GeneratedFrontendApplicationCreateRequest =
+  Schemas['FrontendApplicationCreateRequest'];

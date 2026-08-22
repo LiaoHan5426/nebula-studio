@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import type { BackendLoginResult } from '@nebula-studio/app-shell';
+import type { BackendLoginResult } from '@nebula-studio/auth-provider/backend';
 
-import type { AuthFailure, AuthFlowStep } from './authFlow';
+import type { AuthFlowStep } from './authFlow';
 
 import { computed, nextTick, ref, watch } from 'vue';
 
 import {
   completeLoginWithOrg,
+  loginWithBackendAuth,
+} from '@nebula-studio/auth-provider/backend';
+import {
   isSafeAuthReturnUrl,
   isWebPresentationHost,
-  loginWithBackendAuth,
   writeWebAuthSession,
 } from '@nebula-studio/app-shell';
 import { NebulaAuthLayout } from '@nebula-studio/nebula-layout';
@@ -154,7 +156,7 @@ async function finishLogin(result: BackendLoginResult): Promise<void> {
     writeWebAuthSession(session);
     const params = new URLSearchParams(location.search);
     const requestedReturn = params.get('return') ?? params.get('redirect');
-    const fallback = new URL('index.html', location.href).toString();
+    const fallback = `${location.origin}/`;
     location.href =
       requestedReturn && isSafeAuthReturnUrl(requestedReturn)
         ? requestedReturn

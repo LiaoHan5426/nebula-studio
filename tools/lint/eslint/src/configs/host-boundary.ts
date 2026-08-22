@@ -10,6 +10,9 @@ type RestrictedSyntaxSelector = {
  * Web / Electron / iframe / preload differences belong in apps boot +
  * `nebula-assembly` host adapters (`assembly-boot` collects capabilities).
  *
+ * Frontend `App.vue` is the remaining Host chrome exception (window.api).
+ * Versions.vue uses electron-bridge, not window.api.
+ *
  * This override replaces `no-restricted-syntax` for matched files, so it
  * repeats the shared debugger/with bans from `javascript.ts` / `vue.ts`.
  */
@@ -61,12 +64,12 @@ const hostBranchSelectors: RestrictedSyntaxSelector[] = [
   {
     selector: "ImportSpecifier[imported.name='detectRuntimeMode']",
     message:
-      'Do not import detectRuntimeMode outside apps boot. Use assembly host.surface, or getResolvedRuntimeMode() in boot-adjacent guards after bootMicroApp.',
+      'detectRuntimeMode is removed. Stamp RuntimeMode in Host or standalone main.ts and pass it to boot.',
   },
   {
     selector: "CallExpression[callee.name='detectRuntimeMode']",
     message:
-      'Do not call detectRuntimeMode outside apps boot. Use assembly host.surface, or getResolvedRuntimeMode() in boot-adjacent guards after bootMicroApp.',
+      'detectRuntimeMode is removed. Stamp RuntimeMode in Host or standalone main.ts and pass it to boot.',
   },
 ];
 
@@ -76,15 +79,11 @@ const businessSourceGlobs = [
   'packages/ui/nebula-ui/**/**',
   'packages/ui/nebula-layout/**/**',
   'packages/ui/nebula-assembly/**/**',
-  'apps/sub-web/docs/src/pages/**/**',
-  'apps/sub-web/docs/src/components/**/**',
-  'apps/sub-web/integration/src/features/**/**',
-  'apps/sub-web/integration/src/router/**/**',
-  'apps/sub-web/login/src/features/**/**',
-  'apps/sub-web/login/src/pages/**/**',
-  'apps/sub-web/settings/src/features/**/**',
-  'apps/sub-web/settings/src/pages/**/**',
-  'apps/sub-web/settings/src/router/**/**',
+  'apps/sub-web/docs/src/**/**',
+  'apps/sub-web/integration/src/**/**',
+  'apps/sub-web/login/src/**/**',
+  'apps/sub-web/settings/src/**/**',
+  'apps/sub-web/frontend/src/**/**',
 ];
 
 const testAndDeclarationIgnores = [
@@ -94,6 +93,7 @@ const testAndDeclarationIgnores = [
   '**/*.spec.ts',
   '**/*.spec.tsx',
   '**/*.d.ts',
+  'apps/sub-web/frontend/src/App.vue',
 ];
 
 export async function hostBoundary(): Promise<Linter.Config[]> {

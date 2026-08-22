@@ -16,17 +16,10 @@ type AuthSession = {
   token?: string;
 };
 
-function requireEnvironment(name: string): string {
-  const value = process.env[name];
-  if (!value) {
-    throw new Error(`${name} must be provided`);
-  }
-  return value;
-}
-
 const testUsername = process.env.NEBULA_E2E_USERNAME ?? 'admin';
-const testPassword = requireEnvironment('NEBULA_E2E_PASSWORD');
-const gatewayApiKey = requireEnvironment('NEBULA_E2E_GATEWAY_API_KEY');
+const testPassword = process.env.NEBULA_E2E_PASSWORD ?? 'admin123';
+const gatewayApiKey =
+  process.env.NEBULA_E2E_GATEWAY_API_KEY ?? 'demo-api-key-tenant-a';
 const serviceChecks = resolveHealthChecks(undefined, { host: '127.0.0.1' });
 
 test.describe('real Nebula stack', () => {
@@ -69,6 +62,12 @@ test.describe('real Nebula stack', () => {
     await expect(page.locator(':focus-visible')).toBeVisible();
     await page.keyboard.press('Escape');
 
+    await page.goto(resolveShellEmbedPath('docs'));
+    await expect(
+      page.getByRole('heading', { name: 'Nebula Studio 帮助中心' }),
+    ).toBeVisible({ timeout: 20_000 });
+    await expect(page.locator('[data-nebula-surface="shell"]')).toHaveCount(0);
+
     await page.goto(`${resolveShellEmbedPath('integration')}#/catalog`);
     await expect(
       page.getByRole('heading', { name: '找到下一项可复用能力' }),
@@ -80,6 +79,11 @@ test.describe('real Nebula stack', () => {
 
     await page.goto(`${resolveShellEmbedPath('integration')}#/subscriptions`);
     await expect(page.getByRole('heading', { name: '库表订阅' })).toBeVisible();
+
+    await page.goto(`${resolveShellEmbedPath('integration')}#/flows`);
+    await expect(page.getByRole('heading', { name: '流程定义' })).toBeVisible({
+      timeout: 20_000,
+    });
 
     await page.goto(resolveShellEmbedPath('settings'));
     await page.getByRole('link', { name: '权限矩阵' }).click();
@@ -98,6 +102,38 @@ test.describe('real Nebula stack', () => {
       return raw ? (JSON.parse(raw) as AuthSession) : null;
     });
     expect(authSession?.token).toBeTruthy();
+
+    const runtimeResponse = await request.get(
+      '/api/system/frontend-apps/runtime',
+      {
+        headers: {
+          Authorization: `Bearer ${authSession?.token}`,
+          'X-Tenant-Id': 'tenant-a',
+        },
+      },
+    );
+    expect(runtimeResponse.ok(), 'frontend runtime registry API failed').toBe(
+      true,
+    );
+    const runtimeBody = (await runtimeResponse.json()) as ApiEnvelope<
+      Array<{
+        driver?: string;
+        id?: string;
+        manifestUrl?: string;
+        remoteName?: string;
+      }>
+    >;
+    const federationIds = (runtimeBody.data ?? [])
+      .filter((entry) => entry.driver === 'federation')
+      .map((entry) => entry.id);
+    expect(federationIds).toEqual(
+      expect.arrayContaining(['docs', 'settings', 'integration']),
+    );
+    for (const entry of runtimeBody.data ?? []) {
+      if (entry.driver !== 'federation') continue;
+      expect(entry.manifestUrl, `${entry.id} missing manifestUrl`).toBeTruthy();
+      expect(entry.remoteName, `${entry.id} missing remoteName`).toBeTruthy();
+    }
 
     const monitorResponse = await request.get(
       '/api/monitor/statistics/call-count?tenantId=tenant-a&hours=24',

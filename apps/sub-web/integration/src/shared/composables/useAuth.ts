@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue';
 
-import { isSurfaceIframeEmbed } from '@nebula-studio/app-shell';
+import { isSurfaceIframeEmbed } from '@nebula-studio/shell-protocol';
 
 import router from '@/router';
 import { authApi } from '@/shared/api/auth';
@@ -14,6 +14,7 @@ import {
   setAuthSession,
 } from '@/shared/auth/session';
 import { useTenant } from '@/shared/composables/useTenant';
+import { boundHostCapabilities } from '@/shared/hostCapabilityBridge';
 import { isApiSuccess } from '@/shared/types';
 
 const token = ref<null | string>(getAuthToken());
@@ -72,6 +73,7 @@ export async function ensureAuthFromShell(): Promise<void> {
 }
 
 export function useAuth() {
+  const capabilities = boundHostCapabilities();
   const isLoggedIn = computed(() => hasValidAuthToken());
   const isShellHosted = computed(() => shellEmbed);
   const isPlatformAdmin = computed(() => checkPlatformAdmin());
@@ -107,28 +109,18 @@ export function useAuth() {
 
   async function logout() {
     resetTenantSession();
-    if (shellEmbed) {
-      // 单写路径：仅通过 clearAuthSession（内部委托 globalAuthProvider）
-      clearAuthSession();
-      token.value = null;
-      username.value = null;
-      roles.value = [];
-      try {
-        const parentApi = (
-          window.parent as typeof window & {
-            api?: { auth?: { logout?: () => Promise<void> } };
-          }
-        ).api;
-        await parentApi?.auth?.logout?.();
-      } catch {
-        /* ignore */
-      }
-      return;
-    }
     clearAuthSession();
     token.value = null;
     username.value = null;
     roles.value = [];
+    try {
+      await capabilities?.auth?.logout?.();
+    } catch {
+      /* ignore */
+    }
+    if (shellEmbed) {
+      return;
+    }
     await router.replace({ path: '/login' });
   }
 

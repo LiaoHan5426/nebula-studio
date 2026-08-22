@@ -1,7 +1,7 @@
 {
   "name": "@nebula-studio/app-shell",
   "version": "0.0.0",
-  "description": "Shared Web and Electron application shell integration for Nebula Studio.",
+  "description": "Shared shell runtime SDK: window config, auth helpers, and protocol re-exports.",
   "private": true,
   "homepage": "https://github.com/LiaoHan5426/nebula-studio#readme",
   "bugs": {
@@ -32,9 +32,8 @@
     }
   },
   "dependencies": {
-    "@nebula-studio-electron/electron-bridge": "workspace:^",
     "@nebula-studio/auth-provider": "workspace:^",
-    "@nebula-studio/contracts": "workspace:^"
+    "@nebula-studio/shell-protocol": "workspace:^"
   },
   "devDependencies": {
     "@nebula-studio-internal/tsconfig": "workspace:^",

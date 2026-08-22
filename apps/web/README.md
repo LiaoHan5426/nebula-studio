@@ -8,7 +8,7 @@
 | --- | --- |
 | `src/shell-entry.ts` | Web 壳主入口 |
 | `src/web-boot.ts` | Web 侧启动/引导相关逻辑（与壳配合） |
-| `src/embed/*-entry.ts` | 各子应用 **独立 chunk** 的入口（如 docs / login / settings）；与 Electron 内嵌 URL 策略对齐时需同时查 `app-shell` |
+| `src/embed/*-entry.ts` | 各子应用 **独立 chunk** 的入口（login）；Docs / Settings / Integration 走 Federation |
 
 ## 职责边界
 

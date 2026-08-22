@@ -78,12 +78,15 @@ function loadRendererContents(
     if (base) {
       const u = new URL(base);
       u.searchParams.set('renderer', windowId);
+      console.info(`[main] load renderer ${windowId} ${u.toString()}`);
       void contents.loadURL(u.toString());
       return;
     }
   }
   const fileUrl = pathToFileURL(join(__dirname, '../renderer/index.html')).href;
-  void contents.loadURL(`${fileUrl}?renderer=${windowId}`);
+  const loaded = `${fileUrl}?renderer=${windowId}`;
+  console.info(`[main] load renderer ${windowId} ${loaded}`);
+  void contents.loadURL(loaded);
 }
 
 export class WindowManager {
@@ -240,6 +243,11 @@ export class WindowManager {
     });
     this.#applySecurityRules(win.webContents);
     loadRendererContents(win.webContents, 'login');
+    if (is.dev) {
+      win.webContents.once('did-finish-load', () => {
+        win.webContents.openDevTools({ mode: 'detach' });
+      });
+    }
     win.once('ready-to-show', () => {
       win.show();
     });

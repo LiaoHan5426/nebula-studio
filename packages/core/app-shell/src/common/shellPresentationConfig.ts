@@ -25,7 +25,7 @@ export const shellPresentationConfig = {
 /** 弹窗渲染器（login 等），同源来自 `configs/windows.json` */
 export const modalRenderersConfig = GENERATED_MODAL_RENDERERS;
 
-/** 应用集成面板展示顺序，同源来自 `configs/windows.json` 的 `displayOrder` */
+/** 应用集成面板展示顺序已迁出 `windows.json`；生成物保留空数组以兼容旧 import */
 export const displayOrderConfig = GENERATED_DISPLAY_ORDER;
 
 export type ShellWindowId = GeneratedWindowId;
@@ -41,9 +41,6 @@ export function getEmbeddedShellWindowIds(): EmbeddedShellWindowId[] {
 export function isElectronIframeEmbedPresentation(): boolean {
   return shellPresentationConfig.electronEmbeddedPresentation === 'iframe';
 }
-
-/** 与 `apps/web` 中 `web-boot` 使用的查询参数一致，用于 iframe `index.html?…` */
-export const WEB_SHELL_EMBED_QUERY = 'embed' as const;
 
 // Re-export generated types for downstream consumers
 export type {

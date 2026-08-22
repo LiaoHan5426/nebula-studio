@@ -4,7 +4,8 @@
 
 | 包 | 职责 |
 | --- | --- |
-| `@nebula-studio/app-shell` | Shell 运行时 SDK：子应用嵌入、事件总线、认证桥接 |
+| `@nebula-studio/app-shell` | 窗口 manifest、认证 helper、集成注册表；不再含 Web/Electron 适配实现 |
+| `@nebula-studio/shell-host` | Host/standalone composition root 安装 presentation stub 与 ShellHostBridge |
 | `apps/web/src/shell-entry.ts` | Web 宿主入口，加载子应用 |
 | `apps/sub-web/*` | 独立子应用（integration、settings、login 等） |
 

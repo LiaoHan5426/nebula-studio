@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Nebula iframe guest</title>
+    <style>
+      body {
+        font: 14px/1.5 system-ui, sans-serif;
+        margin: 0;
+        padding: 1.5rem;
+        color: #111;
+        background: #f6f7fb;
+      }
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>iframe guest</h1>
+    <p>This page is a Phase 7 iframe/external fixture. It never receives Host tokens.</p>
+    <p>Handshake: <strong id="status">waiting</strong></p>
+    <script>
+      const PROTOCOL = 'nebula-iframe-capability';
+      const PROTOCOL_VERSION = 1;
+      const cancelled = new Set();
+      window.addEventListener('message', (event) => {
+        const data = event.data;
+        if (
+          !data ||
+          data.type !== 'nebula-iframe-handshake' ||
+          data.protocol !== PROTOCOL ||
+          data.protocolVersion !== PROTOCOL_VERSION
+        ) {
+          return;
+        }
+        const channel = new MessageChannel();
+        channel.port1.onmessage = (portEvent) => {
+          const request = portEvent.data;
+          if (!request) return;
+          if (request.type === 'cancel' && request.requestId) {
+            cancelled.add(request.requestId);
+            return;
+          }
+          if (request.type === 'dispose') {
+            channel.port1.close();
+            return;
+          }
+          if (request.type !== 'request') return;
+          if (cancelled.has(request.requestId)) {
+            cancelled.delete(request.requestId);
+            return;
+          }
+          const reply = {
+            type: 'response',
+            requestId: request.requestId,
+          };
+          const emptyPing =
+            request.payload === undefined ||
+            request.payload === null ||
+            (request.payload &&
+              typeof request.payload === 'object' &&
+              Object.keys(request.payload).length === 0);
+          if (
+            request.method !== 'ping' ||
+            request.capability !== 'host' ||
+            request.protocolVersion !== PROTOCOL_VERSION ||
+            !emptyPing
+          ) {
+            reply.error = 'method "' + request.method + '" is not allowed';
+          } else {
+            reply.payload = 'pong';
+          }
+          if (cancelled.has(request.requestId)) {
+            cancelled.delete(request.requestId);
+            return;
+          }
+          channel.port1.postMessage(reply);
+        };
+        channel.port1.start();
+        event.source.postMessage(
+          {
+            type: 'nebula-iframe-handshake-ack',
+            protocol: PROTOCOL,
+            protocolVersion: PROTOCOL_VERSION,
+            nonce: data.nonce,
+          },
+          event.origin,
+          [channel.port2],
+        );
+        document.getElementById('status').textContent = 'ready (' + event.origin + ')';
+      });
+    </script>
+  </body>
+</html>

@@ -7,6 +7,7 @@ import type {
 } from './types.ts';
 
 import {
+  nebulaChunkRuleEditorCode,
   nebulaChunkRuleEditorFlow,
   nebulaChunkRuleElectronShared,
   nebulaChunkRuleIntegrationDomain,
@@ -24,6 +25,7 @@ import { nebulaChunkRuleVxe } from './rules/vxe.ts';
 export const NEBULA_DEFAULT_MANUAL_CHUNK_RULES: readonly NebulaManualChunkRule[] =
   [
     nebulaChunkRuleEditorFlow,
+    nebulaChunkRuleEditorCode,
     nebulaChunkRuleVxe,
     nebulaChunkRuleMarkdown,
     nebulaChunkRuleIntegrationDomain,

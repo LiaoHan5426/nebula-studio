@@ -2,6 +2,7 @@ export * from './host-boundary';
 export * from './ignores';
 export * from './javascript';
 export * from './jsonc';
+export * from './mf-boundary';
 export * from './node';
 export * from './perfectionist';
 export * from './pnpm';

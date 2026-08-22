@@ -1,12 +1,15 @@
 packages:
   - apps/*
   - apps/sub-web/*
+  - apps/remotes/*
   - internal/*
   - packages/*
   - packages/core/*
+  - packages/platform/*
   - packages/ui/*
   - packages/editors/*
   - packages/features/*
+  - packages/testing/*
   - tools/lint/*
   - tools/*
 publicHoistPattern:
@@ -30,6 +33,9 @@ overrides:
   '@codemirror/view': ^6.43.9
   vite: 'catalog:vite'
   vitest: 'catalog:vite'
+  # app-builder-lib 26 调用 ElectronDownloadCacheMode.ReadWrite（@electron/get v5+）。
+  # 其声明依赖 ^3.0.0 会解析到 3.0.0，pack:win 报 Cannot read properties of undefined (reading 'ReadWrite')。
+  '@electron/get': ^5.0.0
 catalogMode: prefer
 
 catalog:
@@ -168,6 +174,8 @@ catalogs:
     oxc-minify: ^0.129.0
     unconfig: ^7.5.0
   vite:
+    '@module-federation/runtime': ^0.21.6
+    '@module-federation/vite': ^1.11.0
     '@vitejs/plugin-vue': ^6.0.8
     '@vitejs/plugin-vue-jsx': ^5.1.6
     happy-dom: ^20.11.2

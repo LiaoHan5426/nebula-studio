@@ -33,13 +33,18 @@ if (initialGzipKib > 350) {
   );
 }
 
-const budgets = [
-  ['integration-domain-', 250],
-  ['editor-flow-', 300],
-];
+const budgets = [['vendor-vxe-', 250]];
 const assetFiles = readdirSync(join(distDir, 'assets')).filter((file) =>
   file.endsWith('.js'),
 );
+const leakedEditorRuntime = assetFiles.filter((file) =>
+  /^(?:integration-domain-|editor-flow-|editor-code-)/.test(file),
+);
+if (leakedEditorRuntime.length) {
+  failures.push(
+    `Host dist still contains Integration editor chunks: ${leakedEditorRuntime.join(', ')}`,
+  );
+}
 for (const [prefix, limit] of budgets) {
   for (const file of assetFiles.filter((candidate) =>
     candidate.startsWith(prefix),

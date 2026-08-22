@@ -1,28 +1,31 @@
 # Nebula Studio Core Shell 架构
 
-`packages/core` 承载跨子应用的壳层 SDK，职责划分如下。
+`packages/core` 承载跨子应用的壳层 SDK；Shell **Vue UI** 已迁到 `packages/ui/shell-ui`（包名仍为 `@nebula-studio/nebula-shell`）。
 
 ## 包职责
 
 | 包 | npm 名 | 职责 |
 | --- | --- | --- |
-| `app-shell` | `@nebula-studio/app-shell` | Shell 运行时 SDK：嵌入协议、事件总线、认证桥接、窗口 manifest |
-| `shell` | `@nebula-studio/nebula-shell` | Shell UI 组合式函数与组件（OrgSwitcher、AppDock、IframeHost） |
-| `runtime` | `@nebula-studio/runtime` | 微应用统一启动（`bootMicroApp`）、运行模式检测 |
+| `app-shell` | `@nebula-studio/app-shell` | Shell 运行时 SDK：嵌入协议再导出、认证桥接、窗口 manifest、集成注册表 |
+| `shell-host` | `@nebula-studio/shell-host` | Web/Electron composition-root 适配：presentation stub、`installShellHostBridge` |
+| `shell-protocol` | `@nebula-studio/shell-protocol` | 无宿主假设的 embed 消息、事件总线、presentation 标记、runtime mode |
+| `shell`（`packages/ui/shell-ui`） | `@nebula-studio/nebula-shell` | Shell UI 组合式函数与组件（OrgSwitcher、AppDock、IframeHost） |
+| `runtime` | `@nebula-studio/runtime` | standalone / Host 兼容启动（`bootMicroApp`）；运行模式类型在 `shell-protocol` |
 | `tenant` | `@nebula-studio/tenant` | 租户状态 composable（`createUseTenant`） |
 | `auth` / `auth-provider` | `@nebula-studio/auth` | 认证引导与 session 提供 |
 
-> **命名说明**：`shell` 包保留现有包名（重命名为 `shell-composables` 影响面过大）。UI 组合逻辑在 `shell`，运行时协议在 `app-shell`。
+> **命名说明**：`shell` 包保留现有包名。UI 组合逻辑在 `shell-ui`，无宿主协议在 `shell-protocol`，Web/Electron 适配在 `shell-host`，由 Host/standalone boot 注入。`app-shell` 不反向依赖 `shell-host`。
 
 ## 启动链路
 
 ```
-apps/web/shell-entry.ts
-  → frontend/boot.ts（创建 shellEventBus，注册集成应用）
-    → bootMicroApp（runtime）
-      → installWebPresentation（app-shell）
-      → AuthBootstrap（auth）
-      → bootSubApp（electron-shared）
+apps/web/src/workspace/bootHostWorkspace.ts
+  → installShellHostBridge + installWebPresentation（shell-host；Web 只装 window.api）
+  → bootMicroApp（runtime）挂载 frontend/app
+    → AuthBootstrap（auth）
+
+apps/sub-web/frontend/src/boot.ts（standalone）
+  → main.ts 显式 mode: 'standalone'
 
 apps/sub-web/integration/boot.ts
   → resolveShellEventBus（继承宿主总线）

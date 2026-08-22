@@ -2,8 +2,10 @@
 import { computed, reactive } from 'vue';
 
 import { isWebPresentationHost } from '@nebula-studio/app-shell';
+import { resolveRendererProcess } from '@nebula-studio-electron/electron-bridge/vue';
 
-const versions = reactive({ ...window.electron.process.versions });
+const process = resolveRendererProcess();
+const versions = reactive({ ...process.versions });
 const isWeb = isWebPresentationHost();
 
 function osDisplayName(platform: string | undefined): string {
@@ -25,7 +27,7 @@ const platformTitle = computed(() => {
   if (isWeb) {
     return '静态 Web 宿主（非 Electron 桌面运行时）';
   }
-  const raw = window.electron.process.platform;
+  const raw = process.platform;
   const name = osDisplayName(raw);
   return `运行平台：${name}（${raw}） · Electron ${versions.electron}`;
 });

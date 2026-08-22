@@ -101,10 +101,13 @@ export const NebulaTable = defineComponent({
       default: '',
     },
   },
-  setup (props, { slots }) {
+  setup(props, { slots }) {
     const computedRowConfig = computed(() => {
       const config = { ...props.rowConfig };
-      if (props.rowKey && config.keyField == null) {
+      if (
+        props.rowKey &&
+        (config.keyField === undefined || config.keyField === null)
+      ) {
         config.keyField = props.rowKey;
       }
       return config;
@@ -113,7 +116,10 @@ export const NebulaTable = defineComponent({
     const computedTreeConfig = computed(() => {
       if (!props.treeConfig) return undefined;
       const config = { ...props.treeConfig };
-      if (props.rowKey && config.rowField == null) {
+      if (
+        props.rowKey &&
+        (config.rowField === undefined || config.rowField === null)
+      ) {
         config.rowField = props.rowKey;
       }
       return config;
@@ -125,7 +131,8 @@ export const NebulaTable = defineComponent({
         : props.scrollX,
     );
     const computedScrollY = computed(() => {
-      if (props.scrollY == null) return undefined;
+      if (props.scrollY === undefined || props.scrollY === null)
+        return undefined;
       return typeof props.scrollY === 'boolean'
         ? { enabled: props.scrollY }
         : props.scrollY;

@@ -1,3 +1,5 @@
-import { bootstrapShellIntegratedApps } from '../platform/integratedApps';
+import { hydrateShellIntegratedAppsFromRuntime } from '../platform/integratedApps';
 
-bootstrapShellIntegratedApps();
+export async function registerIntegratedApps(): Promise<void> {
+  await hydrateShellIntegratedAppsFromRuntime();
+}

@@ -137,6 +137,16 @@ export async function javascript(): Promise<Linter.Config[]> {
           'WithStatement',
           'TSEnumDeclaration[const=true]',
           'TSExportAssignment',
+          {
+            selector: "ImportSpecifier[imported.name='detectRuntimeMode']",
+            message:
+              'detectRuntimeMode is removed. Stamp RuntimeMode in Host or standalone main.ts and pass it to boot.',
+          },
+          {
+            selector: "CallExpression[callee.name='detectRuntimeMode']",
+            message:
+              'detectRuntimeMode is removed. Stamp RuntimeMode in Host or standalone main.ts and pass it to boot.',
+          },
         ],
         'no-undef-init': 'error',
         'no-undef': 'off',
