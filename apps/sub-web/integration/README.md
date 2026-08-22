@@ -14,7 +14,7 @@
 vp run --filter @nebula-studio-renderer/integration dev
 ```
 
-访问 http://localhost:5174 。代理见 `vite.proxy.ts`（platform → 8090，executor → 8081）。
+访问 http://localhost:5174 。代理由共享 `defineNebulaSubAppConfig()` 根据 `windows.json` 的 `integration` preset 自动生成。
 
 ## MSW
 

@@ -1,0 +1,60 @@
+{
+  "namespaces": {
+    "platform": {
+      "platform": "/api/platform",
+      "system": "/api/system",
+      "governance": "/api/security/governance",
+      "version": "/api/version",
+      "release": "/api/release",
+      "releases": "/api/releases",
+      "task": "/api/task",
+      "taskInstance": "/api/task/instance",
+      "config": "/api/config"
+    },
+    "console": {
+      "console": "/api/console",
+      "auth": "/api/auth",
+      "integration": "/api/integration",
+      "flows": "/api/flows",
+      "monitor": "/api/monitor",
+      "cluster": "/api/cluster",
+      "subscribe": "/api/subscribe",
+      "camelSubscribe": "/api/subscribe/camel",
+      "camelTopology": "/api/camel/topology"
+    },
+    "executor": {
+      "executor": "/api/executor"
+    }
+  },
+  "proxyPresets": {
+    "integration": [
+      { "prefix": "/api/integration/gateway", "target": "executor" },
+      { "prefix": "/api/integration/demo", "target": "executor" },
+      {
+        "prefix": "/api/executor",
+        "target": "executor",
+        "injectExecutorServiceToken": true
+      },
+      { "prefix": "/api/system", "target": "platform" },
+      { "prefix": "/api/platform", "target": "platform" },
+      { "prefix": "/api/security/governance", "target": "platform" },
+      { "prefix": "/api/version", "target": "platform" },
+      { "prefix": "/api/release", "target": "platform" },
+      { "prefix": "/api/releases", "target": "platform" },
+      { "prefix": "/api/config", "target": "platform" },
+      { "prefix": "/api/task", "target": "platform" },
+      { "prefix": "/api", "target": "console" }
+    ],
+    "standard": [
+      { "prefix": "/api/system", "target": "platform" },
+      { "prefix": "/api/platform", "target": "platform" },
+      { "prefix": "/api/security/governance", "target": "platform" },
+      { "prefix": "/api/version", "target": "platform" },
+      { "prefix": "/api/release", "target": "platform" },
+      { "prefix": "/api/releases", "target": "platform" },
+      { "prefix": "/api/config", "target": "platform" },
+      { "prefix": "/api/task", "target": "platform" },
+      { "prefix": "/api", "target": "console" }
+    ]
+  }
+}

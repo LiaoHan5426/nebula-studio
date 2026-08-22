@@ -3,6 +3,7 @@
  *
  * - Validates windows.json against configs/windows.schema.json (Ajv).
  * - Validates renderer main.ts and boot.ts entry files exist.
+ * - Merges API path prefixes from the internal/vite API context black box.
  * - Outputs TypeScript constants to packages/core/app-shell/src/common/_generated-windows.ts.
  *
  * Usage: node scripts/generate-window-configs.mjs
@@ -19,6 +20,14 @@ const scriptDir = dirname(fileURLToPath(import.meta.url));
 const rootDir = join(scriptDir, '..');
 const configPath = join(rootDir, 'configs', 'windows.json');
 const schemaPath = join(rootDir, 'configs', 'windows.schema.json');
+const apiContextPath = join(
+  rootDir,
+  'internal',
+  'vite',
+  'src',
+  'config',
+  'api-context.json',
+);
 const outputPath = join(
   rootDir,
   'packages',
@@ -48,6 +57,13 @@ function collectRuntimeEntries(config) {
     ...Object.values(config.windows ?? {}),
     ...Object.values(config.modalRenderers ?? {}),
   ];
+}
+
+function loadApiContext() {
+  if (!existsSync(apiContextPath)) {
+    throw new Error(`Missing API context black box at ${apiContextPath}`);
+  }
+  return JSON.parse(readFileSync(apiContextPath, 'utf-8'));
 }
 
 /**
@@ -104,13 +120,21 @@ function validateConfig(config, schema) {
   }
 
   const apiTargets = config.apiTargets ?? {};
+  const apiContext = loadApiContext();
+  for (const target of Object.keys(apiContext.namespaces ?? {})) {
+    if (!apiTargets[target]) {
+      errors.push(
+        `api context namespaces.${target}: missing apiTargets.${target} in windows.json`,
+      );
+    }
+  }
   for (const [preset, routes] of Object.entries(
-    config.apiProxy?.presets ?? {},
+    apiContext.proxyPresets ?? {},
   )) {
     for (const [index, route] of routes.entries()) {
       if (!apiTargets[route.target]) {
         errors.push(
-          `apiProxy.presets.${preset}[${index}].target: unknown apiTargets.${route.target}`,
+          `api context proxyPresets.${preset}[${index}].target: unknown apiTargets.${route.target}`,
         );
       }
     }
@@ -169,7 +193,9 @@ function generateTypeScript(config) {
   const lines = [];
 
   lines.push('// AUTO-GENERATED — do not edit manually.');
-  lines.push('// Source: configs/windows.json');
+  lines.push(
+    '// Source: configs/windows.json + internal/vite API context black box',
+  );
   lines.push('');
   lines.push(
     "export type GeneratedPreloadCapability = 'auth' | 'notify' | 'settings' | 'shell';",
@@ -299,12 +325,11 @@ function generateTypeScript(config) {
     lines.push('');
   }
 
-  if (config.apiBases) {
-    lines.push(
-      `export const GENERATED_API_BASES: Record<string, string> = ${JSON.stringify(config.apiBases, null, 2)} as const;`,
-    );
-    lines.push('');
-  }
+  const apiContext = loadApiContext();
+  lines.push(
+    `export const GENERATED_API_NAMESPACES = ${JSON.stringify(apiContext.namespaces ?? {}, null, 2)} as const;`,
+  );
+  lines.push('');
 
   if (config.apiTargets) {
     lines.push(
@@ -365,13 +390,6 @@ function generateTypeScript(config) {
   );
   lines.push('');
 
-  if (config.apiProxy) {
-    lines.push(
-      `export const GENERATED_API_PROXY = ${JSON.stringify(config.apiProxy, null, 2)} as const;`,
-    );
-    lines.push('');
-  }
-
   if (config.realStack) {
     lines.push(
       `export const GENERATED_REAL_STACK = ${JSON.stringify(config.realStack, null, 2)} as const;`,
@@ -427,17 +445,16 @@ if (!existsSync(outputDir)) {
 }
 writeFileSync(outputPath, ts, 'utf-8');
 
+const apiContext = loadApiContext();
 const apiNamespaces = [
   '// AUTO-GENERATED — do not edit manually.',
-  '// Source: configs/windows.json',
+  '// Source: configs/windows.json apiTargets + internal/vite API context',
   '',
-  `export const GENERATED_API_BASES = ${JSON.stringify(config.apiBases ?? {}, null, 2)} as const;`,
+  `export const GENERATED_API_NAMESPACES = ${JSON.stringify(apiContext.namespaces ?? {}, null, 2)} as const;`,
   '',
-  'export type GeneratedApiNamespace = keyof typeof GENERATED_API_BASES;',
+  'export type GeneratedApiTarget = keyof typeof GENERATED_API_NAMESPACES;',
   '',
   `export const GENERATED_API_TARGETS = ${JSON.stringify(config.apiTargets ?? {}, null, 2)} as const;`,
-  '',
-  'export type GeneratedApiTarget = keyof typeof GENERATED_API_TARGETS;',
   '',
 ].join('\n');
 writeFileSync(apiNamespacesPath, apiNamespaces, 'utf-8');

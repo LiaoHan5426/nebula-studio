@@ -3,13 +3,16 @@ import type { ApiRequestOptions, ApiResponse } from '@nebula-studio/api-client';
 import { createStudioApiClient } from '@nebula-studio/api-client';
 import { handleShellAuthUnauthorized } from '@nebula-studio/app-shell';
 import { globalAuthProvider } from '@nebula-studio/auth-provider';
+import { GENERATED_API_NAMESPACES } from '@nebula-studio/contracts/generated';
 
 import { ensureAuthMode, isSessionAuthMode } from '@/shared/auth/authMode';
 
 export type { ApiRequestOptions, ApiResponse };
 
-export const AUTH_BASE = '/api/auth';
-export const SYSTEM_BASE = '/api/system';
+export const AUTH_BASE = GENERATED_API_NAMESPACES.console.auth;
+export const SYSTEM_BASE = GENERATED_API_NAMESPACES.platform.system;
+export const CONSOLE_BASE = GENERATED_API_NAMESPACES.console.console;
+export const MONITOR_BASE = GENERATED_API_NAMESPACES.console.monitor;
 
 let currentOrgId = '';
 

@@ -1,8 +1,6 @@
 import type { ApiResponse, VersionDiff, VersionSnapshot } from '@/shared/types';
 
-import { apiRequest } from '@/shared/api/client';
-
-const VERSION_BASE = '/api/version';
+import { apiRequest, VERSION_BASE } from '@/shared/api/client';
 
 export const versionApi = {
   createSnapshot(body: {

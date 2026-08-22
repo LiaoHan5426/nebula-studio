@@ -10,6 +10,7 @@ import {
   findMonorepoRoot,
   loadWindowsConfig,
 } from '../config/windowsManifest.ts';
+import { loadApiContext } from '../config/apiContext.ts';
 import { createNebulaApiProxy } from '../proxy/createNebulaApiProxy.ts';
 
 describe('windows manifest', () => {
@@ -74,6 +75,19 @@ describe('windows manifest', () => {
 });
 
 describe('createNebulaApiProxy', () => {
+  it('groups API namespaces by windows.json apiTargets keys', () => {
+    const root = findMonorepoRoot(
+      join(dirname(fileURLToPath(import.meta.url)), '../../..'),
+    );
+    const config = loadWindowsConfig(root);
+    const context = loadApiContext(root);
+    expect(Object.keys(context.namespaces).toSorted()).toEqual(
+      Object.keys(config.apiTargets ?? {}).toSorted(),
+    );
+    expect(context.namespaces.platform.system).toBe('/api/system');
+    expect(context.namespaces.console.auth).toBe('/api/auth');
+  });
+
   it('orders integration routes from specific to general', () => {
     const proxy = createNebulaApiProxy({
       preset: 'integration',

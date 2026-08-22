@@ -1,6 +1,6 @@
 import type { ApiResponse, ReleaseRecord } from '@/shared/types';
 
-import { apiRequest, governanceRequest } from '@/shared/api/client';
+import { apiRequest, governanceRequest, RELEASE_BASE } from '@/shared/api/client';
 
 export const releaseApi = {
   deployRelease(
@@ -8,7 +8,7 @@ export const releaseApi = {
     operatorId?: string,
   ): Promise<ApiResponse<ReleaseRecord>> {
     const query = operatorId ? `?operatorId=${operatorId}` : '';
-    return apiRequest('/api/release', `/${releaseId}/deploy${query}`, {
+    return apiRequest(RELEASE_BASE, `/${releaseId}/deploy${query}`, {
       method: 'POST',
     });
   },

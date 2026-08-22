@@ -15,7 +15,7 @@ export interface CreateNebulaApiProxyOptions {
   preset: NebulaApiProxyPreset;
   /** Enable SSE-friendly proxy settings (no timeout/buffering). Default true. */
   sse?: boolean;
-  /** Override dev proxy targets; falls back to configs/windows.json apiTargets and env vars. */
+  /** Override dev proxy targets; falls back to configs/windows.json apiTargets. */
   targets?: NebulaApiProxyTargets;
 }
 
@@ -155,7 +155,7 @@ function routesFromConfig(
 }
 
 /**
- * Create dev-server API proxy rules from a preset and configs/windows.json.
+ * Create dev-server API proxy rules from a preset, apiTargets, and the API context black box.
  * Routes are ordered from most specific prefix to least specific.
  */
 export function createNebulaApiProxy(

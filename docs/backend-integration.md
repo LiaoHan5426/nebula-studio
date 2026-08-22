@@ -41,7 +41,7 @@ mvn spring-boot:run -DskipTests
 
 ## 开发代理
 
-Integration 独立开发服务器的代理定义在 `apps/sub-web/integration/vite.proxy.ts`，匹配遵循从具体到通用的顺序。
+Integration 独立开发服务器由 `defineNebulaSubAppConfig()` 读取窗口注册表的 `proxyPreset`，并通过 `createNebulaApiProxy()` 生成代理；匹配遵循从具体到通用的顺序。
 
 | 前端路径 | 目标 | 说明 |
 | --- | --- | --- |
@@ -57,7 +57,7 @@ Integration 独立开发服务器的代理定义在 `apps/sub-web/integration/vi
 
 代理对包含 `/events` 的 SSE 请求关闭超时和响应缓冲。调整代理时要保留该行为，否则浏览器可能迟迟收不到事件。
 
-Web/Electron 共享的 API base 和 target 单源位于 `configs/windows.json`；独立 Integration 的细粒度兼容路由仍以 `vite.proxy.ts` 为准。修改任一处时，应核对另一处是否需要同步。
+Web、Electron 和 standalone 共享同一 API 实现：`configs/windows.json` 只保留可部署的 backend origin 与子应用 `proxyPreset`，浏览器 API namespace 和路由规则由 `internal/vite` 统一管理。子应用不再维护独立 `vite.proxy.ts`。
 
 ## 认证
 

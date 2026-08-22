@@ -85,4 +85,4 @@
 | `/api/executor/**`            | `http://localhost:8088` | executor         |
 | `/api/**` (其余)              | `http://localhost:8080` | camel-console    |
 
-> 权威源：`configs/windows.json` → `apiBases` + `apiTargets`；各子应用 `vite.proxy.ts` 定义代理路由
+> 权威源：`configs/windows.json` 只配置 `apiTargets`（后端 origin）；浏览器路径前缀与 Vite 代理路由来自 `internal/vite` API context 黑盒。调用形态为 `GENERATED_API_NAMESPACES.<target>.<name>`，例如 `GENERATED_API_NAMESPACES.platform.system`。

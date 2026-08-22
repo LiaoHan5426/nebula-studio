@@ -2,20 +2,19 @@ import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import type { NebulaApiProxyPresetName } from './apiContext.ts';
+
 export type PreloadCapability = 'auth' | 'notify' | 'settings' | 'shell';
 
-export type NebulaApiProxyPresetName = 'integration' | 'standard';
+export type {
+  ApiProxyRouteConfig,
+  NebulaApiProxyPresetName,
+} from './apiContext.ts';
 
 export interface StandaloneRuntimeConfig {
   basePath?: string;
   host?: string;
   port: number;
-}
-
-export interface ApiProxyRouteConfig {
-  injectExecutorServiceToken?: boolean;
-  prefix: string;
-  target: string;
 }
 
 export interface RealStackHealthCheckConfig {
@@ -36,10 +35,6 @@ export interface RendererRuntimeFields {
 }
 
 export interface WindowsConfig {
-  apiBases?: Record<string, string>;
-  apiProxy?: {
-    presets: Record<NebulaApiProxyPresetName, ApiProxyRouteConfig[]>;
-  };
   apiTargets?: Record<string, string>;
   displayOrder?: string[];
   e2e?: { mockRoutePatterns: string[] };

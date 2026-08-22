@@ -9,7 +9,10 @@ import type {
 
 import type { MainModule, MainModuleContext } from '../bootstrap/MainModule';
 
-import { GENERATED_API_TARGETS } from '@nebula-studio/contracts/generated';
+import {
+  GENERATED_API_NAMESPACES,
+  GENERATED_API_TARGETS,
+} from '@nebula-studio/contracts/generated';
 import { BrowserWindow, ipcMain, net } from 'electron';
 
 /**
@@ -130,7 +133,7 @@ export class IpcAuthModule implements MainModule {
   > {
     try {
       const response = await net.fetch(
-        `${this.#backendBaseUrl}/api/auth/login`,
+        `${this.#backendBaseUrl}${GENERATED_API_NAMESPACES.console.auth}/login`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

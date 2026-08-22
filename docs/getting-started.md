@@ -43,7 +43,7 @@ vp run dev
 vp run --filter @nebula-studio-renderer/integration dev
 ```
 
-访问 `http://localhost:5174`。独立模式使用 `apps/sub-web/integration/vite.proxy.ts` 连接本地后端，适合专注开发集成平台页面。
+访问 `http://localhost:5174`。独立模式由 `defineNebulaSubAppConfig()` 根据窗口注册表中的 `proxyPreset` 自动连接本地后端，适合专注开发集成平台页面。
 
 ## 首次后端联调
 

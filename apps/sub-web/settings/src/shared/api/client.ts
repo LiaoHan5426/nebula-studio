@@ -2,6 +2,7 @@ import type { ApiRequestOptions, ApiResponse } from '@nebula-studio/api-client';
 
 import { createStudioApiClient } from '@nebula-studio/api-client';
 import { handleShellAuthUnauthorized } from '@nebula-studio/app-shell';
+import { GENERATED_API_NAMESPACES } from '@nebula-studio/contracts/generated';
 
 import {
   clearAuthSession,
@@ -11,9 +12,9 @@ import {
 
 export type { ApiRequestOptions, ApiResponse };
 
-export const SYSTEM_BASE = '/api/system';
-export const AUTH_BASE = '/api/auth';
-export const CONFIG_BASE = '/api/config';
+export const SYSTEM_BASE = GENERATED_API_NAMESPACES.platform.system;
+export const AUTH_BASE = GENERATED_API_NAMESPACES.console.auth;
+export const CONFIG_BASE = GENERATED_API_NAMESPACES.platform.config;
 
 const apiClient = createStudioApiClient({
   authProvider: { getToken: getAuthToken },

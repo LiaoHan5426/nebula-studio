@@ -85,7 +85,7 @@ execFileSync('vp', ['exec', 'openapi-typescript', specFile, '-o', outFile], {
 
 writeFileSync(
   join(outDir, 'index.ts'),
-  `/** Auto-generated export surface. Run: vp run generate:contracts */\nexport type {\n  PlatformApiComponents,\n  PlatformApiOperation,\n  PlatformApiOperationId,\n  PlatformApiOperations,\n  PlatformApiPath,\n  PlatformApiPaths,\n} from './facade.ts';\n\nexport {\n  GENERATED_API_BASES,\n  GENERATED_API_TARGETS,\n} from './api-namespaces.ts';\nexport type {\n  GeneratedApiNamespace,\n  GeneratedApiTarget,\n} from './api-namespaces.ts';\n`,
+  `/** Auto-generated export surface. Run: vp run generate:contracts */\nexport type {\n  PlatformApiComponents,\n  PlatformApiOperation,\n  PlatformApiOperationId,\n  PlatformApiOperations,\n  PlatformApiPath,\n  PlatformApiPaths,\n} from './facade.ts';\n\nexport {\n  GENERATED_API_NAMESPACES,\n  GENERATED_API_TARGETS,\n} from './api-namespaces.ts';\nexport type { GeneratedApiTarget } from './api-namespaces.ts';\n`,
 );
 execFileSync(
   'vp',

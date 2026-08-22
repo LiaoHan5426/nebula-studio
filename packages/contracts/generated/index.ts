@@ -9,10 +9,7 @@ export type {
 } from './facade.ts';
 
 export {
-  GENERATED_API_BASES,
+  GENERATED_API_NAMESPACES,
   GENERATED_API_TARGETS,
 } from './api-namespaces.ts';
-export type {
-  GeneratedApiNamespace,
-  GeneratedApiTarget,
-} from './api-namespaces.ts';
+export type { GeneratedApiTarget } from './api-namespaces.ts';

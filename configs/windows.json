@@ -13,64 +13,10 @@
     "embedQuery": "embed"
   },
   "electronEmbeddedPresentation": "iframe",
-  "apiBases": {
-    "console": "/api/console",
-    "executor": "/api/executor",
-    "platform": "/api/platform",
-    "system": "/api/system",
-    "auth": "/api/auth",
-    "governance": "/api/security/governance",
-    "version": "/api/version",
-    "release": "/api/release",
-    "releases": "/api/releases",
-    "integration": "/api/integration",
-    "flows": "/api/flows",
-    "monitor": "/api/monitor",
-    "task": "/api/task",
-    "taskInstance": "/api/task/instance",
-    "cluster": "/api/cluster",
-    "subscribe": "/api/subscribe",
-    "camelSubscribe": "/api/subscribe/camel",
-    "camelTopology": "/api/camel/topology",
-    "config": "/api/config"
-  },
   "apiTargets": {
     "platform": "http://localhost:8090",
     "console": "http://localhost:8080",
     "executor": "http://localhost:8088"
-  },
-  "apiProxy": {
-    "presets": {
-      "integration": [
-        { "prefix": "/api/integration/gateway", "target": "executor" },
-        { "prefix": "/api/integration/demo", "target": "executor" },
-        {
-          "prefix": "/api/executor",
-          "target": "executor",
-          "injectExecutorServiceToken": true
-        },
-        { "prefix": "/api/system", "target": "platform" },
-        { "prefix": "/api/platform", "target": "platform" },
-        { "prefix": "/api/security/governance", "target": "platform" },
-        { "prefix": "/api/version", "target": "platform" },
-        { "prefix": "/api/release", "target": "platform" },
-        { "prefix": "/api/releases", "target": "platform" },
-        { "prefix": "/api/config", "target": "platform" },
-        { "prefix": "/api/task", "target": "platform" },
-        { "prefix": "/api", "target": "console" }
-      ],
-      "standard": [
-        { "prefix": "/api/system", "target": "platform" },
-        { "prefix": "/api/platform", "target": "platform" },
-        { "prefix": "/api/security/governance", "target": "platform" },
-        { "prefix": "/api/version", "target": "platform" },
-        { "prefix": "/api/release", "target": "platform" },
-        { "prefix": "/api/releases", "target": "platform" },
-        { "prefix": "/api/config", "target": "platform" },
-        { "prefix": "/api/task", "target": "platform" },
-        { "prefix": "/api", "target": "console" }
-      ]
-    }
   },
   "realStack": {
     "probeHost": "127.0.0.1",

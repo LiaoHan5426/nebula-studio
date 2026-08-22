@@ -6,10 +6,9 @@ import { globalAuthProvider } from '@nebula-studio/auth-provider';
 
 import { ensureAuthMode, isSessionAuthMode } from '@/shared/auth/authMode';
 
-export type { ApiRequestOptions, ApiResponse } from '@nebula-studio/api-client';
+import { CONSOLE_BASE, MONITOR_BASE, SYSTEM_BASE } from './client';
 
-const CONSOLE_BASE = '/api/console';
-const SYSTEM_BASE = '/api/system';
+export type { ApiRequestOptions, ApiResponse } from '@nebula-studio/api-client';
 
 const apiClient = createStudioApiClient({
   authProvider: {
@@ -73,7 +72,7 @@ export async function fetchWorkspaceSummary(
     consoleRequest<{ records?: unknown[]; total?: number }>(
       '/resource?page=1&size=1',
     ),
-    apiRequest<Array<{ level?: string }>>('/api/monitor', '/alerts/active'),
+    apiRequest<Array<{ level?: string }>>(MONITOR_BASE, '/alerts/active'),
   ]);
 
   const pendingRequestCount =

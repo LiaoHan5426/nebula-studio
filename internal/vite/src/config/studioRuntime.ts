@@ -5,6 +5,7 @@ import type {
   WindowsConfig,
 } from './windowsManifest.ts';
 
+import { requireApiProxyPreset } from './apiContext.ts';
 import { loadWindowsConfig } from './windowsManifest.ts';
 
 export interface ResolvedDevServer {
@@ -151,15 +152,8 @@ export function tryResolveStandalonePort (
 
 export function resolveApiProxyRoutes (
   preset: NebulaApiProxyPresetName,
-  config: WindowsConfig = loadWindowsConfig(),
 ): ApiProxyRouteConfig[] {
-  const routes = config.apiProxy?.presets[preset];
-  if (!routes?.length) {
-    throw new Error(
-      `[nebula-vite] Missing apiProxy.presets.${preset} in windows.json`,
-    );
-  }
-  return routes;
+  return requireApiProxyPreset(preset);
 }
 
 export function resolveOpenApiUrl (

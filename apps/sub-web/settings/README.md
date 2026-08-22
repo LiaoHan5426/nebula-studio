@@ -13,7 +13,7 @@
 vp run --filter @nebula-studio-renderer/settings dev
 ```
 
-`vite.proxy.ts` 使用 `standardApiProxy()`：system/governance/version/release → `:8090`。
+共享 `defineNebulaSubAppConfig()` 根据 `windows.json` 的 `standard` preset 自动生成 system/governance/version/release 代理。
 
 ## 验收
 

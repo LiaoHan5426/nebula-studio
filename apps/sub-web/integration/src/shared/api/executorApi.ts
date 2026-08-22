@@ -1,6 +1,6 @@
 import type { ApiResponse } from '@nebula-studio/contracts/integration';
 
-import { apiRequest, executorFetch } from '@/shared/api/client';
+import { apiRequest, EXECUTOR_BASE, executorFetch } from '@/shared/api/client';
 
 export interface ExecutorRouteView {
   routeId: string;
@@ -17,14 +17,14 @@ const executorAuthOpts = { skipAuth: true } as const;
 
 export const executorRoutesApi = {
   list(): Promise<ApiResponse<ExecutorRouteView[]>> {
-    return apiRequest<ExecutorRouteView[]>('/api/executor', '/routes', {
+    return apiRequest<ExecutorRouteView[]>(EXECUTOR_BASE, '/routes', {
       ...executorAuthOpts,
     });
   },
 
   get(routeId: string): Promise<ApiResponse<ExecutorRouteView>> {
     return apiRequest<ExecutorRouteView>(
-      '/api/executor',
+      EXECUTOR_BASE,
       `/routes/${encodeURIComponent(routeId)}`,
       { ...executorAuthOpts },
     );

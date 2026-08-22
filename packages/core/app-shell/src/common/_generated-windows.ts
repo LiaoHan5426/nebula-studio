@@ -1,5 +1,5 @@
 // AUTO-GENERATED — do not edit manually.
-// Source: configs/windows.json
+// Source: configs/windows.json + internal/vite API context black box
 
 export type GeneratedPreloadCapability =
   | 'auth'
@@ -143,26 +143,32 @@ export const GENERATED_DISPLAY_ORDER: readonly string[] = [
   'integration',
 ] as const;
 
-export const GENERATED_API_BASES: Record<string, string> = {
-  console: '/api/console',
-  executor: '/api/executor',
-  platform: '/api/platform',
-  system: '/api/system',
-  auth: '/api/auth',
-  governance: '/api/security/governance',
-  version: '/api/version',
-  release: '/api/release',
-  releases: '/api/releases',
-  integration: '/api/integration',
-  flows: '/api/flows',
-  monitor: '/api/monitor',
-  task: '/api/task',
-  taskInstance: '/api/task/instance',
-  cluster: '/api/cluster',
-  subscribe: '/api/subscribe',
-  camelSubscribe: '/api/subscribe/camel',
-  camelTopology: '/api/camel/topology',
-  config: '/api/config',
+export const GENERATED_API_NAMESPACES = {
+  platform: {
+    platform: '/api/platform',
+    system: '/api/system',
+    governance: '/api/security/governance',
+    version: '/api/version',
+    release: '/api/release',
+    releases: '/api/releases',
+    task: '/api/task',
+    taskInstance: '/api/task/instance',
+    config: '/api/config',
+  },
+  console: {
+    console: '/api/console',
+    auth: '/api/auth',
+    integration: '/api/integration',
+    flows: '/api/flows',
+    monitor: '/api/monitor',
+    cluster: '/api/cluster',
+    subscribe: '/api/subscribe',
+    camelSubscribe: '/api/subscribe/camel',
+    camelTopology: '/api/camel/topology',
+  },
+  executor: {
+    executor: '/api/executor',
+  },
 } as const;
 
 export const GENERATED_API_TARGETS: Record<string, string> = {
@@ -217,100 +223,6 @@ export const GENERATED_STANDALONE_APPS = {
     baseUrl: 'http://localhost:5178',
     proxyPreset: 'standard',
     embedPath: '/?embed=login',
-  },
-} as const;
-
-export const GENERATED_API_PROXY = {
-  presets: {
-    integration: [
-      {
-        prefix: '/api/integration/gateway',
-        target: 'executor',
-      },
-      {
-        prefix: '/api/integration/demo',
-        target: 'executor',
-      },
-      {
-        prefix: '/api/executor',
-        target: 'executor',
-        injectExecutorServiceToken: true,
-      },
-      {
-        prefix: '/api/system',
-        target: 'platform',
-      },
-      {
-        prefix: '/api/platform',
-        target: 'platform',
-      },
-      {
-        prefix: '/api/security/governance',
-        target: 'platform',
-      },
-      {
-        prefix: '/api/version',
-        target: 'platform',
-      },
-      {
-        prefix: '/api/release',
-        target: 'platform',
-      },
-      {
-        prefix: '/api/releases',
-        target: 'platform',
-      },
-      {
-        prefix: '/api/config',
-        target: 'platform',
-      },
-      {
-        prefix: '/api/task',
-        target: 'platform',
-      },
-      {
-        prefix: '/api',
-        target: 'console',
-      },
-    ],
-    standard: [
-      {
-        prefix: '/api/system',
-        target: 'platform',
-      },
-      {
-        prefix: '/api/platform',
-        target: 'platform',
-      },
-      {
-        prefix: '/api/security/governance',
-        target: 'platform',
-      },
-      {
-        prefix: '/api/version',
-        target: 'platform',
-      },
-      {
-        prefix: '/api/release',
-        target: 'platform',
-      },
-      {
-        prefix: '/api/releases',
-        target: 'platform',
-      },
-      {
-        prefix: '/api/config',
-        target: 'platform',
-      },
-      {
-        prefix: '/api/task',
-        target: 'platform',
-      },
-      {
-        prefix: '/api',
-        target: 'console',
-      },
-    ],
   },
 } as const;
 

@@ -50,10 +50,10 @@ bus.emit('auth:logout', { reason: 'session-expired' });
 
 ## API 基座（W12 / G7）
 
-权威配置：`configs/windows.json` → `apiBases` + `apiTargets`。
+权威配置：`configs/windows.json` 只配置 `apiTargets`（后端 origin）。浏览器相对路径按 target 分组，来自 API context 黑盒。
 
-- `apiBases.platform` → `/api/platform`（前端相对路径）
-- `apiTargets.platform` → `http://localhost:8090`（Vite 代理目标）
+- `GENERATED_API_NAMESPACES.platform.platform` → `/api/platform`
+- `GENERATED_API_TARGETS.platform` → `http://localhost:8090`
 - settings / system 类 API 走 platform-console（`:8090`），Camel 域 API 仍走 demo console（`:8080`）
 
 详见 `packages/core/app-shell/SHELL-ARCH.md` 获取 app-shell 侧细节。
