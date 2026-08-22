@@ -1,10 +1,10 @@
 {
   "latestErrorEvent": {
     "code": "TYPE-001",
-    "message": "Failed to generate type declaration. Execute the below cmd to reproduce and fix the error. #TYPE-001\nargs: {\"cmd\":\"E:\\\\developer\\\\VitePlus\\\\js_runtime\\\\node\\\\24.19.0\\\\node.exe F:\\\\nebula-workspace\\\\nebula-studio\\\\node_modules\\\\.pnpm\\\\typescript@6.0.3\\\\node_modules\\\\typescript\\\\bin\\\\tsc --project F:\\\\nebula-workspace\\\\nebula-studio\\\\apps\\\\sub-web\\\\settings\\\\node_modules\\\\.federation\\\\tsconfig.bedb44d600b7470ddb19c3cd9381203e.json\"}\nView the docs to see how to solve: https://module-federation.io/guide/troubleshooting/type#type-001",
+    "message": "Failed to generate type declaration. Execute the below cmd to reproduce and fix the error. #TYPE-001\nargs: {\"cmd\":\"E:\\\\developer\\\\VitePlus\\\\js_runtime\\\\node\\\\24.19.0\\\\node.exe F:\\\\nebula-workspace\\\\nebula-studio\\\\node_modules\\\\.pnpm\\\\typescript@6.0.3\\\\node_modules\\\\typescript\\\\bin\\\\tsc --project F:\\\\nebula-workspace\\\\nebula-studio\\\\apps\\\\sub-web\\\\settings\\\\node_modules\\\\.federation\\\\tsconfig.2af93d94d937bccef297a813f4563f0d.json\"}\nView the docs to see how to solve: https://module-federation.io/guide/troubleshooting/type#type-001",
     "args": {
-      "cmd": "E:\\developer\\VitePlus\\js_runtime\\node\\24.19.0\\node.exe F:\\nebula-workspace\\nebula-studio\\node_modules\\.pnpm\\typescript@6.0.3\\node_modules\\typescript\\bin\\tsc --project F:\\nebula-workspace\\nebula-studio\\apps\\sub-web\\settings\\node_modules\\.federation\\tsconfig.bedb44d600b7470ddb19c3cd9381203e.json"
+      "cmd": "E:\\developer\\VitePlus\\js_runtime\\node\\24.19.0\\node.exe F:\\nebula-workspace\\nebula-studio\\node_modules\\.pnpm\\typescript@6.0.3\\node_modules\\typescript\\bin\\tsc --project F:\\nebula-workspace\\nebula-studio\\apps\\sub-web\\settings\\node_modules\\.federation\\tsconfig.2af93d94d937bccef297a813f4563f0d.json"
     },
-    "timestamp": 1787418907196
+    "timestamp": 1787419101668
   }
 }

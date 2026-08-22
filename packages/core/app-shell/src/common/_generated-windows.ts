@@ -176,7 +176,7 @@ export const GENERATED_REAL_STACK = {
       label: 'Platform Console',
       target: 'platform',
       startupPath: '/actuator/health',
-      probePath: '/api/platform/health',
+      probePath: '/actuator/health',
     },
     {
       id: 'console',
