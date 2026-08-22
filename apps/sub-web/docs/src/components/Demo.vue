@@ -80,8 +80,10 @@ onMounted(() => {
 
     <!-- 源码区域 -->
     <div v-if="showSource" class="demo-source">
+      <!-- eslint-disable vue/no-v-html -- Shiki output from local source -->
       <div v-if="highlightedCode" v-html="highlightedCode"></div>
       <pre v-else><code>{{ source }}</code></pre>
+      <!-- eslint-enable vue/no-v-html -->
     </div>
   </div>
 </template>

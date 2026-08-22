@@ -20,7 +20,7 @@ export function createFederationDistResponse(options: {
   roots: Record<string, string>;
   scheme: string;
 }): {
-  body: Buffer | string;
+  body: import('node:buffer').Buffer | string;
   headers: Record<string, string>;
   status: number;
 };

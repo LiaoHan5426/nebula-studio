@@ -661,10 +661,12 @@ async function handleLogin(): Promise<void> {
           :class="{ 'is-active': selectedSidebarItem === appId }"
           @click="selectIntegratedApp(appId)"
         >
+          <!-- eslint-disable vue/no-v-html -- registry iconSvg is static markup -->
           <span
             class="nebula-layout-nav-item__icon"
             v-html="getShellIntegratedAppMeta(appId).iconSvg"
           ></span>
+          <!-- eslint-enable vue/no-v-html -->
           <span class="nebula-layout-nav-item__label">{{
             getShellIntegratedAppMeta(appId).label
           }}</span>

@@ -58,6 +58,9 @@ catalogs:
     electron-builder:
       specifier: ^26.15.7
       version: 26.15.7
+    electron-updater:
+      specifier: ^6.8.9
+      version: 6.8.9
     electron-vite:
       specifier: ^5.0.0
       version: 5.0.0
@@ -411,7 +414,7 @@ importers:
         specifier: workspace:^
         version: link:../../packages/platform/shell-protocol
       electron-updater:
-        specifier: ^6.8.9
+        specifier: catalog:electron
         version: 6.8.9(supports-color@10.2.2)
       yaml:
         specifier: catalog:parser
@@ -792,6 +795,9 @@ importers:
       '@nebula-studio/nebula-code-editor':
         specifier: workspace:^
         version: link:../../../packages/editors/code-editor
+      '@nebula-studio/nebula-dag-editor':
+        specifier: workspace:^
+        version: link:../../../packages/editors/dag-editor
       '@nebula-studio/nebula-flow-editor':
         specifier: workspace:^
         version: link:../../../packages/editors/flow-editor

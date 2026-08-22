@@ -23,5 +23,7 @@ watch(
 </script>
 
 <template>
+  <!-- eslint-disable vue/no-v-html -- markdown-it output from bundled docs -->
   <article class="markdown-body" v-html="renderedHtml"></article>
+  <!-- eslint-enable vue/no-v-html -->
 </template>

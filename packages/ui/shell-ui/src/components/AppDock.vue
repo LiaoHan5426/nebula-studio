@@ -216,6 +216,7 @@ function selectApp(viewId: string): void {
                 >
                   <NebulaIcon icon="close" />
                 </button>
+                <!-- eslint-disable vue/no-v-html -- registry iconSvg is static markup -->
                 <span
                   class="integration-tile-icon"
                   aria-hidden="true"
@@ -224,6 +225,7 @@ function selectApp(viewId: string): void {
                       .iconSvg
                   "
                 ></span>
+                <!-- eslint-enable vue/no-v-html -->
                 <span class="integration-tile-label">{{
                   getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId)
                     .label
@@ -242,6 +244,7 @@ function selectApp(viewId: string): void {
               @keydown.enter.prevent="selectApp(viewId)"
               @keydown.space.prevent="selectApp(viewId)"
             >
+              <!-- eslint-disable vue/no-v-html -- registry iconSvg is static markup -->
               <span
                 class="integration-tile-icon"
                 aria-hidden="true"
@@ -250,6 +253,7 @@ function selectApp(viewId: string): void {
                     .iconSvg
                 "
               ></span>
+              <!-- eslint-enable vue/no-v-html -->
               <span class="integration-tile-label">
                 {{
                   getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId)
@@ -296,6 +300,7 @@ function selectApp(viewId: string): void {
                 class="integration-add-btn"
                 @click="emit('enable-app', viewId)"
               >
+                <!-- eslint-disable vue/no-v-html -- registry iconSvg is static markup -->
                 <span
                   class="integration-tile-icon sm"
                   aria-hidden="true"
@@ -304,6 +309,7 @@ function selectApp(viewId: string): void {
                       .iconSvg
                   "
                 ></span>
+                <!-- eslint-enable vue/no-v-html -->
                 <span>{{
                   getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId)
                     .label

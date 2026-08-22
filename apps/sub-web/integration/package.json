@@ -42,6 +42,7 @@
     "@nebula-studio/host-capabilities": "workspace:^",
     "@nebula-studio/nebula-assembly": "workspace:^",
     "@nebula-studio/nebula-code-editor": "workspace:^",
+    "@nebula-studio/nebula-dag-editor": "workspace:^",
     "@nebula-studio/nebula-flow-editor": "workspace:^",
     "@nebula-studio/nebula-integration-panel": "workspace:^",
     "@nebula-studio/nebula-layout": "workspace:^",

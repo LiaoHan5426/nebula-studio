@@ -212,11 +212,13 @@ watch(
         aria-busy="true"
       >
         <div class="shell-embed-transition-card">
+          <!-- eslint-disable vue/no-v-html -- registry iconSvg is static markup -->
           <div
             v-if="transitionIconSvg"
             class="shell-embed-transition-icon"
             v-html="transitionIconSvg"
           ></div>
+          <!-- eslint-enable vue/no-v-html -->
           <div class="shell-embed-transition-spinner" aria-hidden="true"></div>
           <p class="shell-embed-transition-title">
             正在打开 {{ transitionLabel }}

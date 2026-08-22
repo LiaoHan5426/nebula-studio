@@ -1,3 +1,5 @@
+import { Buffer } from 'node:buffer';
+
 import { verifyManifestSignature } from './manifestSignature';
 
 const SRI_PATTERN = /^(sha256|sha384|sha512)-([A-Za-z0-9+/=]+)$/;

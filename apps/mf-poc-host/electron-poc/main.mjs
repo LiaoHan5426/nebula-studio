@@ -6,6 +6,7 @@
  * serve check:     same command plus --check
  */
 import { existsSync } from 'node:fs';
+import process from 'node:process';
 
 import {
   federationProtocolPrivileges,
