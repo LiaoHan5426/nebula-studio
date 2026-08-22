@@ -14,6 +14,8 @@ dist-ssr
 .temp
 playwright-report/
 test-results/
+# Module Federation plugin writes a timestamp on every Vite run
+**/.mf/diagnostics/
 # Electron app build artifacts (electron-vite → `out/`, electron-builder → `dist/` under package)
 apps/electron/out/
 apps/electron/dist/
