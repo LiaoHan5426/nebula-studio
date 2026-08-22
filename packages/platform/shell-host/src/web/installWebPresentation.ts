@@ -1,4 +1,5 @@
 import type { PreferenceIpcListener } from './webShellEmbeddedState';
+import type { ThemePreference } from '@nebula-studio/tokens';
 
 import { loginWithBackendAuth } from '@nebula-studio/auth-provider/backend';
 import {
@@ -11,6 +12,12 @@ import {
   markWebPresentationHost,
   markWebShellHost,
 } from '@nebula-studio/shell-protocol';
+import { createWebStorage } from '@nebula-studio/storage';
+import {
+  mergeThemePreference,
+  PRODUCT_DEFAULT_PREFERENCE,
+  THEME_STORAGE_KEY,
+} from '@nebula-studio/tokens';
 
 import {
   createWebPreferenceBridge,
@@ -21,7 +28,7 @@ import {
 import { createWebNotifyApi } from './webNotify';
 import { createWebShellEmbeddedStateHandlers } from './webShellEmbeddedState';
 
-type ThemeMode = 'dark' | 'light';
+type ThemeMode = 'dark' | 'light' | 'system';
 
 const DEFAULT_WEB_THEME_KEY = 'nebula-studio-web-theme';
 const DEFAULT_WEB_LOCALE_KEY = 'nebula-studio-web-locale';
@@ -54,6 +61,19 @@ export interface InstallWebPresentationOptions {
   };
 }
 
+function windowApiIsSealed(
+  target: typeof globalThis & { api?: unknown },
+): boolean {
+  if (!Object.hasOwn(target, 'api')) {
+    return false;
+  }
+  const descriptor = Object.getOwnPropertyDescriptor(target, 'api');
+  return Boolean(
+    descriptor &&
+    (descriptor.writable === false || descriptor.configurable === false),
+  );
+}
+
 /**
  * 纯 Web / GitHub Pages：注入 `window.api`（含 ipc / 认证 / 通知 / 主题），
  * 使壳层 composable 与 Electron preload 对齐，但不伪造 `window.electron`。
@@ -69,6 +89,7 @@ export function installWebPresentation(
     };
   };
   if (g.api?.ipc && g.api?.auth) return;
+  if (windowApiIsSealed(g)) return;
 
   markWebPresentationHost();
 
@@ -87,11 +108,45 @@ export function installWebPresentation(
     options.locale?.crossDocumentStorageKey ?? localeStorageKey;
   const defaultLocale = options.locale?.default?.trim() || 'zh-CN';
 
+  const readStoredPreference = (): ThemePreference => {
+    try {
+      const stored =
+        createWebStorage(localStorage).get<unknown>(THEME_STORAGE_KEY);
+      return mergeThemePreference(
+        stored && typeof stored === 'object'
+          ? (stored as Partial<ThemePreference>)
+          : undefined,
+      );
+    } catch {
+      return PRODUCT_DEFAULT_PREFERENCE;
+    }
+  };
+
+  const writeStoredPreference = (preference: ThemePreference) => {
+    try {
+      createWebStorage(localStorage).set(THEME_STORAGE_KEY, preference, {
+        privacy: 'device',
+      });
+      localStorage.setItem(themeStorageKey, preference.colorScheme);
+    } catch {
+      /* ignore */
+    }
+  };
+
   const readStoredTheme = (): ThemeMode => {
     try {
+      const fromPreference = readStoredPreference().colorScheme;
+      if (
+        fromPreference === 'light' ||
+        fromPreference === 'dark' ||
+        fromPreference === 'system'
+      ) {
+        return fromPreference;
+      }
       const raw = localStorage.getItem(themeStorageKey);
       if (raw === 'light') return 'light';
       if (raw === 'dark') return 'dark';
+      if (raw === 'system') return 'system';
       return defaultTheme;
     } catch {
       return defaultTheme;
@@ -99,11 +154,10 @@ export function installWebPresentation(
   };
 
   const writeStoredTheme = (value: ThemeMode) => {
-    try {
-      localStorage.setItem(themeStorageKey, value);
-    } catch {
-      /* ignore */
-    }
+    writeStoredPreference({
+      ...readStoredPreference(),
+      colorScheme: value,
+    });
   };
 
   const readStoredLocale = (): string => {
@@ -131,7 +185,9 @@ export function installWebPresentation(
     write: writeStoredTheme,
     normalizeFromInvokeArgs: (args) => {
       const raw = args[0] as undefined | { theme?: string };
-      return raw?.theme === 'light' ? 'light' : 'dark';
+      return raw?.theme === 'light' || raw?.theme === 'system'
+        ? raw.theme
+        : 'dark';
     },
     crossDocumentStorageKey: themeCrossKey,
   });
@@ -201,12 +257,17 @@ export function installWebPresentation(
       getTheme: () => ipc.invoke('settings:theme:get') as Promise<ThemeMode>,
       setTheme: (theme: ThemeMode) =>
         ipc.invoke('settings:theme:set', { theme }) as Promise<ThemeMode>,
+      getPreference: async () => readStoredPreference(),
+      setPreference: async (preference: ThemePreference) => {
+        writeStoredPreference(mergeThemePreference(preference));
+        return readStoredPreference();
+      },
       onThemeChanged: (listener: (payload: { theme: ThemeMode }) => void) => {
         const wrap = (_event: unknown, ...args: unknown[]) => {
           const payload = args[0] as Record<string, unknown> | undefined;
           const t = payload?.theme;
           listener({
-            theme: t === 'light' ? 'light' : 'dark',
+            theme: t === 'light' || t === 'system' || t === 'dark' ? t : 'dark',
           });
         };
         ipc.on('settings:theme:changed', wrap);

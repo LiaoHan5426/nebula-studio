@@ -4,21 +4,40 @@ import { dirname, join } from 'node:path';
 import { app } from 'electron';
 import { parse, stringify } from 'yaml';
 
+import type { ThemePreference } from '@nebula-studio/tokens';
+import {
+  mergeThemePreference,
+  PRODUCT_DEFAULT_PREFERENCE,
+} from '@nebula-studio/tokens';
+
 type ConfigShape = Record<string, unknown>;
 interface LogConfig {
   dir?: string;
 }
 
-type ThemeMode = 'dark' | 'light';
+type ThemeMode = 'dark' | 'light' | 'system';
 
 interface UiConfig {
-  theme?: ThemeMode;
   locale?: string;
+  theme?: ThemeMode;
+  themePreference?: ThemePreference;
 }
 
 interface NebulaConfig {
   log?: LogConfig;
   ui?: UiConfig;
+}
+
+function isThemePreference(value: unknown): value is ThemePreference {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+  const record = value as ThemePreference;
+  return (
+    record.colorScheme === 'dark' ||
+    record.colorScheme === 'light' ||
+    record.colorScheme === 'system'
+  );
 }
 
 export class ConfigManager {
@@ -51,7 +70,19 @@ export class ConfigManager {
   }
 
   getTheme(): ThemeMode {
-    return this.#cache.ui?.theme === 'light' ? 'light' : 'dark';
+    return this.getThemePreference().colorScheme;
+  }
+
+  getThemePreference(): ThemePreference {
+    const stored = this.#cache.ui?.themePreference;
+    if (isThemePreference(stored)) {
+      return mergeThemePreference(stored);
+    }
+    const legacy = this.#cache.ui?.theme;
+    if (legacy === 'light' || legacy === 'dark' || legacy === 'system') {
+      return mergeThemePreference({ colorScheme: legacy });
+    }
+    return PRODUCT_DEFAULT_PREFERENCE;
   }
 
   set(key: string, value: unknown): void {
@@ -78,9 +109,18 @@ export class ConfigManager {
   }
 
   setTheme(theme: ThemeMode): void {
+    this.setThemePreference({
+      ...this.getThemePreference(),
+      colorScheme: theme,
+    });
+  }
+
+  setThemePreference(preference: ThemePreference): void {
+    const next = mergeThemePreference(preference);
     this.#cache.ui = {
       ...this.#cache.ui,
-      theme,
+      theme: next.colorScheme,
+      themePreference: next,
     };
     this.#save();
   }

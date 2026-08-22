@@ -21,6 +21,9 @@
       "default": "./src/index.ts"
     }
   },
+  "dependencies": {
+    "@nebula-studio/tokens": "workspace:^"
+  },
   "devDependencies": {
     "@nebula-studio-internal/tsconfig": "workspace:^",
     "typescript": "catalog:types"

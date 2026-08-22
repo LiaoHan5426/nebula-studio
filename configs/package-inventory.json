@@ -2,17 +2,17 @@
   "schemaVersion": 1,
   "totals": {
     "apps": 11,
-    "packages": 30,
+    "packages": 35,
     "internal": 2,
     "tools": 6,
-    "all": 49
+    "all": 54
   },
   "maxTotals": {
     "apps": 11,
-    "packages": 30,
+    "packages": 35,
     "internal": 2,
     "tools": 6,
-    "all": 49
+    "all": 54
   },
   "packages": [
     {
@@ -181,6 +181,16 @@
       "category": "packages"
     },
     {
+      "name": "@nebula-studio/i18n",
+      "dir": "packages/platform/i18n",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/query",
+      "dir": "packages/platform/query",
+      "category": "packages"
+    },
+    {
       "name": "@nebula-studio/shell-host",
       "dir": "packages/platform/shell-host",
       "category": "packages"
@@ -188,6 +198,16 @@
     {
       "name": "@nebula-studio/shell-protocol",
       "dir": "packages/platform/shell-protocol",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/state",
+      "dir": "packages/platform/state",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/storage",
+      "dir": "packages/platform/storage",
       "category": "packages"
     },
     {
@@ -228,6 +248,11 @@
     {
       "name": "@nebula-studio/nebula-shell",
       "dir": "packages/ui/shell-ui",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/tokens",
+      "dir": "packages/ui/tokens",
       "category": "packages"
     },
     {

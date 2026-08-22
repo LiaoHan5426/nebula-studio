@@ -24,6 +24,17 @@ export function alignLoopbackIframeSrc(
   }
 }
 
+function alignLoopbackOrigin(
+  origin: string,
+  pageOrigin: string,
+): string | null {
+  try {
+    return new URL(alignLoopbackIframeSrc(origin, pageOrigin)).origin;
+  } catch {
+    return null;
+  }
+}
+
 export function isIframeSrcAllowed(
   src: string,
   allowedOrigins: readonly string[] | undefined,
@@ -44,7 +55,12 @@ export function isIframeSrcAllowed(
   if (allow.length === 0) {
     return srcOrigin === pageOrigin;
   }
-  return allow.includes(srcOrigin);
+  const alignedAllow = new Set(
+    allow
+      .map((origin) => alignLoopbackOrigin(origin, pageOrigin))
+      .filter((value): value is string => Boolean(value)),
+  );
+  return alignedAllow.has(srcOrigin);
 }
 
 export function iframeFrameOrigins(
@@ -54,7 +70,7 @@ export function iframeFrameOrigins(
     manifestUrl?: string;
   }[],
   pageOrigin: string,
-  resolveSrc: (entry: { defaultPath?: string; manifestUrl?: string; }) => string,
+  resolveSrc: (entry: { defaultPath?: string; manifestUrl?: string }) => string,
 ): string[] {
   const extras = new Set<string>();
   for (const entry of entries) {

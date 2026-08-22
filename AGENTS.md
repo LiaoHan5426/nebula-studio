@@ -11,8 +11,9 @@ This monorepo uses **[Vite+](https://viteplus.dev/guide/)** — unified runtime,
 | Task | Command (from repo root unless noted) |
 | --- | --- |
 | Install dependencies | `vp install` |
-| Web shell dev (integration embedded) | `vp run dev:web` → http://localhost:5173 |
-| Integration app only (standalone + API proxy) | `vp run --filter @nebula-studio-renderer/integration dev` → http://localhost:5174 |
+| Web shell | `vp run dev:web` → http://localhost:5173。Host 会探测并拉起 Docs / Settings / Integration Remote |
+| Electron shell | `vp run dev`。同样由 Host 组合 Federation Remote，不必再开三个终端 |
+| Integration standalone | `vp run --filter @nebula-studio-renderer/integration dev` → windows.json 中的独立端口（调试单个 Remote 时才需要） |
 | Typecheck integration package | `vp run --filter @nebula-studio-renderer/integration typecheck` |
 | Format + lint + typecheck | `vp check` |
 | Tests | `vp test` or `vp run test` |
@@ -34,8 +35,8 @@ Typical local stack before manual or API smoke tests:
    - Executor `:8088` — from `nebula-platform/platform-integration-executor`: `mvn spring-boot:run -DskipTests`
    - Do **not** use `mvn -pl … spring-boot:run` from the parent POM alone (it may bind to `nebula-parent` and fail); run from each demo module directory or `-f demos/demo-camel-console/pom.xml`.
 2. **Frontend** (this repo, **use `vp`**):
-   - **Recommended:** `vp run dev:web` — open http://localhost:5173, enter「应用集成」→「集成平台」
-   - **Standalone integration:** `vp run --filter @nebula-studio-renderer/integration dev` — http://localhost:5174 (proxies `/api` → console 8080, gateway/demo → executor 8088)
+   - **Recommended:** `vp run dev:web` — open http://localhost:5173, enter「应用集成」→「集成平台」。Docs / Settings / Integration 由 Host 开发服务器组合，无需手动各起一次。
+   - **Standalone integration:** `vp run --filter @nebula-studio-renderer/integration dev` — 只在单独调试 Integration 时使用（proxies `/api` → console 8080, gateway/demo → executor 8088）
 3. **Demo login:** `admin` / `admin123` or `demo` / `demo`; default tenant header `tenant-a`, API key `demo-api-key-tenant-a` for gateway demos.
 
 Smoke checks: login → tenant list/switch → subscriptions + SSE → gateway call → monitor APIs. Use `curl.exe` on Windows (PowerShell `curl` is an alias for `Invoke-WebRequest`).

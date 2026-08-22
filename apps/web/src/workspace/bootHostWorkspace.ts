@@ -1,6 +1,9 @@
 import type { RuntimeMode } from '@nebula-studio/shell-protocol';
 
-import { redirectShellToWebLogin, shouldRedirectUnauthenticatedWebShell } from '@nebula-studio/auth-provider/web';
+import {
+  redirectShellToWebLogin,
+  shouldRedirectUnauthenticatedWebShell,
+} from '@nebula-studio/auth-provider/web';
 import '@nebula-studio/nebula-layout';
 import '@nebula-studio/nebula-ui';
 import { bootMicroApp } from '@nebula-studio/runtime';

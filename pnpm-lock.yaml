@@ -167,6 +167,10 @@ catalogs:
     yaml:
       specifier: ^2.9.0
       version: 2.9.0
+  query:
+    '@tanstack/vue-query':
+      specifier: ^5.92.9
+      version: 5.101.4
   style:
     '@iconify/tailwind4':
       specifier: ^1.2.3
@@ -296,9 +300,15 @@ catalogs:
     '@vueuse/core':
       specifier: ^13.9.0
       version: 13.9.0
+    pinia:
+      specifier: ^3.0.4
+      version: 3.0.4
     vue:
       specifier: ^3.5.41
       version: 3.5.41
+    vue-i18n:
+      specifier: ^11.2.8
+      version: 11.4.8
     vue-router:
       specifier: ^4.6.4
       version: 4.6.4
@@ -413,6 +423,9 @@ importers:
       '@nebula-studio/shell-protocol':
         specifier: workspace:^
         version: link:../../packages/platform/shell-protocol
+      '@nebula-studio/tokens':
+        specifier: workspace:^
+        version: link:../../packages/ui/tokens
       electron-updater:
         specifier: catalog:electron
         version: 6.8.9(supports-color@10.2.2)
@@ -956,6 +969,9 @@ importers:
       '@nebula-studio/contracts':
         specifier: workspace:^
         version: link:../../../packages/contracts
+      '@nebula-studio/host-capabilities':
+        specifier: workspace:^
+        version: link:../../../packages/platform/host-capabilities
       '@nebula-studio/nebula-layout':
         specifier: workspace:^
         version: link:../../../packages/ui/nebula-layout
@@ -974,6 +990,9 @@ importers:
       '@nebula-studio/styles':
         specifier: workspace:^
         version: link:../../../packages/styles
+      '@nebula-studio/tokens':
+        specifier: workspace:^
+        version: link:../../../packages/ui/tokens
       '@nebula-studio/use-confirm':
         specifier: workspace:^
         version: link:../../../packages/features/use-confirm
@@ -1473,6 +1492,10 @@ importers:
         version: 4.1.10(@types/node@26.2.0)(@vitest/browser-preview@4.1.10)(happy-dom@20.11.2)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))
 
   packages/platform/application-contract:
+    dependencies:
+      '@nebula-studio/tokens':
+        specifier: workspace:^
+        version: link:../../ui/tokens
     devDependencies:
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
@@ -1548,6 +1571,50 @@ importers:
       '@nebula-studio/auth-provider':
         specifier: workspace:^
         version: link:../../core/auth-provider
+      '@nebula-studio/storage':
+        specifier: workspace:^
+        version: link:../storage
+      '@nebula-studio/tokens':
+        specifier: workspace:^
+        version: link:../../ui/tokens
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../../tools/tsconfig
+      typescript:
+        specifier: catalog:types
+        version: 6.0.3
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.10(@types/node@26.2.0)(@vitest/browser-preview@4.1.10)(happy-dom@20.11.2)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))
+
+  packages/platform/i18n:
+    dependencies:
+      vue:
+        specifier: catalog:vue
+        version: 3.5.41(typescript@6.0.3)
+      vue-i18n:
+        specifier: catalog:vue
+        version: 11.4.8(vue@3.5.41(typescript@6.0.3))
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../../tools/tsconfig
+      typescript:
+        specifier: catalog:types
+        version: 6.0.3
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.10(@types/node@26.2.0)(@vitest/browser-preview@4.1.10)(happy-dom@20.11.2)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))
+
+  packages/platform/query:
+    dependencies:
+      '@tanstack/vue-query':
+        specifier: catalog:query
+        version: 5.101.4(vue@3.5.41(typescript@6.0.3))
+      vue:
+        specifier: catalog:vue
+        version: 3.5.41(typescript@6.0.3)
     devDependencies:
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
@@ -1573,6 +1640,12 @@ importers:
       '@nebula-studio/shell-protocol':
         specifier: workspace:^
         version: link:../shell-protocol
+      '@nebula-studio/storage':
+        specifier: workspace:^
+        version: link:../storage
+      '@nebula-studio/tokens':
+        specifier: workspace:^
+        version: link:../../ui/tokens
     devDependencies:
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
@@ -1585,6 +1658,46 @@ importers:
         version: 6.0.3
 
   packages/platform/shell-protocol:
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../../tools/tsconfig
+      happy-dom:
+        specifier: catalog:vite
+        version: 20.11.2
+      typescript:
+        specifier: catalog:types
+        version: 6.0.3
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.10(@types/node@26.2.0)(@vitest/browser-preview@4.1.10)(happy-dom@20.11.2)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))
+
+  packages/platform/state:
+    dependencies:
+      '@nebula-studio/storage':
+        specifier: workspace:^
+        version: link:../storage
+      pinia:
+        specifier: catalog:vue
+        version: 3.0.4(typescript@6.0.3)(vue@3.5.41(typescript@6.0.3))
+      vue:
+        specifier: catalog:vue
+        version: 3.5.41(typescript@6.0.3)
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../../tools/tsconfig
+      happy-dom:
+        specifier: catalog:vite
+        version: 20.11.2
+      typescript:
+        specifier: catalog:types
+        version: 6.0.3
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.10(@types/node@26.2.0)(@vitest/browser-preview@4.1.10)(happy-dom@20.11.2)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))
+
+  packages/platform/storage:
     devDependencies:
       '@nebula-studio-internal/tsconfig':
         specifier: workspace:^
@@ -1804,6 +1917,18 @@ importers:
       happy-dom:
         specifier: catalog:vite
         version: 20.11.2
+      typescript:
+        specifier: catalog:types
+        version: 6.0.3
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.10(@types/node@26.2.0)(@vitest/browser-preview@4.1.10)(happy-dom@20.11.2)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))
+
+  packages/ui/tokens:
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../../tools/tsconfig
       typescript:
         specifier: catalog:types
         version: 6.0.3
@@ -2770,6 +2895,22 @@ packages:
 
   '@internationalized/number@3.6.7':
     resolution: {integrity: sha512-3ji1fcrT+FPAK86UqEhB/psHixYo6niWPJtt7+qRaYFynt/BaJG8GhAPimtWUpEiVSTq8ZM8L5psMxGquiB/Vg==}
+
+  '@intlify/core-base@11.4.8':
+    resolution: {integrity: sha512-A+Q7SKm5oEcy1E/cghqd7n/St4XjTqLhiiyDuieNcMrJcrHlkY5n0jp7Q9dD3txvVHzvsmBVV5M9wD5/s1zfzw==}
+    engines: {node: '>= 22'}
+
+  '@intlify/devtools-types@11.4.8':
+    resolution: {integrity: sha512-MGpID+rlfzGUbNcnC20bm5NMSBHPrvx0atLTfv9dftn3kjXw1hGKDcIcwrO99tSrZEc2i+hczRL7ks8qXsHPkQ==}
+    engines: {node: '>= 22'}
+
+  '@intlify/message-compiler@11.4.8':
+    resolution: {integrity: sha512-vbzk17dYwduYiv52EK61+FDCyhfVg1uPUtPmiD/d45W99uJIcXywrweOBcHv7n9/iEqmXiMGT52bgJbZDQqK3w==}
+    engines: {node: '>= 22'}
+
+  '@intlify/shared@11.4.8':
+    resolution: {integrity: sha512-XbRgrv+XEuvDr7UCY55oibVrh+o4u+A0VB6nSL0F5Z8LcZxE/8j573LYG6bCrOigIcHdGpSNI7Rh5UpC5/B/eg==}
+    engines: {node: '>= 22'}
 
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -3870,8 +4011,24 @@ packages:
     peerDependencies:
       vite: ^8.1.3
 
+  '@tanstack/match-sorter-utils@8.19.4':
+    resolution: {integrity: sha512-Wo1iKt2b9OT7d+YGhvEPD3DXvPv2etTusIMhMUoG7fbhmxcXCtIjJDEygy91Y2JFlwGyjqiBPRozme7UD8hoqg==}
+    engines: {node: '>=12'}
+
+  '@tanstack/query-core@5.101.4':
+    resolution: {integrity: sha512-gNwcvOJcRbLWPOLG/2OBm+zM+Yv+MKsXKEOWC57USuZDEsI71hEErQsiEGx5wX9rzWWkfwM0fVSPoiIFSsxfiw==}
+
   '@tanstack/virtual-core@3.17.3':
     resolution: {integrity: sha512-8Np/TFELpI0ySuJoVmjvOrQYXH/8sTX0Biv9szhFhY39xOdAAY+smrMxjxOum/ux3eM8MUJQsEJ0/R0UpvC8dw==}
+
+  '@tanstack/vue-query@5.101.4':
+    resolution: {integrity: sha512-UYjkUZhnWQIFGNb7SdgjCitAftNyYQfOIVUh6vBUQAG4SQKNMSBKeQERFDubpxLAMpIBJTaOrE8fM4c1kZcIGQ==}
+    peerDependencies:
+      '@vue/composition-api': ^1.1.2
+      vue: ^2.6.0 || ^3.3.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
 
   '@tanstack/vue-virtual@3.13.31':
     resolution: {integrity: sha512-wZMEoSf852jQqaf3Ika1J7PiBae6341LNy/2CxmIyn0XKDQXMuK41wVX+xp6G0yx8jyR95Ef+Tdr13DK7mbJtQ==}
@@ -4906,8 +5063,8 @@ packages:
     resolution: {integrity: sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ==}
     engines: {node: '>=18'}
 
-  copy-anything@4.0.5:
-    resolution: {integrity: sha512-7Vv6asjS4gMOuILabD3l739tsaxFQmC+a7pLZm02zyvs8p977bL3zEgq3yDk5rn9B0PbYgIv++jmHcuUab4RhA==}
+  copy-anything@4.1.0:
+    resolution: {integrity: sha512-ufbM3smX/Jbnpk5wcQjzd1MgBpzmqfNETUAyZNrGwU9foRlyHoGzMMBBCRzEhQLBjZfFDE1W2ufPXX2vdWkV8Q==}
     engines: {node: '>=18'}
 
   core-util-is@1.0.3:
@@ -5781,10 +5938,6 @@ packages:
     resolution: {integrity: sha512-VRSzKkbMm5jMDoKLbltAkFQ5Qr7VDiTFGXxYFXXowVj387GeGNOCsOH6Msy00SGZ3Fp84b1Naa1psqgcCIEP5Q==}
     engines: {node: '>=0.10.0'}
 
-  is-what@5.5.0:
-    resolution: {integrity: sha512-oG7cgbmg5kLYae2N5IVd3jm2s+vldjxJzK1pcu9LfpGuQ93MQSzo0okvRna+7y5ifrD+20FE8FvjusyGaz14fw==}
-    engines: {node: '>=18'}
-
   isarray@1.0.0:
     resolution: {integrity: sha512-VLghIWNM6ELQzo7zwmcg0NmTVyWKYjvIeM83yjp0wRDTmUnrM678fQbcKBo6n2CJEF0szoG//ytg+TKla89ALQ==}
 
@@ -6506,6 +6659,15 @@ packages:
     resolution: {integrity: sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==}
     engines: {node: '>=6'}
 
+  pinia@3.0.4:
+    resolution: {integrity: sha512-l7pqLUFTI/+ESXn6k3nu30ZIzW5E2WZF/LaHJEpoq6ElcLD+wduZoB2kBN19du6K/4FDpPMazY2wJr+IndBtQw==}
+    peerDependencies:
+      typescript: '>=4.5.0'
+      vue: ^3.5.11
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   pkijs@3.4.0:
     resolution: {integrity: sha512-emEcLuomt2j03vxD54giVB4SxTjnsqkU692xZOZXHDVoYyypEm+b3jpiTcc+Cf+myooc+/Ly0z01jqeNHVgJGw==}
     engines: {node: '>=16.0.0'}
@@ -6687,6 +6849,9 @@ packages:
     resolution: {integrity: sha512-nJGZbwcha8AcP2wbnjodfzsciTKBqp1mIzepC9Pi2xDI/YK3++ej3vpJOSPyxqrkq1Oorj4K+BdJkbVCV6x6ag==}
     peerDependencies:
       vue: '>= 3.4.0'
+
+  remove-accents@0.5.0:
+    resolution: {integrity: sha512-8g3/Otx1eJaVD12e31UbJj1YzdtVvzH85HV7t+9MJYk/u3XmkOUJ5Ys9wQrf9PCPK8+xn4ymzqYCiZl6QWKn+A==}
 
   require-directory@2.1.1:
     resolution: {integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==}
@@ -7366,6 +7531,12 @@ packages:
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0 || ^10.0.0
+
+  vue-i18n@11.4.8:
+    resolution: {integrity: sha512-0ULeHP6Z9CGvAm67S77ZEp41cfGXIREGL8qfhos2BMgcQQewtQcDKuojt6jjasAD/S8GwfTp2ySPmDSpwvrCMQ==}
+    engines: {node: '>= 22'}
+    peerDependencies:
+      vue: ^3.0.0
 
   vue-router@4.6.4:
     resolution: {integrity: sha512-Hz9q5sa33Yhduglwz6g9skT8OBPii+4bFn88w6J+J4MfEo4KRRpmiNG/hHHkdbRFlLBOqxN8y8gf2Fb0MTUgVg==}
@@ -8387,6 +8558,24 @@ snapshots:
     dependencies:
       '@swc/helpers': 0.5.23
 
+  '@intlify/core-base@11.4.8':
+    dependencies:
+      '@intlify/devtools-types': 11.4.8
+      '@intlify/message-compiler': 11.4.8
+      '@intlify/shared': 11.4.8
+
+  '@intlify/devtools-types@11.4.8':
+    dependencies:
+      '@intlify/core-base': 11.4.8
+      '@intlify/shared': 11.4.8
+
+  '@intlify/message-compiler@11.4.8':
+    dependencies:
+      '@intlify/shared': 11.4.8
+      source-map-js: 1.2.1
+
+  '@intlify/shared@11.4.8': {}
+
   '@isaacs/cliui@8.0.2':
     dependencies:
       string-width: 5.1.2
@@ -9183,7 +9372,21 @@ snapshots:
       tailwindcss: 4.3.3
       vite: 8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0)
 
+  '@tanstack/match-sorter-utils@8.19.4':
+    dependencies:
+      remove-accents: 0.5.0
+
+  '@tanstack/query-core@5.101.4': {}
+
   '@tanstack/virtual-core@3.17.3': {}
+
+  '@tanstack/vue-query@5.101.4(vue@3.5.41(typescript@6.0.3))':
+    dependencies:
+      '@tanstack/match-sorter-utils': 8.19.4
+      '@tanstack/query-core': 5.101.4
+      '@vue/devtools-api': 6.6.4
+      vue: 3.5.41(typescript@6.0.3)
+      vue-demi: 0.14.10(vue@3.5.41(typescript@6.0.3))
 
   '@tanstack/vue-virtual@3.13.31(vue@3.5.41(typescript@6.0.3))':
     dependencies:
@@ -10427,9 +10630,7 @@ snapshots:
 
   cookie@1.1.1: {}
 
-  copy-anything@4.0.5:
-    dependencies:
-      is-what: 5.5.0
+  copy-anything@4.1.0: {}
 
   core-util-is@1.0.3: {}
 
@@ -11465,8 +11666,6 @@ snapshots:
 
   is-plain-object@5.0.0: {}
 
-  is-what@5.5.0: {}
-
   isarray@1.0.0: {}
 
   isbinaryfile@4.0.10: {}
@@ -12299,6 +12498,13 @@ snapshots:
 
   pify@4.0.1: {}
 
+  pinia@3.0.4(typescript@6.0.3)(vue@3.5.41(typescript@6.0.3)):
+    dependencies:
+      '@vue/devtools-api': 7.7.10
+      vue: 3.5.41(typescript@6.0.3)
+    optionalDependencies:
+      typescript: 6.0.3
+
   pkijs@3.4.0:
     dependencies:
       '@noble/hashes': 1.4.0
@@ -12493,6 +12699,8 @@ snapshots:
       vue: 3.5.41(typescript@6.0.3)
     transitivePeerDependencies:
       - '@vue/composition-api'
+
+  remove-accents@0.5.0: {}
 
   require-directory@2.1.1: {}
 
@@ -12797,7 +13005,7 @@ snapshots:
 
   superjson@2.2.6:
     dependencies:
-      copy-anything: 4.0.5
+      copy-anything: 4.1.0
 
   supports-color@10.2.2: {}
 
@@ -13400,6 +13608,14 @@ snapshots:
       semver: 7.8.5
     transitivePeerDependencies:
       - supports-color
+
+  vue-i18n@11.4.8(vue@3.5.41(typescript@6.0.3)):
+    dependencies:
+      '@intlify/core-base': 11.4.8
+      '@intlify/devtools-types': 11.4.8
+      '@intlify/shared': 11.4.8
+      '@vue/devtools-api': 6.6.4
+      vue: 3.5.41(typescript@6.0.3)
 
   vue-router@4.6.4(vue@3.5.41(typescript@6.0.3)):
     dependencies:

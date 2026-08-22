@@ -1,5 +1,7 @@
 import type { RuntimeMode } from '@nebula-studio/shell-protocol';
 
+import { HOST_CAPABILITIES_KEY } from '@nebula-studio/application-contract';
+import { createWebEmbedHostCapabilities } from '@nebula-studio/host-capabilities';
 import { bootMicroApp } from '@nebula-studio/runtime';
 import { installWebPresentationUnlessElectron } from '@nebula-studio/shell-host';
 import '@nebula-studio/styles/document';
@@ -48,6 +50,7 @@ export async function bootSettings(opts: { mode: RuntimeMode }): Promise<void> {
     auth: { enabled: true },
     embedDefaultRoute: mode === 'platform-embed' ? '/users' : undefined,
     beforeMount(app) {
+      app.provide(HOST_CAPABILITIES_KEY, createWebEmbedHostCapabilities());
       installAssemblyForSubApp(app, mode);
     },
   });

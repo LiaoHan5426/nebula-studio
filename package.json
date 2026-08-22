@@ -32,6 +32,7 @@
     "check:css-sources": "node ./scripts/check-css-sources.mjs",
     "check:boundaries": "node ./scripts/check-boundaries.mjs",
     "check:inventory": "node ./scripts/check-inventory.mjs",
+    "check:b-inventory": "node ./scripts/check-b-inventory.mjs",
     "check:editors": "node ./scripts/check-editor-boundaries.mjs && vp run @nebula-studio/nebula-code-editor#typecheck && vp run @nebula-studio/nebula-code-editor#test && vp run @nebula-studio/nebula-code-editor#build && vp run @nebula-studio/nebula-code-editor#check:bundle",
     "check:mf-poc": "node ./scripts/check-mf-poc.mjs",
     "check:docs-mf": "node ./scripts/check-docs-mf.mjs",

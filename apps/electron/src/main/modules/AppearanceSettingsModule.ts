@@ -3,10 +3,16 @@ import type { MainModule, MainModuleContext } from '../bootstrap/MainModule';
 import { is } from '@electron-toolkit/utils';
 import { ipcMain, nativeTheme } from 'electron';
 
-type ThemeMode = 'dark' | 'light';
+import type { ThemePreference } from '@nebula-studio/tokens';
+import { resolveTheme } from '@nebula-studio/tokens';
+
+type ThemeMode = 'dark' | 'light' | 'system';
 
 function normalizeTheme(theme: unknown): ThemeMode {
-  return theme === 'light' ? 'light' : 'dark';
+  if (theme === 'light' || theme === 'system') {
+    return theme;
+  }
+  return 'dark';
 }
 
 function normalizeLocale(locale: unknown, fallback: string): string {
@@ -14,12 +20,17 @@ function normalizeLocale(locale: unknown, fallback: string): string {
   return fallback;
 }
 
+function systemScheme(): 'dark' | 'light' {
+  return nativeTheme.shouldUseDarkColors ? 'dark' : 'light';
+}
+
 function applyNativeAppearance(
   context: MainModuleContext,
-  theme: ThemeMode,
+  preference: ThemePreference,
 ): void {
-  nativeTheme.themeSource = theme;
-  const bg = theme === 'light' ? '#f6f8ff' : '#0f0f14';
+  nativeTheme.themeSource = preference.colorScheme;
+  const resolved = resolveTheme(preference, systemScheme());
+  const bg = resolved.scheme === 'light' ? '#f6f8ff' : '#0f0f14';
   context.windowManager.getMainWindow()?.setBackgroundColor(bg);
 }
 
@@ -27,10 +38,14 @@ export class AppearanceSettingsModule implements MainModule {
   readonly name = 'AppearanceSettings';
 
   setup(context: MainModuleContext): void {
-    applyNativeAppearance(context, context.configManager.getTheme());
+    applyNativeAppearance(context, context.configManager.getThemePreference());
 
     ipcMain.handle('settings:theme:get', () =>
       context.configManager.getTheme(),
+    );
+
+    ipcMain.handle('settings:theme:getPreference', () =>
+      context.configManager.getThemePreference(),
     );
 
     ipcMain.handle(
@@ -38,14 +53,32 @@ export class AppearanceSettingsModule implements MainModule {
       (_event, payload: { theme?: unknown }) => {
         const nextTheme = normalizeTheme(payload?.theme);
         context.configManager.setTheme(nextTheme);
-        applyNativeAppearance(context, nextTheme);
+        const preference = context.configManager.getThemePreference();
+        applyNativeAppearance(context, preference);
         context.windowManager.broadcast('settings:theme:changed', {
           theme: nextTheme,
+          preference,
         });
         context.logger.info(
           `[settings:theme] theme switched to "${nextTheme}"`,
         );
         return nextTheme;
+      },
+    );
+
+    ipcMain.handle(
+      'settings:theme:setPreference',
+      (_event, payload: { preference?: ThemePreference }) => {
+        if (payload?.preference) {
+          context.configManager.setThemePreference(payload.preference);
+        }
+        const preference = context.configManager.getThemePreference();
+        applyNativeAppearance(context, preference);
+        context.windowManager.broadcast('settings:theme:changed', {
+          theme: preference.colorScheme,
+          preference,
+        });
+        return preference;
       },
     );
 

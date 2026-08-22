@@ -219,9 +219,7 @@ if (
 ) {
   fail('layoutHost helpers must live in @nebula-studio/shell-protocol');
 }
-if (
-  existsSync(join(root, 'packages/core/runtime/src/detectMode.ts'))
-) {
+if (existsSync(join(root, 'packages/core/runtime/src/detectMode.ts'))) {
   fail('packages/core/runtime/src/detectMode.ts must stay deleted');
 }
 
@@ -370,13 +368,17 @@ for (const rel of [
     manifest &&
     depNames(manifest, ['dependencies']).has('@nebula-studio-internal/node')
   ) {
-    fail(`${rel} production deps must not include @nebula-studio-internal/node`);
+    fail(
+      `${rel} production deps must not include @nebula-studio-internal/node`,
+    );
   }
   if (
     manifest &&
     depNames(manifest, ['dependencies']).has('@nebula-studio-internal/vite')
   ) {
-    fail(`${rel} production deps must not include @nebula-studio-internal/vite`);
+    fail(
+      `${rel} production deps must not include @nebula-studio-internal/vite`,
+    );
   }
 }
 const appShellIndex = readFileSync(
@@ -404,13 +406,11 @@ for (const remoteFed of [
 ]) {
   const source = readFileSync(join(root, remoteFed), 'utf8');
   if (
-    source.includes("styles/document") ||
-    source.includes("tailwind/electron") ||
+    source.includes('styles/document') ||
+    source.includes('tailwind/electron') ||
     source.includes('document.documentElement.dataset.nebulaCss')
   ) {
-    fail(
-      `${remoteFed} must use styles/remote and container-only cssNamespace`,
-    );
+    fail(`${remoteFed} must use styles/remote and container-only cssNamespace`);
   }
 }
 if (

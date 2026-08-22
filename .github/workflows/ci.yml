@@ -54,6 +54,9 @@ jobs:
       - name: Enforce package inventory baseline
         run: vp run check:inventory
 
+      - name: Enforce B-track style/storage inventory
+        run: vp run check:b-inventory
+
       - name: Enforce web and remote bundle budgets
         env:
           NEBULA_CHECK_REMOTE_BUNDLES: 'true'

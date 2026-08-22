@@ -1,6 +1,8 @@
+import type { ResolvedTheme, ThemePreference } from '@nebula-studio/tokens';
+
 export const CONTRACT_VERSION = 1 as const;
 
-/** First-wave Host capabilities. Theme/locale/storage factories stay on track B. */
+/** Host capabilities. Theme preference is additive (track B); contractVersion stays 1. */
 export interface HostAuthSession {
   roles?: string[];
   tenantId?: string;
@@ -44,9 +46,15 @@ export interface HostApiCapability {
 export const HOST_CAPABILITIES_KEY = 'nebulaHostCapabilities';
 
 export interface HostThemeCapability {
+  readonly preference?: ThemePreference;
+  readonly resolved?: ResolvedTheme;
   readonly scheme: 'dark' | 'light' | 'system';
+  setPreference?(
+    next: Partial<ThemePreference> | ThemePreference,
+  ): Promise<void> | void;
   /** Optional; Settings Remote uses this instead of electron-bridge. */
   setScheme?(scheme: 'dark' | 'light' | 'system'): Promise<void> | void;
+  subscribe?(listener: (resolved: ResolvedTheme) => void): () => void;
 }
 
 export interface HostLocaleCapability {
@@ -65,7 +73,7 @@ export interface HostCapabilities {
 }
 
 export interface RemoteMountOptions {
-  application: { id: string; runtimeConfig?: unknown; version: string; };
+  application: { id: string; runtimeConfig?: unknown; version: string };
   capabilities: HostCapabilities;
   container: HTMLElement;
   initialPath: string;

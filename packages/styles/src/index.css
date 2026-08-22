@@ -1,9 +1,11 @@
+@layer tokens, foundations, components, utilities;
+
 /**
  * 全局设计链：语义色、基础排版与动效（与 Electron / Web / 子应用 embed 共用）。
  * Tailwind v4 主题层见 `@nebula-studio/styles/document`（Host/standalone）与 `/remote`（Federation）。
  */
-@import './tokens/root.css';
-@import './tokens/semantic-light.css';
-@import './tokens/semantic-dark.css';
-@import './foundations/theme-motion.css';
-@import './foundations/platform.css';
+@import './tokens/root.css' layer(tokens);
+@import './tokens/semantic-light.css' layer(tokens);
+@import './tokens/semantic-dark.css' layer(tokens);
+@import './foundations/theme-motion.css' layer(foundations);
+@import './foundations/platform.css' layer(foundations);

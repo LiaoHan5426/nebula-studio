@@ -1,4 +1,6 @@
-type ThemeMode = 'dark' | 'light';
+import type { ThemePreference } from '@nebula-studio/tokens';
+
+type ThemeMode = 'dark' | 'light' | 'system';
 
 type ShellParentWindow = Window & {
   api?: Record<string, unknown>;
@@ -34,6 +36,16 @@ function createSettingsApi(electron: ShellElectronBridge) {
       return electron.ipcRenderer.invoke('settings:theme:set', {
         theme,
       }) as Promise<ThemeMode>;
+    },
+    getPreference(): Promise<ThemePreference> {
+      return electron.ipcRenderer.invoke(
+        'settings:theme:getPreference',
+      ) as Promise<ThemePreference>;
+    },
+    setPreference(preference: ThemePreference): Promise<ThemePreference> {
+      return electron.ipcRenderer.invoke('settings:theme:setPreference', {
+        preference,
+      }) as Promise<ThemePreference>;
     },
     onThemeChanged(listener: (payload: { theme: ThemeMode }) => void) {
       const handler = (_event: unknown, ...args: unknown[]) => {

@@ -41,6 +41,7 @@
     "@nebula-studio/host-capabilities": "workspace:^",
     "@nebula-studio/shell-host": "workspace:^",
     "@nebula-studio/shell-protocol": "workspace:^",
+    "@nebula-studio/tokens": "workspace:^",
     "electron-updater": "catalog:electron",
     "yaml": "catalog:parser"
   },

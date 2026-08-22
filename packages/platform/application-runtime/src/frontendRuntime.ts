@@ -5,6 +5,10 @@ import { GENERATED_FEDERATION_DEV_ENTRIES } from '@nebula-studio/contracts/gener
 import { mapFrontendRuntimeEntryFromGenerated } from '@nebula-studio/contracts/system';
 
 import { alignLoopbackIframeSrc, isIframeSrcAllowed } from './hostCsp.ts';
+import {
+  hostDevMfEntryUrl,
+  shouldRewriteLoopbackManifestToHostGateway,
+} from './hostDevMf.ts';
 import { packagedRemoteUpdatePolicy } from './packagedRemoteUpdate.ts';
 
 export interface StaticRemoteRegistration {
@@ -30,8 +34,33 @@ export function resolveRemoteManifestEntry(options: {
     case 'mf-poc:':
       return `mf-poc://${options.packagedHost}/mf-manifest.json`;
     default:
+      if (
+        shouldRewriteLoopbackManifestToHostGateway(
+          options.httpEntry,
+          location.origin,
+        )
+      ) {
+        return hostDevMfEntryUrl(
+          options.packagedHost,
+          options.httpEntry,
+          location.origin,
+        );
+      }
       return options.httpEntry;
   }
+}
+
+export function withHostResolvedManifestEntry(
+  registration: StaticRemoteRegistration,
+  packagedHost: string,
+): StaticRemoteRegistration {
+  return {
+    ...registration,
+    entry: resolveRemoteManifestEntry({
+      httpEntry: registration.entry,
+      packagedHost,
+    }),
+  };
 }
 
 export const FRONTEND_RUNTIME_PATH = '/api/system/frontend-apps/runtime';

@@ -108,12 +108,16 @@ function sourceDirForPackage(packageDir: string): null | string {
  * Tailwind `@source` directories for one Host/Remote: the app `src` plus
  * workspace packages it actually depends on. Never `packages/` or `apps/`.
  */
-export function resolveTailwindSourceGraph(appRoot: string): TailwindSourceGraph {
+export function resolveTailwindSourceGraph(
+  appRoot: string,
+): TailwindSourceGraph {
   const repoRoot = findMonorepoRoot(appRoot);
   const manifestPath = join(appRoot, 'package.json');
   const manifest = readJson(manifestPath);
   if (!manifest) {
-    throw new Error(`[nebula-tailwind] missing package.json at ${manifestPath}`);
+    throw new Error(
+      `[nebula-tailwind] missing package.json at ${manifestPath}`,
+    );
   }
   const packageName =
     typeof manifest.name === 'string' ? manifest.name : '(unnamed)';
@@ -161,7 +165,9 @@ export function resolveTailwindSourceGraph(appRoot: string): TailwindSourceGraph
   return { appRoot, packageName, repoRoot, sources };
 }
 
-export function assertTailwindSourceGraphIsolated(graph: TailwindSourceGraph): void {
+export function assertTailwindSourceGraphIsolated(
+  graph: TailwindSourceGraph,
+): void {
   for (const source of graph.sources) {
     if (isRepoWideScanDir(source.absoluteDir, graph.repoRoot)) {
       throw new Error(
@@ -171,7 +177,9 @@ export function assertTailwindSourceGraphIsolated(graph: TailwindSourceGraph): v
   }
 }
 
-export function formatTailwindSourceDirectives(graph: TailwindSourceGraph): string {
+export function formatTailwindSourceDirectives(
+  graph: TailwindSourceGraph,
+): string {
   return graph.sources
     .map((source) => `@source ${JSON.stringify(toPosix(source.absoluteDir))};`)
     .join('\n');

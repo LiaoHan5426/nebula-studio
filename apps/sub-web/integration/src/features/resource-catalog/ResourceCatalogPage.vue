@@ -281,10 +281,18 @@ onBeforeUnmount(() => clearTimeout(querySyncTimer));
         />
       </label>
       <div class="hero-stats">
-        <span><strong>{{ items.length }}</strong> 项可发现资源</span>
-        <span><strong>{{ favorites.length }}</strong> 项收藏</span>
-        <span><strong>{{ recentItems.length }}</strong> 项最近访问</span>
-        <span><strong>{{ pendingRequestCount }}</strong> 项申请待处理</span>
+        <span
+          ><strong>{{ items.length }}</strong> 项可发现资源</span
+        >
+        <span
+          ><strong>{{ favorites.length }}</strong> 项收藏</span
+        >
+        <span
+          ><strong>{{ recentItems.length }}</strong> 项最近访问</span
+        >
+        <span
+          ><strong>{{ pendingRequestCount }}</strong> 项申请待处理</span
+        >
       </div>
     </section>
 

@@ -20,11 +20,11 @@ export interface AuthFlowState {
 }
 
 export type AuthFlowAction =
-  | { account: string; type: 'RECOVERY_STARTED'; }
-  | { failure: AuthFailure; type: 'FAILURE'; }
-  | { orgId: string; type: 'ORG_SELECTED'; }
-  | { result: BackendLoginResult; type: 'CREDENTIALS_SUBMITTED'; }
-  | { result: BackendLoginResult; type: 'ORG_SUBMITTED'; }
+  | { account: string; type: 'RECOVERY_STARTED' }
+  | { failure: AuthFailure; type: 'FAILURE' }
+  | { orgId: string; type: 'ORG_SELECTED' }
+  | { result: BackendLoginResult; type: 'CREDENTIALS_SUBMITTED' }
+  | { result: BackendLoginResult; type: 'ORG_SUBMITTED' }
   | { type: 'BACK_TO_CREDENTIALS' }
   | { type: 'MFA_CODE_CHANGED'; value: string }
   | { type: 'MFA_SUBMITTED' }

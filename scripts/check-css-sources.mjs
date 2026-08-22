@@ -41,7 +41,19 @@ const documentCss = readFileSync(
   'utf8',
 );
 if (!documentCss.includes('preflight')) {
-  failures.push('document.css must include Tailwind preflight for Host/standalone');
+  failures.push(
+    'document.css must include Tailwind preflight for Host/standalone',
+  );
+}
+
+const stylesIndex = readFileSync(
+  join(root, 'packages/styles/src/index.css'),
+  'utf8',
+);
+if (!stylesIndex.includes('layer(tokens)')) {
+  failures.push(
+    'packages/styles/src/index.css must import tokens on layer(tokens)',
+  );
 }
 
 for (const remoteFed of [

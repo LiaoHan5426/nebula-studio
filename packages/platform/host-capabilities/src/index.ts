@@ -11,12 +11,7 @@ import {
   readWebAuthSession,
 } from '@nebula-studio/auth-provider/storage';
 
-type ThemeScheme = 'dark' | 'light' | 'system';
-
-interface SettingsThemeBridge {
-  getTheme?(): Promise<'dark' | 'light'>;
-  setTheme?(theme: 'dark' | 'light'): Promise<unknown>;
-}
+import { createHostThemeCapability } from './themeHost.ts';
 
 interface ShellEventBusLike {
   emit?(event: string, payload: unknown): void;
@@ -25,42 +20,6 @@ interface ShellEventBusLike {
 
 interface AuthBridge {
   logout?(): Promise<unknown> | unknown;
-}
-
-function readDocumentScheme(): 'dark' | 'light' {
-  if (typeof document === 'undefined') {
-    return 'light';
-  }
-  return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-}
-
-function applyDocumentScheme(scheme: 'dark' | 'light'): void {
-  if (typeof document === 'undefined') {
-    return;
-  }
-  document.documentElement.classList.toggle('dark', scheme === 'dark');
-  document.documentElement.dataset.nebulaTheme = scheme;
-}
-
-function settingsThemeBridge(): SettingsThemeBridge | undefined {
-  if (typeof window === 'undefined') {
-    return undefined;
-  }
-  const api = (window as Window & { api?: { settings?: SettingsThemeBridge } })
-    .api?.settings;
-  return api;
-}
-
-async function setHostScheme(scheme: ThemeScheme): Promise<void> {
-  if (scheme !== 'dark' && scheme !== 'light') {
-    return;
-  }
-  const bridge = settingsThemeBridge();
-  if (bridge?.setTheme) {
-    await bridge.setTheme(scheme);
-    return;
-  }
-  applyDocumentScheme(scheme);
 }
 
 function readTenantId(): null | string {
@@ -188,10 +147,7 @@ export function createPocHostCapabilities(): HostCapabilities {
         window.open(url, '_blank', 'noopener,noreferrer');
       },
     },
-    theme: {
-      scheme: 'system',
-      setScheme: setHostScheme,
-    },
+    theme: createHostThemeCapability(),
     locale: { locale: 'zh-CN' },
   };
 }
@@ -216,10 +172,6 @@ export function createWebEmbedHostCapabilities(): HostCapabilities {
     },
     events: {
       subscribe: subscribeHostEvent,
-    },
-    theme: {
-      scheme: readDocumentScheme(),
-      setScheme: setHostScheme,
     },
     locale: { locale },
   };

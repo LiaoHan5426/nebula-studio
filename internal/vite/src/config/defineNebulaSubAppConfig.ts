@@ -57,11 +57,18 @@ export function defineNebulaSubAppConfig(
     Parameters<typeof createNebulaRendererViteConfig>[0]['server']
   > = {};
 
-  const port = options.devPort ?? standalone?.port;
+  const envPort = Number(process.env.NEBULA_REMOTE_PORT);
+  const port =
+    Number.isInteger(envPort) && envPort > 0
+      ? envPort
+      : (options.devPort ?? standalone?.port);
   if (port !== undefined) {
     server.port = port;
   }
-  if (standalone?.host) {
+  if (process.env.NEBULA_REMOTE_PORT) {
+    server.strictPort = true;
+    server.host = '127.0.0.1';
+  } else if (standalone?.host) {
     server.host = standalone.host;
   }
 
@@ -96,7 +103,9 @@ export function defineNebulaSubAppConfig(
       ),
     );
     server.cors = true;
-    if (port !== undefined) {
+    if (process.env.NEBULA_REMOTE_ORIGIN) {
+      server.origin = process.env.NEBULA_REMOTE_ORIGIN;
+    } else if (port !== undefined) {
       server.origin = `http://localhost:${port}`;
     }
     server.headers = {

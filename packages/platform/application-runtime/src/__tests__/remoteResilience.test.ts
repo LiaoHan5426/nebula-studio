@@ -2,6 +2,7 @@ import type { FrontendRuntimeEntry } from '@nebula-studio/contracts/system';
 
 import { describe, expect, it } from 'vitest';
 
+import { hostDevMfEntryUrl } from '../hostDevMf.ts';
 import {
   createMemoryKv,
   isInRolloutCohort,
@@ -64,7 +65,10 @@ describe('remote resilience', () => {
         return 'ok';
       },
     });
-    expect(mounted).toEqual([live.entry, good.entry]);
+    expect(mounted).toEqual([
+      hostDevMfEntryUrl('docs', live.entry, location.origin),
+      hostDevMfEntryUrl('docs', good.entry, location.origin),
+    ]);
     expect(readLastKnownGood('docs', store)?.entry).toBe(good.entry);
   });
 
@@ -91,7 +95,9 @@ describe('remote resilience', () => {
         return 'ok';
       },
     });
-    expect(mounted).toEqual([good.entry]);
+    expect(mounted).toEqual([
+      hostDevMfEntryUrl('docs', good.entry, location.origin),
+    ]);
   });
 
   it('falls back to LKG when the current version is outside the gray cohort', () => {
@@ -112,7 +118,13 @@ describe('remote resilience', () => {
       rolloutSeed: 'tenant-a:admin',
       store,
     });
-    expect(registration?.entry).toBe('http://localhost:5176/lkg.json');
+    expect(registration?.entry).toBe(
+      hostDevMfEntryUrl(
+        'docs',
+        'http://localhost:5176/lkg.json',
+        location.origin,
+      ),
+    );
   });
 
   it('times out slow federation loads', async () => {

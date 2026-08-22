@@ -1,6 +1,4 @@
-import { Buffer } from 'node:buffer';
-
-import { verifyManifestSignature } from './manifestSignature';
+import { verifyManifestSignature } from './manifestSignature.ts';
 
 const SRI_PATTERN = /^(sha256|sha384|sha512)-([A-Za-z0-9+/=]+)$/;
 
@@ -32,14 +30,11 @@ export function isHttpManifestUrl(url: string): boolean {
 
 function bytesToBase64(bytes: ArrayBuffer): string {
   const view = new Uint8Array(bytes);
-  if (typeof btoa === 'function') {
-    let binary = '';
-    for (const byte of view) {
-      binary += String.fromCharCode(byte);
-    }
-    return btoa(binary);
+  let binary = '';
+  for (const byte of view) {
+    binary += String.fromCharCode(byte);
   }
-  return Buffer.from(view).toString('base64');
+  return btoa(binary);
 }
 
 export async function digestSri(

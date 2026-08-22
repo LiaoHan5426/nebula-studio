@@ -109,27 +109,13 @@ export async function bootFederationRenderer(renderer: string): Promise<void> {
     });
   } catch (error) {
     const text = error instanceof Error ? error.message : String(error);
-    const hints: Record<string, { command: string; label: string }> = {
-      docs: {
-        command: 'vp run --filter @nebula-studio-renderer/docs dev',
-        label: '文档',
-      },
-      settings: {
-        command: 'vp run --filter @nebula-studio-renderer/settings dev',
-        label: '设置',
-      },
-      integration: {
-        command: 'vp run --filter @nebula-studio-renderer/integration dev',
-        label: '集成平台',
-      },
+    const labels: Record<string, string> = {
+      docs: '文档',
+      settings: '设置',
+      integration: '集成平台',
     };
-    const hint = hints[renderer] ?? {
-      command: 'vp run --filter @nebula-studio-renderer/docs dev',
-      label: renderer,
-    };
-    const command = hint.command;
-    const label = hint.label;
-    root.innerHTML = `<div role="alert" style="padding:1.5rem;font:14px/1.5 system-ui,sans-serif">无法加载${label}应用。<pre>${text}</pre><p>开发模式请先启动 Remote：<code>${command}</code></p><p>打包模式需要 <code>apps/sub-web/${renderer}/dist</code> 已复制到 extraResources。</p></div>`;
+    const label = labels[renderer] ?? renderer;
+    root.innerHTML = `<div role="alert" style="padding:1.5rem;font:14px/1.5 system-ui,sans-serif">无法加载${label}应用。<pre>${text}</pre><p>请用 <code>vp run dev</code> 或 <code>vp run dev:web</code> 启动 Host；Docs / Settings / Integration 会随 Host 拉起。</p><p>打包模式需要 <code>apps/sub-web/${renderer}/dist</code> 已复制到 extraResources。</p></div>`;
     console.error(error);
   }
 }

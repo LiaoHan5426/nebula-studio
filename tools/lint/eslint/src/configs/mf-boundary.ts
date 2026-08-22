@@ -29,7 +29,7 @@ const jsSyntaxBase = [
   'TSExportAssignment',
 ] as const;
 
-function forbidJsonDep (
+function forbidJsonDep(
   name: string,
   message: string,
   groups = 'dependencies|peerDependencies|optionalDependencies',
@@ -167,7 +167,7 @@ const platformJsonBans = [
   })),
 ];
 
-export async function mfBoundary (): Promise<Linter.Config[]> {
+export async function mfBoundary(): Promise<Linter.Config[]> {
   return [
     {
       files: [

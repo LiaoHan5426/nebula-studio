@@ -1,5 +1,4 @@
-import type { ShellEventBus } from '@nebula-studio/shell-protocol';
-import type { RuntimeMode } from '@nebula-studio/shell-protocol';
+import type { ShellEventBus, RuntimeMode } from '@nebula-studio/shell-protocol';
 
 import { HOST_CAPABILITIES_KEY } from '@nebula-studio/application-contract';
 import { clearWebAuthSession } from '@nebula-studio/auth-provider/storage';

@@ -32,16 +32,17 @@ export {
   resolveIframeSrc,
   resolveRemoteManifestEntry,
   runtimeEmbedUrl,
+  withHostResolvedManifestEntry,
 } from './frontendRuntime.ts';
 /** @deprecated Use LOCAL_DOCS_FEDERATION_FALLBACK; Host loads remotes from /api/system/frontend-apps/runtime */
 export { LOCAL_DOCS_FEDERATION_FALLBACK as DOCS_FEDERATION_REMOTE } from './frontendRuntime.ts';
 export {
-  alignLoopbackIframeSrc,
-  applyHostFrameSrcPolicy,
-  iframeFrameOrigins,
-  isIframeSrcAllowed,
-  withHostFrameSrcPolicy,
-} from './hostCsp.ts';
+  HOST_DEV_MF_GATEWAY_PREFIX,
+  hostDevMfEntryUrl,
+  hostDevMfManifestUrl,
+  isLoopbackHttpOrigin,
+  shouldRewriteLoopbackManifestToHostGateway,
+} from './hostDevMf.ts';
 export {
   assertHttpManifestIntegrity,
   digestSri,
@@ -115,7 +116,7 @@ export function registerStaticRemotes(
 
 const mountedCssNamespaces = new Set<string>();
 
-export function __resetMountedCssNamespacesForTests(): void {
+export function resetMountedCssNamespacesForTests(): void {
   mountedCssNamespaces.clear();
 }
 
@@ -138,7 +139,7 @@ export function releaseCssNamespace(cssNamespace: string): void {
 }
 
 export async function mountFederationRemote(options: {
-  application?: { id: string; runtimeConfig?: unknown; version: string; };
+  application?: { id: string; runtimeConfig?: unknown; version: string };
   capabilities: HostCapabilities;
   container: HTMLElement;
   expose: string;

@@ -31,7 +31,10 @@ import {
   PersonalWorkspace,
   useAppLifecycle,
 } from '@nebula-studio/nebula-shell';
-import { postShellEmbedNavigate } from '@nebula-studio/shell-protocol';
+import {
+  postShellEmbedNavigate,
+  readShellSurfacePreference,
+} from '@nebula-studio/shell-protocol';
 
 import TaskGuidePanel from '@/components/TaskGuidePanel.vue';
 import {
@@ -418,7 +421,7 @@ onMounted(async () => {
   await refreshIntegratedCatalog();
 
   const preferredSurface = shellHost.shouldRestoreActiveViewFromPreference
-    ? (await import('@nebula-studio/app-shell')).readShellSurfacePreference()
+    ? readShellSurfacePreference()
     : null;
 
   if (

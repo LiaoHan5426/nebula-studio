@@ -202,8 +202,8 @@ function openRelatedEntity() {
     <template #filterActions>
       <NebulaButton variant="outline" @click="applyFilters">筛选</NebulaButton>
       <NebulaButton variant="outline" @click="exportLogs">
-导出 CSV
-</NebulaButton>
+        导出 CSV
+      </NebulaButton>
     </template>
 
     <NebulaTable

@@ -18,7 +18,6 @@ import {
   NebulaInput,
   NebulaSelect,
 } from '@nebula-studio/nebula-ui';
-import { isWebPresentationHost } from '@nebula-studio/shell-protocol';
 
 import { classifyAuthFailure, readAuthEntryContext } from './authFlow';
 import {
@@ -131,6 +130,16 @@ function rememberOrganization(): void {
     localStorage.setItem(RECENT_ORG_KEY, selectedOrgId.value);
 }
 
+function resolvePostLoginHref(): string {
+  const params = new URLSearchParams(location.search);
+  const requestedReturn = params.get('return') ?? params.get('redirect');
+  const fallback = `${location.origin}/`;
+  if (requestedReturn && isSafeAuthReturnUrl(requestedReturn)) {
+    return requestedReturn;
+  }
+  return fallback;
+}
+
 async function finishLogin(result: BackendLoginResult): Promise<void> {
   if (!canPersistFinalToken(flowState.value) && !result.token) {
     return;
@@ -147,43 +156,43 @@ async function finishLogin(result: BackendLoginResult): Promise<void> {
   };
 
   rememberOrganization();
+  writeWebAuthSession(session);
   flowState.value = authFlowReducer(flowState.value, { type: 'SUCCESS' });
   await new Promise<void>((resolve) => window.setTimeout(resolve, 350));
 
-  if (isWebPresentationHost()) {
-    writeWebAuthSession(session);
-    const params = new URLSearchParams(location.search);
-    const requestedReturn = params.get('return') ?? params.get('redirect');
-    const fallback = `${location.origin}/`;
-    location.href =
-      requestedReturn && isSafeAuthReturnUrl(requestedReturn)
-        ? requestedReturn
-        : fallback;
-    return;
-  }
-
-  const electronWindow = window as unknown as {
-    api?: {
-      auth?: {
-        establishSession?: (payload: {
-          roles?: string[];
-          token: string;
-          user: string;
-          userId?: string;
-        }) => Promise<boolean>;
+  const establishSession = (
+    window as unknown as {
+      api?: {
+        auth?: {
+          establishSession?: (payload: {
+            roles?: string[];
+            token: string;
+            user: string;
+            userId?: string;
+          }) => Promise<boolean>;
+        };
       };
-    };
-  };
-  if (
-    typeof electronWindow.api?.auth?.establishSession === 'function' &&
-    token
-  ) {
-    await electronWindow.api.auth.establishSession({ ...session, token });
-    return;
+    }
+  ).api?.auth?.establishSession;
+
+  if (typeof establishSession === 'function') {
+    try {
+      await Promise.race([
+        establishSession({ ...session, token }),
+        new Promise<never>((_, reject) => {
+          window.setTimeout(
+            () => reject(new Error('establish-session timeout')),
+            4000,
+          );
+        }),
+      ]);
+      return;
+    } catch {
+      window.close();
+    }
   }
 
-  writeWebAuthSession(session);
-  window.close();
+  location.assign(resolvePostLoginHref());
 }
 
 function handleFailure(error: unknown): void {

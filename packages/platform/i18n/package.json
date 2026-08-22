@@ -1,0 +1,25 @@
+{
+  "name": "@nebula-studio/i18n",
+  "version": "0.0.0",
+  "description": "App-scoped Vue I18n factory (messages filled by later B-track slices).",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "test": "vp test run"
+  },
+  "dependencies": {
+    "vue": "catalog:vue",
+    "vue-i18n": "catalog:vue"
+  },
+  "devDependencies": {
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "typescript": "catalog:types",
+    "vitest": "catalog:vite"
+  }
+}

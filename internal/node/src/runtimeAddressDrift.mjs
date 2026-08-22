@@ -35,6 +35,7 @@ export const DEFAULT_ADDRESS_ALLOWLIST = [
   /^apps[\\/]mf-poc-host[\\/]/,
   /^internal[\\/]vite[\\/]src[\\/]config[\\/]defineNebulaSubAppConfig\.ts$/,
   /^internal[\\/]vite[\\/]src[\\/]federation[\\/]defineNebulaRemoteConfig\.ts$/,
+  /^internal[\\/]vite[\\/]src[\\/]federation[\\/]nebulaHostDevRemotesPlugin\.ts$/,
   /^packages[\\/]platform[\\/]application-runtime[\\/]src[\\/]hostCsp\.ts$/,
 ];
 

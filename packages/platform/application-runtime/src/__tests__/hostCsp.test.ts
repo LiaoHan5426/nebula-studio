@@ -26,6 +26,21 @@ describe('host iframe CSP helpers', () => {
     ).toBe(false);
   });
 
+  it('aligns loopback allowlist ports to the Host page before matching', () => {
+    expect(
+      isIframeSrcAllowed(
+        'http://127.0.0.1:5174/iframe-guest.html',
+        [
+          'http://localhost:5173',
+          'http://127.0.0.1:5173',
+          'http://localhost:5175',
+          'http://127.0.0.1:5175',
+        ],
+        'http://localhost:5174',
+      ),
+    ).toBe(true);
+  });
+
   it('allows same-origin iframe src when the allowlist is empty', () => {
     expect(
       isIframeSrcAllowed(

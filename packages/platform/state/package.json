@@ -1,0 +1,27 @@
+{
+  "name": "@nebula-studio/state",
+  "version": "0.0.0",
+  "description": "App-scoped Pinia factory and dispose helpers.",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "test": "vp test run"
+  },
+  "dependencies": {
+    "@nebula-studio/storage": "workspace:^",
+    "pinia": "catalog:vue",
+    "vue": "catalog:vue"
+  },
+  "devDependencies": {
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "happy-dom": "catalog:vite",
+    "typescript": "catalog:types",
+    "vitest": "catalog:vite"
+  }
+}

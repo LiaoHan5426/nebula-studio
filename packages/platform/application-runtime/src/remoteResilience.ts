@@ -8,6 +8,7 @@ import {
   findFederationRuntimeEntry,
   isLocalFederationFallbackId,
   localFederationRegistration,
+  withHostResolvedManifestEntry,
 } from './frontendRuntime.ts';
 import { assertHttpManifestIntegrity } from './manifestIntegrity.ts';
 import { reportRemoteTelemetry } from './remoteTelemetry.ts';
@@ -196,7 +197,9 @@ export function resolveFederationRegistrationWithPolicy(options: {
     });
   }
   const lkg = readLastKnownGood(options.applicationId, store);
-  if (lkg) return lkg;
+  if (lkg) {
+    return withHostResolvedManifestEntry(lkg, options.applicationId);
+  }
   if (isLocalFederationFallbackId(options.applicationId)) {
     return localFederationRegistration(
       options.applicationId,
@@ -217,7 +220,10 @@ export async function mountWithLastKnownGood<T>(options: {
 }): Promise<T> {
   const store = options.store ?? browserKvStore();
   const now = options.now ?? Date.now();
-  const live = options.live;
+  const live = withHostResolvedManifestEntry(
+    options.live,
+    options.applicationId,
+  );
   const verify = options.verifyIntegrity ?? assertHttpManifestIntegrityForLive;
   const emit = (
     eventType: Parameters<typeof reportRemoteTelemetry>[1]['eventType'],
@@ -244,7 +250,9 @@ export async function mountWithLastKnownGood<T>(options: {
       );
       emit('circuit_open');
       emit('lkg_used', { registration: lkg });
-      return options.mount(lkg);
+      return options.mount(
+        withHostResolvedManifestEntry(lkg, options.applicationId),
+      );
     }
   }
 
@@ -273,7 +281,9 @@ export async function mountWithLastKnownGood<T>(options: {
         liveError,
       );
       emit('lkg_used', { registration: lkg, message });
-      return options.mount(lkg);
+      return options.mount(
+        withHostResolvedManifestEntry(lkg, options.applicationId),
+      );
     }
     throw liveError;
   }

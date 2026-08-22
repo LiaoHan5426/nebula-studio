@@ -1,41 +1,86 @@
 <script setup lang="ts">
 import type { HostCapabilities } from '@nebula-studio/application-contract';
+import type { ThemePreference } from '@nebula-studio/tokens';
 
-import { inject, ref } from 'vue';
+import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue';
 
 import { HOST_CAPABILITIES_KEY } from '@nebula-studio/application-contract';
 import { NebulaButton, NebulaPane } from '@nebula-studio/nebula-ui';
+import {
+  ACCENT_PRESETS,
+  PRODUCT_DEFAULT_PREFERENCE,
+} from '@nebula-studio/tokens';
 
 const capabilities = inject<HostCapabilities | undefined>(
   HOST_CAPABILITIES_KEY,
   undefined,
 );
 
-function readScheme(): 'dark' | 'light' {
-  const fromHost = capabilities?.theme?.scheme;
-  if (fromHost === 'dark' || fromHost === 'light') {
-    return fromHost;
-  }
-  return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+function readPreference(): ThemePreference {
+  return capabilities?.theme?.preference ?? PRODUCT_DEFAULT_PREFERENCE;
 }
 
-const theme = ref<'dark' | 'light'>(readScheme());
+const preference = ref<ThemePreference>(readPreference());
+const customColor = ref(
+  preference.value.accent.kind === 'custom'
+    ? preference.value.accent.color
+    : '#4d7cff',
+);
 const saving = ref(false);
+const preview = computed(() => capabilities?.theme?.resolved);
+let unsubscribe: (() => void) | undefined;
 
-async function applyTheme(next: 'dark' | 'light'): Promise<void> {
+onMounted(() => {
+  unsubscribe = capabilities?.theme?.subscribe?.(() => {
+    preference.value = capabilities?.theme?.preference ?? preference.value;
+  });
+});
+
+onBeforeUnmount(() => {
+  unsubscribe?.();
+});
+
+async function commit(next: ThemePreference): Promise<void> {
   if (saving.value) return;
   saving.value = true;
   try {
-    if (capabilities?.theme?.setScheme) {
-      await capabilities.theme.setScheme(next);
-    } else {
-      document.documentElement.classList.toggle('dark', next === 'dark');
-      document.documentElement.dataset.nebulaTheme = next;
+    if (capabilities?.theme?.setPreference) {
+      await capabilities.theme.setPreference(next);
+    } else if (capabilities?.theme?.setScheme) {
+      await capabilities.theme.setScheme(next.colorScheme);
     }
-    theme.value = next;
+    preference.value = capabilities?.theme?.preference ?? next;
   } finally {
     saving.value = false;
   }
+}
+
+function setScheme(colorScheme: ThemePreference['colorScheme']): void {
+  void commit({ ...preference.value, colorScheme });
+}
+
+function setDensity(density: ThemePreference['density']): void {
+  void commit({ ...preference.value, density });
+}
+
+function setContrast(contrast: ThemePreference['contrast']): void {
+  void commit({ ...preference.value, contrast });
+}
+
+function setPreset(id: string): void {
+  void commit({ ...preference.value, accent: { kind: 'preset', id } });
+}
+
+function setCustomAccent(): void {
+  void commit({
+    ...preference.value,
+    accent: { kind: 'custom', color: customColor.value },
+  });
+}
+
+function restoreDefaults(): void {
+  customColor.value = ACCENT_PRESETS['nebula-blue'] ?? '#4d7cff';
+  void commit(PRODUCT_DEFAULT_PREFERENCE);
 }
 </script>
 
@@ -43,75 +88,138 @@ async function applyTheme(next: 'dark' | 'light'): Promise<void> {
   <NebulaPane
     class="panel"
     title="外观与主题"
-    description="统一设置 Nebula Studio 的界面主题"
+    description="模式、主题色、密度与对比度由 Host 解析为 ResolvedTheme，Remote 只消费 CSS 变量"
   >
-    <div class="theme-group">
-      <span class="theme-label">深色模式</span>
-      <NebulaButton
-        icon
-        variant="ghost"
-        :disabled="saving"
-        :title="theme === 'dark' ? '切换到浅色主题' : '切换到深色主题'"
-        @click="applyTheme(theme === 'dark' ? 'light' : 'dark')"
-      >
-        <svg
-          v-if="theme === 'dark'"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          width="18"
-          height="18"
+    <section class="block">
+      <h3>颜色模式</h3>
+      <div class="row">
+        <NebulaButton
+          :variant="preference.colorScheme === 'light' ? 'primary' : 'ghost'"
+          :disabled="saving"
+          @click="setScheme('light')"
         >
-          <circle cx="12" cy="12" r="5" />
-          <line x1="12" y1="1" x2="12" y2="3" />
-          <line x1="12" y1="21" x2="12" y2="23" />
-          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-          <line x1="1" y1="12" x2="3" y2="12" />
-          <line x1="21" y1="12" x2="23" y2="12" />
-          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-        </svg>
-        <svg
-          v-else
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          width="18"
-          height="18"
+          浅色
+        </NebulaButton>
+        <NebulaButton
+          :variant="preference.colorScheme === 'dark' ? 'primary' : 'ghost'"
+          :disabled="saving"
+          @click="setScheme('dark')"
         >
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-        </svg>
-      </NebulaButton>
-    </div>
+          深色
+        </NebulaButton>
+        <NebulaButton
+          :variant="preference.colorScheme === 'system' ? 'primary' : 'ghost'"
+          :disabled="saving"
+          @click="setScheme('system')"
+        >
+          跟随系统
+        </NebulaButton>
+      </div>
+    </section>
+
+    <section class="block">
+      <h3>主题色</h3>
+      <div class="row">
+        <NebulaButton
+          v-for="id in Object.keys(ACCENT_PRESETS)"
+          :key="id"
+          :variant="
+            preference.accent.kind === 'preset' && preference.accent.id === id
+              ? 'primary'
+              : 'ghost'
+          "
+          :disabled="saving"
+          @click="setPreset(id)"
+        >
+          {{ id }}
+        </NebulaButton>
+      </div>
+      <div class="row">
+        <input v-model="customColor" type="color" :disabled="saving" />
+        <NebulaButton
+          :disabled="saving"
+          variant="ghost"
+          @click="setCustomAccent"
+        >
+          使用自定义色
+        </NebulaButton>
+      </div>
+    </section>
+
+    <section class="block">
+      <h3>密度</h3>
+      <div class="row">
+        <NebulaButton
+          :variant="preference.density === 'comfortable' ? 'primary' : 'ghost'"
+          :disabled="saving"
+          @click="setDensity('comfortable')"
+        >
+          舒适
+        </NebulaButton>
+        <NebulaButton
+          :variant="preference.density === 'compact' ? 'primary' : 'ghost'"
+          :disabled="saving"
+          @click="setDensity('compact')"
+        >
+          紧凑
+        </NebulaButton>
+      </div>
+    </section>
+
+    <section class="block">
+      <h3>对比度</h3>
+      <div class="row">
+        <NebulaButton
+          :variant="preference.contrast === 'normal' ? 'primary' : 'ghost'"
+          :disabled="saving"
+          @click="setContrast('normal')"
+        >
+          标准
+        </NebulaButton>
+        <NebulaButton
+          :variant="preference.contrast === 'high' ? 'primary' : 'ghost'"
+          :disabled="saving"
+          @click="setContrast('high')"
+        >
+          高对比
+        </NebulaButton>
+      </div>
+    </section>
+
     <p class="hint">
-      当前：<strong>{{ theme === 'dark' ? '深色' : '浅色' }}</strong>
+      预览：{{ preview?.scheme }} / {{ preview?.accentId }} /
+      {{ preview?.density }} / {{ preview?.contrast }}
       {{ saving ? '（保存中…）' : '' }}
     </p>
+    <NebulaButton :disabled="saving" variant="ghost" @click="restoreDefaults">
+      恢复默认
+    </NebulaButton>
   </NebulaPane>
 </template>
 
 <style lang="scss" scoped>
 .panel {
-  max-width: 520px;
+  max-width: 640px;
 }
 
-.theme-group {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-top: 12px;
+.block {
+  margin-top: 16px;
 }
 
-.theme-label {
+.block h3 {
+  margin: 0 0 8px;
   font-size: 0.88rem;
-  color: hsl(var(--foreground));
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
 }
 
 .hint {
-  margin-top: 10px;
+  margin: 16px 0 8px;
   color: hsl(var(--muted-foreground));
 }
 </style>

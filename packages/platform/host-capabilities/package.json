@@ -26,7 +26,9 @@
   },
   "dependencies": {
     "@nebula-studio/application-contract": "workspace:^",
-    "@nebula-studio/auth-provider": "workspace:^"
+    "@nebula-studio/auth-provider": "workspace:^",
+    "@nebula-studio/storage": "workspace:^",
+    "@nebula-studio/tokens": "workspace:^"
   },
   "devDependencies": {
     "@nebula-studio-internal/tsconfig": "workspace:^",

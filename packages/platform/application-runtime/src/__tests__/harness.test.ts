@@ -46,7 +46,7 @@ describe('resolveRemoteManifestEntry', () => {
         httpEntry: 'http://localhost:5176/mf-manifest.json',
         packagedHost: 'docs',
       }),
-    ).toBe('http://localhost:5176/mf-manifest.json');
+    ).toBe(`${location.origin}/__nebula-mf/docs/mf-manifest.json`);
   });
 });
 
@@ -63,12 +63,12 @@ describe('runRemoteContractHarness', () => {
 describe('cssNamespace registry', () => {
   it('rejects a duplicate namespace until released', async () => {
     const {
-      __resetMountedCssNamespacesForTests,
+      resetMountedCssNamespacesForTests,
       claimCssNamespace,
       releaseCssNamespace,
       resolveRemoteCssNamespace,
     } = await import('../index.ts');
-    __resetMountedCssNamespacesForTests();
+    resetMountedCssNamespacesForTests();
     expect(resolveRemoteCssNamespace({ name: 'docs' })).toBe('docs');
     expect(
       resolveRemoteCssNamespace({ application: { id: 'settings' }, name: 'x' }),

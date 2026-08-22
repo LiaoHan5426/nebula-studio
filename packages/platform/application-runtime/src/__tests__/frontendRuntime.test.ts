@@ -13,6 +13,7 @@ import {
   resolveExternalHref,
   resolveIframeSrc,
 } from '../frontendRuntime.ts';
+import { hostDevMfEntryUrl, hostDevMfManifestUrl } from '../hostDevMf.ts';
 
 const docsEntry: FrontendRuntimeEntry = {
   category: 'shell',
@@ -54,7 +55,11 @@ describe('frontend runtime registry', () => {
     expect(federationRegistrationFromRuntime(docsEntry)).toEqual({
       name: 'nebula_docs',
       expose: 'application',
-      entry: 'http://localhost:5176/mf-manifest.json',
+      entry: hostDevMfEntryUrl(
+        'docs',
+        docsEntry.manifestUrl ?? '',
+        location.origin,
+      ),
     });
     expect(
       federationRegistrationFromRuntime({
@@ -95,7 +100,7 @@ describe('frontend runtime registry', () => {
       'nebula_settings',
     );
     expect(localFederationRegistration('settings').entry).toBe(
-      'http://localhost:5177/mf-manifest.json',
+      hostDevMfManifestUrl('settings', location.origin),
     );
   });
 
@@ -104,7 +109,7 @@ describe('frontend runtime registry', () => {
       'nebula_integration',
     );
     expect(localFederationRegistration('integration').entry).toBe(
-      'http://localhost:5174/mf-manifest.json',
+      hostDevMfManifestUrl('integration', location.origin),
     );
   });
 
@@ -114,6 +119,12 @@ describe('frontend runtime registry', () => {
       id: 'iframe-demo',
       driver: 'iframe',
       manifestUrl: '/iframe-guest.html',
+      allowedOrigins: [
+        'http://localhost:5173',
+        'http://127.0.0.1:5173',
+        'http://localhost:5175',
+        'http://127.0.0.1:5175',
+      ],
     };
     expect(resolveIframeSrc(iframeEntry, 'http://localhost:5173')).toBe(
       'http://localhost:5173/iframe-guest.html',
@@ -123,6 +134,12 @@ describe('frontend runtime registry', () => {
     ).toEqual({
       src: 'http://localhost:5173/iframe-guest.html',
       allowedOrigin: 'http://localhost:5173',
+    });
+    expect(
+      iframeRegistrationFromRuntime(iframeEntry, 'http://localhost:5174'),
+    ).toEqual({
+      src: 'http://localhost:5174/iframe-guest.html',
+      allowedOrigin: 'http://localhost:5174',
     });
   });
 
@@ -154,6 +171,12 @@ describe('frontend runtime registry', () => {
         'http://localhost:5173',
       ),
     ).toThrow(/allowedOrigins/);
+    expect(
+      iframeRegistrationFromRuntime(iframeEntry, 'http://localhost:5174'),
+    ).toEqual({
+      src: 'http://127.0.0.1:5174/iframe-guest.html',
+      allowedOrigin: 'http://127.0.0.1:5174',
+    });
   });
 
   it('rejects relative urls for the external driver', () => {

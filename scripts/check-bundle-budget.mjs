@@ -146,4 +146,6 @@ if (failures.length) {
   throw new Error(`[bundle-budget] exceeded:\n- ${failures.join('\n- ')}`);
 }
 console.log('[bundle-budget] all budgets passed');
-console.log(`[bundle-budget] wrote ${join(distDir, 'nebula-bundle-report.json')}`);
+console.log(
+  `[bundle-budget] wrote ${join(distDir, 'nebula-bundle-report.json')}`,
+);

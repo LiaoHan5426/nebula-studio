@@ -7,8 +7,20 @@ import { setupRendererThemeSync } from './setupRendererThemeSync.ts';
 type ThemeMode = 'dark' | 'light';
 type AppMode = 'build' | 'dev';
 
+function coerceDomScheme(value: unknown): ThemeMode {
+  if (value === 'light') {
+    return 'light';
+  }
+  if (value === 'system') {
+    return globalThis.matchMedia?.('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light';
+  }
+  return 'dark';
+}
+
 interface ThemeChangePayload {
-  theme?: ThemeMode;
+  theme?: 'dark' | 'light' | 'system';
 }
 
 const THEME = IPC_CHANNELS.theme;
@@ -28,7 +40,7 @@ export function useRendererThemeSync(
 
   const onThemeChanged = (_event: unknown, ...args: unknown[]): void => {
     const payload = args[0] as ThemeChangePayload | undefined;
-    theme.value = payload?.theme === 'light' ? 'light' : 'dark';
+    theme.value = coerceDomScheme(payload?.theme);
   };
 
   const setTheme = async (next: ThemeMode): Promise<ThemeMode> => {
@@ -53,7 +65,7 @@ export function useRendererThemeSync(
     if (options.manageDom) {
       disposeDomSync = setupRendererThemeSync();
     }
-    theme.value = (await electron.ipcRenderer.invoke(THEME.get)) as ThemeMode;
+    theme.value = coerceDomScheme(await electron.ipcRenderer.invoke(THEME.get));
     await refreshAppMode();
     electron.ipcRenderer.on(THEME.changed, onThemeChanged);
   });

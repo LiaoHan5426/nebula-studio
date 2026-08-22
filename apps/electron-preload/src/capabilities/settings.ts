@@ -1,15 +1,10 @@
 import type { IpcRendererEvent } from 'electron';
-
+import type { ThemePreference } from '@nebula-studio/tokens';
 import { electronAPI } from '@electron-toolkit/preload';
 import { ipcRenderer } from 'electron';
 
-type ThemeMode = 'dark' | 'light';
+type ThemeMode = 'dark' | 'light' | 'system';
 
-/**
- * 统一 Settings 能力模块。
- *
- * 封装 `settings:theme:*` IPC 通道调用，供设置窗口 Preload 使用。
- */
 export function createSettingsCapability() {
   return {
     getTheme(): Promise<ThemeMode> {
@@ -18,10 +13,23 @@ export function createSettingsCapability() {
     setTheme(theme: ThemeMode): Promise<ThemeMode> {
       return electronAPI.ipcRenderer.invoke('settings:theme:set', { theme });
     },
-    onThemeChanged(listener: (payload: { theme: ThemeMode }) => void) {
+    getPreference(): Promise<ThemePreference> {
+      return electronAPI.ipcRenderer.invoke('settings:theme:getPreference');
+    },
+    setPreference(preference: ThemePreference): Promise<ThemePreference> {
+      return electronAPI.ipcRenderer.invoke('settings:theme:setPreference', {
+        preference,
+      });
+    },
+    onThemeChanged(
+      listener: (payload: {
+        preference?: ThemePreference;
+        theme: ThemeMode;
+      }) => void,
+    ) {
       const handler = (
         _event: IpcRendererEvent,
-        payload: { theme: ThemeMode },
+        payload: { preference?: ThemePreference; theme: ThemeMode },
       ) => {
         listener(payload);
       };

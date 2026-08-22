@@ -3,12 +3,7 @@
  * A-track §17.14: workspace package counts and known duplicate boot blocks.
  * Regenerates configs/package-inventory.json with --write; otherwise diffs.
  */
-import {
-  existsSync,
-  readdirSync,
-  readFileSync,
-  writeFileSync,
-} from 'node:fs';
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 

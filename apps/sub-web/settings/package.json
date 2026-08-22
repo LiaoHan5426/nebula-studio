@@ -33,6 +33,7 @@
     "@nebula-studio-renderer/login": "workspace:^",
     "@nebula-studio/api-client": "workspace:^",
     "@nebula-studio/application-contract": "workspace:^",
+    "@nebula-studio/host-capabilities": "workspace:^",
     "@nebula-studio/auth-provider": "workspace:^",
     "@nebula-studio/contracts": "workspace:^",
     "@nebula-studio/nebula-layout": "workspace:^",
@@ -41,6 +42,7 @@
     "@nebula-studio/shell-host": "workspace:^",
     "@nebula-studio/shell-protocol": "workspace:^",
     "@nebula-studio/styles": "workspace:^",
+    "@nebula-studio/tokens": "workspace:^",
     "@nebula-studio/use-confirm": "workspace:^",
     "vue": "catalog:vue",
     "vue-router": "catalog:vue"
