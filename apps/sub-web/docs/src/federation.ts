@@ -50,6 +50,7 @@ export const nebulaDocsApplication: NebulaRemoteApplication = {
     installAssemblyForSubApp(app, 'platform-embed', {
       density: 'comfortable',
       theme: options.capabilities.theme?.scheme ?? 'system',
+      namespace: 'docs',
     });
     app.mount(options.container);
 

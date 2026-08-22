@@ -7,9 +7,14 @@ import { findMonorepoRoot } from '../config/windowsManifest.ts';
 import {
   collectFederationDevRemotes,
   HOST_DEV_MF_GATEWAY_PREFIX,
+  hostOwnedRemotePublicPath,
   isLikelyMfManifestJson,
+  isLoopbackOriginOnPort,
+  isWebHostRoot,
   parseHostDevMfRequestUrl,
   resolveViteCli,
+  rewriteHostMfPublicPath,
+  rewriteViteDevAssetUrls,
 } from '../federation/nebulaHostDevRemotesPlugin.ts';
 
 describe('host dev remotes gateway', () => {
@@ -61,5 +66,41 @@ describe('host dev remotes gateway', () => {
     expect(resolveViteCli(docs?.appDir ?? '')).toMatch(
       /vite[\\/]bin[\\/]vite\.js$/,
     );
+  });
+
+  it('rewrites first-party remote publicPath onto the Host gateway', () => {
+    expect(hostOwnedRemotePublicPath('docs')).toBe('/__nebula-mf/docs/');
+    expect(hostOwnedRemotePublicPath('docs', '/studio/')).toBe(
+      '/studio/__nebula-mf/docs/',
+    );
+    expect(isWebHostRoot('F:/repo/apps/web')).toBe(true);
+    expect(isWebHostRoot('F:/repo/apps/electron')).toBe(false);
+    expect(isLoopbackOriginOnPort('http://127.0.0.1:5174', 5174)).toBe(true);
+    expect(isLoopbackOriginOnPort('http://127.0.0.1:5176', 5174)).toBe(false);
+    expect(
+      JSON.parse(
+        rewriteHostMfPublicPath(
+          '{"metaData":{"publicPath":"http://localhost:5176/"}}',
+          '/__nebula-mf/docs/',
+        ),
+      ).metaData.publicPath,
+    ).toBe('/__nebula-mf/docs/');
+  });
+
+  it('rewrites Vite dev absolute imports onto the Host gateway', () => {
+    expect(
+      rewriteViteDevAssetUrls(
+        'import x from "/node_modules/.vite/deps/vue.js?v=1";',
+        '/__nebula-mf/docs',
+      ),
+    ).toBe(
+      'import x from "/__nebula-mf/docs/node_modules/.vite/deps/vue.js?v=1";',
+    );
+    expect(
+      rewriteViteDevAssetUrls(
+        'import x from "/__nebula-mf/docs/node_modules/vue.js";',
+        '/__nebula-mf/docs',
+      ),
+    ).toBe('import x from "/__nebula-mf/docs/node_modules/vue.js";');
   });
 });

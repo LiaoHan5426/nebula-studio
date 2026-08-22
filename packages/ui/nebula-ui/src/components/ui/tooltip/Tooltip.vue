@@ -24,26 +24,23 @@ defineProps<
 </script>
 
 <template>
-  <TooltipProvider>
+  <TooltipProvider :delay-duration="0">
     <TooltipRoot v-bind="$props">
       <TooltipTrigger as-child>
-        <slot></slot>
+        <span class="nebula-tooltip-wrap">
+          <slot></slot>
+        </span>
       </TooltipTrigger>
       <TooltipPortal>
         <TooltipContent
           :side="side || 'top'"
           :side-offset="sideOffset ?? 4"
-          :class="
-            cn(
-              'z-tooltip max-w-xs overflow-visible rounded-md bg-primary px-3 py-1.5 text-xs text-pretty text-primary-foreground animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
-              $attrs.class as string,
-            )
-          "
+          :class="cn('nebula-tooltip', $attrs.class as string)"
         >
           <slot name="content">
             {{ content }}
           </slot>
-          <TooltipArrow class="fill-primary" />
+          <TooltipArrow class="nebula-tooltip__arrow" />
         </TooltipContent>
       </TooltipPortal>
     </TooltipRoot>

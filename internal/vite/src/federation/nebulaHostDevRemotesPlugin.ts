@@ -2,7 +2,7 @@ import type { Plugin } from 'vite';
 
 import { spawn } from 'node:child_process';
 import type { ChildProcess } from 'node:child_process';
-import { existsSync } from 'node:fs';
+import { cpSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { createServer } from 'node:net';
 import { dirname, join } from 'node:path';
@@ -14,8 +14,10 @@ import {
   loadWindowsConfig,
 } from '../config/windowsManifest.ts';
 
-/** Keep in sync with `HOST_DEV_MF_GATEWAY_PREFIX` in application-runtime hostDevMf.ts */
-export const HOST_DEV_MF_GATEWAY_PREFIX = '/__nebula-mf';
+/** Keep in sync with `HOST_MF_GATEWAY_PREFIX` in application-runtime hostDevMf.ts */
+export const HOST_MF_GATEWAY_PREFIX = '/__nebula-mf';
+/** @deprecated Use HOST_MF_GATEWAY_PREFIX */
+export const HOST_DEV_MF_GATEWAY_PREFIX = HOST_MF_GATEWAY_PREFIX;
 
 export interface FederationDevRemote {
   appDir: string;
@@ -28,7 +30,7 @@ export function parseHostDevMfRequestUrl(
   url: string,
 ): null | { appId: string; rest: string } {
   const path = url.split('?')[0] ?? '';
-  const prefix = `${HOST_DEV_MF_GATEWAY_PREFIX}/`;
+  const prefix = `${HOST_MF_GATEWAY_PREFIX}/`;
   if (!path.startsWith(prefix)) return null;
   const after = path.slice(prefix.length);
   if (!after || after.includes('..')) return null;
@@ -49,6 +51,114 @@ export function isLikelyMfManifestJson(text: string): boolean {
     );
   } catch {
     return false;
+  }
+}
+
+export function hostOwnedRemotePublicPath(
+  appId: string,
+  basePath = '/',
+): string {
+  const base = basePath.endsWith('/') ? basePath : `${basePath}/`;
+  return `${base}__nebula-mf/${appId}/`;
+}
+
+export function packagedHostRemoteDir(outDir: string, appId: string): string {
+  return join(outDir, '__nebula-mf', appId);
+}
+
+export function rewriteHostMfPublicPath(
+  jsonText: string,
+  originBase: string,
+): string {
+  const data = JSON.parse(jsonText) as {
+    metaData?: { publicPath?: string };
+  };
+  if (data.metaData && typeof data.metaData === 'object') {
+    data.metaData.publicPath = originBase;
+  }
+  return JSON.stringify(data);
+}
+
+const VITE_DEV_ABS_PATH =
+  /(["'`])(\/(?:node_modules|@vite|@id|@fs|src|__mf|@mf-types)[^"'`]*)\1/g;
+
+export function rewriteViteDevAssetUrls(
+  source: string,
+  gatewayPath: string,
+): string {
+  const prefix = gatewayPath.replace(/\/$/, '');
+  return source.replace(
+    VITE_DEV_ABS_PATH,
+    (all, quote: string, path: string) => {
+      if (path === prefix || path.startsWith(`${prefix}/`)) {
+        return all;
+      }
+      return `${quote}${prefix}${path}${quote}`;
+    },
+  );
+}
+
+export function shouldRewriteViteDevAssets(
+  rest: string,
+  contentType: string,
+): boolean {
+  if (rest.endsWith('.json') || rest.includes('mf-manifest.json')) {
+    return false;
+  }
+  if (
+    contentType.includes('javascript') ||
+    contentType.includes('ecmascript') ||
+    contentType.includes('css') ||
+    contentType.includes('text/html')
+  ) {
+    return true;
+  }
+  return /\.(?:m?js|css|vue|ts|tsx|mjs)(?:$|\?)/u.test(rest);
+}
+
+export function isWebHostRoot(root: string): boolean {
+  return root.replaceAll('\\', '/').endsWith('/apps/web');
+}
+
+export function isLoopbackOriginOnPort(origin: string, port: number): boolean {
+  try {
+    const url = new URL(origin);
+    if (url.hostname !== '127.0.0.1' && url.hostname !== 'localhost') {
+      return false;
+    }
+    const originPort = url.port
+      ? Number(url.port)
+      : url.protocol === 'https:'
+        ? 443
+        : 80;
+    return originPort === port;
+  } catch {
+    return false;
+  }
+}
+
+export function copyHostOwnedRemotesIntoOutDir(options: {
+  basePath?: string;
+  outDir: string;
+  remotes: readonly FederationDevRemote[];
+}): void {
+  for (const remote of options.remotes) {
+    const src = join(remote.appDir, 'dist');
+    const manifest = join(src, 'mf-manifest.json');
+    if (!existsSync(manifest)) {
+      throw new Error(
+        `[nebula-vite] missing ${manifest}; first-party remotes are Host payloads — run \`vp run build:federation-remotes\` before building Web`,
+      );
+    }
+    const dest = packagedHostRemoteDir(options.outDir, remote.appId);
+    cpSync(src, dest, { recursive: true });
+    writeFileSync(
+      join(dest, 'mf-manifest.json'),
+      rewriteHostMfPublicPath(
+        readFileSync(join(dest, 'mf-manifest.json'), 'utf8'),
+        hostOwnedRemotePublicPath(remote.appId, options.basePath),
+      ),
+    );
   }
 }
 
@@ -108,7 +218,9 @@ async function waitForMfManifest(
 ): Promise<void> {
   const started = Date.now();
   while (Date.now() - started < timeoutMs) {
-    if (await probeMfManifest(origin)) return;
+    if (await probeMfManifest(origin)) {
+      return;
+    }
     await new Promise((resolve) => {
       setTimeout(resolve, 400);
     });
@@ -116,6 +228,20 @@ async function waitForMfManifest(
   throw new Error(
     `[nebula-vite] timed out waiting for ${origin}/mf-manifest.json`,
   );
+}
+
+export async function probeRemoteEntry(origin: string): Promise<boolean> {
+  const url = `${origin.replace(/\/$/, '')}/remoteEntry.js`;
+  try {
+    const response = await fetch(url, {
+      signal: AbortSignal.timeout(3000),
+    });
+    if (!response.ok || response.status === 504) return false;
+    const text = await response.text();
+    return text.includes('runtimeInit') || text.includes('remoteEntry');
+  } catch {
+    return false;
+  }
 }
 
 export function resolveViteCli(fromDir: string): string {
@@ -188,8 +314,16 @@ async function resolveRemoteOrigin(
   remote: FederationDevRemote,
   children: ChildProcess[],
   compose: boolean,
+  hostPort?: number,
 ): Promise<string> {
-  if (await probeMfManifest(remote.configuredOrigin)) {
+  const configuredIsHost =
+    hostPort !== undefined &&
+    isLoopbackOriginOnPort(remote.configuredOrigin, hostPort);
+  if (
+    !configuredIsHost &&
+    (await probeMfManifest(remote.configuredOrigin)) &&
+    (await probeRemoteEntry(remote.configuredOrigin))
+  ) {
     console.info(
       `[nebula-vite] reusing ${remote.appId} remote at ${remote.configuredOrigin}`,
     );
@@ -217,9 +351,27 @@ function stopChildren(children: ChildProcess[]): void {
 }
 
 export function nebulaHostDevRemotesPlugin(): Plugin {
+  let command: 'build' | 'serve' = 'serve';
+  let configRoot = '';
+  let basePath = '/';
+
   return {
     name: 'nebula-host-dev-remotes',
-    apply: 'serve',
+    configResolved(config) {
+      command = config.command;
+      configRoot = config.root;
+      basePath = config.base || '/';
+    },
+    writeBundle(options) {
+      if (command !== 'build' || !isWebHostRoot(configRoot) || !options.dir) {
+        return;
+      }
+      copyHostOwnedRemotesIntoOutDir({
+        outDir: options.dir,
+        remotes: collectFederationDevRemotes(findMonorepoRoot(configRoot)),
+        basePath,
+      });
+    },
     configureServer(server) {
       const compose = process.env.NEBULA_HOST_COMPOSE_REMOTES !== '0';
       const remotes = collectFederationDevRemotes(
@@ -227,8 +379,14 @@ export function nebulaHostDevRemotesPlugin(): Plugin {
       );
       const children: ChildProcess[] = [];
       const origins = new Map<string, Promise<string>>();
+      const hostPort = server.config.server.port;
       for (const remote of remotes) {
-        const pending = resolveRemoteOrigin(remote, children, compose);
+        const pending = resolveRemoteOrigin(
+          remote,
+          children,
+          compose,
+          hostPort,
+        );
         void pending.catch((error) => {
           console.error(error);
         });
@@ -256,6 +414,17 @@ export function nebulaHostDevRemotesPlugin(): Plugin {
             const incoming = new URL(req.url ?? '/', 'http://127.0.0.1');
             const upstream = new URL(parsed.rest || '/', origin);
             upstream.search = incoming.search;
+            const hostHeader = req.headers.host ?? 'localhost';
+            if (
+              isLoopbackOriginOnPort(
+                upstream.origin,
+                Number(hostHeader.split(':')[1] || '80'),
+              )
+            ) {
+              throw new Error(
+                `[nebula-vite] refused to proxy ${parsed.appId} back to the Host`,
+              );
+            }
             const headers = new Headers();
             for (const [name, value] of Object.entries(req.headers)) {
               if (value === undefined || name === 'host') continue;
@@ -266,13 +435,32 @@ export function nebulaHostDevRemotesPlugin(): Plugin {
               method,
               headers,
               redirect: 'manual',
+              signal: AbortSignal.timeout(15_000),
             });
             res.statusCode = response.status;
+            const raw = Buffer.from(await response.arrayBuffer());
+            const isManifest =
+              parsed.rest.endsWith('/mf-manifest.json') ||
+              parsed.rest.endsWith('/mf-stats.json') ||
+              parsed.rest === '/mf-manifest.json' ||
+              parsed.rest === '/mf-stats.json';
+            let body: Buffer = raw;
+            if (isManifest) {
+              const childPublicPath = origin.endsWith('/')
+                ? origin
+                : `${origin}/`;
+              body = Buffer.from(
+                rewriteHostMfPublicPath(raw.toString('utf8'), childPublicPath),
+              );
+            }
             response.headers.forEach((value, name) => {
               if (name === 'transfer-encoding' || name === 'connection') return;
+              if (isManifest && name === 'content-length') {
+                return;
+              }
               res.setHeader(name, value);
             });
-            res.end(Buffer.from(await response.arrayBuffer()));
+            res.end(body);
           } catch (error) {
             const message =
               error instanceof Error ? error.message : String(error);

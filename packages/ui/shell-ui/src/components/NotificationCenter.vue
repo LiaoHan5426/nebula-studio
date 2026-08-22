@@ -20,7 +20,11 @@ import type {
 
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 
-import { NebulaButton, NebulaIcon } from '@nebula-studio/nebula-ui';
+import {
+  NebulaButton,
+  NebulaIcon,
+  useDropdownDismiss,
+} from '@nebula-studio/nebula-ui';
 import { resolveShellEventBus } from '@nebula-studio/shell-protocol';
 
 const emit = defineEmits<{
@@ -30,6 +34,7 @@ const emit = defineEmits<{
 const bus = ref<null | ShellEventBus>(null);
 const open = ref(false);
 const items = ref<ShellNotification[]>([]);
+const rootRef = ref<HTMLElement | null>(null);
 let unsubscribe: (() => void) | null = null;
 
 function pushNotification(
@@ -55,6 +60,15 @@ function toggle(): void {
   open.value = !open.value;
 }
 
+useDropdownDismiss({
+  triggerRef: rootRef,
+  menuRef: rootRef,
+  open: () => open.value,
+  onClose: () => {
+    open.value = false;
+  },
+});
+
 function markAllRead(): void {
   items.value = items.value.map((n) => ({ ...n, read: true }));
 }
@@ -78,7 +92,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="notification-center">
+  <div ref="rootRef" class="notification-center">
     <button
       type="button"
       class="notification-center__trigger"

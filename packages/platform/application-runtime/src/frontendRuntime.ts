@@ -5,10 +5,7 @@ import { GENERATED_FEDERATION_DEV_ENTRIES } from '@nebula-studio/contracts/gener
 import { mapFrontendRuntimeEntryFromGenerated } from '@nebula-studio/contracts/system';
 
 import { alignLoopbackIframeSrc, isIframeSrcAllowed } from './hostCsp.ts';
-import {
-  hostDevMfEntryUrl,
-  shouldRewriteLoopbackManifestToHostGateway,
-} from './hostDevMf.ts';
+import { hostOwnedMfEntryUrl, isHostOwnedManifestEntry } from './hostDevMf.ts';
 import { packagedRemoteUpdatePolicy } from './packagedRemoteUpdate.ts';
 
 export interface StaticRemoteRegistration {
@@ -35,12 +32,10 @@ export function resolveRemoteManifestEntry(options: {
       return `mf-poc://${options.packagedHost}/mf-manifest.json`;
     default:
       if (
-        shouldRewriteLoopbackManifestToHostGateway(
-          options.httpEntry,
-          location.origin,
-        )
+        isLocalFederationFallbackId(options.packagedHost) &&
+        (location.protocol === 'http:' || location.protocol === 'https:')
       ) {
-        return hostDevMfEntryUrl(
+        return hostOwnedMfEntryUrl(
           options.packagedHost,
           options.httpEntry,
           location.origin,
@@ -114,13 +109,15 @@ export function federationRegistrationFromRuntime(
       packagedHost: entry.id,
     }),
   };
-  const integrity = override ? undefined : entry.integrity?.trim();
-  if (integrity) {
-    registration.integrity = integrity;
-  }
-  const signature = override ? undefined : entry.signature?.trim();
-  if (signature) {
-    registration.signature = signature;
+  if (!isHostOwnedManifestEntry(registration.entry)) {
+    const integrity = override ? undefined : entry.integrity?.trim();
+    if (integrity) {
+      registration.integrity = integrity;
+    }
+    const signature = override ? undefined : entry.signature?.trim();
+    if (signature) {
+      registration.signature = signature;
+    }
   }
   if (entry.version) {
     registration.version = entry.version;

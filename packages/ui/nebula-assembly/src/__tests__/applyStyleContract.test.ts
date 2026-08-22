@@ -25,6 +25,7 @@ describe('applyStyleContract', () => {
     expect(root.getAttribute(STYLE_CONTRACT_ATTR)).toBe('');
     expect(root.getAttribute(STYLE_THEME_ATTR)).toBe('dark');
     expect(root.getAttribute(STYLE_DENSITY_ATTR)).toBe('compact');
+    expect(root.getAttribute('data-nebula-css')).toBe('integration');
 
     expect(html.hasAttribute(STYLE_CONTRACT_ATTR)).toBe(false);
     expect(html.hasAttribute(STYLE_THEME_ATTR)).toBe(false);
@@ -36,9 +37,14 @@ describe('applyStyleContract', () => {
 
   it('copies theme attrs to the overlay portal without the assembly marker', () => {
     const portal = document.createElement('div');
-    applyOverlayStyleAttrs(portal, { theme: 'light', density: 'comfortable' });
+    applyOverlayStyleAttrs(portal, {
+      theme: 'light',
+      density: 'comfortable',
+      namespace: 'settings',
+    });
     expect(portal.getAttribute(STYLE_THEME_ATTR)).toBe('light');
     expect(portal.getAttribute(STYLE_DENSITY_ATTR)).toBe('comfortable');
+    expect(portal.getAttribute('data-nebula-css')).toBe('settings');
     expect(portal.hasAttribute(STYLE_CONTRACT_ATTR)).toBe(false);
   });
 });

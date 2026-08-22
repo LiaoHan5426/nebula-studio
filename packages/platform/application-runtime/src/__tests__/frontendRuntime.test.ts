@@ -69,10 +69,16 @@ describe('frontend runtime registry', () => {
         version: '1.0.0',
       }),
     ).toMatchObject({
-      integrity: 'sha384-abc',
-      signature: 'nebula-sig-v1;alg=ECDSA-P256-SHA256;pk=abc;sig=def',
       version: '1.0.0',
     });
+    expect(
+      federationRegistrationFromRuntime({
+        ...docsEntry,
+        integrity: 'sha384-abc',
+        signature: 'nebula-sig-v1;alg=ECDSA-P256-SHA256;pk=abc;sig=def',
+        version: '1.0.0',
+      }).integrity,
+    ).toBeUndefined();
   });
 
   it('loads runtime entries from the system API', async () => {
@@ -111,6 +117,21 @@ describe('frontend runtime registry', () => {
     expect(localFederationRegistration('integration').entry).toBe(
       hostDevMfManifestUrl('integration', location.origin),
     );
+  });
+
+  it('pins first-party remotes to the Host even if the registry points at a CDN', () => {
+    vi.stubGlobal('location', {
+      protocol: 'https:',
+      origin: 'https://studio.example',
+      hostname: 'studio.example',
+      href: 'https://studio.example/',
+    });
+    expect(
+      federationRegistrationFromRuntime({
+        ...docsEntry,
+        manifestUrl: 'https://cdn.example/docs/mf-manifest.json',
+      }).entry,
+    ).toBe('https://studio.example/__nebula-mf/docs/mf-manifest.json');
   });
 
   it('maps iframe runtime rows to same-origin guest urls', () => {

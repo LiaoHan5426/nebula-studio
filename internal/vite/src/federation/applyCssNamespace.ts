@@ -1,88 +1,74 @@
-const KEYFRAME_BLOCK_RE = /@keyframes\s+[^{]+\{(?:[^{}]|\{[^{}]*\})*\}/g;
-const PREAMBLE_AND_RULE_RE =
-  /(^|})(\s*(?:\/\*[\s\S]*?\*\/\s*)*(?:@(?:import|charset|namespace)[^;]+;\s*)*)([^@{}][^{}]*?)\s*\{/g;
+import type { Plugin } from 'postcss';
 
-function splitTopLevelSelectors(selectors: string): string[] {
-  const parts: string[] = [];
-  let current = '';
-  let paren = 0;
-  let square = 0;
-  for (const char of selectors) {
-    if (char === '(') {
-      paren += 1;
-    } else if (char === ')') {
-      paren = Math.max(0, paren - 1);
-    } else if (char === '[') {
-      square += 1;
-    } else if (char === ']') {
-      square = Math.max(0, square - 1);
-    } else if (char === ',' && paren === 0 && square === 0) {
-      parts.push(current);
-      current = '';
-      continue;
-    }
-    current += char;
+import postcss from 'postcss';
+
+/** Document roots must bind to the mount container, not leak onto Host html. */
+function retargetSelector(item: string, attr: string): string {
+  const selector = item.trim();
+  if (!selector || selector.startsWith(attr)) {
+    return selector;
   }
-  if (current.length > 0) {
-    parts.push(current);
+  const documentRoot = /^(html|:root|body|#app)(.*)$/.exec(selector);
+  if (documentRoot) {
+    return `${attr}${documentRoot[2] ?? ''}`;
   }
-  return parts;
+  return `${attr} ${selector}`;
 }
 
-function prefixRuleSelectors(css: string, attr: string): string {
-  return css.replace(
-    PREAMBLE_AND_RULE_RE,
-    (full, brace: string, preamble: string, selectors: string) => {
-      const trimmed = selectors.trim();
-      if (!trimmed || trimmed.startsWith('@') || trimmed.includes('@')) {
-        return full;
-      }
-      const prefixed = splitTopLevelSelectors(trimmed)
-        .map((selector) => {
-          const item = selector.trim();
-          if (
-            !item ||
-            item.startsWith(attr) ||
-            item.startsWith(':root') ||
-            item.startsWith('html')
-          ) {
-            return item;
-          }
-          return `${attr} ${item}`;
-        })
-        .join(', ');
-      return `${brace}${preamble}${prefixed} {`;
-    },
-  );
-}
-
-export function applyCssNamespace(css: string, namespace: string): string {
+export function createCssNamespacePostcssPlugin(namespace: string): Plugin {
   const attr = `[data-nebula-css="${namespace}"]`;
-  const keyframes: string[] = [];
-  const withoutKeyframes = css.replace(KEYFRAME_BLOCK_RE, (block) => {
-    const rewritten = block.replace(
-      /@keyframes\s+([A-Za-z_][\w-]*)/,
-      (_match, name: string) =>
-        name.endsWith(`-${namespace}`)
-          ? `@keyframes ${name}`
-          : `@keyframes ${name}-${namespace}`,
-    );
-    keyframes.push(rewritten);
-    return `/*NEBULA_KF_${keyframes.length - 1}*/`;
-  });
+  return {
+    postcssPlugin: 'nebula-css-namespace',
+    Once(root) {
+      const renamedKeyframes = new Map<string, string>();
+      root.walkAtRules(/keyframes$/i, (atRule) => {
+        const name = atRule.params.trim();
+        if (!name || name.endsWith(`-${namespace}`)) {
+          return;
+        }
+        const next = `${name}-${namespace}`;
+        renamedKeyframes.set(name, next);
+        atRule.params = next;
+      });
 
-  let next = prefixRuleSelectors(withoutKeyframes, attr);
-  next = next.replace(
-    /animation(?:-name)?:\s*([A-Za-z_][\w-]*)/g,
-    (full, name: string) => {
-      if (name.endsWith(`-${namespace}`)) {
-        return full;
+      root.walkRules((rule) => {
+        if (rule.parent?.type === 'atrule') {
+          const parentName = 'name' in rule.parent ? rule.parent.name : '';
+          if (/keyframes$/i.test(parentName)) {
+            return;
+          }
+        }
+        rule.selectors = rule.selectors.map((selector) =>
+          retargetSelector(selector, attr),
+        );
+      });
+
+      if (renamedKeyframes.size === 0) {
+        return;
       }
-      return full.replace(name, `${name}-${namespace}`);
+      root.walkDecls((decl) => {
+        if (decl.prop !== 'animation' && decl.prop !== 'animation-name') {
+          return;
+        }
+        for (const [from, to] of renamedKeyframes) {
+          decl.value = decl.value.replace(
+            new RegExp(`(?:^|[\\s,])${from}(?=$|[\\s,;])`, 'g'),
+            (match) => match.replace(from, to),
+          );
+        }
+      });
     },
-  );
+  };
+}
 
-  return next.replace(/\/\*NEBULA_KF_(\d+)\*\//g, (_match, index: string) => {
-    return keyframes[Number(index)] ?? '';
-  });
+createCssNamespacePostcssPlugin.postcss = true;
+
+/**
+ * Scope compiled CSS (including Tailwind @layer output) to a mount attribute.
+ * Must run after Tailwind emits utilities — never rewrite Tailwind source.
+ */
+export function applyCssNamespace(css: string, namespace: string): string {
+  return postcss([createCssNamespacePostcssPlugin(namespace)]).process(css, {
+    from: undefined,
+  }).css;
 }

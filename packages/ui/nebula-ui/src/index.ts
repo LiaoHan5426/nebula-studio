@@ -2,6 +2,7 @@ import './styles.css';
 
 export * from './components';
 export { useBooleanModel } from './composables/useBooleanModel';
+export { useDropdownDismiss } from './composables/useDropdownDismiss';
 export {
   overlayContainerKey,
   useOverlayTeleportTo,

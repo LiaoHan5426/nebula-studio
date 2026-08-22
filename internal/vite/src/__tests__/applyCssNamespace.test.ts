@@ -49,6 +49,18 @@ describe('applyCssNamespace', () => {
     expect(next).not.toMatch(/\[data-nebula-css="docs"\][\s\S]*@import/);
   });
 
+  it('retargets html/body/#app onto the mount namespace', () => {
+    const next = applyCssNamespace(
+      'html, body, #app { height: 100%; overflow: hidden; }\nhtml.dark { color-scheme: dark; }\n',
+      'docs',
+    );
+    expect(next).toContain('[data-nebula-css="docs"]');
+    expect(next).toContain('height: 100%');
+    expect(next).toContain('[data-nebula-css="docs"].dark');
+    expect(next).not.toMatch(/(?:^|})\s*html[\s,{]/);
+    expect(next).not.toMatch(/(?:^|})\s*body[\s,{]/);
+  });
+
   it('does not split Tailwind arbitrary values on inner commas', () => {
     const next = applyCssNamespace(
       '.max-h-[min(90vh, 40rem)] { max-height: min(90vh, 40rem); }',
@@ -58,6 +70,19 @@ describe('applyCssNamespace', () => {
       '[data-nebula-css="docs"] .max-h-[min(90vh, 40rem)]',
     );
     expect(next).not.toContain('[data-nebula-css="docs"] 40rem');
+  });
+
+  it('prefixes the first rule inside @layer utilities', () => {
+    const next = applyCssNamespace(
+      '@layer utilities {\n  .visible { visibility: visible; }\n  .fixed { position: fixed; }\n}\n',
+      'settings',
+    );
+    expect(next).toContain(
+      '[data-nebula-css="settings"] .visible { visibility: visible; }',
+    );
+    expect(next).toContain(
+      '[data-nebula-css="settings"] .fixed { position: fixed; }',
+    );
   });
 });
 

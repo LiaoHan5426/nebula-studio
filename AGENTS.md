@@ -11,9 +11,11 @@ This monorepo uses **[Vite+](https://viteplus.dev/guide/)** — unified runtime,
 | Task | Command (from repo root unless noted) |
 | --- | --- |
 | Install dependencies | `vp install` |
-| Web shell | `vp run dev:web` → http://localhost:5173。Host 会探测并拉起 Docs / Settings / Integration Remote |
-| Electron shell | `vp run dev`。同样由 Host 组合 Federation Remote，不必再开三个终端 |
-| Integration standalone | `vp run --filter @nebula-studio-renderer/integration dev` → windows.json 中的独立端口（调试单个 Remote 时才需要） |
+| Web shell | `vp run dev:web` → 只暴露 Host 端口；第一方 Remote 走 `/__nebula-mf/<app>/` |
+| Electron shell | `vp run dev`。同样只对外暴露 Host；Remote 是 Host 载荷 |
+| Web production | `vp run build:web` — 把 Docs/Settings/Integration dist 打进 `apps/web/dist/__nebula-mf/`，不必单独部署 Remote |
+| Electron pack | `vp run pack:win` — Remote dist 进 extraResources |
+| Integration standalone | `vp run --filter @nebula-studio-renderer/integration dev` — 只用于单独调试某个 Remote |
 | Typecheck integration package | `vp run --filter @nebula-studio-renderer/integration typecheck` |
 | Format + lint + typecheck | `vp check` |
 | Tests | `vp test` or `vp run test` |
@@ -35,7 +37,7 @@ Typical local stack before manual or API smoke tests:
    - Executor `:8088` — from `nebula-platform/platform-integration-executor`: `mvn spring-boot:run -DskipTests`
    - Do **not** use `mvn -pl … spring-boot:run` from the parent POM alone (it may bind to `nebula-parent` and fail); run from each demo module directory or `-f demos/demo-camel-console/pom.xml`.
 2. **Frontend** (this repo, **use `vp`**):
-   - **Recommended:** `vp run dev:web` — open http://localhost:5173, enter「应用集成」→「集成平台」。Docs / Settings / Integration 由 Host 开发服务器组合，无需手动各起一次。
+   - **Recommended:** `vp run dev:web` — open http://localhost:5173, enter「应用集成」→「集成平台」。第一方 Docs / Settings / Integration 由 Host 同 origin 加载。
    - **Standalone integration:** `vp run --filter @nebula-studio-renderer/integration dev` — 只在单独调试 Integration 时使用（proxies `/api` → console 8080, gateway/demo → executor 8088）
 3. **Demo login:** `admin` / `admin123` or `demo` / `demo`; default tenant header `tenant-a`, API key `demo-api-key-tenant-a` for gateway demos.
 

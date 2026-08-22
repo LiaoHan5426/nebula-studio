@@ -38,6 +38,14 @@ export const NebulaDrawer = defineComponent({
       type: String,
       default: '',
     },
+    closeOnOverlay: {
+      type: Boolean,
+      default: true,
+    },
+    closeOnEscape: {
+      type: Boolean,
+      default: true,
+    },
   },
   emits: ['update:open', 'close'],
   setup(props, { slots, emit }) {
@@ -56,7 +64,11 @@ export const NebulaDrawer = defineComponent({
     };
 
     useBodyScrollLock(() => isOpen.value);
-    useOverlayDismiss({ isOpen: () => isOpen.value, onDismiss: close });
+    useOverlayDismiss({
+      isOpen: () => isOpen.value,
+      onDismiss: close,
+      closeOnEscape: () => props.closeOnEscape,
+    });
     const overlayContainer = inject(overlayContainerKey, null);
 
     return () => {
@@ -65,7 +77,9 @@ export const NebulaDrawer = defineComponent({
         h('div', { class: cn('nebula-drawer-root', props.class) }, [
           h('div', {
             class: 'nebula-drawer__overlay',
-            onClick: close,
+            onClick: () => {
+              if (props.closeOnOverlay) close();
+            },
           }),
           h(
             'aside',

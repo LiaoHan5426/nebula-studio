@@ -63,7 +63,8 @@
     "sass": "catalog:style",
     "vite": "catalog:vite",
     "vite-plus": "catalog:vite",
-    "vue": "catalog:vue"
+    "vue": "catalog:vue",
+    "postcss": "catalog:style"
   },
   "devDependencies": {
     "@nebula-studio-internal/tsconfig": "workspace:^",

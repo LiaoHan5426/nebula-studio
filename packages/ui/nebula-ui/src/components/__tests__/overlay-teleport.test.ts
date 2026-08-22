@@ -5,6 +5,8 @@ import { describe, expect, it } from 'vitest';
 
 import { overlayContainerKey } from '../../composables/useOverlayContainer';
 import { NebulaDrawer } from '../drawer/NebulaDrawer';
+import NebulaTooltip from '../tooltip/NebulaTooltip.vue';
+import { hideFloatingTooltip } from '../../utils/tooltip';
 
 describe('overlay teleport', () => {
   it('falls back to document.body when no overlay container is provided', async () => {
@@ -56,5 +58,19 @@ describe('overlay teleport', () => {
     ).not.toBeNull();
     wrapper.unmount();
     host.remove();
+  });
+
+  it('shows a floating tooltip on hover', async () => {
+    const wrapper = mount(NebulaTooltip, {
+      props: { content: '这是一段提示文字' },
+      slots: { default: '<button type="button">悬停</button>' },
+      attachTo: document.body,
+    });
+    await wrapper.find('.nebula-tooltip-wrap').trigger('mouseenter');
+    const tip = document.querySelector('.nebula-floating-tooltip');
+    expect(tip?.textContent).toContain('这是一段提示文字');
+    expect(tip?.getAttribute('data-open')).toBe('true');
+    wrapper.unmount();
+    hideFloatingTooltip();
   });
 });

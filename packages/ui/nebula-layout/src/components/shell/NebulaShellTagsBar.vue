@@ -3,7 +3,11 @@ import type { ShellTagItem } from '../../types/layout';
 
 import { computed, ref } from 'vue';
 
-import { NebulaButton } from '@nebula-studio/nebula-ui';
+import {
+  NebulaButton,
+  NebulaIcon,
+  useDropdownDismiss,
+} from '@nebula-studio/nebula-ui';
 
 const props = defineProps<{
   activeKey: string;
@@ -23,6 +27,8 @@ const emit = defineEmits<{
 }>();
 
 const menuOpen = ref(false);
+const tagsMenuTriggerRef = ref<HTMLElement | null>(null);
+const tagsMenuRef = ref<HTMLElement | null>(null);
 
 const activeIndex = computed(() =>
   props.tags.findIndex((tag) => tag.key === props.activeKey),
@@ -52,6 +58,15 @@ function runAndClose(fn: () => void) {
   fn();
   menuOpen.value = false;
 }
+
+useDropdownDismiss({
+  triggerRef: tagsMenuTriggerRef,
+  menuRef: tagsMenuRef,
+  open: () => menuOpen.value,
+  onClose: () => {
+    menuOpen.value = false;
+  },
+});
 </script>
 
 <template>
@@ -113,6 +128,7 @@ function runAndClose(fn: () => void) {
 
     <div class="nebula-shell-tags__actions">
       <div
+        ref="tagsMenuTriggerRef"
         class="nebula-shell-tags__menu-wrap"
         :class="{ 'is-open': menuOpen }"
       >
@@ -134,7 +150,12 @@ function runAndClose(fn: () => void) {
             <polyline points="6 9 12 15 18 9" />
           </svg>
         </NebulaButton>
-        <div v-show="menuOpen" class="nebula-shell-tags__menu" role="menu">
+        <div
+          v-show="menuOpen"
+          ref="tagsMenuRef"
+          class="nebula-shell-tags__menu"
+          role="menu"
+        >
           <button
             type="button"
             :disabled="!canCloseLeft"
@@ -172,20 +193,7 @@ function runAndClose(fn: () => void) {
         aria-label="刷新当前页"
         @click="emit('refresh')"
       >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          width="16"
-          height="16"
-        >
-          <polyline points="23 4 23 10 17 10" />
-          <polyline points="1 20 1 14 7 14" />
-          <path
-            d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
-          />
-        </svg>
+        <NebulaIcon icon="refresh" :size="16" />
       </NebulaButton>
       <NebulaButton
         icon

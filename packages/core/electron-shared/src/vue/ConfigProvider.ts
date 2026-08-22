@@ -61,6 +61,23 @@ export const ConfigProvider = defineComponent({
       themeClass: computed(() => (themeState.isDark.value ? 'dark' : '')),
     };
     provide(rendererConfigKey, state);
-    return () => h('div', slots.default?.() ?? []);
+    return () =>
+      h(
+        'div',
+        {
+          class: 'nebula-config-root',
+          style: {
+            display: 'flex',
+            flex: '1 1 0%',
+            flexDirection: 'column',
+            width: '100%',
+            height: '100%',
+            minWidth: '0',
+            minHeight: '0',
+            overflow: 'hidden',
+          },
+        },
+        slots.default?.() ?? [],
+      );
   },
 });

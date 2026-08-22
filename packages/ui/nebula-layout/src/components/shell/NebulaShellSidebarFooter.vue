@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-import { NebulaButton } from '@nebula-studio/nebula-ui';
+import { NebulaButton, NebulaIcon } from '@nebula-studio/nebula-ui';
 
 import { useLayoutContext } from '../../composables/useLayoutContext';
 import { useLayoutPreferences } from '../../composables/useLayoutPreferences';
@@ -28,23 +28,12 @@ const pinTitle = computed(() => (preferences.pinned ? '取消固定' : '固定�
       :aria-label="collapseTitle"
       @click="sidebar.toggleCollapsed()"
     >
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        width="16"
-        height="16"
-      >
-        <template v-if="sidebarExpanded">
-          <polyline points="11 17 6 12 11 7" />
-          <polyline points="18 17 13 12 18 7" />
-        </template>
-        <template v-else>
-          <polyline points="13 17 18 12 13 7" />
-          <polyline points="6 17 11 12 6 7" />
-        </template>
-      </svg>
+      <NebulaIcon
+        :icon="
+          sidebarExpanded ? 'lucide:chevrons-left' : 'lucide:chevrons-right'
+        "
+        :size="16"
+      />
     </NebulaButton>
 
     <NebulaButton
@@ -57,34 +46,13 @@ const pinTitle = computed(() => (preferences.pinned ? '取消固定' : '固定�
       "
       :active="preferences.pinned"
       :title="pinTitle"
-      aria-label="固定侧栏"
+      :aria-label="pinTitle"
       @click="sidebar.togglePinned()"
     >
-      <svg
-        v-if="preferences.pinned"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        width="16"
-        height="16"
-      >
-        <path d="M12 17v5" />
-        <path d="M9 3h6l1 7h4l-5 8v3H9v-3L5 10h4l1-7z" />
-      </svg>
-      <svg
-        v-else
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        width="16"
-        height="16"
-      >
-        <path d="M12 17v5" />
-        <path d="M9 3h6l1 7h4l-5 8v3H9v-3L5 10h4l1-7z" />
-        <line x1="4" y1="4" x2="20" y2="20" />
-      </svg>
+      <NebulaIcon
+        :icon="preferences.pinned ? 'lucide:pin' : 'lucide:pin-off'"
+        :size="16"
+      />
     </NebulaButton>
   </footer>
 </template>

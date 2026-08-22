@@ -280,8 +280,9 @@ watch(
   position: relative;
   z-index: 1;
   display: flex;
-  flex: 1;
+  flex: 1 1 auto;
   width: 100%;
+  height: 100%;
   min-height: 0;
 }
 
@@ -293,7 +294,7 @@ watch(
   height: 100%;
   min-height: 0;
   margin: 0;
-  pointer-events: none;
+  pointer-events: auto;
   background: hsl(var(--background-deep));
   border: 0;
   opacity: 0;
@@ -305,13 +306,11 @@ watch(
 
 .shell-embed-frame.is-idle,
 .shell-embed-frame.is-entered {
-  pointer-events: auto;
   opacity: 1;
   transform: translateY(0);
 }
 
 .shell-embed-frame.is-entering {
-  pointer-events: none;
   opacity: 0;
   transform: translateY(8px);
 }
@@ -413,7 +412,8 @@ watch(
 
 .workspace-surface {
   display: flex;
-  flex: 1;
+  flex: 1 1 auto;
+  width: 100%;
   min-height: 0;
   overflow: auto;
 }

@@ -7,6 +7,17 @@ function isStyleModule(id: string): boolean {
   return path.endsWith('.css') || path.endsWith('.scss');
 }
 
+function looksLikeJsModule(code: string): boolean {
+  return /^\s*(?:import|export)\b/.test(code);
+}
+
+/**
+ * Same-document Federation remotes only (hello PoC).
+ * Product iframe remotes must not use this — the document is the CSS boundary.
+ *
+ * Runs after Tailwind (`enforce: 'post'`) so utilities, @layer, and @media are
+ * prefixed via PostCSS instead of a source-level regex.
+ */
 export function nebulaCssNamespacePlugin(namespace: string): Plugin {
   const alreadyNamespaced = (css: string): boolean =>
     css.includes(`[data-nebula-css="${namespace}"]`) ||
@@ -22,16 +33,12 @@ export function nebulaCssNamespacePlugin(namespace: string): Plugin {
 
   return {
     name: 'nebula-css-namespace',
-    // Must run before Vite turns CSS into a JS injector; `post` only sees JS in dev.
-    enforce: 'pre',
+    enforce: 'post',
     transform(code, id) {
       if (id.includes('\0') || id.includes('node_modules')) {
         return;
       }
-      if (!isStyleModule(id)) {
-        return;
-      }
-      if (/^\s*(?:import|export)\b/.test(code)) {
+      if (!isStyleModule(id) || looksLikeJsModule(code)) {
         return;
       }
       return {

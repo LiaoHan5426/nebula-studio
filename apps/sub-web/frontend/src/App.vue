@@ -757,6 +757,7 @@ async function handleLogin(): Promise<void> {
 
 <style lang="scss" scoped>
 .shell {
+  --shell-top: 56px;
   --shell-bg: radial-gradient(
     circle at top left,
     hsl(var(--background-deep)) 0%,
@@ -772,8 +773,13 @@ async function handleLogin(): Promise<void> {
   --text-muted: hsl(var(--muted-foreground));
 
   position: relative;
-  min-height: 100vh;
+  display: flex;
+  flex: 1 1 0%;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
   margin: 0;
+  overflow: hidden;
   background: var(--shell-bg);
 }
 
@@ -793,8 +799,9 @@ async function handleLogin(): Promise<void> {
 .shell-main {
   position: relative;
   display: flex;
-  flex: 1;
+  flex: 1 1 auto;
   flex-direction: column;
+  width: 100%;
   min-width: 0;
   min-height: 0;
   overflow: hidden;

@@ -15,8 +15,12 @@
   position: relative;
   display: grid;
   grid-template-columns: var(--layout-sidebar-width) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
   width: 100%;
-  min-height: 100vh;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  flex: 1 1 auto;
   color: hsl(var(--foreground));
   background: hsl(var(--background));
   transition: grid-template-columns var(--layout-transition-duration)
@@ -36,7 +40,7 @@
   flex-direction: column;
   width: var(--layout-sidebar-width);
   min-width: var(--layout-sidebar-width);
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
   background: hsl(var(--background-deep) / 98%);
   border-right: 1px solid hsl(var(--border) / 82%);
@@ -63,7 +67,8 @@
   flex: 1;
   flex-direction: column;
   min-width: 0;
-  min-height: 100vh;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .nebula-layout-shell.is-sidebar-collapsed.is-sidebar-floating
@@ -244,7 +249,7 @@
 }
 
 .nebula-layout-shell.is-content-fullscreen .nebula-layout-shell__main {
-  min-height: 100vh;
+  min-height: 0;
 }
 
 .nebula-layout-shell.is-content-fullscreen .nebula-layout-shell__content {

@@ -90,6 +90,7 @@ export const nebulaIntegrationApplication: NebulaRemoteApplication = {
     installAssemblyForSubApp(app, 'platform-embed', {
       density: 'comfortable',
       theme: options.capabilities.theme?.scheme ?? 'system',
+      namespace: 'integration',
     });
     installVxePcUi(app);
     installVxeTable(app);

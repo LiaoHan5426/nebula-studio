@@ -8,6 +8,7 @@ import { tryUseNebulaAssembly } from '@nebula-studio/nebula-assembly';
 import {
   getLayoutHostMode,
   getWebShellEmbedSurface,
+  isShellIframeEmbed,
 } from '@nebula-studio/shell-protocol';
 
 export function useShellHosted(): {
@@ -20,6 +21,9 @@ export function useShellHosted(): {
     typeof window !== 'undefined' ? getWebShellEmbedSurface() : null,
   );
   const hostMode = computed((): LayoutHostMode => {
+    if (typeof window !== 'undefined' && isShellIframeEmbed()) {
+      return 'shell-hosted';
+    }
     if (assembly) {
       return assembly.host.surface === 'platform-embed'
         ? 'shell-hosted'

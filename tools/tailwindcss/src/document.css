@@ -19,6 +19,7 @@
   html {
     @apply text-foreground bg-background font-sans;
 
+    overflow: hidden;
     scroll-behavior: smooth;
     font-size: var(--font-size-base, 16px);
     font-variation-settings: normal;
@@ -32,11 +33,27 @@
   #app,
   body,
   html {
-    @apply size-full;
+    @apply size-full overflow-hidden;
   }
 
-  body {
-    min-height: 100vh;
+  body,
+  #app {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  /* ConfigProvider renders an unstyled wrapper; without this, height:100%
+     children collapse to content and leave a blank band under the shell. */
+  #app > * {
+    display: flex;
+    flex: 1 1 0%;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
   }
 
   a,
@@ -115,4 +132,30 @@ html.invert-mode {
 
 html.grayscale-mode {
   @apply grayscale;
+}
+
+/* Drawers/dialogs teleport here (body). Keep this file un-namespaced so the
+   portal is position:fixed even when Remote CSS is scoped to [data-nebula-css]. */
+.nebula-assembly__overlay-container {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay, 1050);
+  pointer-events: none;
+  overflow: visible;
+}
+
+.nebula-assembly__overlay-container > * {
+  pointer-events: auto;
+}
+
+.nebula-assembly__overlay-container > .nebula-tooltip,
+.nebula-assembly__overlay-container > .nebula-floating-tooltip,
+.nebula-assembly__overlay-container > *:has(.nebula-tooltip) {
+  pointer-events: none;
+}
+
+.nebula-floating-tooltip {
+  position: fixed;
+  z-index: var(--z-tooltip, 1400);
+  pointer-events: none;
 }

@@ -263,13 +263,32 @@
   display: inline-flex;
 }
 
+.nebula-tooltip {
+  position: fixed;
+  z-index: var(--z-tooltip, 1400);
+  max-width: 20rem;
+  padding: 0.375rem 0.75rem;
+  overflow: visible;
+  font-size: 0.75rem;
+  line-height: 1.25;
+  color: hsl(var(--primary-foreground));
+  text-wrap: pretty;
+  pointer-events: none;
+  background: hsl(var(--primary));
+  border-radius: 6px;
+}
+
+.nebula-tooltip__arrow {
+  fill: hsl(var(--primary));
+}
+
 .nebula-has-tooltip {
   position: relative;
 }
 
 .nebula-floating-tooltip {
   position: fixed;
-  z-index: var(--z-tooltip);
+  z-index: var(--z-tooltip, 1400);
   width: max-content;
   max-width: 300px;
   padding: 0.4rem 0.55rem;
@@ -1285,4 +1304,64 @@ html[data-theme='dark']
   to {
     transform: translateX(0);
   }
+}
+
+/* Dialog — BEM so teleported content still matches namespaced Remote CSS */
+.nebula-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay, 1050);
+  background: hsl(var(--overlay) / 50%);
+}
+
+.nebula-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: var(--z-modal, 1100);
+  display: grid;
+  gap: 1rem;
+  max-width: calc(100vw - 1.5rem);
+  padding: 1.5rem 3rem 1.5rem 1.5rem;
+  overflow: auto;
+  color: hsl(var(--foreground));
+  pointer-events: auto;
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
+  border-radius: 8px;
+  box-shadow: 0 16px 48px rgb(0 0 0 / 28%);
+  transform: translate(-50%, -50%);
+}
+
+.nebula-dialog--md {
+  width: min(calc(100vw - 1.5rem), 32rem);
+  max-height: min(90vh, 40rem);
+}
+
+.nebula-dialog--lg {
+  width: min(calc(100vw - 1.5rem), 40rem);
+  max-height: min(90vh, 48rem);
+}
+
+.nebula-dialog--full {
+  width: min(96vw, 75rem);
+  max-height: 92vh;
+  overflow: hidden;
+}
+
+.nebula-dialog__close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: inline-flex;
+  padding: 0;
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  opacity: 0.7;
+}
+
+.nebula-dialog__close:hover {
+  opacity: 1;
 }

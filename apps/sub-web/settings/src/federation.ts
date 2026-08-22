@@ -65,6 +65,7 @@ export const nebulaSettingsApplication: NebulaRemoteApplication = {
     installAssemblyForSubApp(app, 'platform-embed', {
       density: 'comfortable',
       theme: options.capabilities.theme?.scheme ?? 'system',
+      namespace: 'settings',
     });
     app.mount(options.container);
 

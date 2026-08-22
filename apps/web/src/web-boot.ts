@@ -15,6 +15,7 @@ import {
 import { readParentShellAuthSession } from '@nebula-studio/auth-provider/web';
 import { createWebEmbedHostCapabilities } from '@nebula-studio/host-capabilities';
 import { WEB_SHELL_EMBED_QUERY } from '@nebula-studio/shell-protocol';
+import '@nebula-studio/styles/document';
 
 document.documentElement.dataset.platform = 'web';
 

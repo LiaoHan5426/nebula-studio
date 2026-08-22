@@ -46,10 +46,19 @@ const handleWindowChange = (): void => {
   updateFloatingTooltipPosition();
 };
 
+function overlayMount(): HTMLElement {
+  return document.body;
+}
+
 function ensureFloatingTooltip(): FloatingTooltipState {
-  if (floatingTooltipState) return floatingTooltipState;
+  if (floatingTooltipState?.root.isConnected) {
+    return floatingTooltipState;
+  }
   const root = document.createElement('div');
   root.className = 'nebula-floating-tooltip';
+  root.style.position = 'fixed';
+  root.style.zIndex = '1400';
+  root.style.pointerEvents = 'none';
   const arrow = document.createElement('div');
   arrow.className = 'nebula-floating-tooltip__arrow';
   root.appendChild(arrow);
@@ -75,9 +84,9 @@ function measureTooltipSize(content: string): {
   const arrow = document.createElement('div');
   arrow.className = 'nebula-floating-tooltip__arrow';
   measureNode.appendChild(arrow);
-  document.body.appendChild(measureNode);
+  overlayMount().appendChild(measureNode);
   const rect = measureNode.getBoundingClientRect();
-  document.body.removeChild(measureNode);
+  measureNode.remove();
   return { width: rect.width, height: rect.height };
 }
 
@@ -273,6 +282,8 @@ export function showFloatingTooltip(
   updateFloatingTooltipPosition();
   startAutoUpdateLoop();
   state.root.dataset.open = 'true';
+  state.root.style.opacity = '1';
+  state.root.style.visibility = 'visible';
   triggerPopAnimation(state.root);
   if (wasOpen) {
     window.requestAnimationFrame(() => {
@@ -297,6 +308,7 @@ export function hideFloatingTooltip(): void {
   closeAnimationTimerId = window.setTimeout(() => {
     if (!floatingTooltipState) return;
     floatingTooltipState.root.dataset.open = 'false';
+    floatingTooltipState.root.style.opacity = '0';
     floatingTooltipState.root.dataset.switching = 'false';
     floatingTooltipState.root.classList.remove(
       'nebula-floating-tooltip--closing',

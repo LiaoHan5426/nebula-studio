@@ -2,6 +2,7 @@ import type { StyleContract } from '../types/style';
 
 import {
   STYLE_CONTRACT_ATTR,
+  STYLE_CSS_ATTR,
   STYLE_DENSITY_ATTR,
   STYLE_NAMESPACE_ATTR,
   STYLE_THEME_ATTR,
@@ -39,6 +40,7 @@ export function applyOverlayStyleAttrs(
   setOrRemoveAttribute(root, STYLE_THEME_ATTR, contract.theme);
   setOrRemoveAttribute(root, STYLE_DENSITY_ATTR, contract.density);
   setOrRemoveAttribute(root, STYLE_NAMESPACE_ATTR, contract.namespace);
+  setOrRemoveAttribute(root, STYLE_CSS_ATTR, contract.namespace);
 }
 
 export function clearStyleContract(root: HTMLElement): void {
@@ -46,4 +48,5 @@ export function clearStyleContract(root: HTMLElement): void {
   root.removeAttribute(STYLE_THEME_ATTR);
   root.removeAttribute(STYLE_DENSITY_ATTR);
   root.removeAttribute(STYLE_NAMESPACE_ATTR);
+  root.removeAttribute(STYLE_CSS_ATTR);
 }

@@ -11,7 +11,6 @@ import { federation } from '@module-federation/vite';
 
 import { asVitePlugins } from '../federation/asVitePlugins.ts';
 import { createNebulaSharedConfig } from '../federation/createNebulaSharedConfig.ts';
-import { nebulaCssNamespacePlugin } from '../federation/nebulaCssNamespacePlugin.ts';
 import { resolveSubAppRoot } from '../plugin/nebulaWorkspaceManifestPlugin.ts';
 import { createNebulaApiProxy } from '../proxy/createNebulaApiProxy.ts';
 import { createNebulaRendererViteConfig } from './createNebulaRendererViteConfig.ts';
@@ -88,15 +87,17 @@ export function defineNebulaSubAppConfig(
   }
 
   const plugins: Plugin[] = [...(options.plugins ?? [])];
+  const hostedByHost = Boolean(process.env.NEBULA_REMOTE_PORT);
   if (options.federation) {
-    const cssNamespace = options.federation.cssNamespace ?? options.appId;
+    // Iframe / standalone remotes own a document. Do not rewrite Tailwind.
+    // Same-document CSS isolation stays on defineNebulaRemoteConfig (PoC).
     plugins.unshift(
-      nebulaCssNamespacePlugin(cssNamespace),
       ...asVitePlugins(
         federation({
           name: options.federation.name,
           filename: 'remoteEntry.js',
           manifest: true,
+          ...(hostedByHost ? { dts: false } : {}),
           exposes: options.federation.exposes,
           shared: createNebulaSharedConfig(),
         }),
@@ -114,6 +115,20 @@ export function defineNebulaSubAppConfig(
     };
   }
 
+  const merge: Record<string, unknown> = {
+    plugins,
+    resolve: {
+      alias: {
+        '@': srcRoot,
+      },
+    },
+    server,
+  };
+
+  if (hostedByHost) {
+    merge.cacheDir = `node_modules/.vite/mf-remote-${process.env.NEBULA_REMOTE_PORT}`;
+  }
+
   return createNebulaRendererViteConfig({
     root,
     base: process.env.VITE_BASE_PATH ?? standalone?.basePath ?? '/',
@@ -122,14 +137,6 @@ export function defineNebulaSubAppConfig(
       outDir: 'dist',
       emptyOutDir: true,
     },
-    merge: {
-      plugins,
-      resolve: {
-        alias: {
-          '@': srcRoot,
-        },
-      },
-      server,
-    },
+    merge,
   });
 }

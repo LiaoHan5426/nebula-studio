@@ -50,7 +50,19 @@ export function wrapWithAssemblyRoot(
         const contract = props?.styleContract ??
           assembly?.style ?? { theme: 'system' };
         applyStyleContract(root, contract);
-        if (portal) applyOverlayStyleAttrs(portal, contract);
+        if (portal) {
+          applyOverlayStyleAttrs(portal, contract);
+          const cssNamespace =
+            contract.namespace ??
+            root
+              .closest('[data-nebula-css]')
+              ?.getAttribute('data-nebula-css') ??
+            document.querySelector('#app')?.getAttribute('data-nebula-css') ??
+            undefined;
+          if (cssNamespace) {
+            portal.setAttribute('data-nebula-css', cssNamespace);
+          }
+        }
         if (assembly) {
           assembly.mountRoot = root;
         }
@@ -68,7 +80,14 @@ export function wrapWithAssemblyRoot(
           {
             ref: rootRef,
             class: 'nebula-assembly-root',
-            style: { width: '100%', height: '100%', minHeight: 0 },
+            style: {
+              display: 'flex',
+              flex: '1 1 0%',
+              flexDirection: 'column',
+              width: '100%',
+              height: '100%',
+              minHeight: 0,
+            },
             'data-nebula-assembly': '',
             ...attrs,
           },

@@ -42,6 +42,10 @@ export const NebulaDropdown = defineComponent({
       type: Number,
       default: 8,
     },
+    closeOnOutside: {
+      type: Boolean,
+      default: true,
+    },
   },
   emits: ['update:open'],
   setup(props, { slots, emit }) {
@@ -81,6 +85,7 @@ export const NebulaDropdown = defineComponent({
       menuRef,
       open: () => isOpen.value,
       onClose: close,
+      closeOnOutside: () => props.closeOnOutside,
     });
     const overlayContainer = inject(overlayContainerKey, null);
 

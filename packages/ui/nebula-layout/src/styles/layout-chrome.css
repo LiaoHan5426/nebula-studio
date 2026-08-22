@@ -33,11 +33,23 @@
   display: inline-flex;
   gap: 12px;
   align-items: center;
-  padding: 6px;
+  padding: 4px;
+  overflow: visible;
   background: hsl(var(--muted) / 30%);
   border: 1px solid hsl(var(--border) / 55%);
   border-radius: 10px;
   -webkit-app-region: no-drag;
+}
+
+.nebula-header-tool-group .nebula-button,
+.nebula-header-tool-group .nebula-button-control {
+  overflow: visible;
+}
+
+.nebula-header-tool-group svg {
+  display: block;
+  overflow: visible;
+  flex-shrink: 0;
 }
 
 .nebula-sidebar-footer {
@@ -58,6 +70,14 @@
   flex: 1;
   height: var(--control-height-md);
   border-radius: 8px;
+}
+
+.nebula-sidebar-footer__btn svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+  overflow: visible;
+  flex-shrink: 0;
 }
 
 /* 窄条收起时隐藏 Pin；正式展开或 hover 浮层（is-sidebar-floating）时显示 */

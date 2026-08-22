@@ -1,23 +1,34 @@
 <script setup lang="ts">
-import type { TooltipContentProps } from 'reka-ui';
+import type { TooltipPlacement } from '../../utils/tooltip';
 
-import { Tooltip } from '../ui/tooltip';
+import { computed } from 'vue';
 
-type TooltipPlacement = TooltipContentProps['side'];
+import { withTooltipAttrs } from '../../utils/tooltip';
 
-const props = defineProps<{
-  class?: string;
-  content: string;
-  placement?: TooltipPlacement;
-}>();
+const props = withDefaults(
+  defineProps<{
+    class?: string;
+    content: string;
+    placement?: TooltipPlacement;
+  }>(),
+  {
+    class: '',
+    placement: 'top',
+  },
+);
+
+const bind = computed(() =>
+  withTooltipAttrs(
+    'nebula-tooltip-wrap',
+    props.class,
+    props.content,
+    props.placement,
+  ),
+);
 </script>
 
 <template>
-  <Tooltip
-    :content="props.content"
-    :side="props.placement || 'top'"
-    :class="props.class"
-  >
+  <span v-bind="bind">
     <slot></slot>
-  </Tooltip>
+  </span>
 </template>

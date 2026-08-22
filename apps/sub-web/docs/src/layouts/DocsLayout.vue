@@ -2,13 +2,14 @@
 import { computed, ref } from 'vue';
 import { RouterLink, RouterView, useRoute } from 'vue-router';
 
-import { NebulaDocsLayout } from '@nebula-studio/nebula-layout';
+import { NebulaDocsLayout, useShellHosted } from '@nebula-studio/nebula-layout';
 
 import { HELP_DOCUMENTS } from '@/content/productHelp';
 
 import '@/styles/doc-page.css';
 
 const route = useRoute();
+const { isShellHosted } = useShellHosted();
 
 const sidebar = computed(() => route.meta.sidebar as string | undefined);
 const pageTitle = computed(() => route.meta.title as string | undefined);
@@ -164,6 +165,7 @@ function isActive(path: string): boolean {
   <NebulaDocsLayout
     :title="layoutTitle"
     :eyebrow="pageCategory"
+    :embedded="isShellHosted"
     content-width="wide"
     density="comfortable"
     navigation-label="文档导航"
@@ -336,6 +338,7 @@ body,
   height: 100%;
   min-height: 0;
   margin: 0;
+  overflow: hidden;
 }
 
 #app {
@@ -355,6 +358,7 @@ body {
 <style scoped>
 .docs-layout {
   height: 100%;
+  min-height: 0;
 }
 
 .docs-nav__title {

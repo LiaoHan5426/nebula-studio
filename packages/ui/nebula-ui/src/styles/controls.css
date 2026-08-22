@@ -95,6 +95,15 @@
   width: var(--control-height-md, 2.25rem);
   min-width: var(--control-height-md, 2.25rem);
   padding: 0;
+  overflow: visible;
+  line-height: 0;
+}
+
+.nebula-button svg,
+.nebula-button-control svg {
+  display: block;
+  overflow: visible;
+  flex-shrink: 0;
 }
 
 .nebula-button:disabled,

@@ -113,6 +113,26 @@ if (
   );
   process.exit(1);
 }
+const rootPkg = readFileSync(join(root, 'package.json'), 'utf8');
+if (!rootPkg.includes('build:federation-remotes && vp run web#build')) {
+  console.error(
+    '[check:remote-resilience] Web Host build must embed first-party remotes',
+  );
+  process.exit(1);
+}
+const hostRemotesPlugin = readFileSync(
+  join(root, 'internal/vite/src/federation/nebulaHostDevRemotesPlugin.ts'),
+  'utf8',
+);
+if (
+  !hostRemotesPlugin.includes('copyHostOwnedRemotesIntoOutDir') ||
+  !hostRemotesPlugin.includes('writeBundle')
+) {
+  console.error(
+    '[check:remote-resilience] Web Host must copy first-party remotes into dist/__nebula-mf',
+  );
+  process.exit(1);
+}
 if (!validator.includes('nebula-sig-v1')) {
   console.error(
     '[check:remote-resilience] registry must validate public-key signature envelopes',

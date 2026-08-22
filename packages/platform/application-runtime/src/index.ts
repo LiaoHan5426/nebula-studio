@@ -38,8 +38,11 @@ export {
 export { LOCAL_DOCS_FEDERATION_FALLBACK as DOCS_FEDERATION_REMOTE } from './frontendRuntime.ts';
 export {
   HOST_DEV_MF_GATEWAY_PREFIX,
+  HOST_MF_GATEWAY_PREFIX,
   hostDevMfEntryUrl,
   hostDevMfManifestUrl,
+  hostOwnedMfEntryUrl,
+  isHostOwnedManifestEntry,
   isLoopbackHttpOrigin,
   shouldRewriteLoopbackManifestToHostGateway,
 } from './hostDevMf.ts';

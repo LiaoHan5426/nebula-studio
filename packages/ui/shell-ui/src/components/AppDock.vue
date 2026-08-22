@@ -214,7 +214,7 @@ function selectApp(viewId: string): void {
                   aria-label="隐藏应用"
                   @click.stop="emit('hide-app', viewId)"
                 >
-                  <NebulaIcon icon="close" />
+                  <NebulaIcon icon="close" :size="12" />
                 </button>
                 <!-- eslint-disable vue/no-v-html -- registry iconSvg is static markup -->
                 <span
@@ -474,16 +474,25 @@ function selectApp(viewId: string): void {
   position: absolute;
   top: 6px;
   right: 6px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 22px;
   height: 22px;
   padding: 0;
-  font-size: 14px;
-  line-height: 1;
+  line-height: 0;
   color: hsl(var(--muted-foreground));
   cursor: pointer;
   background: hsl(var(--background) / 35%);
   border: 1px solid hsl(var(--border) / 65%);
   border-radius: 999px;
+}
+
+.integration-tile-hide :deep(svg) {
+  display: block;
+  width: 12px;
+  height: 12px;
 }
 
 .integration-tile-hide:hover {

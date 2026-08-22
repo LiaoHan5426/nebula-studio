@@ -7,35 +7,55 @@ export interface UseDropdownDismissOptions {
   onClose: () => void;
   open: () => boolean;
   triggerRef: Ref<HTMLElement | null>;
+  /** 点击菜单/触发器以外区域时关闭。默认 true。 */
+  closeOnOutside?: () => boolean;
 }
 
 /**
- * Dropdown 关闭 composable。
- *
- * 处理文档点击关闭（click outside）和 Escape 键盘关闭。
+ * 下拉/弹出层关闭：默认点击空白关闭，并处理 iframe 抢焦点与 Escape。
  */
 export function useDropdownDismiss(options: UseDropdownDismissOptions) {
   const { triggerRef, menuRef, open, onClose } = options;
 
-  function onDocClick(event: MouseEvent): void {
-    if (!open()) return;
-    const target = event.target as Node;
-    if (triggerRef.value?.contains(target)) return;
-    if (menuRef.value?.contains(target)) return;
+  function closeOnOutsideEnabled(): boolean {
+    return options.closeOnOutside?.() !== false;
+  }
+
+  function isInside(target: EventTarget | null): boolean {
+    if (!(target instanceof Node)) return false;
+    if (triggerRef.value?.contains(target)) return true;
+    if (menuRef.value?.contains(target)) return true;
+    return false;
+  }
+
+  function dismissIfOutside(target: EventTarget | null): void {
+    if (!open() || !closeOnOutsideEnabled()) return;
+    if (isInside(target)) return;
+    onClose();
+  }
+
+  function onPointerDown(event: PointerEvent): void {
+    dismissIfOutside(event.target);
+  }
+
+  function onWindowBlur(): void {
+    if (!open() || !closeOnOutsideEnabled()) return;
     onClose();
   }
 
   function onKeydown(event: KeyboardEvent): void {
-    if (event.key === 'Escape') onClose();
+    if (event.key === 'Escape' && open()) onClose();
   }
 
   onMounted(() => {
-    document.addEventListener('click', onDocClick);
+    document.addEventListener('pointerdown', onPointerDown, true);
+    window.addEventListener('blur', onWindowBlur);
     document.addEventListener('keydown', onKeydown);
   });
 
   onUnmounted(() => {
-    document.removeEventListener('click', onDocClick);
+    document.removeEventListener('pointerdown', onPointerDown, true);
+    window.removeEventListener('blur', onWindowBlur);
     document.removeEventListener('keydown', onKeydown);
   });
 }

@@ -55,7 +55,11 @@ const resolvedStatusLabel = computed(
 </script>
 
 <template>
-  <span :class="cn('relative inline-flex', props.class)">
+  <span
+    :class="
+      cn('nebula-avatar-wrap', `nebula-avatar-wrap--${size}`, props.class)
+    "
+  >
     <Avatar :class="cn(sizeClasses[size])">
       <AvatarImage v-if="src" :src="src" :alt="alt || text" />
       <AvatarFallback>{{ fallbackText }}</AvatarFallback>
@@ -63,11 +67,7 @@ const resolvedStatusLabel = computed(
     <span
       v-if="resolvedStatus"
       :class="
-        cn(
-          'nebula-avatar__status absolute bottom-0 right-0 block rounded-full ring-2 ring-background',
-          size === 'sm' ? 'h-2 w-2' : size === 'md' ? 'h-2.5 w-2.5' : 'h-3 w-3',
-          `nebula-avatar__status--${resolvedStatus}`,
-        )
+        cn('nebula-avatar__status', `nebula-avatar__status--${resolvedStatus}`)
       "
       role="status"
       :title="resolvedStatusLabel"
@@ -78,8 +78,35 @@ const resolvedStatusLabel = computed(
 </template>
 
 <style scoped>
+.nebula-avatar-wrap {
+  position: relative;
+  display: inline-flex;
+  overflow: visible;
+}
+
 .nebula-avatar__status {
-  box-shadow: 0 0 0 1px hsl(var(--border));
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  display: block;
+  width: 8px;
+  height: 8px;
+  pointer-events: none;
+  border-radius: 999px;
+  box-shadow:
+    0 0 0 2px hsl(var(--background)),
+    0 0 0 1px hsl(var(--border));
+}
+
+.nebula-avatar-wrap--sm .nebula-avatar__status {
+  width: 7px;
+  height: 7px;
+}
+
+.nebula-avatar-wrap--lg .nebula-avatar__status {
+  width: 10px;
+  height: 10px;
 }
 
 .nebula-avatar__status--online {

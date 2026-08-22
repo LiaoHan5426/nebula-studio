@@ -174,11 +174,12 @@ function summaryVariant(
 
 <style scoped>
 .personal-workspace {
+  box-sizing: border-box;
   display: grid;
   gap: var(--surface-gap-comfortable);
-  width: min(var(--content-wide), 100%);
+  width: 100%;
+  min-height: 100%;
   padding: var(--surface-padding-comfortable);
-  margin-inline: auto;
   overflow: auto;
 }
 

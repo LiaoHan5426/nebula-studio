@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 
-import { NebulaAvatar, useOverlayTeleportTo } from '@nebula-studio/nebula-ui';
+import {
+  NebulaAvatar,
+  useDropdownDismiss,
+  useOverlayTeleportTo,
+} from '@nebula-studio/nebula-ui';
 
 const props = defineProps<{
   avatarSrc?: string;
@@ -47,18 +51,6 @@ function updatePosition() {
   };
 }
 
-function onDocClick(event: MouseEvent) {
-  if (!open.value) return;
-  const target = event.target as Node;
-  if (triggerRef.value?.contains(target)) return;
-  if (menuRef.value?.contains(target)) return;
-  close();
-}
-
-function onKeydown(event: KeyboardEvent) {
-  if (event.key === 'Escape') close();
-}
-
 watch(open, (isOpen) => {
   if (isOpen) {
     updatePosition();
@@ -66,16 +58,19 @@ watch(open, (isOpen) => {
   }
 });
 
+useDropdownDismiss({
+  triggerRef,
+  menuRef,
+  open: () => open.value,
+  onClose: close,
+});
+
 onMounted(() => {
-  document.addEventListener('click', onDocClick);
-  document.addEventListener('keydown', onKeydown);
   window.addEventListener('resize', updatePosition);
   window.addEventListener('scroll', updatePosition, true);
 });
 
 onUnmounted(() => {
-  document.removeEventListener('click', onDocClick);
-  document.removeEventListener('keydown', onKeydown);
   window.removeEventListener('resize', updatePosition);
   window.removeEventListener('scroll', updatePosition, true);
 });
