@@ -1,16 +1,19 @@
-import type { InterfaceGrantRecord, TenantRecord } from '@/features/tenant/api';
-import type { ApiInterface } from '@/shared/types';
+import type { InterfaceGrantRecord } from '@/features/tenant/api';
 
 import type { AuthorizeRow, GrantForm } from '../authorize/types';
 
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
+import { interfacesQueryOptions } from '@/features/interfaces/queryOptions';
 import { tenantApi } from '@/features/tenant/api';
-import { interfaceApi } from '@/shared/api/integration';
+import {
+  tenantDetailQueryOptions,
+  tenantsQueryOptions,
+} from '@/features/tenant/queryOptions';
 import { getAuthUserId } from '@/shared/auth/session';
 import { useAuth } from '@/shared/composables/useAuth';
-import { isApiSuccess } from '@/shared/types';
+import { useQuery } from '@tanstack/vue-query';
 
 import {
   buildGrantOptions,
@@ -24,15 +27,46 @@ export function useServiceAuthorize() {
   const route = useRoute();
   const { isPlatformAdmin } = useAuth();
 
-  const services = ref<ApiInterface[]>([]);
-  const tenants = ref<TenantRecord[]>([]);
-  const selectedTenant = ref<null | TenantRecord>(null);
   const selectedTenantId = ref('');
-  const loading = ref(false);
   const actingId = ref<null | string>(null);
   const showGrantDialog = ref(false);
   const grantTarget = ref<AuthorizeRow | null>(null);
   const grantForm = ref<GrantForm>({ ...DEFAULT_GRANT_FORM });
+
+  const tenantsQuery = useQuery(() =>
+    tenantsQueryOptions(isPlatformAdmin.value),
+  );
+  const servicesQuery = useQuery(() =>
+    interfacesQueryOptions(
+      isPlatformAdmin.value ? 'authorize-admin' : 'authorizable',
+      {
+        pageSize: 100,
+        scope: isPlatformAdmin.value ? undefined : 'authorizable',
+      },
+    ),
+  );
+  const tenantDetailQuery = useQuery(() =>
+    tenantDetailQueryOptions(selectedTenantId.value),
+  );
+
+  const tenants = computed(() => tenantsQuery.data.value ?? []);
+  const services = computed(() => servicesQuery.data.value?.items ?? []);
+  const selectedTenant = computed(() => tenantDetailQuery.data.value ?? null);
+  const loading = computed(
+    () =>
+      servicesQuery.isPending.value ||
+      (Boolean(selectedTenantId.value) && tenantDetailQuery.isPending.value),
+  );
+
+  watch(
+    tenants,
+    (list) => {
+      if (!selectedTenantId.value && list[0]) {
+        selectedTenantId.value = list[0].tenantId;
+      }
+    },
+    { immediate: true },
+  );
 
   const grantMap = computed(() => {
     const map = new Map<string, InterfaceGrantRecord>();
@@ -76,74 +110,22 @@ export function useServiceAuthorize() {
     return grantTarget.value.tenantAuthorized ? '调整授权配额' : '服务授权';
   });
 
-  onMounted(async () => {
-    await loadTenants();
-    const queryTenantId =
-      typeof route.query.tenantId === 'string' ? route.query.tenantId : '';
-    if (queryTenantId) {
-      selectedTenantId.value = queryTenantId;
-    }
-    await loadServices();
-  });
-
-  watch(selectedTenantId, async (tenantId) => {
-    if (tenantId) {
-      await loadSelectedTenant(tenantId);
-    }
-  });
-
-  async function loadTenants() {
-    if (isPlatformAdmin.value) {
-      const response = await tenantApi.list(1, 100);
-      if (isApiSuccess(response)) {
-        tenants.value = response.data.items ?? [];
-      }
-    } else {
-      const response = await tenantApi.mine();
-      if (isApiSuccess(response)) {
-        tenants.value = response.data ?? [];
-      }
-    }
-    if (!selectedTenantId.value && tenants.value[0]) {
-      selectedTenantId.value = tenants.value[0].tenantId;
-      await loadSelectedTenant(selectedTenantId.value);
-    }
+  const queryTenantId =
+    typeof route.query.tenantId === 'string' ? route.query.tenantId : '';
+  if (queryTenantId) {
+    selectedTenantId.value = queryTenantId;
   }
 
   async function loadSelectedTenant(tenantId: string) {
-    const response = await tenantApi.get(tenantId);
-    if (isApiSuccess(response)) {
-      selectedTenant.value = response.data;
-    }
-  }
-
-  async function loadServices() {
-    loading.value = true;
-    try {
-      const response = await interfaceApi.list({
-        pageSize: 100,
-        scope: isPlatformAdmin.value ? undefined : 'authorizable',
-      });
-      if (isApiSuccess(response)) {
-        services.value = response.data.items ?? [];
-      }
-    } finally {
-      loading.value = false;
-    }
+    selectedTenantId.value = tenantId;
+    await tenantDetailQuery.refetch();
   }
 
   async function refreshAll() {
-    loading.value = true;
-    try {
-      await Promise.all([
-        loadServices(),
-        selectedTenantId.value
-          ? loadSelectedTenant(selectedTenantId.value)
-          : Promise.resolve(),
-      ]);
-    } finally {
-      loading.value = false;
-    }
+    await Promise.all([
+      servicesQuery.refetch(),
+      selectedTenantId.value ? tenantDetailQuery.refetch() : Promise.resolve(),
+    ]);
   }
 
   function openGrantDialog(row: AuthorizeRow) {

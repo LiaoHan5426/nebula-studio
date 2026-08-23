@@ -102,6 +102,13 @@ export async function bootFederationRenderer(renderer: string): Promise<void> {
           application: {
             id: renderer,
             version: registration.version ?? '0.0.0',
+            runtimeConfig:
+              renderer === 'demo-board'
+                ? {
+                    applicationId: 'demo-board',
+                    definitionVersion: '1',
+                  }
+                : undefined,
           },
           initialPath: `${location.pathname}${location.search}${location.hash}`,
         });
@@ -113,6 +120,8 @@ export async function bootFederationRenderer(renderer: string): Promise<void> {
       docs: '文档',
       settings: '设置',
       integration: '集成平台',
+      'low-code-studio': '低代码工作室',
+      'demo-board': '运营大屏',
     };
     const label = labels[renderer] ?? renderer;
     root.innerHTML = `<div role="alert" style="padding:1.5rem;font:14px/1.5 system-ui,sans-serif">无法加载${label}应用。<pre>${text}</pre><p>请用 <code>vp run dev</code> 或 <code>vp run dev:web</code> 启动 Host；Docs / Settings / Integration 会随 Host 拉起。</p><p>打包模式需要 <code>apps/sub-web/${renderer}/dist</code> 已复制到 extraResources。</p></div>`;

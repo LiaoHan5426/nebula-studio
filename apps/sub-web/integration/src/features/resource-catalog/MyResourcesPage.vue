@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { SubscriptionRequestRecord } from '@/features/subscription/api';
-import type { TableSubscription } from '@/shared/types';
 
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
 import {
@@ -12,24 +12,40 @@ import {
   NebulaTag,
 } from '@nebula-studio/nebula-ui';
 
-import {
-  subscriptionApi,
-  subscriptionRequestApi,
-} from '@/features/subscription/api';
+import { subscriptionsQueryOptions } from '@/features/subscriptions/queryOptions';
 import { getAuthUserId } from '@/shared/auth/session';
 import { useTenant } from '@/shared/composables/useTenant';
-import { isApiSuccess } from '@/shared/types';
+import { errorMessageKey, mapIntegrationErrorCode } from '@/shared/i18n/errors';
+import { useQuery } from '@tanstack/vue-query';
 
 import { normalizeRequestStatus } from './mappers';
+import {
+  accessRequestsByUserQueryOptions,
+  currentCatalogUserId,
+} from './queryOptions';
 import { trackPortalEvent } from './storage';
 
+const { t } = useI18n();
 const router = useRouter();
 const { currentTenantId } = useTenant();
-const requests = ref<SubscriptionRequestRecord[]>([]);
-const subscriptions = ref<TableSubscription[]>([]);
-const loading = ref(true);
-const error = ref('');
 const activeTab = ref<'ACCESS' | 'SUBSCRIPTIONS'>('ACCESS');
+const userId = currentCatalogUserId();
+
+const requestsQuery = useQuery(() => accessRequestsByUserQueryOptions(userId));
+const subscriptionsQuery = useQuery(() =>
+  subscriptionsQueryOptions(currentTenantId.value || undefined),
+);
+
+const requests = computed(() => requestsQuery.data.value ?? []);
+const subscriptions = computed(() => subscriptionsQuery.data.value ?? []);
+const loading = computed(
+  () => requestsQuery.isPending.value || subscriptionsQuery.isPending.value,
+);
+const error = computed(() => {
+  if (!getAuthUserId()) return t('errors.unauthorized');
+  const cause = requestsQuery.error.value && subscriptionsQuery.error.value;
+  return cause ? t(errorMessageKey(mapIntegrationErrorCode(cause))) : '';
+});
 
 const approvedRequests = computed(() =>
   requests.value.filter(
@@ -37,46 +53,16 @@ const approvedRequests = computed(() =>
   ),
 );
 
-async function load(): Promise<void> {
-  const userId = getAuthUserId();
-  if (!userId) {
-    error.value = '无法识别当前用户，请重新登录。';
-    loading.value = false;
-    return;
-  }
-  loading.value = true;
-  error.value = '';
-  const [requestResult, subscriptionResult] = await Promise.allSettled([
-    subscriptionRequestApi.listByUser(userId),
-    subscriptionApi.list({
-      tenantId: currentTenantId.value || undefined,
-      pageSize: 100,
-    }),
-  ]);
-  if (
-    requestResult.status === 'fulfilled' &&
-    isApiSuccess(requestResult.value)
-  ) {
-    requests.value = requestResult.value.data;
-  }
-  if (
-    subscriptionResult.status === 'fulfilled' &&
-    isApiSuccess(subscriptionResult.value)
-  ) {
-    subscriptions.value = subscriptionResult.value.data.items;
-  }
-  if (
-    requestResult.status === 'rejected' &&
-    subscriptionResult.status === 'rejected'
-  ) {
-    error.value = '我的资源暂时无法加载，请稍后重试。';
-  }
-  loading.value = false;
+function load(): void {
+  void requestsQuery.refetch();
+  void subscriptionsQuery.refetch();
 }
 
 function resourceName(request: SubscriptionRequestRecord): string {
   return String(
-    request.requestConfig?.resourceName || request.interfaceId || '已授权资源',
+    request.requestConfig?.resourceName ||
+      request.interfaceId ||
+      t('portal.resources.fallbackName'),
   );
 }
 
@@ -101,28 +87,30 @@ function markFirstAccess(request: SubscriptionRequestRecord): void {
     resourceId: request.interfaceId,
   });
 }
-
-onMounted(load);
 </script>
 
 <template>
   <main class="resources-page">
     <NebulaPageHeader
-      eyebrow="My resources"
-      title="我的资源"
-      description="集中查看已获授权的服务能力和库表订阅，并获取接入、凭证与续期信息。"
+      :eyebrow="t('portal.resources.eyebrow')"
+      :title="t('portal.resources.title')"
+      :description="t('portal.resources.description')"
     >
       <template #actions>
         <NebulaButton variant="outline" @click="router.push('/my-requests')">
-          我的申请
+          {{ t('portal.resources.myRequests') }}
         </NebulaButton>
         <NebulaButton @click="router.push('/catalog')">
-          发现更多资源
+          {{ t('portal.resources.discover') }}
         </NebulaButton>
       </template>
     </NebulaPageHeader>
 
-    <div class="resource-tabs" role="tablist" aria-label="我的资源分类">
+    <div
+      class="resource-tabs"
+      role="tablist"
+      :aria-label="t('portal.resources.tabsAria')"
+    >
       <button
         type="button"
         role="tab"
@@ -130,7 +118,8 @@ onMounted(load);
         :class="{ active: activeTab === 'ACCESS' }"
         @click="activeTab = 'ACCESS'"
       >
-        已授权资源 <span>{{ approvedRequests.length }}</span>
+        {{ t('portal.resources.tabAccess') }}
+        <span>{{ approvedRequests.length }}</span>
       </button>
       <button
         type="button"
@@ -139,7 +128,8 @@ onMounted(load);
         :class="{ active: activeTab === 'SUBSCRIPTIONS' }"
         @click="activeTab = 'SUBSCRIPTIONS'"
       >
-        库表订阅 <span>{{ subscriptions.length }}</span>
+        {{ t('portal.resources.tabSubscriptions') }}
+        <span>{{ subscriptions.length }}</span>
       </button>
     </div>
 
@@ -148,19 +138,19 @@ onMounted(load);
     </div>
     <NebulaEmptyState
       v-else-if="error"
-      title="资源加载失败"
+      :title="t('portal.resources.loadFailed')"
       :description="error"
     >
-      <NebulaButton @click="load">重新加载</NebulaButton>
+      <NebulaButton @click="load">{{ t('common.reload') }}</NebulaButton>
     </NebulaEmptyState>
     <template v-else-if="activeTab === 'ACCESS'">
       <NebulaEmptyState
         v-if="approvedRequests.length === 0"
-        title="还没有已授权资源"
-        description="申请通过后，接入地址、鉴权方式和凭证状态会集中显示在这里。"
+        :title="t('portal.resources.emptyAccessTitle')"
+        :description="t('portal.resources.emptyAccessBody')"
       >
         <NebulaButton @click="router.push('/catalog')">
-          浏览资源目录
+          {{ t('catalog.browseTitle') }}
         </NebulaButton>
       </NebulaEmptyState>
       <section v-else class="owned-grid">
@@ -174,34 +164,39 @@ onMounted(load);
               <span class="kind">{{ accessKind(request) }}</span>
               <h2>{{ resourceName(request) }}</h2>
             </div>
-            <NebulaTag>凭证有效</NebulaTag>
+            <NebulaTag>{{ t('portal.resources.credentialOk') }}</NebulaTag>
           </header>
           <dl>
             <div>
-              <dt>接入地址</dt>
+              <dt>{{ t('portal.resources.endpoint') }}</dt>
               <dd>
                 <code>{{ accessEndpoint(request) }}</code>
               </dd>
             </div>
             <div>
-              <dt>鉴权方式</dt>
-              <dd>Bearer Token / 平台凭证</dd>
+              <dt>{{ t('portal.resources.auth') }}</dt>
+              <dd>{{ t('portal.resources.authValue') }}</dd>
             </div>
             <div>
-              <dt>使用环境</dt>
-              <dd>{{ request.requestConfig?.environment || '按授权策略' }}</dd>
+              <dt>{{ t('portal.resources.environment') }}</dt>
+              <dd>
+                {{
+                  request.requestConfig?.environment ||
+                  t('portal.resources.envFallback')
+                }}
+              </dd>
             </div>
           </dl>
           <footer>
             <NebulaButton size="sm" @click="markFirstAccess(request)">
-              打开接入指南
+              {{ t('portal.resources.openGuide') }}
             </NebulaButton>
             <NebulaButton
               size="sm"
               variant="outline"
               @click="router.push('/catalog')"
             >
-              申请续期
+              {{ t('portal.resources.renew') }}
             </NebulaButton>
           </footer>
         </article>
@@ -210,11 +205,11 @@ onMounted(load);
     <template v-else>
       <NebulaEmptyState
         v-if="subscriptions.length === 0"
-        title="还没有库表订阅"
-        description="你可以从资源目录申请数据资源，也可进入兼容入口创建订阅。"
+        :title="t('portal.resources.emptySubTitle')"
+        :description="t('portal.resources.emptySubBody')"
       >
         <NebulaButton @click="router.push('/catalog?kind=TABLE')">
-          查找数据资源
+          {{ t('portal.resources.findTables') }}
         </NebulaButton>
       </NebulaEmptyState>
       <section v-else class="owned-grid">
@@ -232,28 +227,32 @@ onMounted(load);
           </header>
           <dl>
             <div>
-              <dt>数据源</dt>
+              <dt>{{ t('portal.resources.dataSource') }}</dt>
               <dd>{{ subscription.dataSourceId }}</dd>
             </div>
             <div>
-              <dt>订阅方式</dt>
+              <dt>{{ t('portal.resources.subscribeType') }}</dt>
               <dd>{{ subscription.subscribeType }}</dd>
             </div>
             <div>
-              <dt>事件范围</dt>
-              <dd>{{ subscription.config.eventTypes.join('、') }}</dd>
+              <dt>{{ t('portal.resources.events') }}</dt>
+              <dd>
+                {{
+                  subscription.config.eventTypes.join(t('catalog.sourceJoin'))
+                }}
+              </dd>
             </div>
           </dl>
           <footer>
             <NebulaButton size="sm" @click="router.push('/subscriptions')">
-              查看订阅事件
+              {{ t('portal.resources.viewEvents') }}
             </NebulaButton>
             <NebulaButton
               size="sm"
               variant="outline"
               @click="router.push('/subscriptions')"
             >
-              管理订阅
+              {{ t('portal.resources.manageSub') }}
             </NebulaButton>
           </footer>
         </article>

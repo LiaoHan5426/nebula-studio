@@ -1,5 +1,6 @@
-import type { PreferenceIpcListener } from './webShellEmbeddedState';
 import type { ThemePreference } from '@nebula-studio/tokens';
+
+import type { PreferenceIpcListener } from './webShellEmbeddedState';
 
 import { loginWithBackendAuth } from '@nebula-studio/auth-provider/backend';
 import {
@@ -8,6 +9,11 @@ import {
   writeWebAuthSession,
 } from '@nebula-studio/auth-provider/storage';
 import { redirectShellToWebLogin } from '@nebula-studio/auth-provider/web';
+import {
+  LOCALE_STORAGE_KEY,
+  readStoredLocale,
+  writeStoredLocale,
+} from '@nebula-studio/i18n';
 import {
   markWebPresentationHost,
   markWebShellHost,
@@ -29,9 +35,6 @@ import { createWebNotifyApi } from './webNotify';
 import { createWebShellEmbeddedStateHandlers } from './webShellEmbeddedState';
 
 type ThemeMode = 'dark' | 'light' | 'system';
-
-const DEFAULT_WEB_THEME_KEY = 'nebula-studio-web-theme';
-const DEFAULT_WEB_LOCALE_KEY = 'nebula-studio-web-locale';
 
 export interface InstallWebPresentationOptions {
   locale?: {
@@ -97,13 +100,13 @@ export function installWebPresentation(
     markWebShellHost();
   }
 
-  const themeStorageKey = options.theme?.storageKey ?? DEFAULT_WEB_THEME_KEY;
+  const themeStorageKey = options.theme?.storageKey ?? THEME_STORAGE_KEY;
   const themeCrossKey =
     options.theme?.crossDocumentStorageKey ?? themeStorageKey;
   const defaultTheme: ThemeMode =
     options.theme?.default === 'light' ? 'light' : 'dark';
 
-  const localeStorageKey = options.locale?.storageKey ?? DEFAULT_WEB_LOCALE_KEY;
+  const localeStorageKey = options.locale?.storageKey ?? LOCALE_STORAGE_KEY;
   const localeCrossKey =
     options.locale?.crossDocumentStorageKey ?? localeStorageKey;
   const defaultLocale = options.locale?.default?.trim() || 'zh-CN';
@@ -127,7 +130,6 @@ export function installWebPresentation(
       createWebStorage(localStorage).set(THEME_STORAGE_KEY, preference, {
         privacy: 'device',
       });
-      localStorage.setItem(themeStorageKey, preference.colorScheme);
     } catch {
       /* ignore */
     }
@@ -143,10 +145,6 @@ export function installWebPresentation(
       ) {
         return fromPreference;
       }
-      const raw = localStorage.getItem(themeStorageKey);
-      if (raw === 'light') return 'light';
-      if (raw === 'dark') return 'dark';
-      if (raw === 'system') return 'system';
       return defaultTheme;
     } catch {
       return defaultTheme;
@@ -160,22 +158,17 @@ export function installWebPresentation(
     });
   };
 
-  const readStoredLocale = (): string => {
+  const readWebLocale = (): string => {
     try {
-      const raw = localStorage.getItem(localeStorageKey);
-      if (typeof raw === 'string' && raw.trim()) return raw.trim();
-      return defaultLocale;
+      return readStoredLocale(localStorage);
     } catch {
       return defaultLocale;
     }
   };
 
-  const writeStoredLocale = (value: string) => {
-    try {
-      localStorage.setItem(localeStorageKey, value);
-    } catch {
-      /* ignore */
-    }
+  const writeWebLocale = (value: string) => {
+    const locale = value === 'en-US' ? 'en-US' : 'zh-CN';
+    writeStoredLocale(localStorage, locale);
   };
 
   const themeBridge = createWebPreferenceBridge({
@@ -195,8 +188,8 @@ export function installWebPresentation(
   const localeBridge = createWebPreferenceBridge({
     channels: IPC_CHANNELS.locale,
     field: 'locale',
-    read: readStoredLocale,
-    write: writeStoredLocale,
+    read: readWebLocale,
+    write: writeWebLocale,
     normalizeFromInvokeArgs: (args) => {
       const raw = args[0] as undefined | { locale?: unknown };
       if (typeof raw?.locale === 'string' && raw.locale.trim()) {
@@ -272,6 +265,17 @@ export function installWebPresentation(
         };
         ipc.on('settings:theme:changed', wrap);
         return () => ipc.removeListener('settings:theme:changed', wrap);
+      },
+      getLocale: () => ipc.invoke('settings:locale:get') as Promise<string>,
+      setLocale: (locale: string) =>
+        ipc.invoke('settings:locale:set', { locale }) as Promise<string>,
+      onLocaleChanged: (listener: (payload: { locale: string }) => void) => {
+        const wrap = (_event: unknown, ...args: unknown[]) => {
+          const payload = args[0] as Record<string, unknown> | undefined;
+          listener({ locale: String(payload?.locale ?? defaultLocale) });
+        };
+        ipc.on('settings:locale:changed', wrap);
+        return () => ipc.removeListener('settings:locale:changed', wrap);
       },
     },
     shell: {

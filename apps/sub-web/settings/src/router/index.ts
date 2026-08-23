@@ -11,7 +11,7 @@ import { getResolvedRuntimeMode } from '@nebula-studio/shell-protocol';
 import SettingsLayout from '@/layout/SettingsLayout.vue';
 import { canAccessSettings } from '@/shared/auth/access';
 
-const LoginApp = () => import('@nebula-studio-renderer/login/app');
+const LoginApp = () => import('@nebula-studio/login-ui');
 
 function settingsMeta(
   title: string,

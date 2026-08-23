@@ -1,30 +1,18 @@
 <script setup lang="ts">
-import type { ClusterNode } from '@nebula-studio/contracts/integration';
+import { computed } from 'vue';
 
-import { onMounted, ref } from 'vue';
-
-import { isApiSuccess } from '@nebula-studio/api-client';
 import { NebulaButton, NebulaPane, NebulaTag } from '@nebula-studio/nebula-ui';
 
-import { clusterApi } from '@/shared/api/clusterApi';
+import { useQuery } from '@tanstack/vue-query';
 
-const nodes = ref<ClusterNode[]>([]);
-const loading = ref(false);
+import { clusterNodesQueryOptions } from './queryOptions';
 
-onMounted(async () => {
-  await loadNodes();
-});
+const nodesQuery = useQuery(() => clusterNodesQueryOptions());
+const nodes = computed(() => nodesQuery.data.value ?? []);
+const loading = computed(() => nodesQuery.isPending.value);
 
-async function loadNodes() {
-  loading.value = true;
-  try {
-    const response = await clusterApi.listNodes();
-    if (isApiSuccess(response)) {
-      nodes.value = response.data;
-    }
-  } finally {
-    loading.value = false;
-  }
+function loadNodes() {
+  void nodesQuery.refetch();
 }
 
 function statusVariant(status?: string) {

@@ -13,7 +13,7 @@
 vp run --filter @nebula-studio-renderer/settings dev
 ```
 
-Host 壳层通过 Federation 加载 `./application`（`http://localhost:5177/mf-manifest.json`）。standalone 仍走 `src/boot.ts`。
+Host 壳层通过 Federation 加载 `./application`（`http://localhost:5177/mf-manifest.json`）。standalone 仍走 `src/boot.ts`；未登录时 `/login` 使用 `@nebula-studio/login-ui`，不依赖 Login renderer。
 
 共享 `defineNebulaSubAppConfig()` 根据 `windows.json` 的 `standard` preset 自动生成 system/governance/version/release 代理。
 

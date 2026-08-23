@@ -2,6 +2,7 @@
 import type { SettingsAccess } from '@/shared/auth/access';
 
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { RouterLink, RouterView, useRoute } from 'vue-router';
 
 import {
@@ -12,6 +13,7 @@ import {
 import { canAccessSettings } from '@/shared/auth/access';
 
 const route = useRoute();
+const { t, te } = useI18n();
 const { isShellHosted } = useShellHosted();
 
 interface SettingsNavGroup {
@@ -20,55 +22,55 @@ interface SettingsNavGroup {
   items: Array<{ access?: SettingsAccess; label: string; to: string }>;
 }
 
-const allGroups: SettingsNavGroup[] = [
+const allGroups = computed<SettingsNavGroup[]>(() => [
   {
-    label: '治理工作台',
+    label: t('nav.governance'),
     access: 'organization',
-    items: [{ to: '/governance', label: '待办与摘要' }],
+    items: [{ to: '/governance', label: t('nav.governanceHome') }],
   },
   {
-    label: '个人设置',
+    label: t('nav.personal'),
     access: 'personal',
     items: [
-      { to: '/profile', label: '个人资料' },
-      { to: '/sessions', label: '登录会话' },
-      { to: '/appearance', label: '外观设置' },
-      { to: '/language', label: '语言与区域' },
+      { to: '/profile', label: t('nav.profile') },
+      { to: '/sessions', label: t('nav.sessions') },
+      { to: '/appearance', label: t('nav.appearance') },
+      { to: '/language', label: t('nav.language') },
     ],
   },
   {
-    label: '组织与成员',
+    label: t('nav.org'),
     access: 'organization',
     items: [
-      { to: '/organization/users', label: '成员管理' },
-      { to: '/organization/structure', label: '组织结构' },
+      { to: '/organization/users', label: t('nav.users') },
+      { to: '/organization/structure', label: t('nav.structure') },
     ],
   },
   {
-    label: '访问控制',
+    label: t('nav.access'),
     access: 'organization',
     items: [
-      { to: '/access/roles', label: '角色管理' },
+      { to: '/access/roles', label: t('nav.roles') },
       {
         to: '/access/permissions',
-        label: '权限矩阵',
+        label: t('nav.permissions'),
         access: 'platform',
       },
     ],
   },
   {
-    label: '应用与运行',
+    label: t('nav.runtime'),
     access: 'platform',
     items: [
-      { to: '/platform/apps', label: '应用管理' },
-      { to: '/platform/config', label: '配置管理' },
-      { to: '/platform/audit', label: '审计日志' },
+      { to: '/platform/apps', label: t('nav.apps') },
+      { to: '/platform/config', label: t('nav.config') },
+      { to: '/platform/audit', label: t('nav.logs') },
     ],
   },
-];
+]);
 
 const navGroups = computed(() =>
-  allGroups
+  allGroups.value
     .map((group) => ({
       ...group,
       items: group.items.filter((item) =>
@@ -78,12 +80,16 @@ const navGroups = computed(() =>
     .filter((group) => group.items.length > 0),
 );
 
-const pageTitle = computed(() => String(route.meta.title ?? '设置中心'));
-
-const pageDescription = computed(
-  () =>
-    (route.meta.description as string | undefined) ??
-    '管理个人偏好、组织访问和平台运行配置。',
+const pageKey = computed(() => String(route.name ?? ''));
+const pageTitle = computed(() =>
+  te(`pages.${pageKey.value}.title`)
+    ? t(`pages.${pageKey.value}.title`)
+    : t('pages.fallbackTitle'),
+);
+const pageDescription = computed(() =>
+  te(`pages.${pageKey.value}.description`)
+    ? t(`pages.${pageKey.value}.description`)
+    : t('pages.fallbackDescription'),
 );
 </script>
 
@@ -94,16 +100,16 @@ const pageDescription = computed(
     content-width="wide"
     :title="pageTitle"
     :description="pageDescription"
-    eyebrow="设置"
-    navigation-label="设置导航"
+    :eyebrow="t('nav.eyebrow')"
+    :navigation-label="t('nav.label')"
     class="settings-root"
   >
     <template #navigation>
       <div class="settings-nav__brand">
         <span>NEBULA STUDIO</span>
-        <strong>设置中心</strong>
+        <strong>{{ t('nav.brand') }}</strong>
       </div>
-      <nav class="settings-nav" aria-label="设置分类">
+      <nav class="settings-nav" :aria-label="t('nav.categories')">
         <section
           v-for="group in navGroups"
           :key="group.label"

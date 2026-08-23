@@ -1,4 +1,4 @@
-import { bootMicroApp } from '@nebula-studio/runtime';
+import { startApplication } from '@nebula-studio/application-bootstrap';
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -25,11 +25,11 @@ vi.mock('@nebula-studio/shell-host', () => ({
   installShellHostBridge: vi.fn(),
   installWebPresentationUnlessElectron: vi.fn(),
 }));
-vi.mock('@nebula-studio/runtime', () => ({
-  bootMicroApp: vi.fn(),
+vi.mock('@nebula-studio/application-bootstrap', () => ({
+  startApplication: vi.fn(),
 }));
 
-const mockBootMicroApp = vi.mocked(bootMicroApp);
+const mockStartApplication = vi.mocked(startApplication);
 
 describe('bootFrontend', () => {
   beforeEach(() => {
@@ -41,7 +41,7 @@ describe('bootFrontend', () => {
   it('mounts the Electron shell without requiring an existing session', async () => {
     await bootFrontend({ mode: 'electron' });
 
-    expect(mockBootMicroApp).toHaveBeenCalledWith(
+    expect(mockStartApplication).toHaveBeenCalledWith(
       expect.objectContaining({
         mode: 'electron',
         auth: { enabled: false },
@@ -52,7 +52,7 @@ describe('bootFrontend', () => {
   it('keeps authentication enabled for web modes', async () => {
     await bootFrontend({ mode: 'standalone' });
 
-    expect(mockBootMicroApp).toHaveBeenCalledWith(
+    expect(mockStartApplication).toHaveBeenCalledWith(
       expect.objectContaining({
         mode: 'standalone',
         auth: { enabled: true },

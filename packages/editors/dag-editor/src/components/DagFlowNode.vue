@@ -66,8 +66,8 @@ const showType = computed(
 }
 
 .dag-flow-node--selected .dag-flow-node__body {
-  border-color: hsl(var(--primary));
-  box-shadow: 0 0 0 1px hsl(var(--primary) / 35%);
+  border-color: var(--editor-select, hsl(var(--foreground) / 78%));
+  box-shadow: 0 0 0 1px var(--editor-select-muted, hsl(var(--foreground) / 42%));
 }
 
 .dag-flow-node__label {

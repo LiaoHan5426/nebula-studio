@@ -14,7 +14,7 @@ export function setResolvedRuntimeMode(mode: RuntimeMode): void {
   }
 }
 
-/** Mode last stamped by `bootMicroApp` or `window.__NEBULA_RUNTIME_MODE__`. */
+/** Mode last stamped by application bootstrap or `window.__NEBULA_RUNTIME_MODE__`. */
 export function getResolvedRuntimeMode(): RuntimeMode {
   if (resolved) {
     return resolved;

@@ -1,6 +1,6 @@
 # @nebula-studio-renderer/login
 
-**登录**子应用（Vue）。可作为 **Electron modal**（见 `app.config.ts` 的 `modalRenderers.login`）或 **Web embed** 加载。
+**登录** standalone renderer。登录表单 UI 在 `@nebula-studio/login-ui`；Host `/?embed=login` 与 Electron 登录窗走 `bootHostLogin`，不调用本包 `boot`。
 
 ## 入口
 

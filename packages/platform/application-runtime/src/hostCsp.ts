@@ -27,7 +27,7 @@ export function alignLoopbackIframeSrc(
 function alignLoopbackOrigin(
   origin: string,
   pageOrigin: string,
-): string | null {
+): null | string {
   try {
     return new URL(alignLoopbackIframeSrc(origin, pageOrigin)).origin;
   } catch {

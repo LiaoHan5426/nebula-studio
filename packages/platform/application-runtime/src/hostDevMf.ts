@@ -70,7 +70,7 @@ export function hostOwnedMfEntryUrl(
 
 export function isHostOwnedManifestEntry(entry: string): boolean {
   try {
-    const url = new URL(entry, 'http://127.0.0.1');
+    const url = new URL(entry, 'http://host.invalid');
     if (url.protocol === 'nebula-remote:' || url.protocol === 'mf-poc:') {
       return true;
     }

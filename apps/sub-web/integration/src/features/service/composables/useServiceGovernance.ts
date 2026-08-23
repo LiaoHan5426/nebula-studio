@@ -1,6 +1,3 @@
-import type { TenantRecord } from '@/features/tenant/api';
-import type { ApiInterface } from '@/shared/types';
-
 import type {
   CircuitBreakerRow,
   CircuitForm,
@@ -11,14 +8,19 @@ import type {
   WhitelistRow,
 } from '../governance/types';
 
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 import { governanceApi } from '@/features/governance/api';
-import { tenantApi } from '@/features/tenant/api';
-import { interfaceApi } from '@/shared/api/integration';
+import {
+  governanceCircuitQueryOptions,
+  governanceRateLimitQueryOptions,
+  governanceWhitelistQueryOptions,
+} from '@/features/governance/queryOptions';
+import { interfacesQueryOptions } from '@/features/interfaces/queryOptions';
+import { tenantsQueryOptions } from '@/features/tenant/queryOptions';
 import { getAuthUserId } from '@/shared/auth/session';
 import { useAuth } from '@/shared/composables/useAuth';
-import { isApiSuccess } from '@/shared/types';
+import { useQuery } from '@tanstack/vue-query';
 
 import {
   mapCircuitBreakerRow,
@@ -29,13 +31,7 @@ import { TAB_LABELS } from '../governance/types';
 
 export function useServiceGovernance() {
   const activeTab = ref<GovernanceTab>('rateLimit');
-  const rules = ref<RuleRow[]>([]);
-  const circuitBreakers = ref<CircuitBreakerRow[]>([]);
-  const whitelistRules = ref<WhitelistRow[]>([]);
-  const services = ref<ApiInterface[]>([]);
-  const tenants = ref<TenantRecord[]>([]);
   const selectedTenantId = ref('');
-  const loading = ref(false);
   const showDialog = ref(false);
   const editingRule = ref<null | RuleRow>(null);
   const editingCircuit = ref<CircuitBreakerRow | null>(null);
@@ -66,43 +62,49 @@ export function useServiceGovernance() {
   const { isPlatformAdmin } = useAuth();
   const currentTenantId = computed(() => selectedTenantId.value);
 
-  onMounted(async () => {
-    await loadTenants();
-    await loadServices();
-    await loadCurrentTab();
-  });
+  const tenantsQuery = useQuery(() =>
+    tenantsQueryOptions(isPlatformAdmin.value),
+  );
+  const interfacesQuery = useQuery(() =>
+    interfacesQueryOptions('governance', { pageSize: 200 }),
+  );
+  const rateLimitQuery = useQuery(() =>
+    governanceRateLimitQueryOptions(
+      selectedTenantId.value,
+      activeTab.value === 'rateLimit',
+    ),
+  );
+  const circuitQuery = useQuery(() =>
+    governanceCircuitQueryOptions(
+      selectedTenantId.value,
+      activeTab.value === 'circuitBreaker',
+    ),
+  );
+  const whitelistQuery = useQuery(() =>
+    governanceWhitelistQueryOptions(
+      selectedTenantId.value,
+      activeTab.value === 'whitelist',
+    ),
+  );
 
-  watch(selectedTenantId, () => {
-    void loadCurrentTab();
-  });
+  const tenants = computed(() => tenantsQuery.data.value ?? []);
+  const tenantOptions = computed(() =>
+    tenants.value.map((tenant) => ({
+      label: tenant.tenantName,
+      value: tenant.tenantId,
+    })),
+  );
+  const services = computed(() => interfacesQuery.data.value?.items ?? []);
 
-  watch(activeTab, () => {
-    void loadCurrentTab();
-  });
-
-  async function loadTenants() {
-    if (isPlatformAdmin.value) {
-      const response = await tenantApi.list(1, 100);
-      if (isApiSuccess(response)) {
-        tenants.value = response.data.items ?? [];
+  watch(
+    tenants,
+    (list) => {
+      if (!selectedTenantId.value && list[0]) {
+        selectedTenantId.value = list[0].tenantId;
       }
-    } else {
-      const response = await tenantApi.mine();
-      if (isApiSuccess(response)) {
-        tenants.value = response.data ?? [];
-      }
-    }
-    if (!selectedTenantId.value && tenants.value[0]) {
-      selectedTenantId.value = tenants.value[0].tenantId;
-    }
-  }
-
-  async function loadServices() {
-    const response = await interfaceApi.list({ pageSize: 200 });
-    if (isApiSuccess(response)) {
-      services.value = response.data.items ?? [];
-    }
-  }
+    },
+    { immediate: true },
+  );
 
   function canManageInterface(interfaceId: string): boolean {
     if (!interfaceId) return false;
@@ -117,89 +119,57 @@ export function useServiceGovernance() {
     );
   }
 
+  const rules = computed(() =>
+    (rateLimitQuery.data.value ?? []).map((row) =>
+      mapRateLimitRow(
+        row as Record<string, unknown>,
+        currentTenantId.value,
+        canManageInterface,
+      ),
+    ),
+  );
+  const circuitBreakers = computed(() =>
+    (circuitQuery.data.value ?? []).map((row) =>
+      mapCircuitBreakerRow(
+        row as Record<string, unknown>,
+        currentTenantId.value,
+        canManageInterface,
+      ),
+    ),
+  );
+  const whitelistRules = computed(() =>
+    (whitelistQuery.data.value ?? []).map((row) =>
+      mapWhitelistRow(
+        row as Record<string, unknown>,
+        currentTenantId.value,
+        canManageInterface,
+        isPlatformAdmin.value,
+      ),
+    ),
+  );
+  const loading = computed(() => {
+    if (activeTab.value === 'rateLimit') return rateLimitQuery.isPending.value;
+    if (activeTab.value === 'circuitBreaker')
+      return circuitQuery.isPending.value;
+    return whitelistQuery.isPending.value;
+  });
+
   async function loadCurrentTab() {
-    if (activeTab.value === 'rateLimit') await loadRules();
-    else if (activeTab.value === 'circuitBreaker') await loadCircuitBreakers();
-    else await loadWhitelistRules();
+    if (activeTab.value === 'rateLimit') await rateLimitQuery.refetch();
+    else if (activeTab.value === 'circuitBreaker') await circuitQuery.refetch();
+    else await whitelistQuery.refetch();
   }
 
   async function loadRules() {
-    if (!currentTenantId.value) {
-      rules.value = [];
-      return;
-    }
-    loading.value = true;
-    try {
-      const response = await governanceApi.rateLimitList(
-        1,
-        50,
-        currentTenantId.value,
-      );
-      if (isApiSuccess(response)) {
-        rules.value = (response.data.items ?? []).map((row) =>
-          mapRateLimitRow(
-            row as Record<string, unknown>,
-            currentTenantId.value,
-            canManageInterface,
-          ),
-        );
-      }
-    } finally {
-      loading.value = false;
-    }
+    await rateLimitQuery.refetch();
   }
 
   async function loadCircuitBreakers() {
-    if (!currentTenantId.value) {
-      circuitBreakers.value = [];
-      return;
-    }
-    loading.value = true;
-    try {
-      const response = await governanceApi.circuitBreakerList(
-        1,
-        50,
-        currentTenantId.value,
-      );
-      if (isApiSuccess(response)) {
-        circuitBreakers.value = (response.data.items ?? []).map((row) =>
-          mapCircuitBreakerRow(
-            row as Record<string, unknown>,
-            currentTenantId.value,
-            canManageInterface,
-          ),
-        );
-      }
-    } finally {
-      loading.value = false;
-    }
+    await circuitQuery.refetch();
   }
 
   async function loadWhitelistRules() {
-    if (!currentTenantId.value) {
-      whitelistRules.value = [];
-      return;
-    }
-    loading.value = true;
-    try {
-      const response = await governanceApi.whitelistList(
-        1,
-        50,
-        currentTenantId.value,
-      );
-      if (isApiSuccess(response)) {
-        whitelistRules.value = (response.data.items ?? []).map((row) =>
-          mapWhitelistRow(
-            row as Record<string, unknown>,
-            currentTenantId.value,
-            canManageInterface,
-            isPlatformAdmin.value,
-          ),
-        );
-      }
-    } finally {
-      loading.value = false;
-    }
+    await whitelistQuery.refetch();
   }
 
   function defaultInterfaceId() {
@@ -412,6 +382,7 @@ export function useServiceGovernance() {
     circuitBreakers,
     whitelistRules,
     tenants,
+    tenantOptions,
     selectedTenantId,
     loading,
     showDialog,

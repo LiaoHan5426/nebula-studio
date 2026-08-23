@@ -84,4 +84,4 @@ apps → features/editors/ui → core → contracts/types/styles
 
 ## 样式体系
 
-样式基于 Tailwind CSS v4 与 `@nebula-studio/styles` 的设计 token。renderer 通常引入 `@nebula-studio-internal/tailwind/electron` 作为统一入口；仅 Electron 壳需要的覆盖放在 Electron renderer 的专用样式文件中。
+样式基于 Tailwind CSS v4 与 `@nebula-studio/styles`。Host/standalone 引入 `@nebula-studio/styles/document`，Federation Remote 引入 `@nebula-studio/styles/remote`。仅 Electron 壳需要的覆盖放在 Electron renderer 的专用样式文件中。

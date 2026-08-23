@@ -13,6 +13,7 @@ export {
   useNebulaAssembly,
 } from './context/useNebulaAssembly';
 export { createEditorHost } from './editor/createEditorHost';
+export { resolveEditorSyntaxTheme } from './editor/resolveEditorSyntaxTheme';
 export {
   createElectronHostAdapter,
   createHostAdapter,
@@ -45,6 +46,7 @@ export type {
   EditorHostConfigureInput,
   EditorResourceSelection,
   EditorSize,
+  EditorSyntaxTheme,
   EditorTheme,
 } from './types/editor';
 export type {

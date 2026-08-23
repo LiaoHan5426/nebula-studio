@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
 import {
@@ -11,11 +12,12 @@ import {
 import { clearAuthSession, getAuthUsername } from '@/shared/auth/session';
 import { useConfirm } from '@/shared/composables/useConfirm';
 
+const { t } = useI18n();
 const router = useRouter();
-const username = computed(() => getAuthUsername() || '当前用户');
+const username = computed(() => getAuthUsername() || t('common.currentUser'));
 
 async function endSession(): Promise<void> {
-  const confirmed = await useConfirm('结束当前会话后需要重新登录。是否继续？');
+  const confirmed = await useConfirm(t('sessions.confirm'));
   if (!confirmed) return;
   clearAuthSession();
   await router.replace('/login');
@@ -25,20 +27,20 @@ async function endSession(): Promise<void> {
 <template>
   <main class="sessions-page">
     <NebulaPageHeader
-      eyebrow="Security"
-      title="登录会话"
-      description="查看当前设备会话并在发现异常时立即退出。"
+      :eyebrow="t('sessions.eyebrow')"
+      :title="t('sessions.title')"
+      :description="t('sessions.description')"
     />
     <section class="session-card">
       <div class="session-icon">●</div>
       <div>
-        <h2>当前设备</h2>
-        <p>{{ username }} · Web / Desktop 当前实例</p>
-        <span>最近活动：刚刚</span>
+        <h2>{{ t('sessions.currentDevice') }}</h2>
+        <p>{{ t('sessions.instance', { user: username }) }}</p>
+        <span>{{ t('sessions.recent') }}</span>
       </div>
-      <NebulaTag>当前会话</NebulaTag>
+      <NebulaTag>{{ t('sessions.currentTag') }}</NebulaTag>
       <NebulaButton variant="outline" @click="endSession">
-        结束会话
+        {{ t('sessions.end') }}
       </NebulaButton>
     </section>
   </main>

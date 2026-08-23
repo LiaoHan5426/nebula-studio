@@ -2,7 +2,7 @@
 /**
  * A-track: Tailwind sources must be per-artifact, never repo-wide packages/apps scans.
  */
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -12,6 +12,15 @@ const theme = readFileSync(
   'utf8',
 );
 const failures = [];
+
+if (existsSync(join(root, 'tools/tailwindcss/src/electron.ts'))) {
+  failures.push(
+    'tools/tailwindcss must not ship a production electron.ts entry',
+  );
+}
+if (existsSync(join(root, 'tools/tailwindcss/src/index.ts'))) {
+  failures.push('tools/tailwindcss must not ship a production index.ts entry');
+}
 
 if (
   theme.includes("@source '../../../packages/'") ||
@@ -30,14 +39,14 @@ if (/@source\s+['"][^'"]*(?:\/packages\/?['"]|\/apps\/?['"])/.test(theme)) {
 }
 
 const remoteCss = readFileSync(
-  join(root, 'tools/tailwindcss/src/remote.css'),
+  join(root, 'packages/styles/src/remote.css'),
   'utf8',
 );
 if (remoteCss.includes('preflight') || remoteCss.includes('@layer base')) {
   failures.push('remote.css must not include preflight or @layer base');
 }
 const documentCss = readFileSync(
-  join(root, 'tools/tailwindcss/src/document.css'),
+  join(root, 'packages/styles/src/document.css'),
   'utf8',
 );
 if (!documentCss.includes('preflight')) {

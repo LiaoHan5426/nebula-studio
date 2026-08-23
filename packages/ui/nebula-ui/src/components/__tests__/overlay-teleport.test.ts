@@ -4,9 +4,9 @@ import { defineComponent, h, nextTick, ref } from 'vue';
 import { describe, expect, it } from 'vitest';
 
 import { overlayContainerKey } from '../../composables/useOverlayContainer';
+import { hideFloatingTooltip } from '../../utils/tooltip';
 import { NebulaDrawer } from '../drawer/NebulaDrawer';
 import NebulaTooltip from '../tooltip/NebulaTooltip.vue';
-import { hideFloatingTooltip } from '../../utils/tooltip';
 
 describe('overlay teleport', () => {
   it('falls back to document.body when no overlay container is provided', async () => {

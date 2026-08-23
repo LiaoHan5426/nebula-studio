@@ -1,5 +1,5 @@
 // AUTO-GENERATED — do not edit manually.
-// Source: configs/windows.json apiTargets + internal/vite API context
+// Source: configs/environments.json apiTargets + internal/build-kit API context
 
 export const GENERATED_API_NAMESPACES = {
   platform: {
@@ -98,5 +98,17 @@ export const GENERATED_FEDERATION_DEV_ENTRIES = {
     expose: 'application',
     packagedHost: 'integration',
     defaultHttpEntry: 'http://localhost:5174/mf-manifest.json',
+  },
+  'low-code-studio': {
+    name: 'nebula_low_code_studio',
+    expose: 'application',
+    packagedHost: 'low-code-studio',
+    defaultHttpEntry: 'http://localhost:5194/mf-manifest.json',
+  },
+  'demo-board': {
+    name: 'nebula_low_code_studio',
+    expose: 'runtime-application',
+    packagedHost: 'low-code-studio',
+    defaultHttpEntry: 'http://localhost:5194/mf-manifest.json',
   },
 } as const;

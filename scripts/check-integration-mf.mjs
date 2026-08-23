@@ -41,7 +41,7 @@ if (
   federationEntry.includes('features/auth/LoginPage')
 ) {
   console.error(
-    '[check:integration-mf] Federation entry must not import Login UI; standalone /login is the only Login app mount',
+    '[check:integration-mf] Federation entry must not import Login UI; standalone /login mounts @nebula-studio/login-ui',
   );
   process.exit(1);
 }

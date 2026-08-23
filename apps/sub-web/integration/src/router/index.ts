@@ -37,8 +37,8 @@ function createIntegrationHistory() {
   return createWebHistory();
 }
 
-// standalone `/login` 复用 Login 子应用（单一 UI）。Host 嵌入守卫跳过此路由，不在此维护第二套登录页。
-const LoginApp = () => import('@nebula-studio-renderer/login/app');
+// standalone `/login` 复用共享 login-ui（单一 UI）。Host 嵌入守卫跳过此路由，不在此维护第二套登录页。
+const LoginApp = () => import('@nebula-studio/login-ui');
 
 // 插件管理页面
 const PluginsPage = () => import('@/features/plugins/PluginsPage.vue');

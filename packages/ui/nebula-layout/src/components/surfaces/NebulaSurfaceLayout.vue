@@ -5,7 +5,7 @@ import type {
   ExperienceSurface,
 } from '../../types/layout';
 
-import { computed, useSlots } from 'vue';
+import { computed, useId, useSlots } from 'vue';
 
 const props = withDefaults(
   defineProps<{
@@ -30,6 +30,7 @@ const props = withDefaults(
 );
 
 const slots = useSlots();
+const contentId = `nebula-surface-content-${useId().replaceAll(':', '')}`;
 const hasHeading = computed(
   () =>
     Boolean(props.title || props.description || props.eyebrow) ||
@@ -49,6 +50,9 @@ const hasHeading = computed(
     :data-nebula-surface="surface"
     :data-nebula-density="density"
   >
+    <a class="nebula-experience-layout__skip-link" :href="`#${contentId}`">
+      跳到主要内容
+    </a>
     <aside
       v-if="$slots.navigation"
       class="nebula-experience-layout__navigation"
@@ -75,7 +79,7 @@ const hasHeading = computed(
         </div>
       </header>
 
-      <main class="nebula-experience-layout__content">
+      <main :id="contentId" class="nebula-experience-layout__content" tabindex="-1">
         <div class="nebula-experience-layout__content-inner">
           <slot></slot>
         </div>

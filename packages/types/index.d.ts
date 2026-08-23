@@ -1,5 +1,5 @@
 /**
- * Nebula Vite `define`：与 `@nebula-studio-internal/vite` 的 `nebulaBuildNodeVersionDefine()` 一致。
+ * Nebula Vite `define`：与 `@nebula-studio-internal/build-kit` 的 `nebulaBuildNodeVersionDefine()` 一致。
  */
 declare const __NEBULA_BUILD_NODE_VERSION__: string;
 

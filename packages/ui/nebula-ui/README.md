@@ -8,7 +8,7 @@
 
 ## 与全局主题的关系
 
-- 组件使用 **语义 CSS 变量**（如 `hsl(var(--card))`）和 Tailwind 工具类（`h-control`、`z-modal`、`bg-primary-50`），须与 **`@nebula-studio-internal/tailwind/electron`** 引入的全局链同页加载。
+- 组件使用 **语义 CSS 变量**（如 `hsl(var(--card))`）和 Tailwind 工具类（`h-control`、`z-modal`、`bg-primary-50`），须与 **`@nebula-studio/styles/document` 或 `/remote`** 引入的全局链同页加载。
 - **勿**在本包内重复定义 `:root` / `html.dark` 语义色、色阶、控件高度或 z-index（归属 **`@nebula-studio/styles`**）。
 - 新增控件：优先用 `h-control` / `h-control-sm` / `h-control-lg` 与 `bg-*` 语义色；浮层必须 Teleport 到 `body` 并使用 `z-overlay` / `z-modal` / `z-popover` / `z-tooltip`，避免 `overflow: hidden` 父级裁切内容。
 

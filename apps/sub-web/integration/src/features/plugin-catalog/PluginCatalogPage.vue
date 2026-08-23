@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { PluginCatalogViewModel } from './types';
 
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import {
   NebulaButton,
@@ -13,24 +14,35 @@ import {
   NebulaSelect,
   NebulaTag,
 } from '@nebula-studio/nebula-ui';
+import { storeToRefs } from '@nebula-studio/state';
 
 import { pluginApi } from '@/features/plugin/api';
+import { errorMessageKey, mapIntegrationErrorCode } from '@/shared/i18n/errors';
+import { useIntegrationUiStore } from '@/shared/state/portalStore';
+import { useQuery } from '@tanstack/vue-query';
 
-import { loadPluginCatalog } from './api';
 import PluginSchemaForm from './PluginSchemaForm.vue';
+import { pluginCatalogQueryOptions } from './queryOptions';
 
-const items = ref<PluginCatalogViewModel[]>([]);
-const loading = ref(true);
-const error = ref('');
-const keyword = ref('');
-const category = ref('');
+const { t } = useI18n();
+const catalogQuery = useQuery(() => pluginCatalogQueryOptions());
+const ui = useIntegrationUiStore();
+const { pluginKeyword: keyword, pluginCategory: category } = storeToRefs(ui);
 const selected = ref<PluginCatalogViewModel>();
 const drawerOpen = ref(false);
 const config = ref<Record<string, unknown>>({});
 const installingId = ref('');
 
+const items = computed(() => catalogQuery.data.value ?? []);
+const loading = computed(() => catalogQuery.isPending.value);
+const error = computed(() =>
+  catalogQuery.error.value
+    ? t(errorMessageKey(mapIntegrationErrorCode(catalogQuery.error.value)))
+    : '',
+);
+
 const categories = computed(() => [
-  { label: '全部分类', value: '' },
+  { label: t('plugins.filter.all'), value: '' },
   ...Array.from(new Set(items.value.map((item) => item.category)))
     .toSorted()
     .map((value) => ({ label: value, value })),
@@ -48,16 +60,8 @@ const visibleItems = computed(() => {
   );
 });
 
-async function load(): Promise<void> {
-  loading.value = true;
-  error.value = '';
-  try {
-    items.value = await loadPluginCatalog();
-  } catch (cause) {
-    error.value = cause instanceof Error ? cause.message : '插件目录加载失败';
-  } finally {
-    loading.value = false;
-  }
+function load(): void {
+  void catalogQuery.refetch();
 }
 
 function openDetails(item: PluginCatalogViewModel): void {
@@ -76,32 +80,34 @@ async function install(item: PluginCatalogViewModel): Promise<void> {
     installingId.value = '';
   }
 }
-
-onMounted(load);
 </script>
 
 <template>
   <main class="plugin-catalog-page">
     <NebulaPageHeader
-      eyebrow="Platform extensions"
-      title="插件目录"
-      description="从真实目录发现插件能力，统一查看平台身份、Connector 配置 Schema 与 DAG 节点能力。"
+      :eyebrow="t('plugins.eyebrow')"
+      :title="t('plugins.title')"
+      :description="t('plugins.description')"
     >
       <template #actions>
-        <NebulaButton variant="outline" @click="load">刷新目录</NebulaButton>
+        <NebulaButton variant="outline" @click="load">
+          {{ t('plugins.refresh') }}
+        </NebulaButton>
       </template>
     </NebulaPageHeader>
 
-    <NebulaFilterBar :result-summary="`${visibleItems.length} 个插件`">
+    <NebulaFilterBar
+      :result-summary="t('plugins.resultSummary', { n: visibleItems.length })"
+    >
       <NebulaInput
         v-model="keyword"
-        placeholder="搜索插件、Connector 或能力"
-        aria-label="搜索插件目录"
+        :placeholder="t('plugins.searchPlaceholder')"
+        :aria-label="t('plugins.searchAria')"
       />
       <NebulaSelect
         v-model="category"
         :options="categories"
-        aria-label="插件分类"
+        :aria-label="t('plugins.categoryAria')"
       />
     </NebulaFilterBar>
 
@@ -110,15 +116,15 @@ onMounted(load);
     </div>
     <NebulaEmptyState
       v-else-if="error"
-      title="插件目录加载失败"
+      :title="t('plugins.loadFailed')"
       :description="error"
     >
-      <NebulaButton @click="load">重新加载</NebulaButton>
+      <NebulaButton @click="load">{{ t('common.reload') }}</NebulaButton>
     </NebulaEmptyState>
     <NebulaEmptyState
       v-else-if="visibleItems.length === 0"
-      title="没有匹配插件"
-      description="尝试清除关键词或分类筛选。"
+      :title="t('plugins.emptyTitle')"
+      :description="t('plugins.emptyBody')"
     />
     <section v-else class="plugin-grid">
       <article v-for="item in visibleItems" :key="item.id" class="plugin-card">
@@ -140,14 +146,18 @@ onMounted(load);
         <footer>
           <span>{{ item.connectorId || item.id }}</span>
           <NebulaButton variant="outline" size="sm" @click="openDetails(item)">
-            查看配置
+            {{ t('plugins.viewConfig') }}
           </NebulaButton>
           <NebulaButton
             size="sm"
             :disabled="installingId === item.id"
             @click="install(item)"
           >
-            {{ installingId === item.id ? '安装中…' : '安装' }}
+            {{
+              installingId === item.id
+                ? t('plugins.installing')
+                : t('plugins.install')
+            }}
           </NebulaButton>
         </footer>
       </article>
@@ -155,34 +165,34 @@ onMounted(load);
 
     <NebulaDrawer
       v-model:open="drawerOpen"
-      :title="selected?.name || '插件详情'"
+      :title="selected?.name || t('plugins.detailFallback')"
       :subtitle="selected ? `${selected.id} · v${selected.version}` : ''"
       width="480px"
     >
       <div v-if="selected" class="plugin-detail">
         <section>
-          <h3>平台身份</h3>
+          <h3>{{ t('plugins.identity') }}</h3>
           <dl>
             <div>
-              <dt>插件 ID</dt>
+              <dt>{{ t('plugins.pluginId') }}</dt>
               <dd>{{ selected.id }}</dd>
             </div>
             <div>
-              <dt>分类</dt>
+              <dt>{{ t('plugins.category') }}</dt>
               <dd>{{ selected.category }}</dd>
             </div>
             <div>
               <dt>Connector</dt>
-              <dd>{{ selected.connectorId || '未声明' }}</dd>
+              <dd>{{ selected.connectorId || t('plugins.undeclared') }}</dd>
             </div>
           </dl>
         </section>
         <section>
-          <h3>配置预览</h3>
+          <h3>{{ t('plugins.configPreview') }}</h3>
           <PluginSchemaForm v-model="config" :fields="selected.configFields" />
         </section>
         <section>
-          <h3>提交预览</h3>
+          <h3>{{ t('plugins.submitPreview') }}</h3>
           <pre>{{ JSON.stringify(config, null, 2) }}</pre>
         </section>
       </div>

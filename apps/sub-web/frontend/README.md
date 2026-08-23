@@ -12,7 +12,7 @@
 
 | 路径 | 说明 |
 | --- | --- |
-| `src/main.ts` | 正式入口；首行应引入 `@nebula-studio-internal/tailwind/electron`（与仓库其它 renderer 一致） |
+| `src/boot.ts` | Host 挂载入口；引入 `@nebula-studio/styles/document` |
 | `src/platform/integratedApps.ts` | 平台子应用集成 catalog：先 `windows.json`，再 overlay runtime |
 | `src/runtime/registerIntegratedApps.ts` | 壳 renderer 启动时注册集成元数据 |
 | `src/assets/main.css` | 应用级样式（在 tailwind 链之后） |

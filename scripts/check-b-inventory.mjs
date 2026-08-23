@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * B-track inventory: CSS entries, storage literals, raw color usage.
+ * B-track inventory: CSS entries, storage literals, raw color usage,
+ * untranslated feature UI, and forms that have not adopted NebulaForm.
  * Regenerates configs/b-track-inventory.json with --write.
  */
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -12,22 +13,22 @@ const inventoryPath = join(root, 'configs/b-track-inventory.json');
 const write = process.argv.includes('--write');
 
 const skipDirNames = new Set([
-  'node_modules',
-  'dist',
-  'out',
-  'dev-dist',
   '.git',
   '.mf',
   '__tests__',
+  'dev-dist',
+  'dist',
+  'node_modules',
+  'out',
 ]);
 
 const colorAllowlist = new Set([
-  'packages/styles/src/tokens/root.css',
-  'packages/styles/src/tokens/semantic-light.css',
-  'packages/styles/src/tokens/semantic-dark.css',
-  'packages/ui/tokens/src/types.ts',
-  'packages/ui/tokens/src/palette.ts',
   'apps/electron/src/main/modules/AppearanceSettingsModule.ts',
+  'packages/styles/src/tokens/root.css',
+  'packages/styles/src/tokens/semantic-dark.css',
+  'packages/styles/src/tokens/semantic-light.css',
+  'packages/ui/tokens/src/palette.ts',
+  'packages/ui/tokens/src/types.ts',
 ]);
 
 function walkFiles(dir, acc = []) {
@@ -59,6 +60,8 @@ function rel(abs) {
 const cssEntries = [];
 const storageKeys = new Set();
 const rawColors = [];
+const featureI18nCandidates = [];
+const lowTrafficFormCandidates = [];
 
 for (const base of ['apps', 'packages']) {
   const files = walkFiles(join(root, base));
@@ -84,6 +87,22 @@ for (const base of ['apps', 'packages']) {
     ) {
       rawColors.push(path);
     }
+    if (
+      path.endsWith('.vue') &&
+      path.includes('/src/features/') &&
+      /[\u3400-\u9fff]/u.test(source) &&
+      !/\b(?:useI18n|\$t|\bt\()/.test(source)
+    ) {
+      featureI18nCandidates.push(path);
+    }
+    if (
+      path.endsWith('.vue') &&
+      path.includes('/src/features/') &&
+      /<(?:form|el-form|n-form)\b/i.test(source) &&
+      !/<NebulaForm\b/.test(source)
+    ) {
+      lowTrafficFormCandidates.push(path);
+    }
   }
 }
 
@@ -92,8 +111,13 @@ const current = {
   cssEntries: cssEntries.toSorted(),
   storageKeys: [...storageKeys].toSorted(),
   rawColorFiles: rawColors.toSorted(),
+  featureI18nCandidates: featureI18nCandidates.toSorted(),
+  lowTrafficFormCandidates: lowTrafficFormCandidates.toSorted(),
   notes: {
-    screenshots: 'CSS variable JSON snapshots live in tokens tests, not PNG',
+    screenshots:
+      'Token JSON snapshots plus Playwright experience and Electron PNG baselines',
+    migrationPolicy:
+      'Candidates are inventory, not blanket violations; touched pages require migration or an explicit owner/batch exception',
     themeStorageKey: 'nebula.theme.v1',
   },
 };

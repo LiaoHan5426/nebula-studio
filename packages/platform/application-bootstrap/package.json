@@ -1,0 +1,43 @@
+{
+  "name": "@nebula-studio/application-bootstrap",
+  "version": "0.0.0",
+  "description": "Explicit standalone Vue application lifecycle orchestration for Nebula Studio.",
+  "private": true,
+  "homepage": "https://github.com/LiaoHan5426/nebula-studio#readme",
+  "bugs": {
+    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LiaoHan5426/nebula-studio.git",
+    "directory": "packages/platform/application-bootstrap"
+  },
+  "license": "UNLICENSED",
+  "author": "Liao Han <liaohan5426@gmail.com>",
+  "type": "module",
+  "scripts": {
+    "test": "vp test run"
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@nebula-studio-electron/electron-bridge": "workspace:^",
+    "@nebula-studio/auth": "workspace:^",
+    "@nebula-studio/shell-protocol": "workspace:^",
+    "vue": "catalog:vue",
+    "vue-router": "catalog:vue"
+  },
+  "devDependencies": {
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "@nebula-studio/types": "workspace:^",
+    "happy-dom": "catalog:vite",
+    "typescript": "catalog:types",
+    "vitest": "catalog:vite"
+  }
+}

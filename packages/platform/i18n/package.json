@@ -1,17 +1,17 @@
 {
   "name": "@nebula-studio/i18n",
   "version": "0.0.0",
-  "description": "App-scoped Vue I18n factory (messages filled by later B-track slices).",
+  "description": "App-scoped Vue I18n factory with lazy locale chunks and missing-key collection.",
   "private": true,
   "type": "module",
+  "scripts": {
+    "test": "vp test run"
+  },
   "exports": {
     ".": {
       "types": "./src/index.ts",
       "default": "./src/index.ts"
     }
-  },
-  "scripts": {
-    "test": "vp test run"
   },
   "dependencies": {
     "vue": "catalog:vue",

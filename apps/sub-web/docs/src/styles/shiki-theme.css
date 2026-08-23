@@ -26,8 +26,8 @@ pre.shiki code {
 html.dark pre.shiki,
 html[data-theme='dark'] pre.shiki,
 [data-nebula-theme='dark'] pre.shiki {
-  background-color: var(--shiki-dark-bg) !important;
   color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
 }
 
 html.dark pre.shiki span,

@@ -1,3 +1,2 @@
-import '@nebula-studio-internal/tailwind/document';
-
+import './document.css';
 import './index.css';

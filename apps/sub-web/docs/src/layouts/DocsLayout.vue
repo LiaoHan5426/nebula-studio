@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import type { HostCapabilities } from '@nebula-studio/application-contract';
+
+import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { RouterLink, RouterView, useRoute } from 'vue-router';
 
+import { HOST_CAPABILITIES_KEY } from '@nebula-studio/application-contract';
 import { NebulaDocsLayout, useShellHosted } from '@nebula-studio/nebula-layout';
 
 import { HELP_DOCUMENTS } from '@/content/productHelp';
@@ -9,20 +13,43 @@ import { HELP_DOCUMENTS } from '@/content/productHelp';
 import '@/styles/doc-page.css';
 
 const route = useRoute();
+const { t } = useI18n();
 const { isShellHosted } = useShellHosted();
+const capabilities = inject<HostCapabilities | undefined>(
+  HOST_CAPABILITIES_KEY,
+  undefined,
+);
+const locale = ref(capabilities?.locale?.locale ?? 'zh-CN');
+let stopLocale: (() => void) | undefined;
+
+onMounted(() => {
+  stopLocale = capabilities?.locale?.subscribe?.((value) => {
+    locale.value = value;
+  });
+});
+
+onBeforeUnmount(() => {
+  stopLocale?.();
+});
+
+async function setDocsLocale(next: 'en-US' | 'zh-CN'): Promise<void> {
+  await capabilities?.locale?.setLocale?.(next);
+}
 
 const sidebar = computed(() => route.meta.sidebar as string | undefined);
 const pageTitle = computed(() => route.meta.title as string | undefined);
 const pageCategory = computed(() =>
   sidebar.value === 'product-help'
-    ? '产品帮助'
+    ? t('category.help')
     : sidebar.value === 'components' || sidebar.value === 'reference'
-      ? '开发者参考'
+      ? t('category.reference')
       : sidebar.value === 'guide'
-        ? '开发指南'
+        ? t('category.guide')
         : sidebar.value === 'patterns'
-          ? '体验模式'
-          : '',
+          ? t('category.patterns')
+          : sidebar.value === 'design'
+            ? t('category.design')
+            : '',
 );
 const layoutTitle = computed(() => (sidebar.value ? pageTitle.value : ''));
 const searchQuery = ref('');
@@ -86,6 +113,14 @@ const componentsSidebar = [
 
 const patternsSidebar = [
   { text: '全局体验基线', to: '/patterns/experience-baseline' },
+  { text: 'PageHeader / FilterBar / Empty', to: '/patterns/catalog' },
+];
+
+const designSidebar = [
+  { text: 'Tokens', to: '/design/tokens' },
+  { text: 'Theme matrix', to: '/design/theme-matrix' },
+  { text: 'Primitives', to: '/components/button' },
+  { text: 'Patterns', to: '/patterns/catalog' },
 ];
 
 const productGroups = ['消费者', '提供方', '管理员'].map((audience) => ({
@@ -168,20 +203,24 @@ function isActive(path: string): boolean {
     :embedded="isShellHosted"
     content-width="wide"
     density="comfortable"
-    navigation-label="文档导航"
+    :navigation-label="t('shell.nav')"
     class="docs-layout"
   >
     <template #navigation>
-      <RouterLink to="/" class="docs-nav__title">Nebula Studio</RouterLink>
+      <RouterLink to="/" class="docs-nav__title">
+{{
+        t('shell.brand')
+      }}
+</RouterLink>
       <div class="docs-search">
         <input
           v-model="searchQuery"
           type="search"
-          placeholder="搜索全部帮助与参考"
-          aria-label="全文搜索文档"
+          :placeholder="t('shell.search')"
+          :aria-label="t('shell.searchAria')"
         />
         <div v-if="searchQuery" class="docs-search__results">
-          <p v-if="searchResults.length === 0">没有匹配文档</p>
+          <p v-if="searchResults.length === 0">{{ t('shell.noMatch') }}</p>
           <RouterLink
             v-for="result in searchResults"
             :key="result.path"
@@ -202,15 +241,31 @@ function isActive(path: string): boolean {
           产品帮助
         </RouterLink>
         <RouterLink
+          to="/design/tokens"
+          class="docs-nav__link"
+          :class="{
+            'docs-nav__link--active':
+              sidebar === 'design' ||
+              sidebar === 'components' ||
+              sidebar === 'patterns',
+          }"
+        >
+          {{ t('shell.design') }}
+        </RouterLink>
+        <button
+          type="button"
+          class="docs-nav__link"
+          @click="setDocsLocale(locale === 'en-US' ? 'zh-CN' : 'en-US')"
+        >
+          {{ locale === 'en-US' ? '中文' : 'EN' }}
+        </button>
+        <RouterLink
           to="/reference/component-guidelines"
           class="docs-nav__link"
           :class="{
-            'docs-nav__link--active': [
-              'guide',
-              'components',
-              'patterns',
-              'reference',
-            ].includes(sidebar ?? ''),
+            'docs-nav__link--active': ['guide', 'reference'].includes(
+              sidebar ?? '',
+            ),
           }"
         >
           开发者参考
@@ -311,6 +366,21 @@ function isActive(path: string): boolean {
             <h3 class="docs-sidebar__heading">体验模式</h3>
             <RouterLink
               v-for="item in patternsSidebar"
+              :key="item.to"
+              :to="item.to"
+              class="docs-sidebar__link"
+              :class="{ 'docs-sidebar__link--active': isActive(item.to) }"
+            >
+              {{ item.text }}
+            </RouterLink>
+          </div>
+        </template>
+
+        <template v-else-if="sidebar === 'design'">
+          <div class="docs-sidebar__section">
+            <h3 class="docs-sidebar__heading">{{ t('shell.design') }}</h3>
+            <RouterLink
+              v-for="item in designSidebar"
               :key="item.to"
               :to="item.to"
               class="docs-sidebar__link"

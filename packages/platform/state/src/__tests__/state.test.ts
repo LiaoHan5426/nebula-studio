@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
-
 import { createMemoryStorage } from '@nebula-studio/storage';
+
+import { describe, expect, it } from 'vitest';
 
 import { createNebulaPinia, defineStore } from '../index.ts';
 
@@ -43,6 +43,43 @@ describe('createNebulaPinia', () => {
     useAppearance(handle.pinia).$patch({ density: 'compact' });
     expect(storage.get('nebula.settings.appearance')).toMatchObject({
       density: 'compact',
+    });
+    handle.dispose();
+  });
+
+  it('persists only picked fields across multiple policies', () => {
+    const storage = createMemoryStorage();
+    const handle = createNebulaPinia({
+      appId: 'integration',
+      storage,
+      persistStores: {
+        portal: [
+          {
+            key: 'nebula.portal.device',
+            pick: ['favorites'],
+            privacy: 'device',
+          },
+          {
+            key: 'nebula.portal.session',
+            pick: ['drafts'],
+            privacy: 'session',
+          },
+        ],
+      },
+    });
+    const usePortal = defineStore('portal', {
+      state: () => ({
+        favorites: [] as string[],
+        drafts: {} as Record<string, string>,
+      }),
+    });
+    const store = usePortal(handle.pinia);
+    store.$patch({ favorites: ['res-1'], drafts: { res: 'wip' } });
+    expect(storage.get('nebula.portal.device')).toEqual({
+      favorites: ['res-1'],
+    });
+    expect(storage.get('nebula.portal.session')).toEqual({
+      drafts: { res: 'wip' },
     });
     handle.dispose();
   });

@@ -13,9 +13,9 @@ import {
 import '@nebula-studio/nebula-layout';
 import '@nebula-studio/nebula-ui';
 import {
-  applyRemoteMountAppearance,
   clearRemoteMountAppearance,
   stampFederationRuntimeMode,
+  subscribeRemoteMountAppearance,
 } from '@nebula-studio/shell-protocol';
 import '@nebula-studio/styles/remote';
 
@@ -29,6 +29,7 @@ import { install as installVxeTable } from 'vxe-table';
 import AppComponent from './App.vue';
 import router from './router';
 import { bindHostCapabilities } from './shared/hostCapabilityBridge';
+import { createIntegrationSession } from './shared/runtime/session';
 
 import '@nebula-studio-renderer/integration/bootstrap-runtime';
 
@@ -64,28 +65,30 @@ export const nebulaIntegrationApplication: NebulaRemoteApplication = {
   contractVersion: CONTRACT_VERSION,
   async mount(options: RemoteMountOptions): Promise<RemoteHandle> {
     stampFederationRuntimeMode();
-    applyRemoteMountAppearance(options.container, {
-      cssNamespace: 'integration',
-      scheme: options.capabilities.theme?.scheme,
-      locale: options.capabilities.locale?.locale,
-    });
+    const stopAppearance = subscribeRemoteMountAppearance(
+      options.container,
+      'integration',
+      options.capabilities,
+    );
     window.__NEBULA_EMBED_SURFACE__ = 'integration';
     bindHostCapabilities(options.capabilities);
+    const session = await createIntegrationSession(options.capabilities);
     const offTenant = options.capabilities.events?.subscribe(
       'tenant-changed',
       () => {
-        window.location.reload();
+        session.resetSession();
       },
     );
     const offLogout = options.capabilities.events?.subscribe(
       'auth-logout',
       () => {
-        window.location.reload();
+        session.resetSession();
       },
     );
 
     const app = createApp(wrapSubAppWithAssembly(AppComponent));
     app.provide(HOST_CAPABILITIES_KEY, options.capabilities);
+    session.install(app);
     app.use(router);
     installAssemblyForSubApp(app, 'platform-embed', {
       density: 'comfortable',
@@ -107,10 +110,12 @@ export const nebulaIntegrationApplication: NebulaRemoteApplication = {
         void router.push(path);
       },
       unmount() {
+        stopAppearance();
         offTenant?.();
         offLogout?.();
         bindHostCapabilities(undefined);
         app.unmount();
+        session.dispose();
         options.container.replaceChildren();
         clearRemoteMountAppearance(options.container);
         delete window.__NEBULA_EMBED_SURFACE__;

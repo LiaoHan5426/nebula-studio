@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { GovernanceRequest } from '@/shared/types';
 
-import { onMounted, ref } from 'vue';
+import { computed } from 'vue';
 
 import {
   NebulaButton,
@@ -12,9 +12,16 @@ import {
 } from '@nebula-studio/nebula-ui';
 
 import { approvalApi } from '@/features/approval/api';
+import { approvalRequestsQueryOptions } from '@/features/service/queryOptions';
+import { useTenant } from '@/shared/composables/useTenant';
+import { useQuery } from '@tanstack/vue-query';
 
-const requests = ref<GovernanceRequest[]>([]);
-const loading = ref(false);
+const { currentTenantId } = useTenant();
+const requestsQuery = useQuery(() =>
+  approvalRequestsQueryOptions(currentTenantId.value || undefined),
+);
+const requests = computed(() => requestsQuery.data.value ?? []);
+const loading = computed(() => requestsQuery.isPending.value);
 
 const STATUS_LABELS: Record<string, string> = {
   PENDING: '待审批',
@@ -44,16 +51,7 @@ function canDecide(req: GovernanceRequest): boolean {
 }
 
 async function loadRequests() {
-  loading.value = true;
-  try {
-    const tenantId = localStorage.getItem('tenant_id') || undefined;
-    const res = await approvalApi.listRequests(tenantId);
-    requests.value = res.data ?? [];
-  } catch {
-    requests.value = [];
-  } finally {
-    loading.value = false;
-  }
+  await requestsQuery.refetch();
 }
 
 async function handleApprove(req: GovernanceRequest) {
@@ -83,8 +81,6 @@ async function handleReject(req: GovernanceRequest) {
     console.error('Reject failed:', e);
   }
 }
-
-onMounted(loadRequests);
 </script>
 
 <template>

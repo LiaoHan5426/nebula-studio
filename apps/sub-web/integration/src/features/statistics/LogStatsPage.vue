@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import {
   NebulaButton,
@@ -9,42 +9,20 @@ import {
   NebulaTableColumn,
 } from '@nebula-studio/nebula-ui';
 
-import { monitorApi } from '@/features/monitor/api';
+import { interfaceRankingQueryOptions } from '@/features/monitor/queryOptions';
 import { useTenant } from '@/shared/composables/useTenant';
-import { isApiSuccess } from '@/shared/types';
+import { useQuery } from '@tanstack/vue-query';
 
-const stats = ref<Array<Record<string, unknown>>>([]);
-const loading = ref(false);
 const dateRange = ref<[string, string] | null>(null);
 const { currentTenantId } = useTenant();
-
-onMounted(() => {
-  void loadStats();
-});
+const statsQuery = useQuery(() =>
+  interfaceRankingQueryOptions(currentTenantId.value || undefined),
+);
+const stats = computed(() => statsQuery.data.value ?? []);
+const loading = computed(() => statsQuery.isPending.value);
 
 async function loadStats() {
-  loading.value = true;
-  try {
-    const response = await monitorApi.interfaceRanking(
-      currentTenantId.value || '',
-    );
-    if (isApiSuccess(response)) {
-      stats.value = (response.data ?? []).map((row) => ({
-        tenantId: currentTenantId.value,
-        interfaceId: row.interfaceId ?? row.interface_id,
-        interfaceName:
-          row.interfaceName ?? row.interface_name ?? row.interfaceId,
-        totalCalls: row.totalCalls ?? row.callCount ?? 0,
-        successRate: row.successRate ?? row.success_rate ?? '-',
-        avgDuration: row.avgDuration ?? row.avg_latency_ms ?? '-',
-      }));
-    }
-  } catch (e) {
-    console.warn('[integration] load interface ranking failed', e);
-    stats.value = [];
-  } finally {
-    loading.value = false;
-  }
+  await statsQuery.refetch();
 }
 </script>
 

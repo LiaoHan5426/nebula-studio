@@ -2,7 +2,7 @@
  * AuthBootstrap — 认证编排入口。
  *
  * 根据 RuntimeMode 自动选择对应策略，提供统一的 `register()` API。
- * `bootMicroApp` 通过 `auth: { enabled: true }` 触发。
+ * Application bootstrap 通过 `auth: { enabled: true }` 触发。
  */
 import type { AuthBootstrapOptions, AuthStrategy } from './types';
 
@@ -11,7 +11,7 @@ import { EmbedStrategy } from './strategies/embed';
 import { StandaloneStrategy } from './strategies/standalone';
 
 /**
- * 运行时模式（与 `@nebula-studio/runtime` 的 `RuntimeMode` 保持一致）。
+ * 运行时模式由 `@nebula-studio/shell-protocol` 定义。
  * 此处本地声明以避免循环依赖。
  */
 type RuntimeMode = 'electron' | 'platform-embed' | 'standalone';

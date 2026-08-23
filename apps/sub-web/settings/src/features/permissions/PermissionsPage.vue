@@ -2,6 +2,7 @@
 import type { PermissionNode } from '@/shared/api/system';
 
 import { computed, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import {
   NebulaButton,
@@ -23,6 +24,8 @@ import {
   permTypeLabel,
 } from '@/shared/permissionType';
 import { isApiSuccess } from '@/shared/types';
+
+const { t } = useI18n();
 
 const tree = ref<PermissionNode[]>([]);
 const loading = ref(false);
@@ -233,34 +236,38 @@ function parentCode(row: PermissionNode): string {
 <template>
   <EntityListPage
     v-model:detail-open="detailOpen"
-    title="权限管理"
-    description="在权限树与矩阵之间切换，核对父级继承、冲突与实际权限来源。"
-    eyebrow="Access control"
-    :result-summary="`${resultCount} 项权限`"
+    :title="t('permissions.title')"
+    :description="t('permissions.description')"
+    :eyebrow="t('permissions.eyebrow')"
+    :result-summary="t('permissions.summary', { total: resultCount })"
     :loading="loading"
     :empty="!loading && tableRows.length === 0"
-    detail-title="权限详情"
+    :detail-title="t('permissions.detail')"
     :detail-subtitle="selected?.permCode"
   >
     <template #actions>
       <NebulaButton variant="primary" @click="openCreate()">
-        新建权限
+        {{ t('permissions.create') }}
       </NebulaButton>
       <NebulaButton variant="secondary" @click="loadTree">
-        {{ loading ? '加载中…' : '刷新' }}
+        {{ loading ? t('common.loading') : t('common.refresh') }}
       </NebulaButton>
-      <div class="view-switch" role="group" aria-label="权限视图">
+      <div
+        class="view-switch"
+        role="group"
+        :aria-label="t('permissions.viewAria')"
+      >
         <NebulaButton
           :variant="viewMode === 'tree' ? 'primary' : 'outline'"
           @click="viewMode = 'tree'"
         >
-          权限树
+          {{ t('permissions.tree') }}
         </NebulaButton>
         <NebulaButton
           :variant="viewMode === 'matrix' ? 'primary' : 'outline'"
           @click="viewMode = 'matrix'"
         >
-          权限矩阵
+          {{ t('permissions.matrix') }}
         </NebulaButton>
       </div>
     </template>
@@ -268,14 +275,13 @@ function parentCode(row: PermissionNode): string {
     <template #filters>
       <NebulaInput
         v-model="keyword"
-        placeholder="搜索权限名称、编码或类型"
-        aria-label="搜索权限"
+        :placeholder="t('permissions.search')"
+        :aria-label="t('permissions.searchAria')"
       />
     </template>
 
     <p class="permission-context">
-      实际权限来源 = 直接角色 + 继承角色 + 组织策略。当前列表展示平台权限定义；
-      角色继承与冲突标记将在角色绑定数据中同步呈现。
+      {{ t('permissions.context') }}
     </p>
 
     <div
@@ -293,12 +299,16 @@ function parentCode(row: PermissionNode): string {
       >
         <NebulaTableColumn
           field="permName"
-          title="名称"
+          :title="t('permissions.name')"
           min-width="180"
           :tree-node="isTreeTable"
           show-overflow="ellipsis"
         />
-        <NebulaTableColumn field="permCode" title="权限标识" min-width="160">
+        <NebulaTableColumn
+          field="permCode"
+          :title="t('permissions.code')"
+          min-width="160"
+        >
           <template #default="{ row }">
             <NebulaTag variant="info">{{ row.permCode }}</NebulaTag>
           </template>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { ApiInterface, FlowDefinition } from '@/shared/types';
+import type { FlowDefinition } from '@/shared/types';
 
-import { onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { IntegrationBpmnEditor } from '@nebula-studio/nebula-flow-editor';
 import {
@@ -13,48 +13,36 @@ import {
   NebulaTag,
 } from '@nebula-studio/nebula-ui';
 
+import { interfacesQueryOptions } from '@/features/interfaces/queryOptions';
 import { flowsApi } from '@/shared/api/flows';
-import { interfaceApi } from '@/shared/api/integration';
 import { useTenant } from '@/shared/composables/useTenant';
 import { isApiSuccess } from '@/shared/types';
+import { useQuery } from '@tanstack/vue-query';
 
-const flows = ref<FlowDefinition[]>([]);
-const atomicInterfaces = ref<ApiInterface[]>([]);
-const loading = ref(false);
+import { flowsQueryOptions } from './queryOptions';
+
+const { currentTenantId } = useTenant();
+const flowsQuery = useQuery(() =>
+  flowsQueryOptions(currentTenantId.value || undefined),
+);
+const interfacesQuery = useQuery(() =>
+  interfacesQueryOptions('atomic-active', {
+    pageSize: 100,
+    interfaceType: 'ATOMIC',
+    status: 'ACTIVE',
+  }),
+);
+const flows = computed(() => flowsQuery.data.value ?? []);
+const atomicInterfaces = computed(
+  () => interfacesQuery.data.value?.items ?? [],
+);
+const loading = computed(() => flowsQuery.isPending.value);
 const showEditor = ref(false);
 const editingFlow = ref<FlowDefinition | null>(null);
 const bpmnXml = ref('');
 
-const { currentTenantId } = useTenant();
-
-onMounted(async () => {
-  await Promise.all([loadFlows(), loadAtomicInterfaces()]);
-});
-
-async function loadAtomicInterfaces() {
-  const response = await interfaceApi.list({
-    pageSize: 100,
-    interfaceType: 'ATOMIC',
-    status: 'ACTIVE',
-  });
-  if (isApiSuccess(response)) {
-    atomicInterfaces.value = response.data.items ?? [];
-  }
-}
-
 async function loadFlows() {
-  loading.value = true;
-  try {
-    const response = await flowsApi.list({
-      pageSize: 50,
-      tenantId: currentTenantId.value,
-    });
-    if (isApiSuccess(response)) {
-      flows.value = response.data.records ?? [];
-    }
-  } finally {
-    loading.value = false;
-  }
+  await flowsQuery.refetch();
 }
 
 async function handleCreate() {

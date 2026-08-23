@@ -25,7 +25,7 @@ export function requireRuntimeMode(explicit?: RuntimeMode): RuntimeMode {
     return stamped;
   }
   throw new Error(
-    'Runtime mode must be stamped by Host or standalone main.ts before bootMicroApp.',
+    'Runtime mode must be stamped by Host or standalone main.ts before application bootstrap.',
   );
 }
 

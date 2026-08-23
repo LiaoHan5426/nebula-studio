@@ -1,0 +1,12 @@
+{
+  "name": "@nebula-studio/vsh",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "nebula-vsh": "./bin/nebula-vsh.mjs"
+  },
+  "dependencies": {
+    "circular-dependency-scanner": "catalog:"
+  }
+}

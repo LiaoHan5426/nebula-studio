@@ -1,43 +1,71 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import type { HostCapabilities } from '@nebula-studio/application-contract';
 
+import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+import { HOST_CAPABILITIES_KEY } from '@nebula-studio/application-contract';
 import {
   NebulaPageHeader,
   NebulaSelect,
   NebulaTag,
 } from '@nebula-studio/nebula-ui';
 
-const STORAGE_KEY = 'nebula.settings.language';
-const language = ref(localStorage.getItem(STORAGE_KEY) || 'zh-CN');
+const { t } = useI18n();
+const capabilities = inject<HostCapabilities | undefined>(
+  HOST_CAPABILITIES_KEY,
+  undefined,
+);
+const language = ref(capabilities?.locale?.locale ?? 'zh-CN');
+let stop: (() => void) | undefined;
 
-function save(value: unknown): void {
-  language.value = String(value);
-  localStorage.setItem(STORAGE_KEY, language.value);
-  document.documentElement.lang = language.value;
+onMounted(() => {
+  stop = capabilities?.locale?.subscribe?.((value) => {
+    language.value = value;
+  });
+});
+
+onBeforeUnmount(() => {
+  stop?.();
+});
+
+async function save(value: unknown): Promise<void> {
+  const next = String(value) === 'en-US' ? 'en-US' : 'zh-CN';
+  language.value = next;
+  await capabilities?.locale?.setLocale?.(next);
 }
+
+const currentLabel = computed(() =>
+  language.value === 'en-US' ? t('language.en') : t('language.zh'),
+);
 </script>
 
 <template>
   <main class="language-page">
     <NebulaPageHeader
-      eyebrow="Language & region"
-      title="语言与区域"
-      description="选择界面语言。专业缩写保留英文，并在首次出现时提供中文解释。"
+      :eyebrow="t('language.eyebrow')"
+      :title="t('language.title')"
+      :description="t('language.description')"
     />
     <section class="language-card">
       <div>
-        <h2>界面语言</h2>
-        <p>语言偏好保存在当前设备，并由 Shell 与子应用共享。</p>
+        <h2>{{ t('language.heading') }}</h2>
+        <p>{{ t('language.hint') }}</p>
       </div>
       <NebulaSelect
         :model-value="language"
         :options="[
-          { label: '简体中文', value: 'zh-CN' },
-          { label: 'English（规划中）', value: 'en-US', disabled: true },
+          { label: t('language.zh'), value: 'zh-CN' },
+          { label: t('language.en'), value: 'en-US' },
         ]"
+        :aria-label="t('language.heading')"
         @update:model-value="save"
       />
-      <NebulaTag>当前：简体中文</NebulaTag>
+      <NebulaTag>
+{{
+        t('language.current', { label: currentLabel })
+      }}
+</NebulaTag>
     </section>
   </main>
 </template>

@@ -1,0 +1,42 @@
+{
+  "name": "@nebula-studio-renderer/low-code-studio",
+  "version": "0.0.0",
+  "description": "Phase 8 Low-code Studio Remote (designer harness + runtime expose).",
+  "private": true,
+  "homepage": "https://github.com/LiaoHan5426/nebula-studio#readme",
+  "bugs": {
+    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LiaoHan5426/nebula-studio.git",
+    "directory": "apps/remotes/low-code-studio"
+  },
+  "license": "UNLICENSED",
+  "author": "Liao Han <liaohan5426@gmail.com>",
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false"
+  },
+  "dependencies": {
+    "@nebula-studio/application-contract": "workspace:^",
+    "@nebula-studio/editors-low-code": "workspace:^",
+    "@nebula-studio/host-capabilities": "workspace:^",
+    "@nebula-studio/low-code-compiler": "workspace:^",
+    "@nebula-studio/low-code-contract": "workspace:^",
+    "@nebula-studio/low-code-kit": "workspace:^",
+    "@nebula-studio/styles": "workspace:^",
+    "vue": "catalog:vue"
+  },
+  "devDependencies": {
+    "@nebula-studio-internal/build-kit": "workspace:^",
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "typescript": "catalog:types",
+    "vite": "catalog:vite",
+    "vite-plus": "catalog:vite",
+    "vue-tsc": "catalog:vue"
+  }
+}

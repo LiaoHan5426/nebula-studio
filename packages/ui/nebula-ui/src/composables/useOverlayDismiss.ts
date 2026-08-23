@@ -1,10 +1,10 @@
 import { onMounted, onUnmounted } from 'vue';
 
 export interface UseOverlayDismissOptions {
-  isOpen: () => boolean;
-  onDismiss: () => void;
   /** Escape 关闭。默认 true。 */
   closeOnEscape?: () => boolean;
+  isOpen: () => boolean;
+  onDismiss: () => void;
 }
 
 /**

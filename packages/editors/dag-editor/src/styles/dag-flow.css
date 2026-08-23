@@ -1,5 +1,5 @@
 .vue-flow__edge.selected .vue-flow__edge-path {
-  stroke: hsl(var(--primary));
+  stroke: var(--editor-select, hsl(var(--foreground) / 78%));
   stroke-width: 2px;
 }
 
@@ -9,7 +9,7 @@
 }
 
 .vue-flow__connection-path {
-  stroke: hsl(var(--primary) / 80%);
+  stroke: var(--editor-select-muted, hsl(var(--foreground) / 42%));
   stroke-width: 1.5px;
   stroke-dasharray: 6 4;
 }

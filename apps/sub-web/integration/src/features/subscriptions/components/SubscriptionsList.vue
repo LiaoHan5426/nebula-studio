@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { TableSubscription } from '@/shared/types';
 
+import { useI18n } from 'vue-i18n';
+
 import { NebulaButton, NebulaPane } from '@nebula-studio/nebula-ui';
 
 import SubscriptionCard from './SubscriptionCard.vue';
@@ -23,22 +25,27 @@ const emit = defineEmits<{
   'update-polling-draft': [subscriptionId: string, value: number];
   watch: [sub: TableSubscription];
 }>();
+
+const { t } = useI18n();
 </script>
 
 <template>
-  <NebulaPane title="库表订阅" description="创建订阅并实时监听 SSE 变更事件">
+  <NebulaPane
+    :title="t('subscriptions.title')"
+    :description="t('subscriptions.description')"
+  >
     <div class="page__toolbar">
       <NebulaButton variant="primary" @click="emit('create')">
-        新建订阅
+        {{ t('subscriptions.create') }}
       </NebulaButton>
       <NebulaButton variant="outline" @click="emit('refresh')">
-        刷新
+        {{ t('common.refresh') }}
       </NebulaButton>
     </div>
 
-    <div v-if="loading" class="page__empty">加载中…</div>
+    <div v-if="loading" class="page__empty">{{ t('common.loading') }}</div>
     <div v-else-if="subscriptions.length === 0" class="page__empty">
-      暂无订阅
+      {{ t('subscriptions.empty') }}
     </div>
     <div v-else class="page__list">
       <SubscriptionCard

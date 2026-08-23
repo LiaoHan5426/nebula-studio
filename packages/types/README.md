@@ -6,7 +6,7 @@
 
 | 声明 | 用途 |
 | --- | --- |
-| `declare const __NEBULA_BUILD_NODE_VERSION__` | 与 `@nebula-studio-internal/vite` 的 `nebulaBuildNodeVersionDefine()` 一致 |
+| `declare const __NEBULA_BUILD_NODE_VERSION__` | 与 `@nebula-studio-internal/build-kit` 的 `nebulaBuildNodeVersionDefine()` 一致 |
 | `declare module '@nebula-studio-internal/tailwind/electron'` | 侧效样式链入口 |
 | `declare module '@nebula-studio/styles'` | 侧效设计 CSS 包 |
 | `declare module '@wangeditor/editor-for-vue'` | 上游缺 `types` 时的最小补全 |

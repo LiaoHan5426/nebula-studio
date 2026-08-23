@@ -1,8 +1,8 @@
 /**
- * Generate window configuration from configs/windows.json.
+ * Generate runtime artifacts from split window/environment/test configuration.
  *
  * Validation and TypeScript generation live in
- * `@nebula-studio-internal/node/window-config`. This script only writes
+ * `@nebula-studio-internal/node-kit/window-config`. This script only writes
  * artifacts and formats them.
  *
  * Usage: node scripts/generate-window-configs.mjs
@@ -12,8 +12,8 @@ import { execFileSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { findMonorepoRoot } from '@nebula-studio-internal/node';
-import { writeWindowConfigArtifacts } from '@nebula-studio-internal/node/window-config';
+import { findMonorepoRoot } from '@nebula-studio-internal/node-kit';
+import { writeWindowConfigArtifacts } from '@nebula-studio-internal/node-kit/window-config';
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const rootDir = findMonorepoRoot(join(scriptDir, '..')) || findMonorepoRoot();
@@ -23,7 +23,7 @@ if (!rootDir) {
   process.exit(1);
 }
 
-console.log('Reading configs/windows.json ...');
+console.log('Reading split configs (windows/environment/real-stack/e2e) ...');
 console.log('Validating configuration ...');
 
 try {

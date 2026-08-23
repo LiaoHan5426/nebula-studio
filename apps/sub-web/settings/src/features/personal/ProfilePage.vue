@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import {
   NebulaButton,
@@ -13,33 +14,42 @@ import {
   getAuthUsername,
 } from '@/shared/auth/session';
 
-const username = computed(() => getAuthUsername() || '当前用户');
-const userId = computed(() => getAuthUserId() || '未同步');
+const { t } = useI18n();
+const username = computed(() => getAuthUsername() || t('common.currentUser'));
+const userId = computed(() => getAuthUserId() || t('common.unsynced'));
 const roles = computed(() => getAuthRoles());
 </script>
 
 <template>
   <main class="personal-page">
     <NebulaPageHeader
-      eyebrow="Personal settings"
-      title="个人资料"
-      description="查看你的账号身份和组织内角色。资料编辑能力将在身份服务开放更新接口后接入。"
+      :eyebrow="t('profile.eyebrow')"
+      :title="t('profile.title')"
+      :description="t('profile.description')"
     />
     <section class="profile-card">
       <div class="avatar">{{ username.slice(0, 1).toUpperCase() }}</div>
       <div>
-        <span>显示名称</span>
+        <span>{{ t('profile.displayName') }}</span>
         <h2>{{ username }}</h2>
-        <p>用户 ID：{{ userId }}</p>
+        <p>{{ t('profile.userId', { id: userId }) }}</p>
       </div>
-      <NebulaButton variant="outline" disabled>编辑资料</NebulaButton>
+      <NebulaButton variant="outline" disabled>
+{{
+        t('profile.edit')
+      }}
+</NebulaButton>
     </section>
     <section class="personal-section">
-      <h2>角色与访问范围</h2>
-      <p>角色决定你在 Settings 中可见的组织和平台治理入口。</p>
+      <h2>{{ t('profile.rolesHeading') }}</h2>
+      <p>{{ t('profile.rolesHint') }}</p>
       <div class="role-list">
         <NebulaTag v-for="role in roles" :key="role">{{ role }}</NebulaTag>
-        <NebulaTag v-if="roles.length === 0">普通用户</NebulaTag>
+        <NebulaTag v-if="roles.length === 0">
+{{
+          t('profile.member')
+        }}
+</NebulaTag>
       </div>
     </section>
   </main>
@@ -74,7 +84,7 @@ const roles = computed(() => getAuthRoles());
   font-size: 24px;
   font-weight: 800;
   color: white;
-  background: linear-gradient(145deg, hsl(var(--primary)), #7c5cff);
+  background: hsl(var(--primary));
   border-radius: 18px;
 }
 

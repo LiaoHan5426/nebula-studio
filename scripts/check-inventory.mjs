@@ -30,7 +30,7 @@ const knownDuplicateBootBlocks = [
       'apps/sub-web/frontend/src/boot.ts',
       'apps/sub-web/login/src/boot.ts',
     ],
-    note: 'Five standalone boots still share document CSS + bootMicroApp + assembly. Federation remotes use federation.ts instead.',
+    note: 'Standalone composition roots share explicit application-bootstrap lifecycle stages. Federation remotes use federation.ts instead.',
   },
   {
     id: 'host-vs-standalone-workspace-login',
@@ -49,6 +49,7 @@ function categoryFor(relDir) {
   if (relDir.startsWith('packages/')) return 'packages';
   if (relDir.startsWith('internal/')) return 'internal';
   if (relDir.startsWith('tools/')) return 'tools';
+  if (relDir.startsWith('scripts/')) return 'scripts';
   return null;
 }
 
@@ -96,7 +97,7 @@ function collectPackages() {
 
 function buildInventory() {
   const packages = collectPackages();
-  const totals = { apps: 0, packages: 0, internal: 0, tools: 0, all: 0 };
+  const totals = { apps: 0, packages: 0, internal: 0, tools: 0, scripts: 0, all: 0 };
   for (const item of packages) {
     totals[item.category] += 1;
     totals.all += 1;

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Connector, DatabaseConfig, ProtocolConfig } from '@/shared/types';
 
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import {
   NebulaButton,
@@ -10,8 +10,10 @@ import {
   NebulaTag,
 } from '@nebula-studio/nebula-ui';
 
+import { connectorsQueryOptions } from '@/features/datasources/queryOptions';
 import { connectorApi } from '@/shared/api/integration';
 import { ConnectorType, isApiSuccess } from '@/shared/types';
+import { useQuery } from '@tanstack/vue-query';
 
 const props = defineProps<{
   connectorType: ConnectorType;
@@ -21,8 +23,7 @@ const props = defineProps<{
   >;
 }>();
 
-const connectors = ref<Connector[]>([]);
-const loading = ref(false);
+const connectorsQuery = useQuery(() => connectorsQueryOptions());
 const showTestDialog = ref(false);
 const currentConnector = ref<Connector | null>(null);
 const testing = ref(false);
@@ -40,6 +41,9 @@ const testConfig = ref<DatabaseConfig | ProtocolConfig>({
   password: '',
 } as DatabaseConfig);
 
+const connectors = computed(() => connectorsQuery.data.value ?? []);
+const loading = computed(() => connectorsQuery.isPending.value);
+
 const visibleConnectors = computed(() =>
   connectors.value.filter((c) => c.connectorType === props.connectorType),
 );
@@ -50,23 +54,8 @@ const sectionTitle = computed(() =>
     : '已激活协议连接器',
 );
 
-onMounted(loadConnectors);
-
 async function loadConnectors() {
-  loading.value = true;
-  try {
-    const response = await connectorApi.list();
-    if (isApiSuccess(response)) {
-      const seen = new Set<string>();
-      connectors.value = response.data.filter((c) => {
-        if (!c.connectorId || seen.has(c.connectorId)) return false;
-        seen.add(c.connectorId);
-        return true;
-      });
-    }
-  } finally {
-    loading.value = false;
-  }
+  await connectorsQuery.refetch();
 }
 
 function openTest(connector: Connector) {

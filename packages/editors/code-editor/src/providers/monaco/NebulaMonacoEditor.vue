@@ -7,7 +7,7 @@ import type {
 
 import { computed, ref } from 'vue';
 
-import { CodeEditor } from 'monaco-editor-vue3';
+import { resolveEditorSyntaxTheme } from '@nebula-studio/nebula-assembly';
 
 import { normalizeCodeEditorOptions } from '../../options';
 
@@ -73,7 +73,7 @@ function handleError(cause: unknown): void {
     <CodeEditor
       v-model:value="value"
       :language="language"
-      :theme="theme === 'dark' ? 'vs-dark' : 'vs'"
+      :theme="resolveEditorSyntaxTheme(theme)"
       :options="providerOptions"
       @ready="handleReady"
       @error="handleError"

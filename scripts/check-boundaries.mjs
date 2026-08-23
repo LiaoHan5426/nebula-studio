@@ -38,10 +38,10 @@ function depNames(manifest, groups = ['dependencies', 'peerDependencies']) {
   return names;
 }
 
-const windowConfigKitPath = join(root, 'internal/node/src/windowConfig.mjs');
+const windowConfigKitPath = join(root, 'internal/node-kit/src/windowConfig.mjs');
 if (!existsSync(windowConfigKitPath)) {
   fail(
-    'window config generation must live in internal/node/src/windowConfig.mjs',
+    'window config generation must live in internal/node-kit/src/windowConfig.mjs',
   );
 }
 const generateWindowConfigs = readFileSync(
@@ -56,15 +56,15 @@ for (const banned of [
 ]) {
   if (generateWindowConfigs.includes(banned)) {
     fail(
-      `scripts/generate-window-configs.mjs must not contain ${banned}; use @nebula-studio-internal/node/window-config`,
+      `scripts/generate-window-configs.mjs must not contain ${banned}; use @nebula-studio-internal/node-kit/window-config`,
     );
   }
 }
 if (
-  !generateWindowConfigs.includes('@nebula-studio-internal/node/window-config')
+  !generateWindowConfigs.includes('@nebula-studio-internal/node-kit/window-config')
 ) {
   fail(
-    'scripts/generate-window-configs.mjs must import @nebula-studio-internal/node/window-config',
+    'scripts/generate-window-configs.mjs must import @nebula-studio-internal/node-kit/window-config',
   );
 }
 const generateContracts = readFileSync(
@@ -73,17 +73,17 @@ const generateContracts = readFileSync(
 );
 if (generateContracts.includes('function joinOrigin')) {
   fail(
-    'scripts/generate-contracts.mjs must import joinOrigin from @nebula-studio-internal/node/join-origin',
+    'scripts/generate-contracts.mjs must import joinOrigin from @nebula-studio-internal/node-kit/join-origin',
   );
 }
 
 const runtimeAddressDriftPath = join(
   root,
-  'internal/node/src/runtimeAddressDrift.mjs',
+  'internal/node-kit/src/runtimeAddressDrift.mjs',
 );
 if (!existsSync(runtimeAddressDriftPath)) {
   fail(
-    'runtime address drift scanning must live in internal/node/src/runtimeAddressDrift.mjs',
+    'runtime address drift scanning must live in internal/node-kit/src/runtimeAddressDrift.mjs',
   );
 }
 const checkGenerated = readFileSync(
@@ -97,23 +97,23 @@ for (const banned of [
 ]) {
   if (checkGenerated.includes(banned)) {
     fail(
-      `scripts/check-generated.mjs must not contain ${banned}; use @nebula-studio-internal/node/runtime-address-drift`,
+      `scripts/check-generated.mjs must not contain ${banned}; use @nebula-studio-internal/node-kit/runtime-address-drift`,
     );
   }
 }
 if (
-  !checkGenerated.includes('@nebula-studio-internal/node/runtime-address-drift')
+  !checkGenerated.includes('@nebula-studio-internal/node-kit/runtime-address-drift')
 ) {
   fail(
-    'scripts/check-generated.mjs must import @nebula-studio-internal/node/runtime-address-drift',
+    'scripts/check-generated.mjs must import @nebula-studio-internal/node-kit/runtime-address-drift',
   );
 }
 
 if (
-  !generateContracts.includes('@nebula-studio-internal/node/frontend-openapi')
+  !generateContracts.includes('@nebula-studio-internal/node-kit/frontend-openapi')
 ) {
   fail(
-    'scripts/generate-contracts.mjs must ensure FrontendApplication OpenAPI via @nebula-studio-internal/node/frontend-openapi',
+    'scripts/generate-contracts.mjs must ensure FrontendApplication OpenAPI via @nebula-studio-internal/node-kit/frontend-openapi',
   );
 }
 const openApiSpecPath = join(root, 'packages/contracts/generated/openapi.json');
@@ -223,6 +223,12 @@ if (existsSync(join(root, 'packages/core/runtime/src/detectMode.ts'))) {
   fail('packages/core/runtime/src/detectMode.ts must stay deleted');
 }
 
+if (existsSync(join(root, 'tools/tailwindcss/src/electron.ts'))) {
+  fail('tools/tailwindcss production electron.ts entry must stay deleted');
+}
+if (existsSync(join(root, 'tools/tailwindcss/src/index.ts'))) {
+  fail('tools/tailwindcss production index.ts entry must stay deleted');
+}
 const themeCss = readFileSync(
   join(root, 'tools/tailwindcss/src/theme.css'),
   'utf8',
@@ -255,7 +261,9 @@ const appShell = readManifest('packages/core/app-shell/package.json');
 const assemblyBootManifest = readManifest(
   'packages/platform/assembly-boot/package.json',
 );
-const runtime = readManifest('packages/core/runtime/package.json');
+const applicationBootstrap = readManifest(
+  'packages/platform/application-bootstrap/package.json',
+);
 const shellHost = readManifest('packages/platform/shell-host/package.json');
 
 if (
@@ -274,20 +282,7 @@ if (
     'app-shell must not depend on auth-provider; callers import it directly',
   );
 }
-const runtimeIndex = readFileSync(
-  join(root, 'packages/core/runtime/src/index.ts'),
-  'utf8',
-);
-if (
-  /export\s+(type\s+)?\{[^}]*RuntimeMode/.test(runtimeIndex) ||
-  runtimeIndex.includes('stampFederationRuntimeMode')
-) {
-  fail(
-    'runtime/src/index.ts must not re-export shell-protocol symbols; keep bootMicroApp only',
-  );
-}
-
-const internalRuntimeBan = /@nebula-studio-internal\/(node|vite)(?:\/|'|"|$)/;
+const internalRuntimeBan = /@nebula-studio-internal\/(node-kit|build-kit)(?:\/|'|"|$)/;
 const skipDirNames = new Set([
   '.git',
   '__tests__',
@@ -334,7 +329,7 @@ function scanProductRuntimeImports(relDir) {
       const source = readFileSync(path, 'utf8');
       if (internalRuntimeBan.test(source)) {
         fail(
-          `${relativePosix(path)} must not import @nebula-studio-internal/node or vite at runtime`,
+          `${relativePosix(path)} must not import @nebula-studio-internal/node-kit or vite at runtime`,
         );
       }
     }
@@ -356,8 +351,25 @@ for (const rel of [
   'apps/sub-web/integration/package.json',
   'apps/sub-web/frontend/package.json',
   'apps/sub-web/login/package.json',
+]) {
+  const manifest = readManifest(rel);
+  if (
+    manifest &&
+    depNames(manifest, ['dependencies']).has('@nebula-studio-internal/tailwind')
+  ) {
+    fail(`${rel} must import @nebula-studio/styles, not internal/tailwind`);
+  }
+}
+for (const rel of [
+  'apps/web/package.json',
+  'apps/electron/package.json',
+  'apps/sub-web/docs/package.json',
+  'apps/sub-web/settings/package.json',
+  'apps/sub-web/integration/package.json',
+  'apps/sub-web/frontend/package.json',
+  'apps/sub-web/login/package.json',
   'packages/core/app-shell/package.json',
-  'packages/core/runtime/package.json',
+  'packages/platform/application-bootstrap/package.json',
   'packages/platform/shell-host/package.json',
   'packages/platform/shell-protocol/package.json',
   'packages/platform/application-runtime/package.json',
@@ -366,18 +378,18 @@ for (const rel of [
   const manifest = readManifest(rel);
   if (
     manifest &&
-    depNames(manifest, ['dependencies']).has('@nebula-studio-internal/node')
+    depNames(manifest, ['dependencies']).has('@nebula-studio-internal/node-kit')
   ) {
     fail(
-      `${rel} production deps must not include @nebula-studio-internal/node`,
+      `${rel} production deps must not include @nebula-studio-internal/node-kit`,
     );
   }
   if (
     manifest &&
-    depNames(manifest, ['dependencies']).has('@nebula-studio-internal/vite')
+    depNames(manifest, ['dependencies']).has('@nebula-studio-internal/build-kit')
   ) {
     fail(
-      `${rel} production deps must not include @nebula-studio-internal/vite`,
+      `${rel} production deps must not include @nebula-studio-internal/build-kit`,
     );
   }
 }
@@ -393,10 +405,10 @@ if (appShellIndex.includes("from '@nebula-studio/auth-provider")) {
 }
 if (
   electron &&
-  depNames(electron, ['dependencies']).has('@nebula-studio-internal/node')
+  depNames(electron, ['dependencies']).has('@nebula-studio-internal/node-kit')
 ) {
   fail(
-    'Electron production dependencies must not include @nebula-studio-internal/node',
+    'Electron production dependencies must not include @nebula-studio-internal/node-kit',
   );
 }
 for (const remoteFed of [
@@ -450,8 +462,8 @@ if (
 ) {
   fail('shell-host must depend on @nebula-studio/shell-protocol');
 }
-if (!runtime?.dependencies?.['@nebula-studio/shell-protocol']) {
-  fail('runtime must depend on @nebula-studio/shell-protocol');
+if (!applicationBootstrap?.dependencies?.['@nebula-studio/shell-protocol']) {
+  fail('application-bootstrap must depend on @nebula-studio/shell-protocol');
 }
 
 const hostWorkspaceBoot = join(

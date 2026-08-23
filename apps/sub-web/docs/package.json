@@ -17,6 +17,7 @@
   "type": "module",
   "scripts": {
     "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false",
+    "test": "vp test run",
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview"
@@ -28,29 +29,34 @@
   },
   "dependencies": {
     "@nebula-studio-renderer/assembly-boot": "workspace:^",
+    "@nebula-studio/application-bootstrap": "workspace:^",
     "@nebula-studio/application-contract": "workspace:^",
+    "@nebula-studio/host-capabilities": "workspace:^",
+    "@nebula-studio/i18n": "workspace:^",
     "@nebula-studio/nebula-layout": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
-    "@nebula-studio/runtime": "workspace:^",
     "@nebula-studio/shell-host": "workspace:^",
     "@nebula-studio/shell-protocol": "workspace:^",
     "@nebula-studio/styles": "workspace:^",
+    "@nebula-studio/tokens": "workspace:^",
     "@vee-validate/zod": "catalog:form",
     "markdown-it": "catalog:markdown",
     "shiki": "catalog:markdown",
     "vue": "catalog:vue",
+    "vue-i18n": "catalog:vue",
     "vue-router": "catalog:vue",
     "zod": "catalog:form"
   },
   "devDependencies": {
     "@electron-toolkit/preload": "catalog:electron",
+    "@nebula-studio-internal/build-kit": "workspace:^",
     "@nebula-studio-internal/tsconfig": "workspace:^",
-    "@nebula-studio-internal/vite": "workspace:^",
     "@nebula-studio/types": "workspace:^",
     "@types/markdown-it": "catalog:",
     "typescript": "catalog:types",
     "vite": "catalog:vite",
     "vite-plus": "catalog:vite",
+    "vitest": "catalog:vite",
     "vue-tsc": "catalog:vue"
   }
 }

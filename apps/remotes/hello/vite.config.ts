@@ -1,4 +1,4 @@
-import { defineNebulaRemoteConfig } from '@nebula-studio-internal/vite';
+import { defineNebulaRemoteConfig } from '@nebula-studio-internal/build-kit';
 
 export default defineNebulaRemoteConfig({
   configModuleUrl: import.meta.url,

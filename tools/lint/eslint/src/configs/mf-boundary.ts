@@ -42,13 +42,13 @@ function forbidJsonDep(
 
 const productInternalImportBan = {
   group: [
-    '@nebula-studio-internal/node',
-    '@nebula-studio-internal/node/*',
-    '@nebula-studio-internal/vite',
-    '@nebula-studio-internal/vite/*',
+    '@nebula-studio-internal/node-kit',
+    '@nebula-studio-internal/node-kit/*',
+    '@nebula-studio-internal/build-kit',
+    '@nebula-studio-internal/build-kit/*',
   ],
   message:
-    'apps/packages 运行时禁止依赖 @nebula-studio-internal/node 或 vite；构建入口用 vite.config',
+    'apps/packages 运行时禁止依赖 @nebula-studio-internal/node-kit 或 vite；构建入口用 vite.config',
 };
 
 const appShellProtocolImportBan = {
@@ -108,18 +108,22 @@ const remoteJsonDepBans = [
     'Remote must not depend on frontend(main)',
   ),
   forbidJsonDep(
+    '@nebula-studio-renderer/login',
+    'Remote must not depend on sibling login renderer; use @nebula-studio/login-ui',
+  ),
+  forbidJsonDep(
     '@electron-toolkit/preload',
     'Remote production deps must not include @electron-toolkit/preload',
     'dependencies',
   ),
   forbidJsonDep(
-    '@nebula-studio-internal/node',
-    'Product packages must not runtime-depend on @nebula-studio-internal/node',
+    '@nebula-studio-internal/node-kit',
+    'Product packages must not runtime-depend on @nebula-studio-internal/node-kit',
     'dependencies',
   ),
   forbidJsonDep(
-    '@nebula-studio-internal/vite',
-    'Product packages must not runtime-depend on @nebula-studio-internal/vite',
+    '@nebula-studio-internal/build-kit',
+    'Product packages must not runtime-depend on @nebula-studio-internal/build-kit',
     'dependencies',
   ),
 ];
@@ -141,13 +145,13 @@ const hostRemoteJsonBans = [
     'dependencies',
   ),
   forbidJsonDep(
-    '@nebula-studio-internal/node',
-    'Product packages must not runtime-depend on @nebula-studio-internal/node',
+    '@nebula-studio-internal/node-kit',
+    'Product packages must not runtime-depend on @nebula-studio-internal/node-kit',
     'dependencies',
   ),
   forbidJsonDep(
-    '@nebula-studio-internal/vite',
-    'Product packages must not runtime-depend on @nebula-studio-internal/vite',
+    '@nebula-studio-internal/build-kit',
+    'Product packages must not runtime-depend on @nebula-studio-internal/build-kit',
     'dependencies',
   ),
 ];
@@ -202,12 +206,39 @@ export async function mfBoundary(): Promise<Linter.Config[]> {
             patterns: [
               ...remoteImportPatterns,
               {
+                group: ['@nebula-studio-renderer/login'],
+                message: 'docs 禁止引用 login renderer；登录 UI 用 @nebula-studio/login-ui',
+              },
+              {
                 group: ['@nebula-studio-renderer/settings'],
                 message: 'docs 禁止引用 settings renderer',
               },
               {
                 group: ['@nebula-studio-renderer/integration'],
                 message: 'docs 禁止引用 integration renderer',
+              },
+            ],
+          },
+        ],
+      },
+    },
+    {
+      files: [
+        'apps/sub-web/settings/**/**',
+        'apps/sub-web/integration/**/**',
+      ],
+      ignores: restrictedImportIgnores,
+      rules: {
+        'no-restricted-imports': [
+          'error',
+          {
+            paths: [remoteElectronPath],
+            patterns: [
+              ...remoteImportPatterns,
+              {
+                group: ['@nebula-studio-renderer/login'],
+                message:
+                  'Settings/Integration 禁止依赖 login renderer；standalone 登录页使用 @nebula-studio/login-ui',
               },
             ],
           },
@@ -224,7 +255,7 @@ export async function mfBoundary(): Promise<Linter.Config[]> {
             patterns: [
               ...remoteImportPatterns,
               {
-                group: ['@nebula-studio/shell-host', '@nebula-studio/runtime'],
+                group: ['@nebula-studio/shell-host', '@nebula-studio/application-bootstrap'],
                 message: 'Federation 入口禁止 import shell-host / runtime',
               },
               {
@@ -250,7 +281,7 @@ export async function mfBoundary(): Promise<Linter.Config[]> {
             patterns: [
               ...remoteImportPatterns,
               {
-                group: ['@nebula-studio/shell-host', '@nebula-studio/runtime'],
+                group: ['@nebula-studio/shell-host', '@nebula-studio/application-bootstrap'],
                 message: 'Federation 入口禁止 import shell-host / runtime',
               },
               {
@@ -276,7 +307,7 @@ export async function mfBoundary(): Promise<Linter.Config[]> {
             patterns: [
               ...remoteImportPatterns,
               {
-                group: ['@nebula-studio/shell-host', '@nebula-studio/runtime'],
+                group: ['@nebula-studio/shell-host', '@nebula-studio/application-bootstrap'],
                 message: 'Federation 入口禁止 import shell-host / runtime',
               },
               {
@@ -342,6 +373,7 @@ export async function mfBoundary(): Promise<Linter.Config[]> {
                   '@nebula-studio-renderer/docs',
                   '@nebula-studio-renderer/settings',
                   '@nebula-studio-renderer/integration',
+                  '@nebula-studio-renderer/login',
                 ],
                 message: 'platform 禁止依赖 Remote renderer',
               },
@@ -396,14 +428,14 @@ export async function mfBoundary(): Promise<Linter.Config[]> {
       },
     },
     {
-      files: ['packages/core/runtime/src/bootMicroApp.ts'],
+      files: ['packages/platform/application-bootstrap/src/startApplication.ts'],
       rules: {
         'no-restricted-syntax': [
           'error',
           ...jsSyntaxBase,
           {
             selector: 'CallExpression[callee.name="installWebPresentation"]',
-            message: 'bootMicroApp must not call installWebPresentation',
+            message: 'startApplication must not call installWebPresentation',
           },
         ],
       },
@@ -475,13 +507,13 @@ export async function mfBoundary(): Promise<Linter.Config[]> {
         'no-restricted-syntax': [
           'error',
           forbidJsonDep(
-            '@nebula-studio-internal/node',
-            'Product packages must not runtime-depend on @nebula-studio-internal/node',
+            '@nebula-studio-internal/node-kit',
+            'Product packages must not runtime-depend on @nebula-studio-internal/node-kit',
             'dependencies',
           ),
           forbidJsonDep(
-            '@nebula-studio-internal/vite',
-            'Product packages must not runtime-depend on @nebula-studio-internal/vite',
+            '@nebula-studio-internal/build-kit',
+            'Product packages must not runtime-depend on @nebula-studio-internal/build-kit',
             'dependencies',
           ),
         ],
@@ -510,8 +542,8 @@ export async function mfBoundary(): Promise<Linter.Config[]> {
           'error',
           ...hostRemoteJsonBans,
           forbidJsonDep(
-            '@nebula-studio-internal/node',
-            'Electron production deps must not include @nebula-studio-internal/node',
+            '@nebula-studio-internal/node-kit',
+            'Electron production deps must not include @nebula-studio-internal/node-kit',
             'dependencies',
           ),
         ],
@@ -585,18 +617,6 @@ export async function mfBoundary(): Promise<Linter.Config[]> {
       },
     },
     {
-      files: ['packages/core/runtime/package.json'],
-      rules: {
-        'no-restricted-syntax': [
-          'error',
-          forbidJsonDep(
-            '@nebula-studio/app-shell',
-            'runtime must not depend on app-shell',
-          ),
-        ],
-      },
-    },
-    {
       files: ['packages/core/app-shell/package.json'],
       rules: {
         'no-restricted-syntax': [
@@ -653,7 +673,7 @@ export async function mfBoundary(): Promise<Linter.Config[]> {
             'contracts must not depend on vue-router',
           ),
           forbidJsonDep(
-            '@nebula-studio/runtime',
+            '@nebula-studio/application-bootstrap',
             'contracts must not depend on runtime',
           ),
           forbidJsonDep(

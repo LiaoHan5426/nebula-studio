@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ExecutorRouteView } from '@/shared/api/executorApi';
 
-import { onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import {
   NebulaButton,
@@ -12,11 +12,15 @@ import {
 } from '@nebula-studio/nebula-ui';
 
 import { executorRoutesApi } from '@/shared/api/executorApi';
-import { isApiSuccess } from '@/shared/types';
+import { unwrapApiData } from '@/shared/query/unwrap';
+import { useQuery } from '@tanstack/vue-query';
 
-const routes = ref<ExecutorRouteView[]>([]);
+import { executorRoutesQueryOptions } from './queryOptions';
+
+const routesQuery = useQuery(() => executorRoutesQueryOptions());
+const routes = computed(() => routesQuery.data.value ?? []);
+const loading = computed(() => routesQuery.isPending.value);
 const selectedRoute = ref<ExecutorRouteView | null>(null);
-const loading = ref(false);
 
 function formatRate(rate: number): string {
   return `${(rate * 100).toFixed(1)}%`;
@@ -30,34 +34,17 @@ function statusVariant(status: string) {
   return status === 'ACTIVE' ? 'success' : 'default';
 }
 
-async function loadRoutes() {
-  loading.value = true;
-  try {
-    const res = await executorRoutesApi.list();
-    if (isApiSuccess(res)) {
-      routes.value = res.data ?? [];
-    } else {
-      routes.value = [];
-    }
-  } catch {
-    routes.value = [];
-  } finally {
-    loading.value = false;
-  }
+function loadRoutes() {
+  void routesQuery.refetch();
 }
 
 async function loadRouteDetail(routeId: string) {
   try {
-    const res = await executorRoutesApi.get(routeId);
-    if (isApiSuccess(res)) {
-      selectedRoute.value = res.data ?? null;
-    }
+    selectedRoute.value = await unwrapApiData(executorRoutesApi.get(routeId));
   } catch {
     selectedRoute.value = null;
   }
 }
-
-onMounted(loadRoutes);
 </script>
 
 <template>

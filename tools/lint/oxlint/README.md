@@ -7,7 +7,7 @@
 | 路径 | 说明 |
 | --- | --- |
 | `src/index.ts` | `defineConfig` 包装与 re-export |
-| `src/configs/tailwindcss.ts` | `better-tailwindcss` 的 `entryPoint`：用 `@nebula-studio-internal/node` 的 `getPackageSync` 解析 **`@nebula-studio-internal/tailwind`**，避免相对路径在包移动后断裂 |
+| `src/configs/tailwindcss.ts` | `better-tailwindcss` 的 `entryPoint`：用 `@nebula-studio-internal/node-kit` 的 `getPackageSync` 解析 **`@nebula-studio-internal/tailwind`**，避免相对路径在包移动后断裂 |
 
 ## 脚本
 

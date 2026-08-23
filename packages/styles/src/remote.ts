@@ -1,3 +1,2 @@
-import '@nebula-studio-internal/tailwind/remote';
-
+import './remote.css';
 import './index.css';

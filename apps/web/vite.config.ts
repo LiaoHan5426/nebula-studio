@@ -9,7 +9,7 @@ import {
   nebulaVueDemoPlugin,
   nebulaWorkspaceManifestPlugin,
   resolveShellWeb,
-} from '@nebula-studio-internal/vite';
+} from '@nebula-studio-internal/build-kit';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
 const shellWeb = resolveShellWeb();

@@ -1,15 +1,13 @@
 import type { TenantRecord } from '@/features/tenant/api';
 
-import type { UserRecord } from '@nebula-studio/contracts/system';
-
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { tenantApi } from '@/features/tenant/api';
-import { tenantUsersApi } from '@/features/tenant/usersApi';
 import { getAuthUserId } from '@/shared/auth/session';
 import { useAuth } from '@/shared/composables/useAuth';
-import { isApiSuccess } from '@/shared/types';
+import { useQuery } from '@tanstack/vue-query';
+
+import { tenantsQueryOptions, tenantUsersQueryOptions } from './queryOptions';
 
 export type TenantFormMode = 'create' | 'edit';
 
@@ -36,10 +34,16 @@ export function resolveBoundUsername(
 export function useTenantPage() {
   const router = useRouter();
   const { isPlatformAdmin, username } = useAuth();
-  const tenants = ref<TenantRecord[]>([]);
-  const consoleUsers = ref<UserRecord[]>([]);
-  const loading = ref(false);
-  const usersLoading = ref(false);
+  const tenantsQuery = useQuery(() =>
+    tenantsQueryOptions(isPlatformAdmin.value),
+  );
+  const usersQuery = useQuery(() =>
+    tenantUsersQueryOptions(isPlatformAdmin.value),
+  );
+  const tenants = computed(() => tenantsQuery.data.value ?? []);
+  const consoleUsers = computed(() => usersQuery.data.value ?? []);
+  const loading = computed(() => tenantsQuery.isPending.value);
+  const usersLoading = computed(() => usersQuery.isPending.value);
   const pendingDeleteTenant = ref<null | TenantRecord>(null);
   const showFormDialog = ref(false);
   const formMode = ref<TenantFormMode>('create');
@@ -78,41 +82,12 @@ export function useTenantPage() {
   }
 
   async function loadConsoleUsers() {
-    if (!isPlatformAdmin.value) return;
-    usersLoading.value = true;
-    try {
-      const response = await tenantUsersApi.listForBinding();
-      if (isApiSuccess(response)) {
-        consoleUsers.value = response.data.records ?? [];
-      }
-    } finally {
-      usersLoading.value = false;
-    }
+    await usersQuery.refetch();
   }
 
   async function loadTenants() {
-    loading.value = true;
-    try {
-      if (isPlatformAdmin.value) {
-        const response = await tenantApi.list(1, 50);
-        if (isApiSuccess(response)) {
-          tenants.value = response.data.items ?? [];
-        }
-        return;
-      }
-      const response = await tenantApi.mine();
-      if (isApiSuccess(response)) {
-        tenants.value = response.data ?? [];
-      }
-    } finally {
-      loading.value = false;
-    }
+    await tenantsQuery.refetch();
   }
-
-  onMounted(() => {
-    void loadTenants();
-    void loadConsoleUsers();
-  });
 
   return {
     AUTH_TYPES,

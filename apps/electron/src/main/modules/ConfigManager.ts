@@ -1,14 +1,15 @@
+import type { ThemePreference } from '@nebula-studio/tokens';
+
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
-import { app } from 'electron';
-import { parse, stringify } from 'yaml';
-
-import type { ThemePreference } from '@nebula-studio/tokens';
 import {
   mergeThemePreference,
   PRODUCT_DEFAULT_PREFERENCE,
 } from '@nebula-studio/tokens';
+
+import { app } from 'electron';
+import { parse, stringify } from 'yaml';
 
 type ConfigShape = Record<string, unknown>;
 interface LogConfig {

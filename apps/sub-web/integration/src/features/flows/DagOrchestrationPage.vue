@@ -4,7 +4,7 @@ import type { DagDefinitionRecord } from '@/shared/types';
 import type { DagDefinition } from '@nebula-studio/nebula-dag-editor';
 import type { PluginNodeSchema } from '@nebula-studio/nebula-low-render';
 
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 import { useNebulaAssembly } from '@nebula-studio/nebula-assembly';
 import { DagEditor } from '@nebula-studio/nebula-dag-editor';
@@ -18,50 +18,52 @@ import {
 } from '@nebula-studio/nebula-ui';
 
 import { loadDagNodeSchemas } from '@/features/flows/loadDagNodeSchemas';
+import { dagsQueryOptions } from '@/features/flows/queryOptions';
+import { interfacesQueryOptions } from '@/features/interfaces/queryOptions';
 import { dagApi } from '@/features/monitor/api';
-import { interfaceApi } from '@/shared/api/integration';
 import { useTenant } from '@/shared/composables/useTenant';
 import { InterfaceType, isApiSuccess } from '@/shared/types';
+import { useQuery } from '@tanstack/vue-query';
 
-const dags = ref<DagDefinitionRecord[]>([]);
-const loading = ref(false);
+const { currentTenantId } = useTenant();
+const { editor: editorHost } = useNebulaAssembly();
+
+const dagsQuery = useQuery(() =>
+  dagsQueryOptions(currentTenantId.value || undefined),
+);
+const interfacesQuery = useQuery(() =>
+  interfacesQueryOptions('dag-nodes', { pageSize: 200 }),
+);
+const dags = computed(() => dagsQuery.data.value ?? []);
+const loading = computed(() => dagsQuery.isPending.value);
 const actionError = ref<null | string>(null);
 const showEditor = ref(false);
 const editingDag = ref<DagDefinitionRecord | null>(null);
 const dagDefinition = ref<DagDefinition | string>({ nodes: {} });
 const nodeSchemas = ref<Record<string, PluginNodeSchema>>({});
 
-const { currentTenantId } = useTenant();
-const { editor: editorHost } = useNebulaAssembly();
+watch(
+  () => interfacesQuery.data.value?.items,
+  async (items) => {
+    nodeSchemas.value = await loadDagNodeSchemas(
+      (items ?? []).filter(
+        (item) => item.interfaceType === InterfaceType.ATOMIC,
+      ),
+    );
+  },
+  { immediate: true },
+);
 
 const editorTitle = computed(() =>
   editingDag.value ? `编辑 DAG — ${editingDag.value.dagName}` : 'DAG 编排',
 );
 
-onMounted(async () => {
-  await Promise.all([loadDags(), loadNodeSchemas()]);
-});
-
-async function loadNodeSchemas() {
-  const response = await interfaceApi.list({ pageSize: 200 });
-  const interfaces = isApiSuccess(response) ? (response.data.items ?? []) : [];
-  nodeSchemas.value = await loadDagNodeSchemas(
-    interfaces.filter((item) => item.interfaceType === InterfaceType.ATOMIC),
-  );
-}
-
 async function loadDags() {
-  loading.value = true;
   try {
-    const response = await dagApi.list(currentTenantId.value);
-    if (isApiSuccess(response)) {
-      dags.value = response.data ?? [];
-    }
+    await dagsQuery.refetch();
   } catch (error) {
     actionError.value =
       error instanceof Error ? error.message : '加载 DAG 列表失败';
-  } finally {
-    loading.value = false;
   }
 }
 

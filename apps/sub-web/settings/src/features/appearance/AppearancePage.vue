@@ -3,6 +3,7 @@ import type { HostCapabilities } from '@nebula-studio/application-contract';
 import type { ThemePreference } from '@nebula-studio/tokens';
 
 import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import { HOST_CAPABILITIES_KEY } from '@nebula-studio/application-contract';
 import { NebulaButton, NebulaPane } from '@nebula-studio/nebula-ui';
@@ -11,6 +12,10 @@ import {
   PRODUCT_DEFAULT_PREFERENCE,
 } from '@nebula-studio/tokens';
 
+import { organizationsApi } from '@/shared/api/system';
+import { isSettingsOrgAdmin } from '@/shared/auth/access';
+
+const { t } = useI18n();
 const capabilities = inject<HostCapabilities | undefined>(
   HOST_CAPABILITIES_KEY,
   undefined,
@@ -27,6 +32,11 @@ const customColor = ref(
     : '#4d7cff',
 );
 const saving = ref(false);
+const organizationSaving = ref(false);
+const organizationSaved = ref(false);
+const organizationId = localStorage.getItem('nebula_current_org_id') ?? '';
+const canManageOrganizationTheme =
+  isSettingsOrgAdmin() && Boolean(organizationId);
 const preview = computed(() => capabilities?.theme?.resolved);
 let unsubscribe: (() => void) | undefined;
 
@@ -82,43 +92,55 @@ function restoreDefaults(): void {
   customColor.value = ACCENT_PRESETS['nebula-blue'] ?? '#4d7cff';
   void commit(PRODUCT_DEFAULT_PREFERENCE);
 }
+
+async function saveOrganizationDefault(): Promise<void> {
+  if (!canManageOrganizationTheme || organizationSaving.value) return;
+  organizationSaving.value = true;
+  organizationSaved.value = false;
+  try {
+    await organizationsApi.updateTheme(organizationId, preference.value);
+    organizationSaved.value = true;
+  } finally {
+    organizationSaving.value = false;
+  }
+}
 </script>
 
 <template>
   <NebulaPane
     class="panel"
-    title="外观与主题"
-    description="模式、主题色、密度与对比度由 Host 解析为 ResolvedTheme，Remote 只消费 CSS 变量"
+    :title="t('appearance.paneTitle')"
+    :description="t('appearance.paneDescription')"
   >
     <section class="block">
-      <h3>颜色模式</h3>
+      <h3>{{ t('appearance.scheme') }}</h3>
       <div class="row">
         <NebulaButton
           :variant="preference.colorScheme === 'light' ? 'primary' : 'ghost'"
           :disabled="saving"
           @click="setScheme('light')"
         >
-          浅色
+          {{ t('appearance.light') }}
         </NebulaButton>
         <NebulaButton
           :variant="preference.colorScheme === 'dark' ? 'primary' : 'ghost'"
           :disabled="saving"
           @click="setScheme('dark')"
         >
-          深色
+          {{ t('appearance.dark') }}
         </NebulaButton>
         <NebulaButton
           :variant="preference.colorScheme === 'system' ? 'primary' : 'ghost'"
           :disabled="saving"
           @click="setScheme('system')"
         >
-          跟随系统
+          {{ t('appearance.system') }}
         </NebulaButton>
       </div>
     </section>
 
     <section class="block">
-      <h3>主题色</h3>
+      <h3>{{ t('appearance.accent') }}</h3>
       <div class="row">
         <NebulaButton
           v-for="id in Object.keys(ACCENT_PRESETS)"
@@ -141,59 +163,74 @@ function restoreDefaults(): void {
           variant="ghost"
           @click="setCustomAccent"
         >
-          使用自定义色
+          {{ t('appearance.customAccent') }}
         </NebulaButton>
       </div>
     </section>
 
     <section class="block">
-      <h3>密度</h3>
+      <h3>{{ t('appearance.density') }}</h3>
       <div class="row">
         <NebulaButton
           :variant="preference.density === 'comfortable' ? 'primary' : 'ghost'"
           :disabled="saving"
           @click="setDensity('comfortable')"
         >
-          舒适
+          {{ t('appearance.comfortable') }}
         </NebulaButton>
         <NebulaButton
           :variant="preference.density === 'compact' ? 'primary' : 'ghost'"
           :disabled="saving"
           @click="setDensity('compact')"
         >
-          紧凑
+          {{ t('appearance.compact') }}
         </NebulaButton>
       </div>
     </section>
 
     <section class="block">
-      <h3>对比度</h3>
+      <h3>{{ t('appearance.contrast') }}</h3>
       <div class="row">
         <NebulaButton
           :variant="preference.contrast === 'normal' ? 'primary' : 'ghost'"
           :disabled="saving"
           @click="setContrast('normal')"
         >
-          标准
+          {{ t('appearance.normal') }}
         </NebulaButton>
         <NebulaButton
           :variant="preference.contrast === 'high' ? 'primary' : 'ghost'"
           :disabled="saving"
           @click="setContrast('high')"
         >
-          高对比
+          {{ t('appearance.high') }}
         </NebulaButton>
       </div>
     </section>
 
     <p class="hint">
-      预览：{{ preview?.scheme }} / {{ preview?.accentId }} /
-      {{ preview?.density }} / {{ preview?.contrast }}
-      {{ saving ? '（保存中…）' : '' }}
+      {{ t('appearance.preview') }}：{{ preview?.scheme }} /
+      {{ preview?.accentId }} / {{ preview?.density }} / {{ preview?.contrast }}
+      {{ saving ? t('appearance.saving') : '' }}
     </p>
     <NebulaButton :disabled="saving" variant="ghost" @click="restoreDefaults">
-      恢复默认
+      {{ t('appearance.restore') }}
     </NebulaButton>
+    <NebulaButton
+      v-if="canManageOrganizationTheme"
+      :disabled="saving || organizationSaving"
+      variant="ghost"
+      @click="saveOrganizationDefault"
+    >
+      {{
+        organizationSaving
+          ? t('appearance.organizationSaving')
+          : t('appearance.saveOrganizationDefault')
+      }}
+    </NebulaButton>
+    <span v-if="organizationSaved" class="hint">
+      {{ t('appearance.organizationSaved') }}
+    </span>
   </NebulaPane>
 </template>
 

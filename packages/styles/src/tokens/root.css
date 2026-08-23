@@ -38,6 +38,7 @@
   --motion-normal: 220ms;
   --motion-slow: 320ms;
   --breakpoint-compact: 48rem;
+
   /* Stacking: sticky chrome < floating nav < page menus < modal < nested popover < toast < tooltip */
   --z-base: 0;
   --z-raised: 1;

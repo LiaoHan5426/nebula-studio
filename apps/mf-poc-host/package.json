@@ -29,8 +29,8 @@
   },
   "devDependencies": {
     "@module-federation/vite": "catalog:vite",
+    "@nebula-studio-internal/build-kit": "workspace:^",
     "@nebula-studio-internal/tsconfig": "workspace:^",
-    "@nebula-studio-internal/vite": "workspace:^",
     "typescript": "catalog:types",
     "vite": "catalog:vite",
     "vite-plus": "catalog:vite",

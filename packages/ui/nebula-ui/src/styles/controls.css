@@ -102,8 +102,8 @@
 .nebula-button svg,
 .nebula-button-control svg {
   display: block;
-  overflow: visible;
   flex-shrink: 0;
+  overflow: visible;
 }
 
 .nebula-button:disabled,

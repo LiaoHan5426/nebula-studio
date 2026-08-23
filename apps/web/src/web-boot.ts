@@ -14,6 +14,7 @@ import {
 } from '@nebula-studio/application-runtime';
 import { readParentShellAuthSession } from '@nebula-studio/auth-provider/web';
 import { createWebEmbedHostCapabilities } from '@nebula-studio/host-capabilities';
+import { installWebPresentationUnlessElectron } from '@nebula-studio/shell-host';
 import { WEB_SHELL_EMBED_QUERY } from '@nebula-studio/shell-protocol';
 import '@nebula-studio/styles/document';
 
@@ -86,6 +87,8 @@ function showRemoteLoadError(
     docs: '文档',
     settings: '设置',
     integration: '集成平台',
+    'low-code-studio': '低代码工作室',
+    'demo-board': '运营大屏',
   };
   const label = labels[surface] ?? surface;
   container.innerHTML = `<div role="alert" style="padding:1.5rem;font:14px/1.5 system-ui,sans-serif">无法加载${label}应用。<pre>${text}</pre><p>请用 <code>vp run dev</code> 或 <code>vp run dev:web</code> 启动 Host；Docs / Settings / Integration 会随 Host 拉起。</p></div>`;
@@ -109,6 +112,10 @@ async function bootFederationSurface(
     });
   }
   try {
+    installWebPresentationUnlessElectron('platform-embed', {
+      scope: `web-embed-${surface}`,
+      processVersions: { node: __NEBULA_BUILD_NODE_VERSION__ },
+    });
     await mountWithLastKnownGood({
       applicationId: surface,
       live: remote,
@@ -123,6 +130,13 @@ async function bootFederationSurface(
           application: {
             id: surface,
             version: registration.version ?? '0.0.0',
+            runtimeConfig:
+              surface === 'demo-board'
+                ? {
+                    applicationId: 'demo-board',
+                    definitionVersion: '1',
+                  }
+                : undefined,
           },
           initialPath: `${location.pathname}${location.search}${location.hash}`,
         });

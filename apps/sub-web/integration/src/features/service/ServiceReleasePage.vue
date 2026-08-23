@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ReleaseRecord } from '@/shared/types';
 
-import { onMounted, ref } from 'vue';
+import { computed } from 'vue';
 
 import {
   NebulaButton,
@@ -12,9 +12,16 @@ import {
 } from '@nebula-studio/nebula-ui';
 
 import { releaseApi } from '@/features/release/api';
+import { releasesQueryOptions } from '@/features/service/queryOptions';
+import { useTenant } from '@/shared/composables/useTenant';
+import { useQuery } from '@tanstack/vue-query';
 
-const releases = ref<ReleaseRecord[]>([]);
-const loading = ref(false);
+const { currentTenantId } = useTenant();
+const releasesQuery = useQuery(() =>
+  releasesQueryOptions(currentTenantId.value || undefined),
+);
+const releases = computed(() => releasesQuery.data.value ?? []);
+const loading = computed(() => releasesQuery.isPending.value);
 
 const STATUS_LABELS: Record<string, string> = {
   DRAFT: '草稿',
@@ -47,16 +54,7 @@ function canOperate(release: ReleaseRecord): boolean {
 }
 
 async function loadReleases() {
-  loading.value = true;
-  try {
-    const tenantId = localStorage.getItem('tenant_id') || undefined;
-    const res = await releaseApi.listReleases(tenantId);
-    releases.value = res.data ?? [];
-  } catch {
-    releases.value = [];
-  } finally {
-    loading.value = false;
-  }
+  await releasesQuery.refetch();
 }
 
 async function handleDeploy(release: ReleaseRecord) {
@@ -76,8 +74,6 @@ async function handleRollback(release: ReleaseRecord) {
     console.error('Rollback failed:', e);
   }
 }
-
-onMounted(loadReleases);
 </script>
 
 <template>

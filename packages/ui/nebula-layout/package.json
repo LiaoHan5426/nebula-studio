@@ -39,14 +39,6 @@
       "default": "./src/styles.css"
     }
   },
-  "peerDependencies": {
-    "@nebula-studio-electron/electron-bridge": "workspace:^"
-  },
-  "peerDependenciesMeta": {
-    "@nebula-studio-electron/electron-bridge": {
-      "optional": true
-    }
-  },
   "dependencies": {
     "@nebula-studio/nebula-assembly": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",

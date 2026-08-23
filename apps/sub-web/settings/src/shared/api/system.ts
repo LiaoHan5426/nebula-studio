@@ -14,6 +14,7 @@ import type {
   UserInput,
   UserRecord,
 } from '@nebula-studio/contracts/system';
+import type { ThemePreference } from '@nebula-studio/tokens';
 
 import { authRequest, systemRequest } from '@/shared/api/client';
 
@@ -214,6 +215,20 @@ export const organizationsApi = {
   delete(id: string): Promise<ApiResponse<void>> {
     return systemRequest(`/organizations/${encodeURIComponent(id)}`, {
       method: 'DELETE',
+    });
+  },
+
+  getTheme(id: string): Promise<ApiResponse<null | ThemePreference>> {
+    return systemRequest(`/organizations/${encodeURIComponent(id)}/theme`);
+  },
+
+  updateTheme(
+    id: string,
+    preference: ThemePreference,
+  ): Promise<ApiResponse<ThemePreference>> {
+    return systemRequest(`/organizations/${encodeURIComponent(id)}/theme`, {
+      method: 'PUT',
+      body: JSON.stringify(preference),
     });
   },
 };

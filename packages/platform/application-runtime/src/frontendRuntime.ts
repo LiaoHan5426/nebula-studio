@@ -17,26 +17,56 @@ export interface StaticRemoteRegistration {
   version?: string;
 }
 
+export function resolvePackagedHostId(applicationOrHostId: string): string {
+  if (isLocalFederationFallbackId(applicationOrHostId)) {
+    return LOCAL_FEDERATION_FALLBACKS[applicationOrHostId].packagedHost;
+  }
+  const byRemoteName = Object.values(LOCAL_FEDERATION_FALLBACKS).find(
+    (item) => item.name === applicationOrHostId,
+  );
+  return byRemoteName?.packagedHost ?? applicationOrHostId;
+}
+
+export function packagedHostForRuntimeEntry(
+  entry: FrontendRuntimeEntry,
+): string {
+  if (entry.remoteName) {
+    const match = Object.values(LOCAL_FEDERATION_FALLBACKS).find(
+      (item) => item.name === entry.remoteName,
+    );
+    if (match) return match.packagedHost;
+  }
+  return resolvePackagedHostId(entry.id);
+}
+
+function isHostOwnedPackagedRemote(packagedHost: string): boolean {
+  const resolved = resolvePackagedHostId(packagedHost);
+  return Object.values(LOCAL_FEDERATION_FALLBACKS).some(
+    (item) => item.packagedHost === resolved,
+  );
+}
+
 export function resolveRemoteManifestEntry(options: {
   httpEntry: string;
   packagedHost: string;
 }): string {
+  const packagedHost = resolvePackagedHostId(options.packagedHost);
   if (typeof location === 'undefined') {
     return options.httpEntry;
   }
   switch (location.protocol) {
     case 'file:':
     case 'nebula-remote:':
-      return `nebula-remote://${options.packagedHost}/mf-manifest.json`;
+      return `nebula-remote://${packagedHost}/mf-manifest.json`;
     case 'mf-poc:':
-      return `mf-poc://${options.packagedHost}/mf-manifest.json`;
+      return `mf-poc://${packagedHost}/mf-manifest.json`;
     default:
       if (
-        isLocalFederationFallbackId(options.packagedHost) &&
+        isHostOwnedPackagedRemote(packagedHost) &&
         (location.protocol === 'http:' || location.protocol === 'https:')
       ) {
         return hostOwnedMfEntryUrl(
-          options.packagedHost,
+          packagedHost,
           options.httpEntry,
           location.origin,
         );
@@ -60,7 +90,9 @@ export function withHostResolvedManifestEntry(
 
 export const FRONTEND_RUNTIME_PATH = '/api/system/frontend-apps/runtime';
 
-export const LOCAL_FEDERATION_FALLBACKS = GENERATED_FEDERATION_DEV_ENTRIES;
+export const LOCAL_FEDERATION_FALLBACKS = {
+  ...GENERATED_FEDERATION_DEV_ENTRIES,
+} as const;
 
 export type LocalFederationFallbackId = keyof typeof LOCAL_FEDERATION_FALLBACKS;
 
@@ -106,7 +138,7 @@ export function federationRegistrationFromRuntime(
     expose: normalizeExposedModule(entry.exposedModule),
     entry: resolveRemoteManifestEntry({
       httpEntry: manifestUrl,
-      packagedHost: entry.id,
+      packagedHost: packagedHostForRuntimeEntry(entry),
     }),
   };
   if (!isHostOwnedManifestEntry(registration.entry)) {

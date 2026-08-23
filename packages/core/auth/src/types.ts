@@ -49,7 +49,7 @@ export interface AuthStrategy {
   /**
    * 启动认证流程。
    *
-   * 在 `bootMicroApp` 的 mount 之前调用。
+   * 在 application bootstrap mount 之前调用。
    * 返回 `true` 表示已认证可继续挂载；`false` 表示认证失败。
    */
   bootstrap(options?: AuthBootstrapOptions): Promise<boolean>;

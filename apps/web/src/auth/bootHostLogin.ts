@@ -1,6 +1,7 @@
 import type { RuntimeMode } from '@nebula-studio/shell-protocol';
 
-import { bootMicroApp } from '@nebula-studio/runtime';
+import { startApplication } from '@nebula-studio/application-bootstrap';
+import LoginApp from '@nebula-studio/login-ui';
 import { installWebPresentationUnlessElectron } from '@nebula-studio/shell-host';
 import '@nebula-studio/styles/document';
 
@@ -8,11 +9,10 @@ import {
   installAssemblyForSubApp,
   wrapSubAppWithAssembly,
 } from '@nebula-studio-renderer/assembly-boot';
-import LoginApp from '@nebula-studio-renderer/login/app';
 
 /**
  * Host-owned login surface for Web `/?embed=login` and the Electron login window.
- * UI remains `@nebula-studio-renderer/login/app`; lifecycle is Host boot, not login/boot.
+ * UI is `@nebula-studio/login-ui`; lifecycle is Host boot, not login/boot.
  */
 export async function bootHostLogin(mode: RuntimeMode): Promise<void> {
   window.__NEBULA_RUNTIME_MODE__ = mode;
@@ -32,7 +32,7 @@ export async function bootHostLogin(mode: RuntimeMode): Promise<void> {
     processVersions: { node: __NEBULA_BUILD_NODE_VERSION__ },
   });
 
-  await bootMicroApp({
+  await startApplication({
     appId: 'host-login',
     mode,
     rootComponent: wrapSubAppWithAssembly(LoginApp),

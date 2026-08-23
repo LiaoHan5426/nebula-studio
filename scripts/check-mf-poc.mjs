@@ -37,7 +37,7 @@ function collectFiles(dir, files = []) {
   return files;
 }
 
-run('@nebula-studio-internal/vite', 'test');
+run('@nebula-studio-internal/build-kit', 'test');
 run('@nebula-studio-renderer/hello', 'build');
 run('@nebula-studio-renderer/hello-style-b', 'build');
 run('@nebula-studio-renderer/hello-dual', 'build');

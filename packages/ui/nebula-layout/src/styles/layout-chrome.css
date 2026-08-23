@@ -48,8 +48,8 @@
 
 .nebula-header-tool-group svg {
   display: block;
-  overflow: visible;
   flex-shrink: 0;
+  overflow: visible;
 }
 
 .nebula-sidebar-footer {
@@ -74,10 +74,10 @@
 
 .nebula-sidebar-footer__btn svg {
   display: block;
+  flex-shrink: 0;
   width: 16px;
   height: 16px;
   overflow: visible;
-  flex-shrink: 0;
 }
 
 /* 窄条收起时隐藏 Pin；正式展开或 hover 浮层（is-sidebar-floating）时显示 */

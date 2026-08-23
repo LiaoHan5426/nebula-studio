@@ -5,11 +5,6 @@ import {
   readShellSurfacePreference,
 } from '@nebula-studio/shell-protocol';
 
-const LEGACY_SHELL_INTEGRATION_OPEN_WEB_KEY =
-  'nebula-shell-integration-open-web';
-/** 旧版独立键，迁移后删除以免干扰「仅 active-view」语义 */
-const LEGACY_SHELL_INTEGRATION_HOME_KEY = 'nebula-shell-integration-home';
-
 const webWindow = window as unknown as {
   api: { auth: { logout(): Promise<void> } };
 };
@@ -73,12 +68,7 @@ export function createWebShellHostBridge(): ShellHostBridge {
     },
 
     onBeforeShellHydrate() {
-      try {
-        window.localStorage.removeItem(LEGACY_SHELL_INTEGRATION_OPEN_WEB_KEY);
-        window.localStorage.removeItem(LEGACY_SHELL_INTEGRATION_HOME_KEY);
-      } catch {
-        /* ignore */
-      }
+      /* Web surface preference already lives in nebula-shell-active-view */
     },
   };
 }

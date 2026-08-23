@@ -57,7 +57,7 @@ Integration 独立开发服务器由 `defineNebulaSubAppConfig()` 读取窗口�
 
 代理对包含 `/events` 的 SSE 请求关闭超时和响应缓冲。调整代理时要保留该行为，否则浏览器可能迟迟收不到事件。
 
-Web、Electron 和 standalone 共享同一 API 实现：`configs/windows.json` 只保留可部署的 backend origin 与子应用 `proxyPreset`，浏览器 API namespace 和路由规则由 `internal/vite` 统一管理。子应用不再维护独立 `vite.proxy.ts`。
+Web、Electron 和 standalone 共享同一 API 实现：`configs/windows.json` 只保留可部署的 backend origin 与子应用 `proxyPreset`，浏览器 API namespace 和路由规则由 `internal/build-kit` 统一管理。子应用不再维护独立 `vite.proxy.ts`。
 
 ## 认证
 

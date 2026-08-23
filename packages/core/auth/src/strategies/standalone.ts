@@ -27,7 +27,7 @@ export class StandaloneStrategy implements AuthStrategy {
       return true;
     }
 
-    // 无有效 token — 返回 false 让 bootMicroApp 走 onAuthFailed，
+    // 无有效 token — 返回 false 让 application bootstrap 走 onAuthFailed，
     // 或者由 router guard 在后续导航中拦截。
     // 这里返回 true 允许 mount，因为 router guard 会处理跳转。
     return true;

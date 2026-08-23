@@ -1,3 +1,4 @@
+import type { CatalogSourceId } from '@/shared/i18n/errors';
 import type { ApiResponse } from '@/shared/types';
 
 import type { AccessRequestDraft, ResourceSummaryViewModel } from './types';
@@ -21,13 +22,13 @@ import {
 
 export interface CatalogLoadResult {
   items: ResourceSummaryViewModel[];
-  unavailableSources: string[];
+  unavailableSources: CatalogSourceId[];
 }
 
 function responseData<T>(
   result: PromiseSettledResult<ApiResponse<T>>,
-  source: string,
-  unavailableSources: string[],
+  source: CatalogSourceId,
+  unavailableSources: CatalogSourceId[],
 ): T | undefined {
   if (result.status === 'fulfilled' && isApiSuccess(result.value)) {
     return result.value.data;
@@ -47,10 +48,10 @@ export async function loadResourceCatalog(
       ? resourceApi.list({ tenantId, page: 1, size: 200 })
       : Promise.resolve(undefined),
   ]);
-  const unavailableSources: string[] = [];
-  const interfaces = responseData(results[0], 'API', unavailableSources);
-  const connectors = responseData(results[1], 'Connector', unavailableSources);
-  const plugins = responseData(results[2], '插件目录', unavailableSources);
+  const unavailableSources: CatalogSourceId[] = [];
+  const interfaces = responseData(results[0], 'api', unavailableSources);
+  const connectors = responseData(results[1], 'connector', unavailableSources);
+  const plugins = responseData(results[2], 'pluginCatalog', unavailableSources);
   const managedResult = results[3];
   const managed =
     tenantId && managedResult?.status === 'fulfilled' && managedResult.value
@@ -58,7 +59,7 @@ export async function loadResourceCatalog(
         ? managedResult.value.data
         : undefined
       : undefined;
-  if (tenantId && !managed) unavailableSources.push('组织资源');
+  if (tenantId && !managed) unavailableSources.push('orgResources');
 
   return {
     items: dedupeResources([

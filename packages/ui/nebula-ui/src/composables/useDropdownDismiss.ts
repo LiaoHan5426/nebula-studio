@@ -3,12 +3,12 @@ import type { Ref } from 'vue';
 import { onMounted, onUnmounted } from 'vue';
 
 export interface UseDropdownDismissOptions {
+  /** 点击菜单/触发器以外区域时关闭。默认 true。 */
+  closeOnOutside?: () => boolean;
   menuRef: Ref<HTMLElement | null>;
   onClose: () => void;
   open: () => boolean;
   triggerRef: Ref<HTMLElement | null>;
-  /** 点击菜单/触发器以外区域时关闭。默认 true。 */
-  closeOnOutside?: () => boolean;
 }
 
 /**

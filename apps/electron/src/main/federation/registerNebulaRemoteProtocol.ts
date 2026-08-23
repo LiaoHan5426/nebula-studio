@@ -28,6 +28,7 @@ function packagedRemoteRoots(): Record<string, string> {
     docs: join(process.resourcesPath, 'remotes/docs'),
     settings: join(process.resourcesPath, 'remotes/settings'),
     integration: join(process.resourcesPath, 'remotes/integration'),
+    'low-code-studio': join(process.resourcesPath, 'remotes/low-code-studio'),
   };
 }
 
@@ -40,6 +41,7 @@ function repoRemoteRoots(): null | Record<string, string> {
     docs: join(root, 'apps/sub-web/docs/dist'),
     settings: join(root, 'apps/sub-web/settings/dist'),
     integration: join(root, 'apps/sub-web/integration/dist'),
+    'low-code-studio': join(root, 'apps/remotes/low-code-studio/dist'),
   };
 }
 

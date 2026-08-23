@@ -1,5 +1,5 @@
 // AUTO-GENERATED — do not edit manually.
-// Source: configs/windows.json + internal/vite API context black box
+// Source: configs/windows.json + internal/build-kit API context black box
 
 export type GeneratedPreloadCapability =
   | 'auth'
@@ -9,22 +9,22 @@ export type GeneratedPreloadCapability =
 
 export interface GeneratedWindowEntry {
   preload: string;
-  preloadCapabilities: GeneratedPreloadCapability[];
-  proxyPreset?: 'integration' | 'standard';
   renderer: string;
-  standalone?: { basePath?: string; host?: string; port: number };
   webEmbedEntry?: string;
   webLoad?: 'embed' | 'federation' | 'host';
+  preloadCapabilities: GeneratedPreloadCapability[];
+  proxyPreset?: 'integration' | 'standard';
+  standalone?: { host?: string; port: number; basePath?: string };
 }
 
 export interface GeneratedModalRendererEntry {
   preload: string;
-  preloadCapabilities: GeneratedPreloadCapability[];
-  proxyPreset?: 'integration' | 'standard';
   renderer: string;
-  standalone?: { basePath?: string; host?: string; port: number };
   webEmbedEntry?: string;
   webLoad?: 'embed' | 'federation' | 'host';
+  preloadCapabilities: GeneratedPreloadCapability[];
+  proxyPreset?: 'integration' | 'standard';
+  standalone?: { host?: string; port: number; basePath?: string };
 }
 
 export const GENERATED_SHELL_CONFIG = {
@@ -169,6 +169,7 @@ export const GENERATED_STANDALONE_APPS = {
 } as const;
 
 export const GENERATED_REAL_STACK = {
+  $schema: './real-stack.schema.json',
   probeHost: '127.0.0.1',
   healthChecks: [
     {
@@ -206,7 +207,8 @@ export const GENERATED_REAL_STACK = {
 } as const;
 
 export const GENERATED_E2E = {
+  $schema: './e2e.schema.json',
   mockRoutePatterns: ['**/api/**'],
 } as const;
 
-export type GeneratedWindowId = 'docs' | 'integration' | 'main' | 'settings';
+export type GeneratedWindowId = 'main' | 'docs' | 'settings' | 'integration';

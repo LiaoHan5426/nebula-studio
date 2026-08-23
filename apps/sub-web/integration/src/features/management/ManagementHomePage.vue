@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import {
@@ -9,10 +9,11 @@ import {
   NebulaTag,
 } from '@nebula-studio/nebula-ui';
 
-import { pluginApi } from '@/features/plugin/api';
-import { subscriptionRequestApi } from '@/features/subscription/api';
-import { interfaceApi } from '@/shared/api/integration';
-import { isApiSuccess } from '@/shared/types';
+import { interfacesQueryOptions } from '@/features/interfaces/queryOptions';
+import { pluginListQueryOptions } from '@/features/plugins/queryOptions';
+import { useQuery } from '@tanstack/vue-query';
+
+import { platformRequestsQueryOptions } from './queryOptions';
 
 interface SummaryMetric {
   label: string;
@@ -23,13 +24,59 @@ interface SummaryMetric {
 
 const route = useRoute();
 const router = useRouter();
-const loading = ref(true);
-const partial = ref(false);
-const serviceCount = ref(0);
-const draftPublishCount = ref(0);
-const pendingPluginCount = ref(0);
-const pendingRequestCount = ref(0);
-const failedPluginCount = ref(0);
+const servicesQuery = useQuery(() =>
+  interfacesQueryOptions('home', { page: 1, pageSize: 100 }),
+);
+const pluginsQuery = useQuery(() => pluginListQueryOptions());
+const requestsQuery = useQuery(() => platformRequestsQueryOptions());
+
+const loading = computed(
+  () =>
+    servicesQuery.isPending.value ||
+    pluginsQuery.isPending.value ||
+    requestsQuery.isPending.value,
+);
+const partial = computed(
+  () =>
+    servicesQuery.isError.value ||
+    pluginsQuery.isError.value ||
+    requestsQuery.isError.value,
+);
+
+const serviceCount = computed(() => servicesQuery.data.value?.total ?? 0);
+const draftPublishCount = computed(
+  () =>
+    (servicesQuery.data.value?.items ?? []).filter((item) =>
+      ['DRAFT', 'PENDING_PUBLISH', 'UNPUBLISHED'].includes(
+        String(item.status ?? ''),
+      ),
+    ).length,
+);
+const pendingPluginCount = computed(
+  () =>
+    (pluginsQuery.data.value ?? []).filter(
+      (item) => item.status === 'PENDING_REVIEW',
+    ).length,
+);
+const failedPluginCount = computed(
+  () =>
+    (pluginsQuery.data.value ?? []).filter((item) => item.status === 'FAILED')
+      .length,
+);
+const pendingRequestCount = computed(
+  () =>
+    (requestsQuery.data.value ?? []).filter((item) =>
+      ['NEEDS_INFO', 'PENDING', 'PENDING_REVIEW'].includes(item.status),
+    ).length,
+);
+
+function load(): void {
+  void Promise.all([
+    servicesQuery.refetch(),
+    pluginsQuery.refetch(),
+    requestsQuery.refetch(),
+  ]);
+}
 
 const admin = computed(() => route.meta.surface === 'admin');
 const title = computed(() => (admin.value ? '平台治理工作台' : '提供方工作台'));
@@ -84,43 +131,6 @@ const metrics = computed<SummaryMetric[]>(() =>
         },
       ],
 );
-
-async function load(): Promise<void> {
-  loading.value = true;
-  partial.value = false;
-  const [services, plugins, requests] = await Promise.allSettled([
-    interfaceApi.list({ page: 1, pageSize: 100 }),
-    pluginApi.list({ page: 1, pageSize: 100 }),
-    subscriptionRequestApi.list({ page: 1, pageSize: 100 }),
-  ]);
-  if (services.status === 'fulfilled' && isApiSuccess(services.value)) {
-    serviceCount.value =
-      services.value.data.total ?? services.value.data.items.length;
-    draftPublishCount.value = (services.value.data.items ?? []).filter((item) =>
-      ['DRAFT', 'PENDING_PUBLISH', 'UNPUBLISHED'].includes(
-        String(item.status ?? ''),
-      ),
-    ).length;
-  } else partial.value = true;
-  if (plugins.status === 'fulfilled' && isApiSuccess(plugins.value)) {
-    const items = plugins.value.data.items ?? [];
-    pendingPluginCount.value = items.filter(
-      (item) => item.status === 'PENDING_REVIEW',
-    ).length;
-    failedPluginCount.value = items.filter(
-      (item) => item.status === 'FAILED',
-    ).length;
-  } else partial.value = true;
-  if (requests.status === 'fulfilled' && isApiSuccess(requests.value)) {
-    pendingRequestCount.value = (requests.value.data.items ?? []).filter(
-      (item) =>
-        ['NEEDS_INFO', 'PENDING', 'PENDING_REVIEW'].includes(item.status),
-    ).length;
-  } else partial.value = true;
-  loading.value = false;
-}
-
-onMounted(load);
 </script>
 
 <template>

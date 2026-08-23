@@ -17,6 +17,7 @@ const {
   circuitBreakers,
   whitelistRules,
   tenants,
+  tenantOptions,
   selectedTenantId,
   loading,
   showDialog,
@@ -47,13 +48,11 @@ const {
       description="按租户配置限流、熔断与白名单。仅本人发布的服务可新建/修改；获权服务为只读。"
     >
       <div class="page__toolbar governance-toolbar">
-        <div v-if="tenants.length" class="governance-toolbar__tenant">
+        <div v-if="tenantOptions.length" class="governance-toolbar__tenant">
           <label>治理租户</label>
           <NebulaSelect
             v-model="selectedTenantId"
-            :options="tenants"
-            label-key="tenantName"
-            value-key="tenantId"
+            :options="tenantOptions"
             class="governance-toolbar__tenant-select"
           />
         </div>

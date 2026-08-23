@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { RouterLink } from 'vue-router';
 
 import { NebulaPageHeader, NebulaTag } from '@nebula-studio/nebula-ui';
@@ -9,37 +10,38 @@ import {
   isSettingsPlatformAdmin,
 } from '@/shared/auth/access';
 
+const { t } = useI18n();
 const platformAdmin = isSettingsPlatformAdmin();
 const organizationAdmin = isSettingsOrgAdmin();
 const tasks = computed(() =>
   [
     {
       to: '/organization/users',
-      title: '检查成员与账号状态',
-      description: '处理成员资料、异常状态和组织归属。',
+      title: t('governance.usersTitle'),
+      description: t('governance.usersDesc'),
       visible: organizationAdmin,
-      scope: '组织',
+      scope: t('governance.usersScope'),
     },
     {
       to: '/access/roles',
-      title: '复核角色授权',
-      description: '检查继承权限、冲突与实际权限来源。',
+      title: t('governance.rolesTitle'),
+      description: t('governance.rolesDesc'),
       visible: organizationAdmin,
-      scope: '访问控制',
+      scope: t('governance.rolesScope'),
     },
     {
       to: '/platform/config',
-      title: '审阅配置变更',
-      description: '在提交前确认作用域、覆盖关系与潜在影响。',
+      title: t('governance.configTitle'),
+      description: t('governance.configDesc'),
       visible: platformAdmin,
-      scope: '平台',
+      scope: t('governance.configScope'),
     },
     {
       to: '/platform/audit',
-      title: '排查关键审计事件',
-      description: '按操作者、实体和结果定位近期风险操作。',
+      title: t('governance.logsTitle'),
+      description: t('governance.logsDesc'),
       visible: platformAdmin,
-      scope: '安全',
+      scope: t('governance.logsScope'),
     },
   ].filter((task) => task.visible),
 );
@@ -48,26 +50,30 @@ const tasks = computed(() =>
 <template>
   <main class="governance-home">
     <NebulaPageHeader
-      eyebrow="Governance workspace"
-      title="设置治理工作台"
-      description="从成员、授权、配置和审计待办开始，而不是在功能菜单中寻找任务。"
+      :eyebrow="t('governance.eyebrow')"
+      :title="t('governance.title')"
+      :description="t('governance.description')"
     />
 
-    <section class="summary-grid" aria-label="治理范围">
+    <section class="summary-grid" :aria-label="t('governance.scopeAria')">
       <article>
-        <span>当前角色范围</span>
-        <strong>{{ platformAdmin ? '平台管理员' : '组织管理员' }}</strong>
-        <p>导航与可执行动作已按当前角色收敛。</p>
+        <span>{{ t('governance.roleScope') }}</span>
+        <strong>{{
+          platformAdmin
+            ? t('governance.platformAdmin')
+            : t('governance.orgAdmin')
+        }}</strong>
+        <p>{{ t('governance.roleHint') }}</p>
       </article>
       <article>
-        <span>今日优先项</span>
+        <span>{{ t('governance.today') }}</span>
         <strong>{{ tasks.length }}</strong>
-        <p>逐项检查高影响治理对象。</p>
+        <p>{{ t('governance.todayHint') }}</p>
       </article>
       <article>
-        <span>个人设置</span>
-        <strong>始终可用</strong>
-        <p>管理员仍可独立管理资料、会话、外观和语言。</p>
+        <span>{{ t('governance.personal') }}</span>
+        <strong>{{ t('governance.personalAlways') }}</strong>
+        <p>{{ t('governance.personalHint') }}</p>
       </article>
     </section>
 
@@ -75,9 +81,9 @@ const tasks = computed(() =>
       <header>
         <div>
           <span>Next actions</span>
-          <h2>治理待办</h2>
+          <h2>{{ t('governance.next') }}</h2>
         </div>
-        <NebulaTag>{{ tasks.length }} 项</NebulaTag>
+        <NebulaTag>{{ t('governance.count', { n: tasks.length }) }}</NebulaTag>
       </header>
       <div class="task-list">
         <RouterLink v-for="task in tasks" :key="task.to" :to="task.to">

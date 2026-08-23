@@ -2,37 +2,33 @@ import type { DataSourceConfig, TableSubscription } from '@/shared/types';
 
 import type { CreateFormDraft, SubscriptionFormState } from '../types';
 
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
+import { dataSourcesQueryOptions } from '@/features/datasources/queryOptions';
 import { subscriptionApi } from '@/features/subscription/api';
-import { dataSourceApi } from '@/shared/api/integration';
 import { useSubscriptionEvents } from '@/shared/composables/useSubscriptionEvents';
 import { useTenant } from '@/shared/composables/useTenant';
 import { isApiSuccess } from '@/shared/types';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
 
+import { buildCreateConfig, pollingIntervalSec } from '../mappers';
 import {
-  buildCreateConfig,
-  mapSubscriptionList,
-  pollingIntervalSec,
-} from '../mappers';
-import {
-  DEFAULT_CREATE_DRAFT,
-  DEFAULT_SUBSCRIPTION_FORM,
-  POLLING_INTERVAL_UPDATE_NOTICE,
-} from '../types';
+  createSubscriptionMutationOptions,
+  subscriptionsQueryKey,
+  subscriptionsQueryOptions,
+} from '../queryOptions';
+import { DEFAULT_CREATE_DRAFT, DEFAULT_SUBSCRIPTION_FORM } from '../types';
 
 export function useSubscriptionsPage() {
+  const { t } = useI18n();
   const { currentTenantId } = useTenant();
+  const queryClient = useQueryClient();
 
-  const subscriptions = ref<TableSubscription[]>([]);
-  const dataSources = ref<DataSourceConfig[]>([]);
-  const loading = ref(false);
   const showCreate = ref(false);
   const selectedSubId = ref<null | string>(null);
-
   const form = ref<SubscriptionFormState>({ ...DEFAULT_SUBSCRIPTION_FORM });
   const createDraft = ref<CreateFormDraft>({ ...DEFAULT_CREATE_DRAFT });
-
   const pollingIntervalDrafts = ref<Record<string, number>>({});
   const savingIntervalId = ref<null | string>(null);
   const intervalNotice = ref<null | string>(null);
@@ -40,29 +36,67 @@ export function useSubscriptionsPage() {
   const { events, connectionState, error, connect, disconnect, clearEvents } =
     useSubscriptionEvents();
 
+  const subscriptionsQuery = useQuery(() =>
+    subscriptionsQueryOptions(currentTenantId.value || undefined),
+  );
+  const dataSourcesQuery = useQuery(() => dataSourcesQueryOptions());
+  const createMutation = useMutation(createSubscriptionMutationOptions());
+
+  const subscriptions = computed(() => subscriptionsQuery.data.value ?? []);
+  const dataSources = computed(
+    () => dataSourcesQuery.data.value ?? ([] as DataSourceConfig[]),
+  );
+  const loading = computed(
+    () =>
+      subscriptionsQuery.isPending.value || dataSourcesQuery.isPending.value,
+  );
+
+  watch(
+    subscriptions,
+    (list) => {
+      for (const sub of list) {
+        if (pollingIntervalDrafts.value[sub.subscriptionId] === null) {
+          pollingIntervalDrafts.value[sub.subscriptionId] =
+            pollingIntervalSec(sub);
+        }
+      }
+    },
+    { immediate: true },
+  );
+
+  watch(
+    dataSources,
+    (list) => {
+      if (!form.value.dataSourceId && list[0]) {
+        form.value.dataSourceId = list[0].dataSourceId;
+      }
+    },
+    { immediate: true },
+  );
+
   function sseDescription(): string {
     switch (connectionState.value) {
       case 'connected':
-        return '已连接';
+        return t('subscriptions.sse.connected');
       case 'connecting':
-        return '连接中…';
+        return t('subscriptions.sse.connecting');
       case 'error':
-        return error.value ?? '连接失败';
+        return error.value ?? t('subscriptions.sse.failed');
       default:
-        return '未连接';
+        return t('subscriptions.sse.idle');
     }
   }
 
   const sseStatusLabel = computed(() => {
     switch (connectionState.value) {
       case 'connected':
-        return 'SSE 已连接';
+        return t('subscriptions.sse.statusConnected');
       case 'connecting':
-        return 'SSE 连接中';
+        return t('subscriptions.sse.statusConnecting');
       case 'error':
-        return 'SSE 异常';
+        return t('subscriptions.sse.statusError');
       default:
-        return 'SSE 未连接';
+        return t('subscriptions.sse.statusIdle');
     }
   });
 
@@ -87,68 +121,45 @@ export function useSubscriptionsPage() {
     };
   }
 
-  onMounted(async () => {
-    await Promise.all([loadSubscriptions(), loadDataSources()]);
-  });
-
-  async function loadSubscriptions() {
-    loading.value = true;
-    try {
-      const response = await subscriptionApi.list({
-        tenantId: currentTenantId.value || undefined,
-      });
-      if (isApiSuccess(response)) {
-        subscriptions.value = mapSubscriptionList(response.data);
-        for (const sub of subscriptions.value) {
-          pollingIntervalDrafts.value[sub.subscriptionId] =
-            pollingIntervalSec(sub);
-        }
-      }
-    } finally {
-      loading.value = false;
-    }
+  async function invalidateSubscriptions() {
+    await queryClient.invalidateQueries({
+      queryKey: subscriptionsQueryKey(currentTenantId.value || undefined),
+    });
   }
 
-  async function loadDataSources() {
-    const response = await dataSourceApi.list();
-    if (isApiSuccess(response)) {
-      dataSources.value = response.data;
-      if (!form.value.dataSourceId && response.data[0]) {
-        form.value.dataSourceId = response.data[0].dataSourceId;
-      }
-    }
+  async function loadSubscriptions() {
+    await invalidateSubscriptions();
   }
 
   async function handleCreate() {
     const tenantId = currentTenantId.value;
     if (!tenantId) return;
-
     const config = buildCreateConfig(form.value, createDraft.value);
-    const response = await subscriptionApi.create(tenantId, config);
+    const response = await createMutation.mutateAsync({ tenantId, config });
     if (isApiSuccess(response)) {
       showCreate.value = false;
-      await loadSubscriptions();
+      await invalidateSubscriptions();
     }
   }
 
   async function handleActivate(id: string) {
     await subscriptionApi.resume(id);
-    await loadSubscriptions();
+    await invalidateSubscriptions();
   }
 
   async function handleDeactivate(id: string) {
     await subscriptionApi.pause(id);
-    await loadSubscriptions();
+    await invalidateSubscriptions();
   }
 
   async function handleDelete(id: string) {
     if (selectedSubId.value === id) handleDisconnect();
     await subscriptionApi.delete(id);
-    await loadSubscriptions();
+    await invalidateSubscriptions();
   }
 
   async function applyPollingInterval(sub: TableSubscription) {
-    intervalNotice.value = POLLING_INTERVAL_UPDATE_NOTICE;
+    intervalNotice.value = t('subscriptions.pollingUpdateNotice');
     void sub;
   }
 
@@ -165,8 +176,8 @@ export function useSubscriptionsPage() {
       connectionState.value = 'error';
       error.value =
         sub.status === 'ERROR'
-          ? '订阅处于 ERROR 状态，请先点击「激活」恢复轮询后再监听'
-          : '请先激活订阅后再监听事件';
+          ? t('subscriptions.sse.needActivateError')
+          : t('subscriptions.sse.needActivate');
       return;
     }
     selectedSubId.value = sub.subscriptionId;

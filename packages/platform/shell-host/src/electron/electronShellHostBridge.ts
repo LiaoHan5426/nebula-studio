@@ -17,10 +17,6 @@ const electronWindow = window as unknown as Window & {
   };
 };
 
-/** 已废弃：集成层显隐改由 `nebula-shell-active-view` 驱动，启动时删除以免误判 */
-const LEGACY_SHELL_INTEGRATION_OPEN_KEY = 'nebula-shell-integration-open';
-const LEGACY_SHELL_INTEGRATION_HOME_KEY = 'nebula-shell-integration-home';
-
 export function createElectronShellHostBridge(): ShellHostBridge {
   return {
     kind: 'electron',
@@ -77,13 +73,7 @@ export function createElectronShellHostBridge(): ShellHostBridge {
     },
 
     onBeforeShellHydrate() {
-      try {
-        window.localStorage.removeItem(LEGACY_SHELL_INTEGRATION_OPEN_KEY);
-        window.localStorage.removeItem(LEGACY_SHELL_INTEGRATION_HOME_KEY);
-        persistActiveViewPreference(null);
-      } catch {
-        /* ignore */
-      }
+      persistActiveViewPreference(null);
     },
   };
 }

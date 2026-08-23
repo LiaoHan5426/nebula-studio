@@ -5,7 +5,7 @@ import type {
   TaskUpdateRequest,
 } from '@nebula-studio/contracts/integration';
 
-import { onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { isApiSuccess } from '@nebula-studio/api-client';
@@ -19,12 +19,17 @@ import {
 
 import { taskApi } from '@/shared/api/taskApi';
 import { useTenant } from '@/shared/composables/useTenant';
+import { useQuery } from '@tanstack/vue-query';
+
+import { tasksQueryOptions } from './queryOptions';
 
 const { currentTenantId } = useTenant();
 const router = useRouter();
-
-const tasks = ref<TaskDefinition[]>([]);
-const loading = ref(false);
+const tasksQuery = useQuery(() =>
+  tasksQueryOptions(currentTenantId.value || undefined),
+);
+const tasks = computed(() => tasksQuery.data.value ?? []);
+const loading = computed(() => tasksQuery.isPending.value);
 const showCreate = ref(false);
 const showEdit = ref(false);
 const editingTask = ref<null | TaskDefinition>(null);
@@ -46,20 +51,8 @@ const form = ref<TaskCreateRequest>({
 
 const editForm = ref<TaskUpdateRequest>({});
 
-onMounted(async () => {
-  await loadTasks();
-});
-
 async function loadTasks() {
-  loading.value = true;
-  try {
-    const response = await taskApi.list(currentTenantId.value);
-    if (isApiSuccess(response)) {
-      tasks.value = response.data;
-    }
-  } finally {
-    loading.value = false;
-  }
+  await tasksQuery.refetch();
 }
 
 async function handleCreate() {

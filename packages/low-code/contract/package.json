@@ -1,0 +1,32 @@
+{
+  "name": "@nebula-studio/low-code-contract",
+  "version": "0.0.0",
+  "description": "Versioned low-code definition schema, validator, and migrator.",
+  "private": true,
+  "homepage": "https://github.com/LiaoHan5426/nebula-studio#readme",
+  "bugs": {
+    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LiaoHan5426/nebula-studio.git",
+    "directory": "packages/low-code/contract"
+  },
+  "license": "UNLICENSED",
+  "author": "Liao Han <liaohan5426@gmail.com>",
+  "type": "module",
+  "scripts": {
+    "test": "vp test run"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "devDependencies": {
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "typescript": "catalog:types",
+    "vitest": "catalog:vite"
+  }
+}

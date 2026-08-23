@@ -13,7 +13,7 @@
 ## 职责边界
 
 - **不包含** Electron 主进程；不引用 `electron` API 的代码应通过 `@nebula-studio/app-shell` 的 web 桥接访问宿主能力。
-- 全局样式：与 renderer 一致，侧效入口通常为 `@nebula-studio-internal/tailwind/electron`（见各 embed 的 `main` 或入口 ts）。
+- 全局样式：与 renderer 一致，入口为 `@nebula-studio/styles/document` 或 `/remote`。
 
 ## 脚本
 

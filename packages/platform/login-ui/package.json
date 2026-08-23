@@ -1,0 +1,45 @@
+{
+  "name": "@nebula-studio/login-ui",
+  "version": "0.0.0",
+  "description": "Shared login surface UI for Host and standalone Remote composition roots.",
+  "private": true,
+  "homepage": "https://github.com/LiaoHan5426/nebula-studio#readme",
+  "bugs": {
+    "url": "https://github.com/LiaoHan5426/nebula-studio/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LiaoHan5426/nebula-studio.git",
+    "directory": "packages/platform/login-ui"
+  },
+  "license": "UNLICENSED",
+  "author": "Liao Han <liaohan5426@gmail.com>",
+  "type": "module",
+  "scripts": {
+    "test": "vp test run",
+    "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@nebula-studio/auth-provider": "workspace:^",
+    "@nebula-studio/nebula-layout": "workspace:^",
+    "@nebula-studio/nebula-ui": "workspace:^",
+    "vue": "catalog:vue"
+  },
+  "devDependencies": {
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "@nebula-studio/types": "workspace:^",
+    "@vitejs/plugin-vue": "catalog:vite",
+    "happy-dom": "catalog:vite",
+    "typescript": "catalog:types",
+    "vite": "catalog:vite",
+    "vite-plus": "catalog:vite",
+    "vitest": "catalog:vite",
+    "vue-tsc": "catalog:vue"
+  }
+}

@@ -71,6 +71,7 @@ export type { PresentationHostKind } from './presentationHost';
 export {
   applyRemoteMountAppearance,
   clearRemoteMountAppearance,
+  subscribeRemoteMountAppearance,
 } from './remoteMountAppearance';
 export type { RemoteMountAppearance } from './remoteMountAppearance';
 export {

@@ -19,7 +19,7 @@ export async function node(): Promise<Linter.Config[]> {
             allowModules: [
               'tsdown',
               'unplugin-vue',
-              '@nebula-studio-internal/vite',
+              '@nebula-studio-internal/build-kit',
               'vitest',
               'vite',
               '@vitejs/plugin-vue',

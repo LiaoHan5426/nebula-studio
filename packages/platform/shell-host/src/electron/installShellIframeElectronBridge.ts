@@ -47,6 +47,25 @@ function createSettingsApi(electron: ShellElectronBridge) {
         preference,
       }) as Promise<ThemePreference>;
     },
+    getLocale(): Promise<string> {
+      return electron.ipcRenderer.invoke(
+        'settings:locale:get',
+      ) as Promise<string>;
+    },
+    setLocale(locale: string): Promise<string> {
+      return electron.ipcRenderer.invoke('settings:locale:set', {
+        locale,
+      }) as Promise<string>;
+    },
+    onLocaleChanged(listener: (payload: { locale: string }) => void) {
+      const handler = (_event: unknown, ...args: unknown[]) => {
+        const payload = args[0] as { locale: string };
+        listener(payload);
+      };
+      electron.ipcRenderer.on('settings:locale:changed', handler);
+      return () =>
+        electron.ipcRenderer.removeListener('settings:locale:changed', handler);
+    },
     onThemeChanged(listener: (payload: { theme: ThemeMode }) => void) {
       const handler = (_event: unknown, ...args: unknown[]) => {
         const payload = args[0] as { theme: ThemeMode };

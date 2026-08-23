@@ -1,19 +1,8 @@
 <script setup lang="ts">
-import type {
-  CatalogQuery,
-  ResourceAvailability,
-  ResourceKind,
-  ResourceSummaryViewModel,
-} from './types';
+import type { ResourceAvailability } from './types';
 
-import {
-  computed,
-  onBeforeUnmount,
-  onMounted,
-  reactive,
-  ref,
-  watch,
-} from 'vue';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 
 import {
@@ -25,281 +14,99 @@ import {
   NebulaTag,
 } from '@nebula-studio/nebula-ui';
 
-import { subscriptionRequestApi } from '@/features/subscription/api';
-import { getAuthUserId } from '@/shared/auth/session';
-import { useTenant } from '@/shared/composables/useTenant';
-import { isApiSuccess } from '@/shared/types';
+import { errorMessageKey, mapIntegrationErrorCode } from '@/shared/i18n/errors';
 
-import { loadResourceCatalog } from './api';
-import { catalogDetailPath } from './catalog-routes';
 import { resourceTypeRegistry } from './registry';
-import {
-  favoriteResourceIds,
-  recentResourceIds,
-  toggleFavoriteResource,
-  trackPortalEvent,
-} from './storage';
 import { DEFAULT_CATALOG_QUERY } from './types';
+import { useResourceCatalogPage } from './useResourceCatalogPage';
 
-const PAGE_SIZE = 9;
+const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
-const { currentTenantId } = useTenant();
-
-const items = ref<ResourceSummaryViewModel[]>([]);
-const loading = ref(true);
-const error = ref('');
-const unavailableSources = ref<string[]>([]);
-const pendingRequestCount = ref(0);
-const favorites = ref(favoriteResourceIds());
-const recents = ref(recentResourceIds());
-let querySyncTimer: ReturnType<typeof setTimeout> | undefined;
-
-function queryFromRoute(): CatalogQuery {
-  const kind = String(route.query.kind || '');
-  const availability = String(route.query.availability || '');
-  const sort = String(route.query.sort || 'RELEVANCE');
-  return {
-    keyword: String(route.query.keyword || ''),
-    kind: ['API', 'CONNECTOR', 'TABLE'].includes(kind)
-      ? (kind as ResourceKind)
-      : '',
-    tag: String(route.query.tag || ''),
-    provider: String(route.query.provider || ''),
-    availability: [
-      'APPROVAL_REQUIRED',
-      'AVAILABLE',
-      'OFFLINE',
-      'UNAVAILABLE',
-    ].includes(availability)
-      ? (availability as ResourceAvailability)
-      : '',
-    sort: ['NAME', 'RELEVANCE', 'UPDATED'].includes(sort)
-      ? (sort as CatalogQuery['sort'])
-      : 'RELEVANCE',
-    page: Math.max(1, Number(route.query.page || 1)),
-  };
-}
-
-const query = reactive<CatalogQuery>({
-  ...DEFAULT_CATALOG_QUERY,
-  ...queryFromRoute(),
-});
-
-watch(
-  () => route.fullPath,
-  () => Object.assign(query, queryFromRoute()),
-);
-
-watch(
+const {
+  error,
+  favorites,
+  filteredItems,
+  items,
+  load,
+  loading,
+  openResource,
+  pageCount,
+  pendingRequestCount,
   query,
-  () => {
-    clearTimeout(querySyncTimer);
-    querySyncTimer = setTimeout(() => {
-      const next: Record<string, string> = {};
-      for (const key of ['embed', 'renderer']) {
-        const value = route.query[key];
-        if (typeof value === 'string' && value) next[key] = value;
-      }
-      Object.assign(
-        next,
-        Object.fromEntries(
-          Object.entries(query)
-            .filter(([, value]) => value !== '' && value !== 1)
-            .map(([key, value]) => [key, String(value)]),
-        ),
-      );
-      const current = Object.fromEntries(
-        Object.entries(route.query).map(([key, value]) => [key, String(value)]),
-      );
-      if (
-        route.name === 'resource-catalog' &&
-        JSON.stringify(next) !== JSON.stringify(current)
-      ) {
-        void router.replace({ name: 'resource-catalog', query: next });
-      }
-    }, 160);
-  },
-  { deep: true },
-);
-
-watch(
-  () => [
-    query.keyword,
-    query.kind,
-    query.tag,
-    query.provider,
-    query.availability,
-  ],
-  () => {
-    query.page = 1;
-  },
-);
+  recentItems,
+  toggleFavorite,
+  unavailableSources,
+  visibleItems,
+} = useResourceCatalogPage(route, router);
 
 const providers = computed(() => [
-  { label: '全部提供方', value: '' },
+  { label: t('catalog.filter.allProviders'), value: '' },
   ...Array.from(new Set(items.value.map((item) => item.provider)))
     .toSorted()
     .map((value) => ({ label: value, value })),
 ]);
 const tags = computed(() => [
-  { label: '全部标签', value: '' },
+  { label: t('catalog.filter.allTags'), value: '' },
   ...Array.from(new Set(items.value.flatMap((item) => item.tags)))
     .toSorted()
     .map((value) => ({ label: value, value })),
 ]);
 
-const filteredItems = computed(() => {
-  const keyword = query.keyword.trim().toLowerCase();
-  const result = items.value.filter((item) => {
-    const haystack = [item.name, item.description, item.provider, ...item.tags]
-      .join(' ')
-      .toLowerCase();
-    return (
-      (!keyword || haystack.includes(keyword)) &&
-      (!query.kind || item.kind === query.kind) &&
-      (!query.tag || item.tags.includes(query.tag)) &&
-      (!query.provider || item.provider === query.provider) &&
-      (!query.availability || item.availability === query.availability)
-    );
-  });
-  if (query.sort === 'NAME') {
-    return result.toSorted((a, b) => a.name.localeCompare(b.name, 'zh-CN'));
-  }
-  if (query.sort === 'UPDATED') {
-    return result.toSorted(
-      (a, b) =>
-        new Date(b.updatedAt || 0).getTime() -
-        new Date(a.updatedAt || 0).getTime(),
-    );
-  }
-  return result.toSorted(
-    (a, b) =>
-      Number(favorites.value.includes(b.id)) -
-      Number(favorites.value.includes(a.id)),
-  );
-});
-
-const pageCount = computed(() =>
-  Math.max(1, Math.ceil(filteredItems.value.length / PAGE_SIZE)),
+const catalogError = computed(() =>
+  error.value ? t(errorMessageKey(mapIntegrationErrorCode(error.value))) : '',
 );
-const visibleItems = computed(() => {
-  const start = (Math.min(query.page, pageCount.value) - 1) * PAGE_SIZE;
-  return filteredItems.value.slice(start, start + PAGE_SIZE);
-});
-const recentItems = computed(() =>
-  recents.value
-    .map((id) => items.value.find((item) => item.id === id))
-    .filter((item): item is ResourceSummaryViewModel => Boolean(item))
-    .slice(0, 4),
-);
-
-async function load(): Promise<void> {
-  loading.value = true;
-  error.value = '';
-  try {
-    const result = await loadResourceCatalog(
-      currentTenantId.value || undefined,
-    );
-    items.value = result.items;
-    unavailableSources.value = result.unavailableSources;
-    const userId = getAuthUserId();
-    if (userId) {
-      try {
-        const requestResponse = await subscriptionRequestApi.listByUser(userId);
-        if (isApiSuccess(requestResponse)) {
-          pendingRequestCount.value = requestResponse.data.filter((request) =>
-            ['NEEDS_INFO', 'PENDING', 'PENDING_REVIEW'].includes(
-              request.status,
-            ),
-          ).length;
-        }
-      } catch {
-        // Progress summary is optional and must not block catalog discovery.
-      }
-    }
-  } catch (cause) {
-    error.value =
-      cause instanceof Error ? cause.message : '资源目录暂时无法加载。';
-  } finally {
-    loading.value = false;
-  }
-}
-
-function openResource(resource: ResourceSummaryViewModel): void {
-  trackPortalEvent('catalog_detail_opened', {
-    resourceId: resource.id,
-    kind: resource.kind,
-  });
-  void router.push(catalogDetailPath(resource.id));
-}
-
-function toggleFavorite(resource: ResourceSummaryViewModel): void {
-  favorites.value = toggleFavoriteResource(resource.id);
-}
 
 function availabilityLabel(value: ResourceAvailability): string {
-  return {
-    AVAILABLE: '可直接使用',
-    APPROVAL_REQUIRED: '需申请',
-    UNAVAILABLE: '暂不可申请',
-    OFFLINE: '已下线',
-  }[value];
+  return t(`catalog.availability.${value}`);
 }
 
-onMounted(() => {
-  trackPortalEvent('catalog_viewed');
-  void load();
-});
-
-onBeforeUnmount(() => clearTimeout(querySyncTimer));
+function sourceLabel(id: string): string {
+  return t(`catalog.sources.${id}`);
+}
 </script>
 
 <template>
   <main class="portal-page">
     <section class="catalog-hero">
       <NebulaPageHeader
-        eyebrow="Resource portal"
-        title="找到下一项可复用能力"
-        description="从 API、数据表与 Connector 中查找经过组织治理的资源，了解用途后直接发起访问申请。"
+        :eyebrow="t('catalog.eyebrow')"
+        :title="t('catalog.title')"
+        :description="t('catalog.description')"
       >
         <template #actions>
           <NebulaButton variant="outline" @click="router.push('/my-requests')">
-            查看申请进度
+            {{ t('catalog.viewRequests') }}
           </NebulaButton>
           <NebulaButton @click="router.push('/my-resources')">
-            我的资源
+            {{ t('catalog.myResources') }}
           </NebulaButton>
         </template>
       </NebulaPageHeader>
       <label class="hero-search">
-        <span>搜索资源</span>
+        <span>{{ t('catalog.searchLabel') }}</span>
         <NebulaInput
           v-model="query.keyword"
-          placeholder="搜索名称、用途、标签或提供方"
-          aria-label="搜索资源"
+          :placeholder="t('catalog.searchPlaceholder')"
+          :aria-label="t('catalog.searchAria')"
         />
       </label>
       <div class="hero-stats">
-        <span
-          ><strong>{{ items.length }}</strong> 项可发现资源</span
-        >
-        <span
-          ><strong>{{ favorites.length }}</strong> 项收藏</span
-        >
-        <span
-          ><strong>{{ recentItems.length }}</strong> 项最近访问</span
-        >
-        <span
-          ><strong>{{ pendingRequestCount }}</strong> 项申请待处理</span
-        >
+        <span><strong>{{ items.length }}</strong>
+          {{ t('catalog.stats.discoverable') }}</span>
+        <span><strong>{{ favorites.length }}</strong>
+          {{ t('catalog.stats.favorites') }}</span>
+        <span><strong>{{ recentItems.length }}</strong>
+          {{ t('catalog.stats.recent') }}</span>
+        <span><strong>{{ pendingRequestCount }}</strong>
+          {{ t('catalog.stats.pending') }}</span>
       </div>
     </section>
 
     <section v-if="recentItems.length" class="recent-strip">
       <div>
-        <span class="section-eyebrow">继续探索</span>
-        <h2>最近访问</h2>
+        <span class="section-eyebrow">{{ t('catalog.continueEyebrow') }}</span>
+        <h2>{{ t('catalog.recentTitle') }}</h2>
       </div>
       <button
         v-for="resource in recentItems"
@@ -316,83 +123,99 @@ onBeforeUnmount(() => clearTimeout(querySyncTimer));
     <section class="catalog-section">
       <div class="catalog-heading">
         <div>
-          <span class="section-eyebrow">统一目录</span>
-          <h2>浏览全部资源</h2>
+          <span class="section-eyebrow">{{ t('catalog.browseEyebrow') }}</span>
+          <h2>{{ t('catalog.browseTitle') }}</h2>
         </div>
-        <p>{{ filteredItems.length }} 项匹配结果</p>
+        <p>{{ t('catalog.matchCount', { n: filteredItems.length }) }}</p>
       </div>
 
-      <div class="filters" aria-label="目录筛选">
+      <div class="filters" :aria-label="t('catalog.filter.aria')">
         <NebulaSelect
           v-model="query.kind"
           :options="[
-            { label: '全部类型', value: '' },
-            { label: 'API 服务', value: 'API' },
-            { label: '数据表', value: 'TABLE' },
-            { label: 'Connector', value: 'CONNECTOR' },
+            { label: t('catalog.filter.allKinds'), value: '' },
+            { label: t('catalog.filter.api'), value: 'API' },
+            { label: t('catalog.filter.table'), value: 'TABLE' },
+            { label: t('catalog.filter.connector'), value: 'CONNECTOR' },
           ]"
-          aria-label="资源类型"
+          :aria-label="t('catalog.filter.kindAria')"
         />
         <NebulaSelect
           v-model="query.provider"
           :options="providers"
-          aria-label="资源提供方"
+          :aria-label="t('catalog.filter.providerAria')"
         />
         <NebulaSelect
           v-model="query.tag"
           :options="tags"
-          aria-label="资源标签"
+          :aria-label="t('catalog.filter.tagAria')"
         />
         <NebulaSelect
           v-model="query.availability"
           :options="[
-            { label: '全部申请状态', value: '' },
-            { label: '可直接使用', value: 'AVAILABLE' },
-            { label: '需申请', value: 'APPROVAL_REQUIRED' },
-            { label: '暂不可申请', value: 'UNAVAILABLE' },
-            { label: '已下线', value: 'OFFLINE' },
+            { label: t('catalog.filter.allAvailability'), value: '' },
+            { label: t('catalog.availability.AVAILABLE'), value: 'AVAILABLE' },
+            {
+              label: t('catalog.availability.APPROVAL_REQUIRED'),
+              value: 'APPROVAL_REQUIRED',
+            },
+            {
+              label: t('catalog.availability.UNAVAILABLE'),
+              value: 'UNAVAILABLE',
+            },
+            { label: t('catalog.availability.OFFLINE'), value: 'OFFLINE' },
           ]"
-          aria-label="可申请状态"
+          :aria-label="t('catalog.filter.availabilityAria')"
         />
         <NebulaSelect
           v-model="query.sort"
           :options="[
-            { label: '推荐排序', value: 'RELEVANCE' },
-            { label: '最近更新', value: 'UPDATED' },
-            { label: '名称排序', value: 'NAME' },
+            { label: t('catalog.filter.sortRelevance'), value: 'RELEVANCE' },
+            { label: t('catalog.filter.sortUpdated'), value: 'UPDATED' },
+            { label: t('catalog.filter.sortName'), value: 'NAME' },
           ]"
-          aria-label="排序方式"
+          :aria-label="t('catalog.filter.sortAria')"
         />
         <NebulaButton
           variant="outline"
           @click="Object.assign(query, DEFAULT_CATALOG_QUERY)"
         >
-          清除筛选
+          {{ t('catalog.clearFilters') }}
         </NebulaButton>
       </div>
 
       <p v-if="unavailableSources.length" class="partial-notice" role="status">
-        {{ unavailableSources.join('、') }} 暂不可用，当前展示其余目录数据。
-        <button type="button" @click="load">重新加载</button>
+        {{
+          t('catalog.partialUnavailable', {
+            sources: unavailableSources
+              .map(sourceLabel)
+              .join(t('catalog.sourceJoin')),
+          })
+        }}
+        <button type="button" @click="load">{{ t('common.reload') }}</button>
       </p>
 
-      <div v-if="loading" class="resource-grid" aria-label="正在加载资源">
+      <div
+        v-if="loading"
+        class="resource-grid"
+        :aria-label="t('catalog.loadingAria')"
+      >
         <div v-for="index in 6" :key="index" class="resource-skeleton"></div>
       </div>
       <NebulaEmptyState
-        v-else-if="error"
-        title="资源目录加载失败"
-        :description="error"
+        v-else-if="catalogError"
+        :title="t('catalog.loadFailed')"
+        :description="catalogError"
       >
-        <NebulaButton @click="load">重新加载</NebulaButton>
+        <NebulaButton @click="load">{{ t('common.reload') }}</NebulaButton>
       </NebulaEmptyState>
       <NebulaEmptyState
         v-else-if="visibleItems.length === 0"
-        title="没有找到匹配资源"
-        description="尝试缩短关键词或清除部分筛选条件。"
+        :title="t('catalog.emptyTitle')"
+        :description="t('catalog.emptyBody')"
       >
         <NebulaButton @click="Object.assign(query, DEFAULT_CATALOG_QUERY)">
-          清除筛选
+          {{ t('catalog.clearFilters') }}
         </NebulaButton>
       </NebulaEmptyState>
       <div v-else class="resource-grid">
@@ -409,7 +232,9 @@ onBeforeUnmount(() => clearTimeout(querySyncTimer));
               type="button"
               class="favorite-button"
               :aria-label="
-                favorites.includes(resource.id) ? '取消收藏' : '收藏资源'
+                favorites.includes(resource.id)
+                  ? t('catalog.unfavoriteAria')
+                  : t('catalog.favoriteAria')
               "
               :aria-pressed="favorites.includes(resource.id)"
               @click="toggleFavorite(resource)"
@@ -437,27 +262,33 @@ onBeforeUnmount(() => clearTimeout(querySyncTimer));
           <div class="resource-card__footer">
             <span>{{ resource.version }}</span>
             <NebulaButton size="sm" @click="openResource(resource)">
-              查看详情
+              {{ t('catalog.viewDetail') }}
             </NebulaButton>
           </div>
         </article>
       </div>
 
-      <nav v-if="pageCount > 1" class="pagination" aria-label="目录分页">
+      <nav
+        v-if="pageCount > 1"
+        class="pagination"
+        :aria-label="t('catalog.paginationAria')"
+      >
         <NebulaButton
           variant="outline"
           :disabled="query.page <= 1"
           @click="query.page -= 1"
         >
-          上一页
+          {{ t('catalog.prevPage') }}
         </NebulaButton>
-        <span>第 {{ query.page }} / {{ pageCount }} 页</span>
+        <span>{{
+          t('catalog.pageOf', { page: query.page, total: pageCount })
+        }}</span>
         <NebulaButton
           variant="outline"
           :disabled="query.page >= pageCount"
           @click="query.page += 1"
         >
-          下一页
+          {{ t('catalog.nextPage') }}
         </NebulaButton>
       </nav>
     </section>

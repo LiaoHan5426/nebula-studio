@@ -1,7 +1,7 @@
 import {
   resolveHealthChecks,
   resolveShellEmbedPath,
-} from '@nebula-studio-internal/vite';
+} from '@nebula-studio-internal/build-kit';
 import { expect, test } from '@playwright/test';
 
 type ApiEnvelope<T> = {

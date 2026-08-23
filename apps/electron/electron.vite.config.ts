@@ -7,7 +7,7 @@ import {
   nebulaFederationHostPlugin,
   nebulaHostCspNoncePlugin,
   nebulaWorkspaceManifestPlugin,
-} from '@nebula-studio-internal/vite';
+} from '@nebula-studio-internal/build-kit';
 
 const electronPreloadSrcDir = resolve(
   import.meta.dirname,

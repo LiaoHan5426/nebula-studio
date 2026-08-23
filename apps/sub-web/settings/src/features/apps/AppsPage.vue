@@ -2,6 +2,7 @@
 import type { ShellAppRecord } from '@/shared/api/system';
 
 import { onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import {
   NebulaButton,
@@ -17,6 +18,7 @@ import EntityListPage from '@/shared/components/EntityListPage.vue';
 import { useConfirm } from '@/shared/composables/useConfirm';
 import { isApiSuccess } from '@/shared/types';
 
+const { t } = useI18n();
 const apps = ref<ShellAppRecord[]>([]);
 const loading = ref(false);
 const showDialog = ref(false);
@@ -88,7 +90,7 @@ async function toggleStatus(app: ShellAppRecord) {
 
 async function removeApp(app: ShellAppRecord) {
   const confirmed = await useConfirm(
-    `删除应用 ${app.label} 后，Shell 入口和相关窗口配置将不可用。是否继续？`,
+    t('apps.confirmDelete', { name: app.label }),
   );
   if (!confirmed) return;
   const response = await appsApi.delete(app.id);
@@ -106,13 +108,13 @@ function openDetails(app: ShellAppRecord) {
 <template>
   <EntityListPage
     v-model:detail-open="detailOpen"
-    title="应用管理"
-    description="注册 Studio 应用，并检查 Renderer、Preload 与运行状态。"
-    eyebrow="Applications & runtime"
-    :result-summary="`${apps.length} 个应用`"
+    :title="t('apps.title')"
+    :description="t('apps.description')"
+    :eyebrow="t('apps.eyebrow')"
+    :result-summary="t('apps.summary', { total: apps.length })"
     :loading="loading"
     :empty="!loading && apps.length === 0"
-    :detail-title="selected?.label || '应用详情'"
+    :detail-title="selected?.label || t('apps.detail')"
     :detail-subtitle="selected?.id || ''"
   >
     <template #actions>

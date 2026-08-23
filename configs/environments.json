@@ -1,0 +1,22 @@
+{
+  "$schema": "./environments.schema.json",
+  "apiTargets": {
+    "platform": "http://localhost:8090",
+    "console": "http://localhost:8080",
+    "executor": "http://localhost:8088"
+  },
+  "federationDevEntries": {
+    "low-code-studio": {
+      "name": "nebula_low_code_studio",
+      "expose": "application",
+      "packagedHost": "low-code-studio",
+      "defaultHttpEntry": "http://localhost:5194/mf-manifest.json"
+    },
+    "demo-board": {
+      "name": "nebula_low_code_studio",
+      "expose": "runtime-application",
+      "packagedHost": "low-code-studio",
+      "defaultHttpEntry": "http://localhost:5194/mf-manifest.json"
+    }
+  }
+}

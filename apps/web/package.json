@@ -23,16 +23,16 @@
   "dependencies": {
     "@nebula-studio-electron/electron-bridge": "workspace:^",
     "@nebula-studio-renderer/assembly-boot": "workspace:^",
-    "@nebula-studio-renderer/login": "workspace:^",
     "@nebula-studio-renderer/main": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
+    "@nebula-studio/application-bootstrap": "workspace:^",
     "@nebula-studio/application-runtime": "workspace:^",
     "@nebula-studio/auth-provider": "workspace:^",
     "@nebula-studio/host-capabilities": "workspace:^",
+    "@nebula-studio/login-ui": "workspace:^",
     "@nebula-studio/msw": "workspace:^",
     "@nebula-studio/nebula-layout": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
-    "@nebula-studio/runtime": "workspace:^",
     "@nebula-studio/shell-host": "workspace:^",
     "@nebula-studio/shell-protocol": "workspace:^",
     "@nebula-studio/styles": "workspace:^",
@@ -40,8 +40,8 @@
     "vue": "catalog:vue"
   },
   "devDependencies": {
+    "@nebula-studio-internal/build-kit": "workspace:^",
     "@nebula-studio-internal/tsconfig": "workspace:^",
-    "@nebula-studio-internal/vite": "workspace:^",
     "@nebula-studio/types": "workspace:^",
     "typescript": "catalog:types",
     "vite": "catalog:vite",

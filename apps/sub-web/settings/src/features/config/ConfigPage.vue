@@ -2,6 +2,7 @@
 import type { ConfigItem } from '@/shared/api/configApi';
 
 import { computed, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import {
   NebulaButton,
@@ -16,6 +17,7 @@ import { configApi } from '@/shared/api/configApi';
 import { useConfirm } from '@/shared/composables/useConfirm';
 import { isApiSuccess } from '@/shared/types';
 
+const { t } = useI18n();
 const configs = ref<ConfigItem[]>([]);
 const loading = ref(false);
 const showCreate = ref(false);
@@ -34,7 +36,7 @@ const form = ref<Partial<ConfigItem>>({
 const groupedConfigs = computed(() => {
   const groups: Record<string, ConfigItem[]> = {};
   for (const config of configs.value) {
-    const group = config.group ?? '未分组';
+    const group = config.group ?? t('config.ungrouped');
     if (!groups[group]) groups[group] = [];
     groups[group].push(config);
   }
@@ -60,27 +62,27 @@ const inheritedFrom = computed(() =>
   matchingConfig.value?.inheritedFrom
     ? matchingConfig.value.inheritedFrom
     : form.value.scope === 'GLOBAL'
-      ? '平台默认值'
+      ? t('config.inheritGlobal')
       : form.value.scope === 'TENANT'
-        ? '继承平台默认值，可由组织覆盖'
-        : '继承平台与组织配置，可由应用覆盖',
+        ? t('config.inheritTenant')
+        : t('config.inheritApp'),
 );
 const changePreview = computed(() => ({
   scope: form.value.scope,
   oldValue: sensitive.value
-    ? '••••••（敏感值）'
+    ? t('config.masked')
     : (matchingConfig.value?.value ??
       matchingConfig.value?.inheritedValue ??
       matchingConfig.value?.defaultValue ??
-      '未设置或由上级继承'),
-  newValue: sensitive.value ? '••••••（敏感值）' : form.value.value,
+      t('config.unset')),
+  newValue: sensitive.value ? t('config.masked') : form.value.value,
   impact: matchingConfig.value?.impactScope
     ? matchingConfig.value.impactScope
     : form.value.scope === 'GLOBAL'
-      ? '影响所有组织和应用，可能需要重启相关服务'
+      ? t('config.impactGlobal')
       : form.value.scope === 'TENANT'
-        ? '影响指定组织中的全部应用'
-        : '仅影响目标应用实例',
+        ? t('config.impactTenant')
+        : t('config.impactApp'),
 }));
 
 onMounted(async () => {
@@ -120,7 +122,7 @@ async function handleCreate() {
 
 async function handleDelete(config: ConfigItem) {
   const confirmed = await useConfirm(
-    `确定删除配置「${config.key}」？删除后将恢复其上级继承值或默认值，依赖该作用域的运行实例可能立即受到影响。`,
+    t('config.confirmDelete', { key: config.key }),
   );
   if (!confirmed) return;
   await configApi.delete(config.key, config.scope, config.tenantId);
@@ -151,7 +153,7 @@ function isSensitiveConfig(config: ConfigItem): boolean {
 
 function displayValue(config: ConfigItem): string {
   return isSensitiveConfig(config)
-    ? '••••••（敏感值已隐藏）'
+    ? t('config.hidden')
     : formatValue(config.value);
 }
 </script>
@@ -159,24 +161,28 @@ function displayValue(config: ConfigItem): string {
 <template>
   <div class="config-page">
     <NebulaPane
-      title="配置管理"
-      description="管理系统配置项，支持按分组和范围查询"
+      :title="t('config.title')"
+      :description="t('config.description')"
     >
       <div class="config-page__toolbar">
-        <NebulaButton @click="showCreate = true">新建配置</NebulaButton>
+        <NebulaButton @click="showCreate = true">
+{{
+          t('config.create')
+        }}
+</NebulaButton>
         <NebulaSelect
           v-model="selectedScope"
           :options="[
-            { value: '', label: '全部范围' },
-            { value: 'GLOBAL', label: '全局' },
-            { value: 'TENANT', label: '租户' },
-            { value: 'APPLICATION', label: '应用' },
+            { value: '', label: t('config.allScopes') },
+            { value: 'GLOBAL', label: t('config.global') },
+            { value: 'TENANT', label: t('config.tenant') },
+            { value: 'APPLICATION', label: t('config.application') },
           ]"
           class="config-page__filter"
           @change="loadConfigs"
         />
         <NebulaButton variant="secondary" @click="loadConfigs">
-          刷新
+          {{ t('common.refresh') }}
         </NebulaButton>
       </div>
 

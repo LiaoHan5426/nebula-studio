@@ -5,9 +5,11 @@ import { bootstrapShellIntegratedApps } from '@nebula-studio-renderer/main/platf
 import { app } from 'electron';
 
 import { MainAppLauncher } from './bootstrap/MainAppLauncher';
+import { persistLowCodeOfflineLockfile } from './federation/lowCodeOfflineLockfile';
 import {
   attachNebulaRemoteProtocolHandler,
   nebulaRemoteOrigin,
+  resolveNebulaRemoteDistRoots,
 } from './federation/registerNebulaRemoteProtocol';
 import { AppearanceSettingsModule } from './modules/AppearanceSettingsModule';
 import { ApplicationLogger } from './modules/ApplicationLogger';
@@ -41,6 +43,7 @@ app.whenReady().then(async () => {
     'file://',
     nebulaRemoteOrigin('docs'),
     nebulaRemoteOrigin('integration'),
+    nebulaRemoteOrigin('low-code-studio'),
     nebulaRemoteOrigin('settings'),
   ]);
   if (is.dev && process.env.ELECTRON_RENDERER_URL) {
@@ -51,6 +54,10 @@ app.whenReady().then(async () => {
   }
 
   attachNebulaRemoteProtocolHandler();
+  persistLowCodeOfflineLockfile(
+    app.getPath('userData'),
+    resolveNebulaRemoteDistRoots(),
+  );
 
   const windowManager = new WindowManager([
     allowInternalOrigins(allowedOrigins),

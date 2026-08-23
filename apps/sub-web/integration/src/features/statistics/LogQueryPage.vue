@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import {
   NebulaButton,
@@ -10,44 +10,20 @@ import {
   NebulaTag,
 } from '@nebula-studio/nebula-ui';
 
-import { monitorApi } from '@/features/monitor/api';
+import { callLogsQueryOptions } from '@/features/monitor/queryOptions';
 import { useTenant } from '@/shared/composables/useTenant';
-import { isApiSuccess } from '@/shared/types';
+import { useQuery } from '@tanstack/vue-query';
 
-const logs = ref<Array<Record<string, unknown>>>([]);
-const loading = ref(false);
 const dateRange = ref<[string, string] | null>(null);
 const { currentTenantId } = useTenant();
-
-onMounted(() => {
-  void loadLogs();
-});
+const logsQuery = useQuery(() =>
+  callLogsQueryOptions(currentTenantId.value || undefined),
+);
+const logs = computed(() => logsQuery.data.value ?? []);
+const loading = computed(() => logsQuery.isPending.value);
 
 async function loadLogs() {
-  loading.value = true;
-  try {
-    const response = await monitorApi.callLogs({
-      tenantId: currentTenantId.value,
-      pageSize: 50,
-    });
-    if (isApiSuccess(response)) {
-      logs.value = (response.data.items ?? []).map((row) => ({
-        logId: row.logId ?? row.log_id,
-        tenantId: row.tenantId ?? row.tenant_id,
-        interfaceId: row.interfaceId ?? row.interface_id,
-        interfaceName: row.interfaceName ?? row.interface_name ?? '-',
-        durationMs: row.durationMs ?? row.duration_ms ?? '-',
-        status: row.status,
-        errorMessage: row.errorMessage ?? row.error_message ?? '-',
-        createdAt: row.createdAt ?? row.created_at,
-      }));
-    }
-  } catch (e) {
-    console.warn('[integration] load call logs failed', e);
-    logs.value = [];
-  } finally {
-    loading.value = false;
-  }
+  await logsQuery.refetch();
 }
 
 function statusVariant(status: unknown) {

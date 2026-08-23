@@ -1,50 +1,55 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { NebulaButton, NebulaPane } from '@nebula-studio/nebula-ui';
 
 import { gatewayRequest } from '@/shared/api/executorApi';
 import { useAuth } from '@/shared/composables/useAuth';
+import { useTenant } from '@/shared/composables/useTenant';
+import { useMutation } from '@tanstack/vue-query';
 
 const { token } = useAuth();
+const { currentTenantId } = useTenant();
 
-const tenantId = ref('1_a');
-
+const tenantId = ref(currentTenantId.value || '1_a');
 const path = ref('/orders/query');
 const method = ref('GET');
 const apiKey = ref('demo-api-key-tenant-a');
 const body = ref('{}');
-const responseText = ref('');
-const loading = ref(false);
 
-async function sendRequest() {
-  loading.value = true;
-  responseText.value = '';
-  try {
+const sendMutation = useMutation({
+  mutationFn: async () => {
     const subPath = path.value.startsWith('/') ? path.value : `/${path.value}`;
     const parsedBody = ['PATCH', 'POST', 'PUT'].includes(method.value)
       ? JSON.parse(body.value)
       : undefined;
-
     const result = await gatewayRequest(tenantId.value, subPath, {
       method: method.value,
       apiKey: apiKey.value,
       token: token.value,
       body: parsedBody,
     });
-
     let formatted = result.body;
     try {
       formatted = JSON.stringify(JSON.parse(result.body), null, 2);
     } catch {
       /* keep raw */
     }
-    responseText.value = `HTTP ${result.status}\n\n${formatted}`;
-  } catch (e) {
-    responseText.value = e instanceof Error ? e.message : 'Request failed';
-  } finally {
-    loading.value = false;
+    return `HTTP ${result.status}\n\n${formatted}`;
+  },
+});
+
+const loading = computed(() => sendMutation.isPending.value);
+const responseText = computed(() => {
+  if (sendMutation.error.value) {
+    const cause = sendMutation.error.value;
+    return cause instanceof Error ? cause.message : 'Request failed';
   }
+  return sendMutation.data.value ?? '';
+});
+
+function sendRequest() {
+  sendMutation.mutate();
 }
 </script>
 

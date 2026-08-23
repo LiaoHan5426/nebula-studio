@@ -4,14 +4,15 @@ import type {
   TopologyTrace,
 } from '@nebula-studio/contracts/integration';
 
-import { onMounted, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 
 import { NebulaButton, NebulaPane, NebulaTag } from '@nebula-studio/nebula-ui';
 
-import { monitorApi } from '@/features/monitor/api';
+import { topologyQueryOptions } from '@/features/monitor/queryOptions';
 import { camelTopologyApi } from '@/shared/api/topologyApi';
 import { useTenant } from '@/shared/composables/useTenant';
 import { isApiSuccess } from '@/shared/types';
+import { useQuery } from '@tanstack/vue-query';
 
 // 通用拓扑视图模型（来自 monitorApi.topologyNodes，返回 Record<string, unknown>[]）
 // 与 contracts/integration/topology 的 TopologyNodeData 不同：
@@ -30,10 +31,27 @@ interface TopologyLink {
   label?: string;
 }
 
-const nodes = ref<TopologyNode[]>([]);
-const links = ref<TopologyLink[]>([]);
-const loading = ref(false);
 const { currentTenantId } = useTenant();
+const topologyQuery = useQuery(() =>
+  topologyQueryOptions(currentTenantId.value || undefined),
+);
+const loading = computed(() => topologyQuery.isPending.value);
+const nodes = computed<TopologyNode[]>(() =>
+  (topologyQuery.data.value?.nodes ?? []).map((n, index) => ({
+    id: String(n.nodeId ?? n.node_id ?? index),
+    name: String(n.nodeName ?? n.node_name ?? n.nodeId ?? 'node'),
+    type: (n.nodeType ?? n.node_type ?? 'service') as TopologyNode['type'],
+    x: 100 + (index % 4) * 180,
+    y: 100 + Math.floor(index / 4) * 120,
+  })),
+);
+const links = computed<TopologyLink[]>(() =>
+  (topologyQuery.data.value?.edges ?? []).map((e) => ({
+    source: String(e.sourceNodeId ?? e.source_node_id ?? ''),
+    target: String(e.targetNodeId ?? e.target_node_id ?? ''),
+    label: String(e.edgeType ?? e.edge_type ?? ''),
+  })),
+);
 
 // Camel route topology
 const routeId = ref('');
@@ -43,51 +61,8 @@ const errors = ref<TopologyError[]>([]);
 const activeTab = ref<'errors' | 'topology' | 'traces'>('topology');
 const tracesLoading = ref(false);
 
-onMounted(() => {
-  loadTopology();
-});
-
-watch(currentTenantId, () => {
-  loadTopology();
-});
-
 async function loadTopology() {
-  if (!currentTenantId.value) {
-    nodes.value = [];
-    links.value = [];
-    return;
-  }
-  loading.value = true;
-  try {
-    const [nodesRes, edgesRes] = await Promise.all([
-      monitorApi.topologyNodes(currentTenantId.value),
-      monitorApi.topologyEdges(currentTenantId.value),
-    ]);
-
-    if (isApiSuccess(nodesRes)) {
-      nodes.value = (nodesRes.data ?? []).map((n, index) => ({
-        id: String(n.nodeId ?? n.node_id ?? index),
-        name: String(n.nodeName ?? n.node_name ?? n.nodeId ?? 'node'),
-        type: (n.nodeType ?? n.node_type ?? 'service') as TopologyNode['type'],
-        x: 100 + (index % 4) * 180,
-        y: 100 + Math.floor(index / 4) * 120,
-      }));
-    }
-
-    if (isApiSuccess(edgesRes)) {
-      links.value = (edgesRes.data ?? []).map((e) => ({
-        source: String(e.sourceNodeId ?? e.source_node_id ?? ''),
-        target: String(e.targetNodeId ?? e.target_node_id ?? ''),
-        label: String(e.edgeType ?? e.edge_type ?? ''),
-      }));
-    }
-  } catch (e) {
-    console.warn('[integration] load topology failed', e);
-    nodes.value = [];
-    links.value = [];
-  } finally {
-    loading.value = false;
-  }
+  await topologyQuery.refetch();
 }
 
 function handleRefresh() {

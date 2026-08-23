@@ -110,13 +110,23 @@ describe('frontend runtime registry', () => {
     );
   });
 
-  it('keeps a local integration fallback for offline Host boot', () => {
-    expect(localFederationRegistration('integration').name).toBe(
-      'nebula_integration',
+  it('reuses the low-code studio remote for published definition apps', () => {
+    expect(localFederationRegistration('demo-board')).toMatchObject({
+      name: 'nebula_low_code_studio',
+      expose: 'runtime-application',
+    });
+    expect(localFederationRegistration('demo-board').entry).toBe(
+      hostDevMfManifestUrl('low-code-studio', location.origin),
     );
-    expect(localFederationRegistration('integration').entry).toBe(
-      hostDevMfManifestUrl('integration', location.origin),
-    );
+    expect(
+      federationRegistrationFromRuntime({
+        ...docsEntry,
+        id: 'demo-board',
+        remoteName: 'nebula_low_code_studio',
+        exposedModule: './runtime-application',
+        manifestUrl: 'http://localhost:5194/mf-manifest.json',
+      }).entry,
+    ).toBe(hostDevMfManifestUrl('low-code-studio', location.origin));
   });
 
   it('pins first-party remotes to the Host even if the registry points at a CDN', () => {

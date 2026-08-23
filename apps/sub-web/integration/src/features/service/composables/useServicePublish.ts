@@ -9,13 +9,15 @@ import type { PluginNodeSchema } from '@nebula-studio/nebula-low-render';
 
 import type { PublishForm, ServiceTab } from '../publish/types';
 
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useNebulaAssembly } from '@nebula-studio/nebula-assembly';
 
 import { approvalApi } from '@/features/approval/api';
 import { loadDagNodeSchemas } from '@/features/flows/loadDagNodeSchemas';
+import { dagsQueryOptions } from '@/features/flows/queryOptions';
+import { interfacesQueryOptions } from '@/features/interfaces/queryOptions';
 import { dagApi } from '@/features/monitor/api';
 import { interfaceApi } from '@/shared/api/integration';
 import { getAuthUserId } from '@/shared/auth/session';
@@ -26,6 +28,7 @@ import {
   isApiSuccess,
   RequestKind,
 } from '@/shared/types';
+import { useQuery } from '@tanstack/vue-query';
 
 import {
   buildPublishFormFromItem,
@@ -35,12 +38,15 @@ import {
 } from '../publish/mappers';
 
 export function useServicePublish() {
-  const services = ref<ApiInterface[]>([]);
-  const loading = ref(false);
-  const activeTab = ref<ServiceTab>('all');
   const { isPlatformAdmin } = useAuth();
   const router = useRouter();
   const { editor: editorHost } = useNebulaAssembly();
+  const activeTab = ref<ServiceTab>('all');
+  const servicesQuery = useQuery(() =>
+    interfacesQueryOptions('publish', { pageSize: 100 }),
+  );
+  const services = computed(() => servicesQuery.data.value?.items ?? []);
+  const loading = computed(() => servicesQuery.isPending.value);
 
   const showCompositeDialog = ref(false);
   const showFlowEditor = ref(false);
@@ -52,7 +58,10 @@ export function useServicePublish() {
   const dagDefinition = ref<DagDefinition | string>({ nodes: {} });
   const nodeSchemas = ref<Record<string, PluginNodeSchema>>({});
   const publishTarget = ref<ApiInterface | null>(null);
-  const dagOptions = ref<DagDefinitionRecord[]>([]);
+  const dagsQuery = useQuery(() =>
+    dagsQueryOptions(publishTarget.value?.tenantId),
+  );
+  const dagOptions = computed(() => dagsQuery.data.value ?? []);
 
   const publishForm = ref<PublishForm>({
     subscriptionMode: 'OPEN',
@@ -91,28 +100,15 @@ export function useServicePublish() {
     return services.value;
   });
 
-  onMounted(loadServices);
-
   async function loadServices() {
-    loading.value = true;
-    try {
-      const response = await interfaceApi.list({ pageSize: 100 });
-      if (isApiSuccess(response)) {
-        services.value = response.data.items ?? [];
-      }
-    } finally {
-      loading.value = false;
-    }
+    await servicesQuery.refetch();
   }
 
   async function handlePublish(item: ApiInterface) {
     publishTarget.value = item;
     publishForm.value = buildPublishFormFromItem(item);
     if (publishForm.value.orchestrationType === 'DAG') {
-      const response = await dagApi.list(item.tenantId);
-      if (isApiSuccess(response)) {
-        dagOptions.value = response.data ?? [];
-      }
+      await dagsQuery.refetch();
     }
     showPublishDialog.value = true;
   }
@@ -159,10 +155,7 @@ export function useServicePublish() {
   async function onPublishOrchestrationChange() {
     if (publishForm.value.orchestrationType !== 'DAG' || !publishTarget.value)
       return;
-    const response = await dagApi.list(publishTarget.value.tenantId);
-    if (isApiSuccess(response)) {
-      dagOptions.value = response.data ?? [];
-    }
+    await dagsQuery.refetch();
   }
 
   async function handleApprove(item: ApiInterface) {

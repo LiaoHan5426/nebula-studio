@@ -1,6 +1,7 @@
 import type { RuntimeMode } from '@nebula-studio/shell-protocol';
 
-import { bootMicroApp } from '@nebula-studio/runtime';
+import { startApplication } from '@nebula-studio/application-bootstrap';
+import AppComponent from '@nebula-studio/login-ui';
 import { installWebPresentationUnlessElectron } from '@nebula-studio/shell-host';
 import '@nebula-studio/styles/document';
 
@@ -8,8 +9,6 @@ import {
   installAssemblyForSubApp,
   wrapSubAppWithAssembly,
 } from '@nebula-studio-renderer/assembly-boot';
-
-import AppComponent from './App.vue';
 
 /**
  * Login 子应用统一启动入口。
@@ -37,7 +36,7 @@ export async function bootLogin(opts: { mode: RuntimeMode }): Promise<void> {
     processVersions: { node: __NEBULA_BUILD_NODE_VERSION__ },
   });
 
-  await bootMicroApp({
+  await startApplication({
     appId: 'login',
     mode,
     rootComponent: wrapSubAppWithAssembly(AppComponent),

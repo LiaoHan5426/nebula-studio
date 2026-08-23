@@ -10,7 +10,7 @@
 | `shell-host` | `@nebula-studio/shell-host` | Web/Electron composition-root 适配：presentation stub、`installShellHostBridge` |
 | `shell-protocol` | `@nebula-studio/shell-protocol` | 无宿主假设的 embed 消息、事件总线、presentation 标记、runtime mode |
 | `shell`（`packages/ui/shell-ui`） | `@nebula-studio/nebula-shell` | Shell UI 组合式函数与组件（OrgSwitcher、AppDock、IframeHost） |
-| `runtime` | `@nebula-studio/runtime` | standalone / Host 兼容启动（`bootMicroApp`）；运行模式类型在 `shell-protocol` |
+| application bootstrap | `@nebula-studio/application-bootstrap` | standalone / Host 显式生命周期；运行模式类型在 `shell-protocol` |
 | `tenant` | `@nebula-studio/tenant` | 租户状态 composable（`createUseTenant`） |
 | `auth` / `auth-provider` | `@nebula-studio/auth` | 认证引导与 session 提供 |
 
@@ -21,7 +21,7 @@
 ```
 apps/web/src/workspace/bootHostWorkspace.ts
   → installShellHostBridge + installWebPresentation（shell-host；Web 只装 window.api）
-  → bootMicroApp（runtime）挂载 frontend/app
+  → startApplication（application-bootstrap）挂载 frontend/app
     → AuthBootstrap（auth）
 
 apps/sub-web/frontend/src/boot.ts（standalone）
@@ -29,7 +29,7 @@ apps/sub-web/frontend/src/boot.ts（standalone）
 
 apps/sub-web/integration/boot.ts
   → resolveShellEventBus（继承宿主总线）
-  → bootMicroApp + 事件监听（tenant:changed / auth:logout）
+  → startApplication + 事件监听（tenant:changed / auth:logout）
 ```
 
 ## 跨子应用状态
@@ -53,7 +53,7 @@ bus.emit('auth:logout', { reason: 'session-expired' });
 
 ## API 基座（W12 / G7）
 
-权威配置：`configs/windows.json` 只配置 `apiTargets`（后端 origin）。浏览器相对路径按 target 分组，来自 API context 黑盒。
+权威配置：`configs/environments.json` 配置 `apiTargets`（后端 origin），`configs/windows.json` 只描述 Shell/Electron 窗口。浏览器相对路径按 target 分组，来自 API context 黑盒。
 
 - `GENERATED_API_NAMESPACES.platform.platform` → `/api/platform`
 - `GENERATED_API_TARGETS.platform` → `http://localhost:8090`

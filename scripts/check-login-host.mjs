@@ -70,6 +70,18 @@ if (federation.includes('@nebula-studio-renderer/login')) {
   );
   process.exit(1);
 }
+if (!hostLogin.includes('@nebula-studio/login-ui')) {
+  console.error(
+    '[check:login-host] Host login boot must mount @nebula-studio/login-ui',
+  );
+  process.exit(1);
+}
+if (hostLogin.includes('@nebula-studio-renderer/login')) {
+  console.error(
+    '[check:login-host] Host login boot must not import the login renderer package',
+  );
+  process.exit(1);
+}
 if (
   !windows.includes('"renderer": "login"') ||
   !windows.includes('"webLoad": "host"')

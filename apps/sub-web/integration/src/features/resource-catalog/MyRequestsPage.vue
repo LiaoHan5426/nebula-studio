@@ -3,7 +3,8 @@ import type { SubscriptionRequestRecord } from '@/features/subscription/api';
 
 import type { AccessRequestStatus } from './types';
 
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
 import {
@@ -14,18 +15,36 @@ import {
   NebulaTag,
 } from '@nebula-studio/nebula-ui';
 
-import { subscriptionRequestApi } from '@/features/subscription/api';
 import { getAuthUserId } from '@/shared/auth/session';
+import { errorMessageKey, mapIntegrationErrorCode } from '@/shared/i18n/errors';
 import { isApiSuccess } from '@/shared/types';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
 
 import { normalizeRequestStatus } from './mappers';
+import {
+  accessRequestsByUserQueryKey,
+  accessRequestsByUserQueryOptions,
+  cancelAccessRequestMutationOptions,
+  currentCatalogUserId,
+} from './queryOptions';
 
+const { t } = useI18n();
 const router = useRouter();
-const requests = ref<SubscriptionRequestRecord[]>([]);
-const loading = ref(true);
-const error = ref('');
+const queryClient = useQueryClient();
 const status = ref('');
 const cancellingId = ref('');
+const userId = currentCatalogUserId();
+
+const requestsQuery = useQuery(() => accessRequestsByUserQueryOptions(userId));
+const cancelMutation = useMutation(cancelAccessRequestMutationOptions());
+
+const requests = computed(() => requestsQuery.data.value ?? []);
+const loading = computed(() => requestsQuery.isPending.value);
+const error = computed(() => {
+  if (!getAuthUserId()) return t('errors.unauthorized');
+  if (!requestsQuery.error.value) return '';
+  return t(errorMessageKey(mapIntegrationErrorCode(requestsQuery.error.value)));
+});
 
 const visibleRequests = computed(() =>
   requests.value.filter(
@@ -34,31 +53,19 @@ const visibleRequests = computed(() =>
   ),
 );
 
-async function load(): Promise<void> {
-  const userId = getAuthUserId();
-  if (!userId) {
-    error.value = '无法识别当前用户，请重新登录。';
-    loading.value = false;
-    return;
-  }
-  loading.value = true;
-  error.value = '';
-  try {
-    const response = await subscriptionRequestApi.listByUser(userId);
-    if (isApiSuccess(response)) requests.value = response.data;
-    else error.value = response.message || '申请记录加载失败。';
-  } catch (cause) {
-    error.value = cause instanceof Error ? cause.message : '申请记录加载失败。';
-  } finally {
-    loading.value = false;
-  }
+function load(): void {
+  void requestsQuery.refetch();
 }
 
 async function cancel(request: SubscriptionRequestRecord): Promise<void> {
   cancellingId.value = request.requestId;
   try {
-    const response = await subscriptionRequestApi.cancel(request.requestId);
-    if (isApiSuccess(response)) await load();
+    const response = await cancelMutation.mutateAsync(request.requestId);
+    if (isApiSuccess(response)) {
+      await queryClient.invalidateQueries({
+        queryKey: accessRequestsByUserQueryKey(userId),
+      });
+    }
   } finally {
     cancellingId.value = '';
   }
@@ -68,7 +75,7 @@ function resourceName(request: SubscriptionRequestRecord): string {
   return String(
     request.requestConfig?.resourceName ||
       request.interfaceId ||
-      '资源访问申请',
+      t('portal.requests.fallbackName'),
   );
 }
 
@@ -78,42 +85,10 @@ function statusCopy(value: AccessRequestStatus): {
   label: string;
 } {
   return {
-    DRAFT: {
-      label: '草稿',
-      description: '申请尚未提交。',
-      action: '继续填写申请',
-    },
-    NEEDS_INFO: {
-      label: '待补充',
-      description: '审批人需要更多使用场景或范围信息。',
-      action: '补充申请信息',
-    },
-    PENDING: {
-      label: '审批中',
-      description: '申请已进入审批流程，请等待审批人处理。',
-      action: '可取消申请',
-    },
-    APPROVED: {
-      label: '已通过',
-      description: '访问权限已准备，可以前往我的资源查看接入信息。',
-      action: '查看接入信息',
-    },
-    REJECTED: {
-      label: '已拒绝',
-      description: '请查看审批意见，调整范围后可重新申请。',
-      action: '重新查找资源',
-    },
-    EXPIRED: {
-      label: '已到期',
-      description: '原访问期限已结束，可按当前用途发起续期。',
-      action: '发起续期',
-    },
-    CANCELLED: {
-      label: '已取消',
-      description: '该申请已由你取消。',
-      action: '重新查找资源',
-    },
-  }[value];
+    label: t(`portal.requests.status.${value}.label`),
+    description: t(`portal.requests.status.${value}.description`),
+    action: t(`portal.requests.status.${value}.action`),
+  };
 }
 
 function nextAction(
@@ -130,23 +105,21 @@ function nextAction(
   }
   void router.push('/catalog');
 }
-
-onMounted(load);
 </script>
 
 <template>
   <main class="requests-page">
     <NebulaPageHeader
-      eyebrow="Access requests"
-      title="我的申请"
-      description="跟踪审批进度、补充所需信息，并在通过后继续获取接入方式。"
+      :eyebrow="t('portal.requests.eyebrow')"
+      :title="t('portal.requests.title')"
+      :description="t('portal.requests.description')"
     >
       <template #actions>
         <NebulaButton variant="outline" @click="router.push('/catalog')">
-          浏览资源
+          {{ t('portal.requests.browse') }}
         </NebulaButton>
         <NebulaButton @click="router.push('/my-resources')">
-          我的资源
+          {{ t('portal.resources.title') }}
         </NebulaButton>
       </template>
     </NebulaPageHeader>
@@ -155,16 +128,33 @@ onMounted(load);
       <NebulaSelect
         v-model="status"
         :options="[
-          { label: '全部状态', value: '' },
-          { label: '待补充', value: 'NEEDS_INFO' },
-          { label: '审批中', value: 'PENDING' },
-          { label: '已通过', value: 'APPROVED' },
-          { label: '已拒绝', value: 'REJECTED' },
-          { label: '已到期', value: 'EXPIRED' },
+          { label: t('portal.requests.filter.all'), value: '' },
+          {
+            label: t('portal.requests.status.NEEDS_INFO.label'),
+            value: 'NEEDS_INFO',
+          },
+          {
+            label: t('portal.requests.status.PENDING.label'),
+            value: 'PENDING',
+          },
+          {
+            label: t('portal.requests.status.APPROVED.label'),
+            value: 'APPROVED',
+          },
+          {
+            label: t('portal.requests.status.REJECTED.label'),
+            value: 'REJECTED',
+          },
+          {
+            label: t('portal.requests.status.EXPIRED.label'),
+            value: 'EXPIRED',
+          },
         ]"
-        aria-label="申请状态"
+        :aria-label="t('portal.requests.filterAria')"
       />
-      <span>{{ visibleRequests.length }} 条申请</span>
+      <span>{{
+        t('portal.requests.count', { n: visibleRequests.length })
+      }}</span>
     </div>
 
     <div v-if="loading" class="request-list">
@@ -172,19 +162,25 @@ onMounted(load);
     </div>
     <NebulaEmptyState
       v-else-if="error"
-      title="申请记录加载失败"
+      :title="t('portal.requests.loadFailed')"
       :description="error"
     >
-      <NebulaButton @click="load">重新加载</NebulaButton>
+      <NebulaButton @click="load">{{ t('common.reload') }}</NebulaButton>
     </NebulaEmptyState>
     <NebulaEmptyState
       v-else-if="visibleRequests.length === 0"
-      title="还没有匹配的申请"
-      description="从资源目录找到所需能力，在详情页即可发起申请。"
+      :title="t('portal.requests.emptyTitle')"
+      :description="t('portal.requests.emptyBody')"
     >
-      <NebulaButton @click="router.push('/catalog')">浏览资源目录</NebulaButton>
+      <NebulaButton @click="router.push('/catalog')">
+        {{ t('catalog.browseTitle') }}
+      </NebulaButton>
     </NebulaEmptyState>
-    <section v-else class="request-list" aria-label="申请时间线">
+    <section
+      v-else
+      class="request-list"
+      :aria-label="t('portal.requests.timelineAria')"
+    >
       <article
         v-for="request in visibleRequests"
         :key="request.requestId"
@@ -210,7 +206,7 @@ onMounted(load);
           <blockquote v-if="request.reason">{{ request.reason }}</blockquote>
           <footer>
             <span>
-              {{ request.createdAt || '提交时间待同步' }} ·
+              {{ request.createdAt || t('portal.requests.timePending') }} ·
               {{ request.requestId }}
             </span>
             <NebulaButton
@@ -227,7 +223,7 @@ onMounted(load);
             >
               {{
                 cancellingId === request.requestId
-                  ? '正在取消…'
+                  ? t('portal.requests.cancelling')
                   : statusCopy(normalizeRequestStatus(request.status)).action
               }}
             </NebulaButton>

@@ -6,15 +6,15 @@
  * so it also works in a developer worktree that contains unrelated changes.
  *
  * Runtime address drift scanning lives in
- * `@nebula-studio-internal/node/runtime-address-drift`.
+ * `@nebula-studio-internal/node-kit/runtime-address-drift`.
  */
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { findMonorepoRoot } from '@nebula-studio-internal/node';
-import { scanRuntimeAddressDrift } from '@nebula-studio-internal/node/runtime-address-drift';
+import { findMonorepoRoot } from '@nebula-studio-internal/node-kit';
+import { scanRuntimeAddressDrift } from '@nebula-studio-internal/node-kit/runtime-address-drift';
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const root = findMonorepoRoot(join(scriptDir, '..')) || findMonorepoRoot();
@@ -68,7 +68,7 @@ if (stale.length > 0) {
 const drift = scanRuntimeAddressDrift(root);
 if (drift.length > 0) {
   console.error(
-    'Runtime addresses must come from configs/windows.json or generated helpers:',
+    'Runtime addresses must come from configs/environments.json or generated helpers:',
   );
   for (const item of drift) {
     console.error(`  - ${item}`);

@@ -1,41 +1,50 @@
 <script setup lang="ts">
 import type { AccessRequestStep } from './request-state';
-import type { AccessRequestDraft, ResourceSummaryViewModel } from './types';
+import type { AccessRequestDraft } from './types';
 
 import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 
 import {
   NebulaButton,
+  NebulaCheckbox,
   NebulaEmptyState,
+  NebulaForm,
+  NebulaFormItem,
   NebulaInput,
   NebulaPageHeader,
   NebulaSelect,
+  NebulaStepFlow,
 } from '@nebula-studio/nebula-ui';
 
 import { getAuthUserId } from '@/shared/auth/session';
 import { useTenant } from '@/shared/composables/useTenant';
+import { errorMessageKey, mapIntegrationErrorCode } from '@/shared/i18n/errors';
+import { integrationQueryKeys } from '@/shared/query/keys';
+import { usePortalStore } from '@/shared/state/portalStore';
 import { isApiSuccess } from '@/shared/types';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
 
-import { loadResourceCatalog, submitAccessRequest } from './api';
+import {
+  resourceCatalogQueryKey,
+  resourceCatalogQueryOptions,
+  submitAccessRequestMutationOptions,
+} from './queryOptions';
 import {
   canAdvanceAccessRequest,
   nextAccessRequestStep,
   previousAccessRequestStep,
 } from './request-state';
-import {
-  clearAccessDraft,
-  readAccessDraft,
-  trackPortalEvent,
-  writeAccessDraft,
-} from './storage';
+import { trackPortalEvent } from './storage';
 import { DEFAULT_ACCESS_REQUEST_DRAFT } from './types';
 
+const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 const { currentTenantId } = useTenant();
-const resource = ref<ResourceSummaryViewModel>();
-const loading = ref(true);
+const portal = usePortalStore();
+const queryClient = useQueryClient();
 const submitting = ref(false);
 const error = ref('');
 const step = ref<AccessRequestStep>(1);
@@ -43,31 +52,50 @@ const submittedRequestId = ref('');
 const resourceId = decodeURIComponent(String(route.params.resourceId));
 const draft = reactive<AccessRequestDraft>({
   ...DEFAULT_ACCESS_REQUEST_DRAFT,
-  ...readAccessDraft(resourceId),
+  ...portal.readDraft(resourceId),
+});
+
+const catalogQuery = useQuery(() =>
+  resourceCatalogQueryOptions(currentTenantId.value || undefined),
+);
+const submitMutation = useMutation(submitAccessRequestMutationOptions());
+
+const resource = computed(() =>
+  catalogQuery.data.value?.items.find((item) => item.id === resourceId),
+);
+
+const loadError = computed(() => {
+  if (catalogQuery.error.value) {
+    return t(
+      errorMessageKey(mapIntegrationErrorCode(catalogQuery.error.value)),
+    );
+  }
+  if (catalogQuery.isPending.value) return '';
+  if (!resource.value) return t('catalog.apply.missing');
+  if (
+    !['APPROVAL_REQUIRED', 'AVAILABLE'].includes(resource.value.availability)
+  ) {
+    return t('catalog.apply.notOpen');
+  }
+  return '';
 });
 
 const stepValid = computed(() => canAdvanceAccessRequest(step.value, draft));
 
-watch(draft, () => writeAccessDraft(resourceId, draft), { deep: true });
+const stepItems = computed(() =>
+  ([1, 2, 3, 4] as const).map((index) => ({
+    id: String(index),
+    label: t(`catalog.apply.stepLabel.${index}`),
+    state:
+      step.value > index
+        ? ('complete' as const)
+        : step.value === index
+          ? ('current' as const)
+          : ('pending' as const),
+  })),
+);
 
-async function load(): Promise<void> {
-  try {
-    const result = await loadResourceCatalog(
-      currentTenantId.value || undefined,
-    );
-    resource.value = result.items.find((item) => item.id === resourceId);
-    if (!resource.value) error.value = '资源不存在或已经下线。';
-    else if (
-      !['APPROVAL_REQUIRED', 'AVAILABLE'].includes(resource.value.availability)
-    ) {
-      error.value = '该资源当前不可申请，请返回目录选择在线资源。';
-    }
-  } catch (cause) {
-    error.value = cause instanceof Error ? cause.message : '申请页加载失败。';
-  } finally {
-    loading.value = false;
-  }
-}
+watch(draft, () => portal.writeDraft(resourceId, { ...draft }), { deep: true });
 
 function next(): void {
   if (!stepValid.value) return;
@@ -78,35 +106,36 @@ async function submit(): Promise<void> {
   const tenantId = currentTenantId.value;
   const userId = getAuthUserId();
   if (!tenantId || !userId || !resource.value) {
-    error.value = '缺少当前组织或用户信息，请重新登录后再试。草稿已保留。';
+    error.value = t('errors.session');
     return;
   }
   submitting.value = true;
   error.value = '';
   try {
-    const response = await submitAccessRequest(
+    const response = await submitMutation.mutateAsync({
       tenantId,
       userId,
-      resource.value,
+      resource: resource.value,
       draft,
-    );
+    });
     if (!isApiSuccess(response)) {
-      error.value = response.message || '提交失败，草稿已保留。';
+      error.value = response.message || t('errors.submit');
       return;
     }
     submittedRequestId.value = response.data.requestId;
-    clearAccessDraft(resourceId);
+    portal.clearDraft(resourceId);
+    await queryClient.invalidateQueries({
+      queryKey: resourceCatalogQueryKey(tenantId),
+    });
+    await queryClient.invalidateQueries({
+      queryKey: integrationQueryKeys.accessRequestsRoot(),
+    });
     trackPortalEvent('access_request_submitted', {
       resourceId: resource.value.id,
       kind: resource.value.kind,
     });
   } catch (cause) {
-    const message = cause instanceof Error ? cause.message : '';
-    error.value = /409|duplicate/i.test(message)
-      ? '你已经提交过相同资源的申请，请前往“我的申请”查看进度。'
-      : /403/.test(message)
-        ? '当前账号无权申请此资源，请联系组织管理员。'
-        : '网络或服务暂时不可用，申请草稿已保留，可稍后重试。';
+    error.value = t(errorMessageKey(mapIntegrationErrorCode(cause)));
   } finally {
     submitting.value = false;
   }
@@ -114,147 +143,150 @@ async function submit(): Promise<void> {
 
 onMounted(() => {
   trackPortalEvent('access_request_started', { resourceId });
-  void load();
 });
 </script>
 
 <template>
   <main class="request-page">
     <button class="back-button" type="button" @click="router.back()">
-      ← 返回资源详情
+      {{ t('catalog.apply.backDetail') }}
     </button>
-    <div v-if="loading" class="request-loading"></div>
+    <div v-if="catalogQuery.isPending" class="request-loading"></div>
     <NebulaEmptyState
-      v-else-if="!resource"
-      title="无法发起申请"
-      :description="error"
+      v-else-if="!resource || loadError"
+      :title="t('catalog.apply.cannotStart')"
+      :description="loadError"
     >
-      <NebulaButton @click="router.push('/catalog')">返回目录</NebulaButton>
+      <NebulaButton @click="router.push('/catalog')">
+        {{ t('catalog.backToCatalog') }}
+      </NebulaButton>
     </NebulaEmptyState>
     <section v-else-if="submittedRequestId" class="success-card" role="status">
       <span class="success-icon">✓</span>
-      <h1>申请已提交</h1>
+      <h1>{{ t('catalog.apply.submittedTitle') }}</h1>
       <p>
-        申请编号
-        {{ submittedRequestId }}。审批进度与需要补充的信息会显示在“我的申请”中。
+        {{ t('catalog.apply.submittedBody', { id: submittedRequestId }) }}
       </p>
       <div>
         <NebulaButton @click="router.push('/my-requests')">
-          查看申请进度
+          {{ t('catalog.viewRequests') }}
         </NebulaButton>
         <NebulaButton variant="outline" @click="router.push('/catalog')">
-          继续浏览资源
+          {{ t('catalog.apply.keepBrowsing') }}
         </NebulaButton>
       </div>
     </section>
     <template v-else>
       <NebulaPageHeader
-        eyebrow="Access request"
-        :title="`申请 ${resource.name}`"
-        description="说明使用场景与最小权限范围，提交前可完整预览；未成功提交的内容会保存在当前设备。"
+        :eyebrow="t('catalog.apply.eyebrow')"
+        :title="t('catalog.apply.title', { name: resource.name })"
+        :description="t('catalog.apply.description')"
       />
 
-      <ol class="steps" aria-label="申请步骤">
-        <li v-for="index in 4" :key="index" :class="{ active: step >= index }">
-          <span>{{ index }}</span>
-          {{ ['用途', '环境与期限', '范围确认', '提交预览'][index - 1] }}
-        </li>
-      </ol>
+      <NebulaStepFlow
+        :label="t('catalog.apply.stepsAria')"
+        :steps="stepItems"
+      />
 
-      <section class="request-card">
+      <NebulaForm class="request-card" :initial-values="draft" keep-values>
         <div v-if="step === 1" class="form-step">
           <span class="step-eyebrow">Step 1</span>
-          <h2>你准备如何使用这项资源？</h2>
-          <p>请写明业务场景、使用者和预期价值，至少 10 个字符。</p>
-          <label>
-            用途说明
+          <h2>{{ t('catalog.apply.step1Title') }}</h2>
+          <p>{{ t('catalog.apply.step1Body') }}</p>
+          <NebulaFormItem
+            name="purpose"
+            :label="t('catalog.apply.purpose')"
+            :hint="t('catalog.apply.purposeHint', { n: draft.purpose.length })"
+            required
+          >
             <textarea
               v-model="draft.purpose"
               rows="7"
-              placeholder="例如：订单运营团队将在内部看板中读取每日履约状态，用于异常订单跟进。"
+              :placeholder="t('catalog.apply.purposePlaceholder')"
             ></textarea>
-          </label>
-          <span class="field-hint"
-            >{{ draft.purpose.length }} / 至少 10 字符</span
-          >
+          </NebulaFormItem>
         </div>
 
         <div v-else-if="step === 2" class="form-step">
           <span class="step-eyebrow">Step 2</span>
-          <h2>选择使用环境与期限</h2>
-          <p>生产环境和较长期限通常需要更严格的审批。</p>
+          <h2>{{ t('catalog.apply.step2Title') }}</h2>
+          <p>{{ t('catalog.apply.step2Body') }}</p>
           <div class="field-grid">
-            <label>
-              使用环境
+            <NebulaFormItem
+              name="environment"
+              :label="t('catalog.apply.environment')"
+              required
+            >
               <NebulaSelect
                 v-model="draft.environment"
                 :options="[
-                  { label: '开发环境', value: 'DEVELOPMENT' },
-                  { label: '测试环境', value: 'TEST' },
-                  { label: '生产环境', value: 'PRODUCTION' },
+                  { label: t('catalog.apply.env.dev'), value: 'DEVELOPMENT' },
+                  { label: t('catalog.apply.env.test'), value: 'TEST' },
+                  { label: t('catalog.apply.env.prod'), value: 'PRODUCTION' },
                 ]"
               />
-            </label>
-            <label>
-              申请期限
+            </NebulaFormItem>
+            <NebulaFormItem
+              name="duration"
+              :label="t('catalog.apply.duration')"
+              required
+            >
               <NebulaSelect
                 v-model="draft.duration"
                 :options="[
-                  { label: '30 天', value: '30_DAYS' },
-                  { label: '90 天', value: '90_DAYS' },
-                  { label: '1 年', value: 'ONE_YEAR' },
+                  { label: t('catalog.apply.dur.30'), value: '30_DAYS' },
+                  { label: t('catalog.apply.dur.90'), value: '90_DAYS' },
+                  { label: t('catalog.apply.dur.year'), value: 'ONE_YEAR' },
                 ]"
               />
-            </label>
+            </NebulaFormItem>
           </div>
         </div>
 
         <div v-else-if="step === 3" class="form-step">
           <span class="step-eyebrow">Step 3</span>
-          <h2>确认最小权限范围</h2>
-          <p>只申请完成当前用途所必需的访问范围。</p>
-          <label>
-            权限范围
+          <h2>{{ t('catalog.apply.step3Title') }}</h2>
+          <p>{{ t('catalog.apply.step3Body') }}</p>
+          <NebulaFormItem name="scope" :label="t('catalog.apply.scope')">
             <NebulaInput
               v-model="draft.scope"
-              placeholder="例如：只读、订单基础字段"
+              :placeholder="t('catalog.apply.scopePlaceholder')"
             />
-          </label>
-          <label class="check-field">
-            <input v-model="draft.sensitivityConfirmed" type="checkbox" />
-            <span>
-              我已了解该资源可能包含敏感数据，并承诺遵守组织的数据使用、存储与分享政策。
-            </span>
-          </label>
+          </NebulaFormItem>
+          <NebulaFormItem name="sensitivityConfirmed">
+            <NebulaCheckbox v-model="draft.sensitivityConfirmed">
+              {{ t('catalog.apply.sensitivity') }}
+            </NebulaCheckbox>
+          </NebulaFormItem>
         </div>
 
         <div v-else class="form-step">
           <span class="step-eyebrow">Step 4</span>
-          <h2>提交前预览</h2>
-          <p>请确认内容准确。审批人会根据以下信息评估访问范围。</p>
+          <h2>{{ t('catalog.apply.step4Title') }}</h2>
+          <p>{{ t('catalog.apply.step4Body') }}</p>
           <dl class="preview">
             <div>
-              <dt>资源</dt>
+              <dt>{{ t('catalog.apply.preview.resource') }}</dt>
               <dd>{{ resource.name }}</dd>
             </div>
             <div>
-              <dt>类型</dt>
+              <dt>{{ t('catalog.apply.preview.kind') }}</dt>
               <dd>{{ resource.kind }}</dd>
             </div>
             <div>
-              <dt>用途</dt>
+              <dt>{{ t('catalog.apply.preview.purpose') }}</dt>
               <dd>{{ draft.purpose }}</dd>
             </div>
             <div>
-              <dt>环境</dt>
+              <dt>{{ t('catalog.apply.preview.environment') }}</dt>
               <dd>{{ draft.environment }}</dd>
             </div>
             <div>
-              <dt>期限</dt>
+              <dt>{{ t('catalog.apply.preview.duration') }}</dt>
               <dd>{{ draft.duration }}</dd>
             </div>
             <div>
-              <dt>范围</dt>
+              <dt>{{ t('catalog.apply.preview.scope') }}</dt>
               <dd>{{ draft.scope }}</dd>
             </div>
           </dl>
@@ -267,17 +299,21 @@ onMounted(() => {
             :disabled="step === 1"
             @click="step = previousAccessRequestStep(step)"
           >
-            上一步
+            {{ t('catalog.apply.prev') }}
           </NebulaButton>
-          <span>草稿自动保存</span>
+          <span>{{ t('catalog.apply.draftSaved') }}</span>
           <NebulaButton v-if="step < 4" :disabled="!stepValid" @click="next">
-            继续
+            {{ t('catalog.apply.continue') }}
           </NebulaButton>
           <NebulaButton v-else :disabled="submitting" @click="submit">
-            {{ submitting ? '正在提交…' : '提交申请' }}
+            {{
+              submitting
+                ? t('catalog.apply.submitting')
+                : t('catalog.apply.submit')
+            }}
           </NebulaButton>
         </footer>
-      </section>
+      </NebulaForm>
     </template>
   </main>
 </template>

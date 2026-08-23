@@ -6,28 +6,20 @@ import type {
   ResourceSummaryViewModel,
 } from './types';
 
-import {
-  computed,
-  onBeforeUnmount,
-  onMounted,
-  reactive,
-  ref,
-  watch,
-} from 'vue';
+import { computed, onBeforeUnmount, onMounted, reactive, watch } from 'vue';
 
-import { subscriptionRequestApi } from '@/features/subscription/api';
-import { getAuthUserId } from '@/shared/auth/session';
 import { useTenant } from '@/shared/composables/useTenant';
-import { isApiSuccess } from '@/shared/types';
+import { usePortalStore } from '@/shared/state/portalStore';
+import { useQuery } from '@tanstack/vue-query';
+import { storeToRefs } from 'pinia';
 
-import { loadResourceCatalog } from './api';
 import { catalogDetailPath } from './catalog-routes';
 import {
-  favoriteResourceIds,
-  recentResourceIds,
-  toggleFavoriteResource,
-  trackPortalEvent,
-} from './storage';
+  currentCatalogUserId,
+  pendingAccessRequestCountQueryOptions,
+  resourceCatalogQueryOptions,
+} from './queryOptions';
+import { trackPortalEvent } from './storage';
 import { DEFAULT_CATALOG_QUERY } from './types';
 
 export const RESOURCE_CATALOG_PAGE_SIZE = 9;
@@ -99,14 +91,24 @@ export function useResourceCatalogPage(
   router: Router,
 ) {
   const { currentTenantId } = useTenant();
-  const items = ref<ResourceSummaryViewModel[]>([]);
-  const loading = ref(true);
-  const error = ref('');
-  const unavailableSources = ref<string[]>([]);
-  const pendingRequestCount = ref(0);
-  const favorites = ref(favoriteResourceIds());
-  const recents = ref(recentResourceIds());
+  const portal = usePortalStore();
+  const { favorites, recents } = storeToRefs(portal);
   let querySyncTimer: ReturnType<typeof setTimeout> | undefined;
+
+  const catalogQuery = useQuery(() =>
+    resourceCatalogQueryOptions(currentTenantId.value || undefined),
+  );
+  const pendingQuery = useQuery(() =>
+    pendingAccessRequestCountQueryOptions(currentCatalogUserId()),
+  );
+
+  const items = computed(() => catalogQuery.data.value?.items ?? []);
+  const unavailableSources = computed(
+    () => catalogQuery.data.value?.unavailableSources ?? [],
+  );
+  const pendingRequestCount = computed(() => pendingQuery.data.value ?? 0);
+  const loading = computed(() => catalogQuery.isPending.value);
+  const error = computed(() => catalogQuery.error.value);
 
   const query = reactive<CatalogQuery>({
     ...DEFAULT_CATALOG_QUERY,
@@ -190,37 +192,9 @@ export function useResourceCatalogPage(
       .slice(0, 4),
   );
 
-  async function load(): Promise<void> {
-    loading.value = true;
-    error.value = '';
-    try {
-      const result = await loadResourceCatalog(
-        currentTenantId.value || undefined,
-      );
-      items.value = result.items;
-      unavailableSources.value = result.unavailableSources;
-      const userId = getAuthUserId();
-      if (userId) {
-        try {
-          const requestResponse =
-            await subscriptionRequestApi.listByUser(userId);
-          if (isApiSuccess(requestResponse)) {
-            pendingRequestCount.value = requestResponse.data.filter((request) =>
-              ['NEEDS_INFO', 'PENDING', 'PENDING_REVIEW'].includes(
-                request.status,
-              ),
-            ).length;
-          }
-        } catch {
-          // Optional progress summary.
-        }
-      }
-    } catch (cause) {
-      error.value =
-        cause instanceof Error ? cause.message : '资源目录暂时无法加载。';
-    } finally {
-      loading.value = false;
-    }
+  function load(): void {
+    void catalogQuery.refetch();
+    void pendingQuery.refetch();
   }
 
   function openResource(resource: ResourceSummaryViewModel): void {
@@ -232,12 +206,11 @@ export function useResourceCatalogPage(
   }
 
   function toggleFavorite(resource: ResourceSummaryViewModel): void {
-    favorites.value = toggleFavoriteResource(resource.id);
+    portal.toggleFavorite(resource.id);
   }
 
   onMounted(() => {
     trackPortalEvent('catalog_viewed');
-    void load();
   });
 
   onBeforeUnmount(() => clearTimeout(querySyncTimer));

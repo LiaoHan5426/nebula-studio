@@ -43,8 +43,8 @@ const emit = defineEmits<{
 
 <style scoped>
 .modal__content--dag {
-  min-height: 420px;
   height: min(70vh, 640px);
+  min-height: 420px;
   overflow: hidden;
 }
 

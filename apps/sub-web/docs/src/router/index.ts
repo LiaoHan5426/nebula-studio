@@ -353,6 +353,31 @@ const routes = applyDocsExperienceMeta([
               import('@/pages/patterns/ExperienceBaselinePage.vue'),
             meta: { title: '全局体验基线', sidebar: 'patterns' },
           },
+          {
+            path: 'catalog',
+            name: 'patterns-catalog',
+            component: () => import('@/pages/patterns/PatternsCatalogPage.vue'),
+            meta: { title: 'Patterns catalog', sidebar: 'patterns' },
+          },
+        ],
+      },
+      {
+        path: 'design',
+        name: 'design',
+        redirect: '/design/tokens',
+        children: [
+          {
+            path: 'tokens',
+            name: 'design-tokens',
+            component: () => import('@/pages/design/TokensPage.vue'),
+            meta: { title: 'Tokens', sidebar: 'design' },
+          },
+          {
+            path: 'theme-matrix',
+            name: 'design-theme-matrix',
+            component: () => import('@/pages/design/ThemeMatrixPage.vue'),
+            meta: { title: 'Theme matrix', sidebar: 'design' },
+          },
         ],
       },
     ],

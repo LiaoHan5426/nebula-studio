@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["apiTargets"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "apiTargets": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "type": "string", "pattern": "^https?://" }
+    },
+    "federationDevEntries": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["name", "expose", "packagedHost", "defaultHttpEntry"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "expose": { "type": "string" },
+          "packagedHost": { "type": "string" },
+          "defaultHttpEntry": { "type": "string", "pattern": "^https?://" }
+        }
+      }
+    }
+  }
+}

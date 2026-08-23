@@ -44,7 +44,7 @@ preload 实现集中在 `apps/electron-preload/src`。构建工具根据生成�
 | [`packages/core/app-shell`](../packages/core/app-shell/README.md) | `@nebula-studio/app-shell` | 窗口配置、认证 helper、协议再导出 |
 | `packages/platform/shell-host` | `@nebula-studio/shell-host` | Web/Electron 壳适配（presentation stub、Host bridge 安装） |
 | `packages/platform/shell-protocol` | `@nebula-studio/shell-protocol` | embed 消息、事件总线、presentation 标记（无 Host 实现） |
-| `packages/platform/assembly-boot` | `@nebula-studio-renderer/assembly-boot` | boot 边界收集 window 能力并安装 nebula-assembly |
+| `packages/platform/login-ui` | `@nebula-studio/login-ui` | 登录表单 UI（Host 与 standalone Remote 共用，非 renderer 包） |
 | `packages/core/auth` | `@nebula-studio/auth` | 按运行模式编排认证策略 |
 | `packages/core/auth-provider` | `@nebula-studio/auth-provider` | 全局认证会话及 Vue 注入 |
 | [`packages/core/electron-shared`](../packages/core/electron-shared/README.md) | `@nebula-studio-electron/electron-bridge` | Electron/preload/renderer 桥接类型与实现 |
@@ -67,8 +67,8 @@ preload 实现集中在 `apps/electron-preload/src`。构建工具根据生成�
 
 | 路径 | 包名 | 职责 |
 | --- | --- | --- |
-| `internal/vite` | `@nebula-studio-internal/vite` | Host/Remote Vite 配置、proxy、Electron adapter |
-| `internal/node` | `@nebula-studio-internal/node` | 工作区枚举、`windows.json` 校验与生成制品、运行时地址漂移扫描（目录暂不改名） |
+| `internal/build-kit` | `@nebula-studio-internal/build-kit` | Host/Remote Vite 配置、proxy、Electron adapter |
+| `internal/node-kit` | `@nebula-studio-internal/node-kit` | 工作区枚举、`windows.json` 校验与生成制品、运行时地址漂移扫描（目录暂不改名） |
 
 ## 新增、移动或改名检查清单
 

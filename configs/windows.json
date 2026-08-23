@@ -13,50 +13,6 @@
     "embedQuery": "embed"
   },
   "electronEmbeddedPresentation": "iframe",
-  "apiTargets": {
-    "platform": "http://localhost:8090",
-    "console": "http://localhost:8080",
-    "executor": "http://localhost:8088"
-  },
-  "realStack": {
-    "probeHost": "127.0.0.1",
-    "healthChecks": [
-      {
-        "id": "platform",
-        "label": "Platform Console",
-        "target": "platform",
-        "startupPath": "/actuator/health",
-        "probePath": "/actuator/health"
-      },
-      {
-        "id": "console",
-        "label": "Platform Integration",
-        "target": "console",
-        "startupPath": "/actuator/health",
-        "probePath": "/actuator/health"
-      },
-      {
-        "id": "executor",
-        "label": "Platform Integration Executor",
-        "target": "executor",
-        "startupPath": "/actuator/health",
-        "probePath": "/actuator/health"
-      }
-    ],
-    "openapi": {
-      "platform": {
-        "target": "platform",
-        "path": "/v3/api-docs"
-      }
-    },
-    "unauthorizedProbe": {
-      "target": "platform",
-      "path": "/monitor/api/metrics"
-    }
-  },
-  "e2e": {
-    "mockRoutePatterns": ["**/api/**"]
-  },
   "windows": {
     "main": {
       "preload": "main",

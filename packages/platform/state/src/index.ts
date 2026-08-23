@@ -1,7 +1,17 @@
-import { createPinia, defineStore } from 'pinia';
+import type { NebulaStorage } from '@nebula-studio/storage';
+
+import type { NebulaPersistStores } from './persistPlugin.ts';
+
 import { createApp } from 'vue';
 
-import type { NebulaStorage } from '@nebula-studio/storage';
+import { createPinia, defineStore, storeToRefs } from 'pinia';
+
+import { createNebulaPersistPlugin } from './persistPlugin.ts';
+
+export type {
+  NebulaPersistPolicy,
+  NebulaPersistStores,
+} from './persistPlugin.ts';
 
 export interface NebulaPiniaHandle {
   dispose(): void;
@@ -10,33 +20,26 @@ export interface NebulaPiniaHandle {
 
 export function createNebulaPinia(options: {
   appId: string;
-  persistStores?: Record<string, string>;
+  persistStores?: NebulaPersistStores;
   storage?: NebulaStorage;
 }): NebulaPiniaHandle {
   const pinia = createPinia();
-  const app = createApp({ name: `nebula-state-${options.appId}` });
-  app.use(pinia);
-  if (options.storage) {
-    pinia.use(({ store }) => {
-      const persistKey = options.persistStores?.[store.$id];
-      if (!persistKey || persistKey.includes('token')) {
-        return;
-      }
-      const saved = options.storage?.get<unknown>(persistKey);
-      if (saved && typeof saved === 'object') {
-        store.$patch(saved);
-      }
-      store.$subscribe((_mutation, state) => {
-        options.storage?.set(persistKey, state, { privacy: 'device' });
-      });
-    });
+  if (options.storage && options.persistStores) {
+    pinia.use(
+      createNebulaPersistPlugin({
+        storage: options.storage,
+        stores: options.persistStores,
+      }),
+    );
   }
+  const host = createApp({ name: `nebula-state-${options.appId}` });
+  host.use(pinia);
   return {
     pinia,
     dispose() {
-      app.unmount();
+      host.unmount();
     },
   };
 }
 
-export { defineStore };
+export { createNebulaPersistPlugin, defineStore, storeToRefs };

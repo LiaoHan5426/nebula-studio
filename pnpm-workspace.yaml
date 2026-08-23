@@ -8,10 +8,12 @@ packages:
   - packages/platform/*
   - packages/ui/*
   - packages/editors/*
+  - packages/low-code/*
   - packages/features/*
   - packages/testing/*
   - tools/lint/*
   - tools/*
+  - scripts/*
 publicHoistPattern:
   - oxfmt
   - oxlint
@@ -41,6 +43,7 @@ catalogMode: prefer
 catalog:
   '@types/markdown-it': ^14.2.0
   ajv: ^8.20.0
+  circular-dependency-scanner: ^3.1.0
   openapi-typescript: ^7.13.0
 catalogs:
   bpmn:
@@ -128,6 +131,8 @@ catalogs:
   parser:
     node-sql-parser: ^5.4.0
     yaml: ^2.9.0
+  query:
+    '@tanstack/vue-query': ^5.92.9
   release:
     bumpp: ^11.1.0
   style:
@@ -190,8 +195,6 @@ catalogs:
     vue-i18n: ^11.2.8
     vue-router: ^4.6.4
     vue-tsc: ^3.3.10
-  query:
-    '@tanstack/vue-query': ^5.92.9
 allowBuilds:
   '@parcel/watcher': true
   electron: true

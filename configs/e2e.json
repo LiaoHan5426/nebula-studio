@@ -1,0 +1,4 @@
+{
+  "$schema": "./e2e.schema.json",
+  "mockRoutePatterns": ["**/api/**"]
+}

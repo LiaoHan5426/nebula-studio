@@ -14,8 +14,8 @@ if ([string]::IsNullOrWhiteSpace($BackendRoot)) {
 $studioRoot = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
 $artifactRoot = Join-Path $studioRoot "test-results\real-stack"
 New-Item -ItemType Directory -Force -Path $artifactRoot | Out-Null
-$windowsConfigPath = Join-Path $studioRoot "configs\windows.json"
-$windowsConfig = Get-Content $windowsConfigPath -Raw | ConvertFrom-Json
+$environmentConfig = Get-Content (Join-Path $studioRoot "configs\environments.json") -Raw | ConvertFrom-Json
+$realStackConfig = Get-Content (Join-Path $studioRoot "configs\real-stack.json") -Raw | ConvertFrom-Json
 
 function Join-Url {
     param([string]$Origin, [string]$Path)
@@ -31,9 +31,9 @@ function Join-Url {
 
 function Get-ApiTargetOrigin {
     param([string]$Target)
-    $origin = $windowsConfig.apiTargets.$Target
+    $origin = $environmentConfig.apiTargets.$Target
     if ([string]::IsNullOrWhiteSpace($origin)) {
-        throw "[real-stack] apiTargets.$Target is missing in configs/windows.json"
+        throw "[real-stack] apiTargets.$Target is missing in configs/environments.json"
     }
     return $origin
 }
@@ -44,7 +44,7 @@ $serviceDirectories = @{
     executor = Join-Path $BackendRoot "nebula-platform\platform-integration-executor"
 }
 
-$services = @($windowsConfig.realStack.healthChecks | ForEach-Object {
+$services = @($realStackConfig.healthChecks | ForEach-Object {
     if (-not $serviceDirectories.ContainsKey($_.id)) {
         throw "[real-stack] no backend directory mapping for realStack.healthChecks id=$($_.id)"
     }
@@ -340,7 +340,7 @@ try {
         Write-Host "[real-stack] starting $($service.Name), pid=$($process.Id)"
         Wait-Health $service
     }
-    $unauthorizedProbe = $windowsConfig.realStack.unauthorizedProbe
+    $unauthorizedProbe = $realStackConfig.unauthorizedProbe
     Assert-Unauthorized (Join-Url (Get-ApiTargetOrigin $unauthorizedProbe.target) $unauthorizedProbe.path)
 
     Push-Location $studioRoot

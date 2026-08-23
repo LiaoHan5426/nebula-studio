@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { SubscriptionRequestRecord } from '@/features/subscription/api';
 
-import { onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import {
   NebulaButton,
@@ -14,13 +14,17 @@ import {
   NebulaTag,
 } from '@nebula-studio/nebula-ui';
 
+import { platformRequestsQueryOptions } from '@/features/management/queryOptions';
 import { subscriptionRequestApi } from '@/features/subscription/api';
 import { GRANT_SCHEDULE_OPTIONS } from '@/shared/grant/schedule';
-import { isApiSuccess } from '@/shared/types';
+import { useQuery } from '@tanstack/vue-query';
 
-const requests = ref<SubscriptionRequestRecord[]>([]);
-const loading = ref(false);
 const statusFilter = ref('PENDING');
+const requestsQuery = useQuery(() =>
+  platformRequestsQueryOptions(statusFilter.value || undefined),
+);
+const requests = computed(() => requestsQuery.data.value ?? []);
+const loading = computed(() => requestsQuery.isPending.value);
 const approveTarget = ref<null | SubscriptionRequestRecord>(null);
 const rejectTarget = ref<null | SubscriptionRequestRecord>(null);
 const rejectReason = ref('');
@@ -34,23 +38,8 @@ const grantForm = ref({
   scheduleEndTime: '20:00',
 });
 
-onMounted(() => {
-  void loadRequests();
-});
-
 async function loadRequests() {
-  loading.value = true;
-  try {
-    const response = await subscriptionRequestApi.list({
-      pageSize: 100,
-      status: statusFilter.value || undefined,
-    });
-    if (isApiSuccess(response)) {
-      requests.value = response.data.items ?? [];
-    }
-  } finally {
-    loading.value = false;
-  }
+  await requestsQuery.refetch();
 }
 
 function openApprove(row: SubscriptionRequestRecord) {

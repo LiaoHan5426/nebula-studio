@@ -121,7 +121,7 @@ if (!rootPkg.includes('build:federation-remotes && vp run web#build')) {
   process.exit(1);
 }
 const hostRemotesPlugin = readFileSync(
-  join(root, 'internal/vite/src/federation/nebulaHostDevRemotesPlugin.ts'),
+  join(root, 'internal/build-kit/src/federation/nebulaHostDevRemotesPlugin.ts'),
   'utf8',
 );
 if (
@@ -152,7 +152,7 @@ if (!runtimeView.includes('row.getAllowedOrigins()')) {
   process.exit(1);
 }
 const noncePlugin = readFileSync(
-  join(root, 'internal/vite/src/plugin/nebulaHostCspNoncePlugin.ts'),
+  join(root, 'internal/build-kit/src/plugin/nebulaHostCspNoncePlugin.ts'),
   'utf8',
 );
 const webVite = readFileSync(join(root, 'apps/web/vite.config.ts'), 'utf8');

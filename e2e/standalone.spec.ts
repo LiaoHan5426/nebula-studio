@@ -1,4 +1,4 @@
-import { resolveStandaloneApp } from '@nebula-studio-internal/vite';
+import { resolveStandaloneApp } from '@nebula-studio-internal/build-kit';
 import { expect, test } from '@playwright/test';
 
 import { expectAssemblyMarkers } from './helpers/expectAssemblyMarkers';
@@ -21,7 +21,7 @@ test.describe('standalone remotes', () => {
     await expectAssemblyMarkers(page);
   });
 
-  test('settings standalone login is the shared Login app', async ({
+  test('settings standalone login uses shared login-ui', async ({
     page,
   }) => {
     await page.goto(`${settings.baseUrl}/login`);
@@ -39,7 +39,7 @@ test.describe('standalone remotes', () => {
     await expectAssemblyMarkers(page);
   });
 
-  test('integration standalone login is the shared Login app', async ({
+  test('integration standalone login uses shared login-ui', async ({
     page,
   }) => {
     await page.goto(`${integration.baseUrl}/login`);

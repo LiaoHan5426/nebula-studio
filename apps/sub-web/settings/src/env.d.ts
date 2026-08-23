@@ -11,10 +11,15 @@ declare global {
     api: {
       scope: 'settings';
       settings: {
+        getLocale(): Promise<string>;
         getTheme(): Promise<ThemeMode>;
+        onLocaleChanged(
+          listener: (payload: { locale: string }) => void,
+        ): () => void;
         onThemeChanged(
           listener: (payload: { theme: ThemeMode }) => void,
         ): () => void;
+        setLocale(locale: string): Promise<string>;
         setTheme(theme: ThemeMode): Promise<ThemeMode>;
       };
     };

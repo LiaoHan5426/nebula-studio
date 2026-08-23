@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import type { ApiInterface } from '@/shared/types';
-
-import { computed, onMounted, ref } from 'vue';
+import { computed } from 'vue';
 
 import {
   NebulaButton,
@@ -11,51 +9,41 @@ import {
   NebulaTag,
 } from '@nebula-studio/nebula-ui';
 
+import { interfacesQueryOptions } from '@/features/interfaces/queryOptions';
 import { tenantApi } from '@/features/tenant/api';
-import { interfaceApi } from '@/shared/api/integration';
 import { useTenant } from '@/shared/composables/useTenant';
-import { isApiSuccess } from '@/shared/types';
+import { integrationQueryKeys } from '@/shared/query/keys';
+import { unwrapApiData } from '@/shared/query/unwrap';
+import { useQuery } from '@tanstack/vue-query';
 
-const services = ref<ApiInterface[]>([]);
-const allowedIds = ref<null | string[]>(null);
-const loading = ref(false);
 const { currentTenantId } = useTenant();
-
+const servicesQuery = useQuery(() =>
+  interfacesQueryOptions('active', { pageSize: 100, status: 'ACTIVE' }),
+);
+const tenantQuery = useQuery(() => ({
+  queryKey: integrationQueryKeys.tenantDetail(currentTenantId.value),
+  queryFn: () => unwrapApiData(tenantApi.get(currentTenantId.value)),
+}));
+const services = computed(() => servicesQuery.data.value?.items ?? []);
+const allowedIds = computed(
+  () => tenantQuery.data.value?.allowedInterfaces ?? ['*'],
+);
+const loading = computed(
+  () => servicesQuery.isPending.value || tenantQuery.isPending.value,
+);
 const visibleServices = computed(() => {
-  if (!allowedIds.value || allowedIds.value.includes('*')) {
+  if (allowedIds.value.includes('*')) {
     return services.value;
   }
   const allowed = new Set(allowedIds.value);
   return services.value.filter((item) => allowed.has(item.interfaceId));
 });
 
-onMounted(async () => {
-  await Promise.all([loadTenantAccess(), loadServices()]);
-});
-
-async function loadTenantAccess() {
-  const response = await tenantApi.get(currentTenantId.value);
-  if (isApiSuccess(response)) {
-    allowedIds.value = response.data.allowedInterfaces ?? ['*'];
-  }
+function loadServices() {
+  void servicesQuery.refetch();
 }
 
-async function loadServices() {
-  loading.value = true;
-  try {
-    const response = await interfaceApi.list({
-      pageSize: 100,
-      status: 'ACTIVE',
-    });
-    if (isApiSuccess(response)) {
-      services.value = response.data.items ?? [];
-    }
-  } finally {
-    loading.value = false;
-  }
-}
-
-function serviceTypeLabel(item: ApiInterface) {
+function serviceTypeLabel(item: { interfaceType?: string }) {
   return item.interfaceType === 'COMPOSITE' ? '组合服务' : '原子服务';
 }
 </script>

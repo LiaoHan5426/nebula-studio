@@ -1,3 +1,12 @@
+export { generateAccentPalette, parseHexColor } from './palette.ts';
+export {
+  applyResolvedTheme,
+  mergeThemePreference,
+  readSystemScheme,
+  resolveAccentSeed,
+  resolveScheme,
+  resolveTheme,
+} from './resolve.ts';
 export {
   ACCENT_PRESETS,
   ORGANIZATION_DEFAULT_PREFERENCE,
@@ -13,12 +22,3 @@ export type {
   ThemeDensity,
   ThemePreference,
 } from './types.ts';
-export { generateAccentPalette, parseHexColor } from './palette.ts';
-export {
-  applyResolvedTheme,
-  mergeThemePreference,
-  readSystemScheme,
-  resolveAccentSeed,
-  resolveScheme,
-  resolveTheme,
-} from './resolve.ts';

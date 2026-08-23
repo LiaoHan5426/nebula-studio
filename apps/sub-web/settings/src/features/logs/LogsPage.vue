@@ -2,6 +2,7 @@
 import type { LogRecord } from '@/shared/api/system';
 
 import { computed, onMounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
 import {
@@ -18,11 +19,12 @@ import { isApiSuccess } from '@/shared/types';
 
 type LogTab = 'audit' | 'login' | 'operations';
 
-const tabs: { key: LogTab; label: string }[] = [
-  { key: 'login', label: '登录日志' },
-  { key: 'operations', label: '操作日志' },
-  { key: 'audit', label: '审计日志' },
-];
+const { t } = useI18n();
+const tabs = computed(() => [
+  { key: 'login' as const, label: t('logs.login') },
+  { key: 'operations' as const, label: t('logs.operations') },
+  { key: 'audit' as const, label: t('logs.audit') },
+]);
 
 const activeTab = ref<LogTab>('login');
 const records = ref<LogRecord[]>([]);
@@ -36,7 +38,9 @@ const detailOpen = ref(false);
 const router = useRouter();
 
 const pageTitle = computed(
-  () => tabs.find((tab) => tab.key === activeTab.value)?.label ?? '日志管理',
+  () =>
+    tabs.value.find((tab) => tab.key === activeTab.value)?.label ??
+    t('logs.fallback'),
 );
 const visibleRecords = computed(() =>
   records.value.filter(
@@ -155,7 +159,7 @@ function openRelatedEntity() {
     description="检索登录、操作与审计日志，支持导出与关联实体跳转。"
     :loading="loading"
     :empty="!loading && visibleRecords.length === 0"
-    empty-title="暂无日志"
+    :empty-title="t('logs.empty')"
     empty-description="调整筛选条件或稍后再试。"
     :result-summary="`共 ${total} 条记录`"
     :detail-open="detailOpen"

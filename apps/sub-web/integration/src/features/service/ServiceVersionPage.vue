@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { VersionSnapshot } from '@/shared/types';
 
-import { onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import {
   NebulaButton,
@@ -12,11 +12,17 @@ import {
   NebulaTableColumn,
 } from '@nebula-studio/nebula-ui';
 
+import { versionSnapshotsQueryOptions } from '@/features/service/queryOptions';
 import { versionApi } from '@/features/version/api';
+import { useQuery } from '@tanstack/vue-query';
 
-const snapshots = ref<VersionSnapshot[]>([]);
-const loading = ref(false);
 const resourceId = ref('');
+const queriedResourceId = ref('');
+const snapshotsQuery = useQuery(() =>
+  versionSnapshotsQueryOptions(queriedResourceId.value || undefined),
+);
+const snapshots = computed(() => snapshotsQuery.data.value ?? []);
+const loading = computed(() => snapshotsQuery.isFetching.value);
 const selectedSnapshot = ref<null | VersionSnapshot>(null);
 const rollbackTarget = ref<null | VersionSnapshot>(null);
 
@@ -34,20 +40,8 @@ function formatJson(raw: string): string {
   }
 }
 
-async function loadSnapshots() {
-  if (!resourceId.value) {
-    snapshots.value = [];
-    return;
-  }
-  loading.value = true;
-  try {
-    const res = await versionApi.listSnapshots(resourceId.value);
-    snapshots.value = res.data ?? [];
-  } catch {
-    snapshots.value = [];
-  } finally {
-    loading.value = false;
-  }
+function loadSnapshots() {
+  queriedResourceId.value = resourceId.value.trim();
 }
 
 function viewDetail(snap: VersionSnapshot) {
@@ -68,10 +62,6 @@ async function confirmRollback() {
     console.error('Rollback failed:', e);
   }
 }
-
-onMounted(() => {
-  /* 需要用户输入资源 ID 后手动查询 */
-});
 </script>
 
 <template>

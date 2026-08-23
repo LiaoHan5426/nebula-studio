@@ -1,12 +1,12 @@
 import type { RuntimeMode } from '@nebula-studio/shell-protocol';
 
+import { startApplication } from '@nebula-studio/application-bootstrap';
 import {
   redirectShellToWebLogin,
   shouldRedirectUnauthenticatedWebShell,
 } from '@nebula-studio/auth-provider/web';
 import '@nebula-studio/nebula-layout';
 import '@nebula-studio/nebula-ui';
-import { bootMicroApp } from '@nebula-studio/runtime';
 import {
   installShellHostBridge,
   installWebPresentationUnlessElectron,
@@ -64,7 +64,7 @@ export async function bootFrontend(opts: { mode: RuntimeMode }): Promise<void> {
     processVersions: { node: __NEBULA_BUILD_NODE_VERSION__ },
   });
 
-  await bootMicroApp({
+  await startApplication({
     appId: 'frontend',
     mode,
     rootComponent: wrapSubAppWithAssembly(AppComponent),

@@ -2,6 +2,7 @@
 import type { OrganizationNode, OrgPolicy } from '@/shared/api/system';
 
 import { onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import {
   NebulaButton,
@@ -16,6 +17,7 @@ import { isApiSuccess } from '@/shared/types';
 
 import OrganizationTreeNode from './OrganizationTreeNode.vue';
 
+const { t } = useI18n();
 const tree = ref<OrganizationNode[]>([]);
 const policy = ref<OrgPolicy>({ enabled: false, multiOrgEnabled: false });
 const loading = ref(false);
@@ -85,7 +87,7 @@ async function saveOrganization() {
 
 async function removeOrganization(node: OrganizationNode) {
   const confirmed = await useConfirm(
-    `确定删除组织「${node.orgName}」？下级组织与成员归属可能受到影响，请先完成迁移。`,
+    t('orgs.confirmDelete', { name: node.orgName }),
   );
   if (!confirmed) return;
   const response = await organizationsApi.delete(node.id);
@@ -109,10 +111,10 @@ async function savePolicy() {
 
 <template>
   <div class="page">
-    <NebulaPane title="组织策略" description="控制组织功能开关">
+    <NebulaPane :title="t('orgs.policy')" :description="t('orgs.policyHint')">
       <label class="toggle">
         <input v-model="policy.enabled" type="checkbox" />
-        <span>启用组织功能</span>
+        <span>{{ t('orgs.enable') }}</span>
       </label>
       <label class="toggle">
         <input
@@ -120,26 +122,28 @@ async function savePolicy() {
           type="checkbox"
           :disabled="!policy.enabled"
         />
-        <span>允许多组织切换</span>
+        <span>{{ t('orgs.multi') }}</span>
       </label>
       <div class="page__actions">
         <NebulaButton :disabled="savingPolicy" @click="savePolicy">
-          {{ savingPolicy ? '保存中…' : '保存策略' }}
+          {{ savingPolicy ? t('common.saving') : t('orgs.savePolicy') }}
         </NebulaButton>
       </div>
     </NebulaPane>
 
     <div class="page__actions">
       <NebulaButton variant="primary" @click="openCreate()">
-        新建组织
+        {{ t('orgs.create') }}
       </NebulaButton>
       <NebulaButton variant="secondary" @click="loadAll">
-        {{ loading ? '加载中…' : '刷新' }}
+        {{ loading ? t('common.loading') : t('common.refresh') }}
       </NebulaButton>
     </div>
 
-    <NebulaPane title="组织树">
-      <div v-if="tree.length === 0 && !loading" class="empty">暂无组织数据</div>
+    <NebulaPane :title="t('orgs.tree')">
+      <div v-if="tree.length === 0 && !loading" class="empty">
+        {{ t('orgs.empty') }}
+      </div>
       <OrganizationTreeNode
         v-for="node in tree"
         :key="node.id"

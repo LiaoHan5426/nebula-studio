@@ -42,7 +42,7 @@
 
 .bpmn-editor-wrapper .djs-connection.selected .djs-visual > path,
 .bpmn-editor-wrapper .djs-connection.hover .djs-visual > path {
-  stroke: hsl(var(--primary)) !important;
+  stroke: var(--editor-select, hsl(var(--foreground) / 78%)) !important;
 }
 
 .bpmn-editor-wrapper .djs-connection .djs-hit {
@@ -60,7 +60,7 @@
 /* Preview line while connecting */
 .bpmn-editor-wrapper .djs-dragging .djs-connection .djs-visual > path,
 .bpmn-editor-wrapper .djs-connect .djs-visual > path {
-  stroke: hsl(var(--primary)) !important;
+  stroke: var(--editor-select, hsl(var(--foreground) / 78%)) !important;
 }
 
 /* ---- Diagram: shapes (task / event / gateway) ---- */
@@ -107,7 +107,7 @@
   .djs-element.selected:not(.djs-connection)
   .djs-visual
   > path:not(.djs-hit) {
-  stroke: hsl(var(--primary)) !important;
+  stroke: var(--editor-select, hsl(var(--foreground) / 78%)) !important;
 }
 
 /* ---- Diagram: labels ---- */
@@ -161,7 +161,7 @@
 .bpmn-editor-wrapper .djs-palette .entry:hover,
 .bpmn-editor-wrapper .djs-palette .djs-palette-toggle:hover,
 .bpmn-editor-wrapper .djs-palette .highlighted-entry {
-  color: hsl(var(--primary)) !important;
+  color: var(--editor-select, hsl(var(--foreground) / 78%)) !important;
   background: hsl(var(--muted)) !important;
 }
 
@@ -283,8 +283,8 @@
 .djs-popup .djs-popup-search input:focus {
   outline: none;
   background: hsl(var(--background)) !important;
-  border-color: hsl(var(--primary)) !important;
-  box-shadow: 0 0 0 1px hsl(var(--primary) / 35%);
+  border-color: var(--editor-select, hsl(var(--foreground) / 78%)) !important;
+  box-shadow: 0 0 0 1px var(--editor-select-muted, hsl(var(--foreground) / 42%));
 }
 
 .djs-popup .djs-popup-search input::placeholder {
@@ -322,13 +322,13 @@
 .bpmn-editor-wrapper .djs-outline,
 .bpmn-editor-wrapper .djs-element.selected .djs-outline,
 .bpmn-editor-wrapper .djs-element.hover .djs-outline {
-  stroke: hsl(var(--primary)) !important;
+  stroke: var(--editor-select, hsl(var(--foreground) / 78%)) !important;
   stroke-width: 2px !important;
 }
 
 /* Alignment snap lines */
 .bpmn-editor-wrapper .djs-snap-line {
-  stroke: hsl(var(--primary) / 55%) !important;
+  stroke: var(--editor-select-muted, hsl(var(--foreground) / 42%)) !important;
 }
 
 /* Watermark */

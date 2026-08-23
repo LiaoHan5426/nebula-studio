@@ -27,6 +27,7 @@
     "@nebula-studio-electron/electron-bridge": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
     "@nebula-studio/auth-provider": "workspace:^",
+    "@nebula-studio/i18n": "workspace:^",
     "@nebula-studio/shell-protocol": "workspace:^",
     "@nebula-studio/storage": "workspace:^",
     "@nebula-studio/tokens": "workspace:^"

@@ -121,12 +121,12 @@ const overrides: OxlintConfig = {
       },
     },
     {
-      files: ['packages/core/runtime/src/bootMicroApp.ts'],
+      files: ['packages/platform/application-bootstrap/src/startApplication.ts'],
       rules: {
         'no-underscore-dangle': [
           'warn',
           {
-            allow: ['__resetActiveMicroAppHandleForTests'],
+            allow: ['__resetActiveApplicationHandleForTests'],
           },
         ],
       },

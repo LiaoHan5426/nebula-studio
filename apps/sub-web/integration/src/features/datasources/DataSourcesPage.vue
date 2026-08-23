@@ -6,7 +6,8 @@ import type {
   ProtocolConfig,
 } from '@/shared/types';
 
-import { onMounted, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import {
   NebulaButton,
@@ -15,12 +16,18 @@ import {
   NebulaTag,
 } from '@nebula-studio/nebula-ui';
 
-import { connectorApi, dataSourceApi } from '@/shared/api/integration';
+import { dataSourceApi } from '@/shared/api/integration';
 import { ConnectorType, isApiSuccess } from '@/shared/types';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
 
-const dataSources = ref<DataSourceConfig[]>([]);
-const connectors = ref<Connector[]>([]);
-const loading = ref(false);
+import {
+  databaseConnectorsQueryOptions,
+  dataSourcesQueryKey,
+  dataSourcesQueryOptions,
+} from './queryOptions';
+
+const { t } = useI18n();
+const queryClient = useQueryClient();
 const showCreate = ref(false);
 const showEdit = ref(false);
 const editing = ref<DataSourceConfig | null>(null);
@@ -37,37 +44,26 @@ const form = ref({
   endpointUri: '',
 });
 
-onMounted(async () => {
-  await Promise.all([loadDataSources(), loadConnectors()]);
-});
+const sourcesQuery = useQuery(() => dataSourcesQueryOptions());
+const connectorsQuery = useQuery(() => databaseConnectorsQueryOptions());
 
-async function loadDataSources() {
-  loading.value = true;
-  try {
-    const response = await dataSourceApi.list();
-    if (isApiSuccess(response)) {
-      dataSources.value = response.data;
+const dataSources = computed(() => sourcesQuery.data.value ?? []);
+const connectors = computed(() => connectorsQuery.data.value ?? []);
+const loading = computed(() => sourcesQuery.isPending.value);
+
+watch(
+  connectors,
+  (list) => {
+    if (!form.value.connectorId && list[0]) {
+      form.value.connectorId = list[0].connectorId;
     }
-  } finally {
-    loading.value = false;
-  }
-}
-
-async function loadConnectors() {
-  const response = await connectorApi.getDatabaseConnectors();
-  if (isApiSuccess(response)) {
-    const seen = new Set<string>();
-    connectors.value = response.data.filter((c) => {
-      if (!c.connectorId || seen.has(c.connectorId)) return false;
-      seen.add(c.connectorId);
-      return true;
-    });
-  }
-}
+  },
+  { immediate: true },
+);
 
 function selectedConnector(): Connector | undefined {
   return connectors.value.find(
-    (c: Connector) => c.connectorId === form.value.connectorId,
+    (connector: Connector) => connector.connectorId === form.value.connectorId,
   );
 }
 
@@ -94,6 +90,14 @@ function openEdit(ds: DataSourceConfig) {
   showEdit.value = true;
 }
 
+async function invalidateSources() {
+  await queryClient.invalidateQueries({ queryKey: dataSourcesQueryKey() });
+}
+
+const createMutation = useMutation({
+  mutationFn: (payload: DataSourceConfig) => dataSourceApi.create(payload),
+});
+
 async function handleCreate() {
   const connector = selectedConnector();
   const config: DatabaseConfig | ProtocolConfig =
@@ -107,7 +111,7 @@ async function handleCreate() {
           password: form.value.password,
         };
 
-  const response = await dataSourceApi.create({
+  const response = await createMutation.mutateAsync({
     dataSourceId: '',
     name: form.value.name,
     connectorId: form.value.connectorId,
@@ -117,7 +121,7 @@ async function handleCreate() {
   });
   if (isApiSuccess(response)) {
     showCreate.value = false;
-    await loadDataSources();
+    await invalidateSources();
   }
 }
 
@@ -125,39 +129,49 @@ async function handleUpdate() {
   if (!editing.value) return;
   await dataSourceApi.update(editing.value.dataSourceId, editing.value);
   showEdit.value = false;
-  await loadDataSources();
+  await invalidateSources();
 }
 
 async function handleDelete(id: string) {
   await dataSourceApi.delete(id);
-  await loadDataSources();
+  await invalidateSources();
 }
 
 async function handleTest(id: string) {
   testNotice.value = null;
   const response = await dataSourceApi.testConnection(id);
   if (isApiSuccess(response)) {
-    testNotice.value = `连接测试: ${response.data.message} (${response.data.responseTimeMs}ms)`;
+    testNotice.value = t('datasources.testNotice', {
+      message: response.data.message,
+      ms: response.data.responseTimeMs,
+    });
   }
+}
+
+function loadDataSources() {
+  void sourcesQuery.refetch();
 }
 </script>
 
 <template>
   <div class="page">
-    <NebulaPane title="数据源管理" description="基于连接器创建与管理数据源">
+    <NebulaPane
+      :title="t('datasources.title')"
+      :description="t('datasources.description')"
+    >
       <div class="page__toolbar">
         <NebulaButton variant="primary" @click="openCreate">
-          新建数据源
+          {{ t('datasources.create') }}
         </NebulaButton>
         <NebulaButton variant="outline" @click="loadDataSources">
-          刷新
+          {{ t('common.refresh') }}
         </NebulaButton>
       </div>
       <p v-if="testNotice" class="page__notice">{{ testNotice }}</p>
 
-      <div v-if="loading" class="page__empty">加载中…</div>
+      <div v-if="loading" class="page__empty">{{ t('common.loading') }}</div>
       <div v-else-if="dataSources.length === 0" class="page__empty">
-        暂无数据源
+        {{ t('datasources.empty') }}
       </div>
       <div v-else class="page__list">
         <article
@@ -180,19 +194,19 @@ async function handleTest(id: string) {
           </div>
           <div class="page__actions">
             <NebulaButton variant="outline" @click="openEdit(ds)">
-              编辑
+              {{ t('datasources.edit') }}
             </NebulaButton>
             <NebulaButton
               variant="outline"
               @click="handleTest(ds.dataSourceId)"
             >
-              测试
+              {{ t('datasources.test') }}
             </NebulaButton>
             <NebulaButton
               variant="outline"
               @click="handleDelete(ds.dataSourceId)"
             >
-              删除
+              {{ t('datasources.delete') }}
             </NebulaButton>
           </div>
         </article>
@@ -201,14 +215,12 @@ async function handleTest(id: string) {
 
     <NebulaDialog
       :open="showCreate"
-      title="新建数据源"
+      :title="t('datasources.create')"
       @update:open="showCreate = $event"
     >
-      <label class="field"
-        ><span>名称</span><input v-model="form.name"
-      /></label>
+      <label class="field"><span>{{ t('datasources.fields.name') }}</span><input v-model="form.name" /></label>
       <label class="field">
-        <span>连接器</span>
+        <span>{{ t('datasources.fields.connector') }}</span>
         <select v-model="form.connectorId" class="field__select">
           <option
             v-for="(c, index) in connectors"
@@ -222,70 +234,45 @@ async function handleTest(id: string) {
       <template
         v-if="selectedConnector()?.connectorType !== ConnectorType.PROTOCOL"
       >
-        <label class="field"
-          ><span>主机</span><input v-model="form.host"
-        /></label>
-        <label class="field"
-          ><span>端口</span><input v-model.number="form.port" type="number"
-        /></label>
-        <label class="field"
-          ><span>数据库</span><input v-model="form.database"
-        /></label>
-        <label class="field"
-          ><span>用户名</span><input v-model="form.username"
-        /></label>
-        <label class="field"
-          ><span>密码</span><input v-model="form.password" type="password"
-        /></label>
+        <label class="field"><span>{{ t('datasources.fields.host') }}</span><input v-model="form.host" /></label>
+        <label class="field"><span>{{ t('datasources.fields.port') }}</span><input v-model.number="form.port" type="number" /></label>
+        <label class="field"><span>{{ t('datasources.fields.database') }}</span><input v-model="form.database" /></label>
+        <label class="field"><span>{{ t('datasources.fields.username') }}</span><input v-model="form.username" /></label>
+        <label class="field"><span>{{ t('datasources.fields.password') }}</span><input v-model="form.password" type="password" /></label>
       </template>
-      <label v-else class="field"
-        ><span>端点 URI</span><input v-model="form.endpointUri"
-      /></label>
+      <label v-else class="field"><span>{{ t('datasources.fields.endpoint') }}</span><input v-model="form.endpointUri" /></label>
       <div class="modal__actions">
         <NebulaButton variant="outline" @click="showCreate = false">
-          取消
+          {{ t('datasources.cancel') }}
         </NebulaButton>
         <NebulaButton variant="primary" @click="handleCreate">
-          创建
+          {{ t('datasources.saveCreate') }}
         </NebulaButton>
       </div>
     </NebulaDialog>
 
     <NebulaDialog
       :open="showEdit && Boolean(editing)"
-      title="编辑数据源"
+      :title="t('datasources.edit')"
       @update:open="showEdit = $event"
     >
       <template v-if="editing">
-        <label class="field"
-          ><span>名称</span><input v-model="editing.name"
-        /></label>
+        <label class="field"><span>{{ t('datasources.fields.name') }}</span><input v-model="editing.name" /></label>
         <template v-if="'host' in editing.config">
-          <label class="field"
-            ><span>主机</span
-            ><input v-model="(editing.config as DatabaseConfig).host"
-          /></label>
-          <label class="field"
-            ><span>端口</span
-            ><input
+          <label class="field"><span>{{ t('datasources.fields.host') }}</span><input v-model="(editing.config as DatabaseConfig).host" /></label>
+          <label class="field"><span>{{ t('datasources.fields.port') }}</span><input
               v-model.number="(editing.config as DatabaseConfig).port"
               type="number"
           /></label>
-          <label class="field"
-            ><span>数据库</span
-            ><input v-model="(editing.config as DatabaseConfig).database"
-          /></label>
+          <label class="field"><span>{{ t('datasources.fields.database') }}</span><input v-model="(editing.config as DatabaseConfig).database" /></label>
         </template>
-        <label v-else class="field"
-          ><span>端点</span
-          ><input v-model="(editing.config as ProtocolConfig).endpointUri"
-        /></label>
+        <label v-else class="field"><span>{{ t('datasources.fields.endpoint') }}</span><input v-model="(editing.config as ProtocolConfig).endpointUri" /></label>
         <div class="modal__actions">
           <NebulaButton variant="outline" @click="showEdit = false">
-            取消
+            {{ t('datasources.cancel') }}
           </NebulaButton>
           <NebulaButton variant="primary" @click="handleUpdate">
-            保存
+            {{ t('datasources.save') }}
           </NebulaButton>
         </div>
       </template>

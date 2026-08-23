@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ApiInterface, AtomicInterface } from '@/shared/types';
 
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import {
   NebulaButton,
@@ -12,6 +12,7 @@ import {
   NebulaTag,
 } from '@nebula-studio/nebula-ui';
 
+import { interfacesQueryOptions } from '@/features/interfaces/queryOptions';
 import { interfaceApi } from '@/shared/api/integration';
 import { useAuth } from '@/shared/composables/useAuth';
 import {
@@ -21,9 +22,16 @@ import {
   InterfaceType,
   isApiSuccess,
 } from '@/shared/types';
+import { useQuery } from '@tanstack/vue-query';
 
-const services = ref<ApiInterface[]>([]);
-const loading = ref(false);
+const servicesQuery = useQuery(() =>
+  interfacesQueryOptions('atomic', {
+    pageSize: 100,
+    interfaceType: InterfaceType.ATOMIC,
+  }),
+);
+const services = computed(() => servicesQuery.data.value?.items ?? []);
+const loading = computed(() => servicesQuery.isPending.value);
 const showDialog = ref(false);
 const { isPlatformAdmin } = useAuth();
 
@@ -48,21 +56,8 @@ const form = ref<Partial<AtomicInterface>>({
   responseSchema: { type: 'object', fields: {} },
 });
 
-onMounted(loadServices);
-
 async function loadServices() {
-  loading.value = true;
-  try {
-    const response = await interfaceApi.list({
-      pageSize: 100,
-      interfaceType: InterfaceType.ATOMIC,
-    });
-    if (isApiSuccess(response)) {
-      services.value = response.data.items ?? [];
-    }
-  } finally {
-    loading.value = false;
-  }
+  await servicesQuery.refetch();
 }
 
 function openCreate() {

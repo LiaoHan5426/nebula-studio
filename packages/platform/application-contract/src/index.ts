@@ -59,6 +59,8 @@ export interface HostThemeCapability {
 
 export interface HostLocaleCapability {
   readonly locale: string;
+  setLocale?(locale: string): Promise<void> | void;
+  subscribe?(listener: (locale: string) => void): () => void;
 }
 
 export interface HostCapabilities {

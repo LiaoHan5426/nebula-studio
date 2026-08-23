@@ -1,18 +1,19 @@
 {
   "schemaVersion": 1,
   "totals": {
-    "apps": 11,
-    "packages": 35,
+    "apps": 12,
+    "packages": 39,
     "internal": 2,
     "tools": 6,
-    "all": 54
+    "scripts": 1,
+    "all": 60
   },
   "maxTotals": {
-    "apps": 11,
-    "packages": 35,
+    "apps": 12,
+    "packages": 40,
     "internal": 2,
     "tools": 6,
-    "all": 54
+    "all": 60
   },
   "packages": [
     {
@@ -38,6 +39,11 @@
     {
       "name": "@nebula-studio-renderer/hello-style-b",
       "dir": "apps/remotes/hello-style-b",
+      "category": "apps"
+    },
+    {
+      "name": "@nebula-studio-renderer/low-code-studio",
+      "dir": "apps/remotes/low-code-studio",
       "category": "apps"
     },
     {
@@ -71,13 +77,13 @@
       "category": "apps"
     },
     {
-      "name": "@nebula-studio-internal/node",
-      "dir": "internal/node",
+      "name": "@nebula-studio-internal/build-kit",
+      "dir": "internal/build-kit",
       "category": "internal"
     },
     {
-      "name": "@nebula-studio-internal/vite",
-      "dir": "internal/vite",
+      "name": "@nebula-studio-internal/node-kit",
+      "dir": "internal/node-kit",
       "category": "internal"
     },
     {
@@ -111,11 +117,6 @@
       "category": "packages"
     },
     {
-      "name": "@nebula-studio/runtime",
-      "dir": "packages/core/runtime",
-      "category": "packages"
-    },
-    {
       "name": "@nebula-studio/sse-events",
       "dir": "packages/core/sse-events",
       "category": "packages"
@@ -146,13 +147,33 @@
       "category": "packages"
     },
     {
+      "name": "@nebula-studio/editors-low-code",
+      "dir": "packages/editors/low-code",
+      "category": "packages"
+    },
+    {
       "name": "@nebula-studio/nebula-low-render",
       "dir": "packages/editors/low-code-form",
       "category": "packages"
     },
     {
-      "name": "@nebula-studio/use-confirm",
-      "dir": "packages/features/use-confirm",
+      "name": "@nebula-studio/low-code-compiler",
+      "dir": "packages/low-code/compiler",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/low-code-contract",
+      "dir": "packages/low-code/contract",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/low-code-kit",
+      "dir": "packages/low-code/kit",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/application-bootstrap",
+      "dir": "packages/platform/application-bootstrap",
       "category": "packages"
     },
     {
@@ -183,6 +204,11 @@
     {
       "name": "@nebula-studio/i18n",
       "dir": "packages/platform/i18n",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/login-ui",
+      "dir": "packages/platform/login-ui",
       "category": "packages"
     },
     {
@@ -256,6 +282,11 @@
       "category": "packages"
     },
     {
+      "name": "@nebula-studio/vsh",
+      "dir": "scripts/vsh",
+      "category": "scripts"
+    },
+    {
       "name": "@nebula-studio-internal/eslint",
       "dir": "tools/lint/eslint",
       "category": "tools"
@@ -296,7 +327,7 @@
         "apps/sub-web/frontend/src/boot.ts",
         "apps/sub-web/login/src/boot.ts"
       ],
-      "note": "Five standalone boots still share document CSS + bootMicroApp + assembly. Federation remotes use federation.ts instead."
+      "note": "Standalone composition roots share explicit application-bootstrap lifecycle stages. Federation remotes use federation.ts instead."
     },
     {
       "id": "host-vs-standalone-workspace-login",

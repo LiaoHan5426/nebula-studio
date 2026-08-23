@@ -76,7 +76,19 @@ for (const theme of themes) {
       });
       await page.addInitScript(
         ({ selectedTheme }) => {
-          localStorage.setItem('nebula-studio-web-theme', selectedTheme);
+          localStorage.setItem(
+            'nebula.theme.v1',
+            JSON.stringify({
+              v: 1,
+              privacy: 'device',
+              value: {
+                colorScheme: selectedTheme,
+                accent: { kind: 'preset', id: 'nebula-blue' },
+                density: 'comfortable',
+                contrast: 'normal',
+              },
+            }),
+          );
           localStorage.setItem(
             'nebula.task-guides.v1',
             JSON.stringify({

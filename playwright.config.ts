@@ -1,4 +1,4 @@
-import { resolveShellWeb } from '@nebula-studio-internal/vite';
+import { resolveShellWeb } from '@nebula-studio-internal/build-kit';
 import { defineConfig, devices } from '@playwright/test';
 
 const executablePath = process.env.PLAYWRIGHT_EXECUTABLE_PATH;

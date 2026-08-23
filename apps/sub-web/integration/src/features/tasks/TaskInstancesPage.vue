@@ -1,63 +1,47 @@
 <script setup lang="ts">
-import type {
-  TaskInstance,
-  TaskLog,
-} from '@nebula-studio/contracts/integration';
+import type { TaskInstance } from '@nebula-studio/contracts/integration';
 
-import { onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 
-import { isApiSuccess } from '@nebula-studio/api-client';
 import { NebulaButton, NebulaPane, NebulaTag } from '@nebula-studio/nebula-ui';
 
 import { taskApi } from '@/shared/api/taskApi';
 import { useTenant } from '@/shared/composables/useTenant';
+import { useQuery } from '@tanstack/vue-query';
+
+import {
+  taskInstanceLogsQueryOptions,
+  taskInstancesQueryOptions,
+} from './queryOptions';
 
 const { currentTenantId } = useTenant();
 
-const instances = ref<TaskInstance[]>([]);
+const instancesQuery = useQuery(() =>
+  taskInstancesQueryOptions(currentTenantId.value || undefined),
+);
 const selectedInstance = ref<null | TaskInstance>(null);
-const logs = ref<TaskLog[]>([]);
-const loading = ref(false);
-const logsLoading = ref(false);
+const instances = computed(() => instancesQuery.data.value ?? []);
+const loading = computed(() => instancesQuery.isPending.value);
 
-onMounted(async () => {
-  await loadInstances();
-});
+const logsQuery = useQuery(() =>
+  taskInstanceLogsQueryOptions(selectedInstance.value?.instanceId),
+);
+const logs = computed(() => logsQuery.data.value ?? []);
+const logsLoading = computed(() => logsQuery.isFetching.value);
 
 async function loadInstances() {
-  loading.value = true;
-  try {
-    const response = await taskApi.listInstances(
-      undefined,
-      currentTenantId.value,
-    );
-    if (isApiSuccess(response)) {
-      instances.value = response.data;
-    }
-  } finally {
-    loading.value = false;
-  }
+  await instancesQuery.refetch();
 }
 
 async function viewLogs(instance: TaskInstance) {
   selectedInstance.value = instance;
-  logsLoading.value = true;
-  try {
-    const response = await taskApi.getInstanceLogs(instance.instanceId);
-    if (isApiSuccess(response)) {
-      logs.value = response.data;
-    }
-  } finally {
-    logsLoading.value = false;
-  }
 }
 
 async function retryInstance(instanceId: string) {
   await taskApi.retryInstance(instanceId);
   await loadInstances();
   if (selectedInstance.value?.instanceId === instanceId) {
-    const current = instances.value.find((i) => i.instanceId === instanceId);
-    if (current) await viewLogs(current);
+    await logsQuery.refetch();
   }
 }
 

@@ -1,0 +1,15 @@
+export {
+  applyTemplate,
+  COMPONENT_API_VERSION,
+  COMPONENT_MANIFESTS,
+  CONNECTOR_MANIFESTS,
+  createPaletteNode,
+  DEFAULT_DATA_SOURCES,
+  DESIGNER_PREVIEW_DATA,
+  type LowCodeComponentManifest,
+  type LowCodeConnectorManifest,
+  type LowCodeDataSourceDescriptor,
+  type LowCodeTemplateManifest,
+  TEMPLATE_MANIFESTS,
+  TRUSTED_COMPONENT_LOCK,
+} from './catalog.ts';

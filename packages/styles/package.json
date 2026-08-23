@@ -17,8 +17,6 @@
   "type": "module",
   "sideEffects": [
     "**/*.css",
-    "./src/index.ts",
-    "./src/electron.ts",
     "./src/document.ts",
     "./src/remote.ts"
   ],
@@ -33,6 +31,7 @@
     "./foundations/theme-motion.css": "./src/foundations/theme-motion.css"
   },
   "dependencies": {
-    "@nebula-studio-internal/tailwind": "workspace:^"
+    "@nebula-studio-internal/tailwind": "workspace:^",
+    "tailwindcss": "catalog:style"
   }
 }

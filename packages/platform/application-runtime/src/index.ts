@@ -28,6 +28,7 @@ export {
   localDocsFederationRegistration,
   localFederationRegistration,
   normalizeExposedModule,
+  packagedHostForRuntimeEntry,
   resolveExternalHref,
   resolveIframeSrc,
   resolveRemoteManifestEntry,

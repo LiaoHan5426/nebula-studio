@@ -1,10 +1,11 @@
+import type { ThemePreference } from '@nebula-studio/tokens';
+
 import type { MainModule, MainModuleContext } from '../bootstrap/MainModule';
+
+import { resolveTheme } from '@nebula-studio/tokens';
 
 import { is } from '@electron-toolkit/utils';
 import { ipcMain, nativeTheme } from 'electron';
-
-import type { ThemePreference } from '@nebula-studio/tokens';
-import { resolveTheme } from '@nebula-studio/tokens';
 
 type ThemeMode = 'dark' | 'light' | 'system';
 

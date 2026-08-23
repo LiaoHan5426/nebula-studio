@@ -11,7 +11,8 @@ import {
   readWebAuthSession,
 } from '@nebula-studio/auth-provider/storage';
 
-import { createHostThemeCapability } from './themeHost.ts';
+import { createHostLocaleCapability } from './localeHost';
+import { createHostThemeCapability } from './themeHost';
 
 interface ShellEventBusLike {
   emit?(event: string, payload: unknown): void;
@@ -148,15 +149,11 @@ export function createPocHostCapabilities(): HostCapabilities {
       },
     },
     theme: createHostThemeCapability(),
-    locale: { locale: 'zh-CN' },
+    locale: createHostLocaleCapability(),
   };
 }
 
 export function createWebEmbedHostCapabilities(): HostCapabilities {
-  const locale =
-    typeof document !== 'undefined'
-      ? document.documentElement.lang || 'zh-CN'
-      : 'zh-CN';
   return {
     ...createPocHostCapabilities(),
     auth: {
@@ -173,12 +170,8 @@ export function createWebEmbedHostCapabilities(): HostCapabilities {
     events: {
       subscribe: subscribeHostEvent,
     },
-    locale: { locale },
   };
 }
-
-export const pocHostCapabilities: HostCapabilities =
-  createPocHostCapabilities();
 
 export {
   assertIframeMethodPayload,
@@ -196,9 +189,15 @@ export {
   isIframeHandshakeAckMessage,
   isIframeHandshakeMessage,
   negotiateIframeProtocolVersion,
-} from './iframeBridge.ts';
+} from './iframeBridge';
 export type {
   IframeCapabilityBridge,
   IframeHandshakeAckMessage,
   IframeHandshakeMessage,
 } from './iframeBridge.ts';
+
+export const pocHostCapabilities: HostCapabilities =
+  createPocHostCapabilities();
+
+export { createHostLocaleCapability } from './localeHost';
+export { createHostThemeCapability } from './themeHost';

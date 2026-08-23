@@ -2,6 +2,7 @@
 import type { UserRecord } from '@/shared/api/system';
 
 import { onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import {
   NebulaButton,
@@ -18,6 +19,7 @@ import EntityListPage from '@/shared/components/EntityListPage.vue';
 import { useConfirm } from '@/shared/composables/useConfirm';
 import { isApiSuccess } from '@/shared/types';
 
+const { t } = useI18n();
 const users = ref<UserRecord[]>([]);
 const loading = ref(false);
 const page = ref(1);
@@ -97,7 +99,7 @@ async function toggleStatus(user: UserRecord) {
 
 async function removeUser(user: UserRecord) {
   const confirmed = await useConfirm(
-    `删除用户 ${user.username} 后，其登录会话和角色关联将失效。是否继续？`,
+    t('users.confirmDelete', { name: user.username }),
   );
   if (!confirmed) return;
   const response = await usersApi.delete(user.id);
@@ -115,58 +117,86 @@ function openDetails(user: UserRecord) {
 <template>
   <EntityListPage
     v-model:detail-open="detailOpen"
-    title="成员管理"
-    description="管理组织成员、账号状态和基础身份信息。"
-    eyebrow="Organization & members"
-    :result-summary="`共 ${total} 名成员`"
+    :title="t('users.title')"
+    :description="t('users.description')"
+    :eyebrow="t('users.eyebrow')"
+    :result-summary="t('users.summary', { total })"
     :loading="loading"
     :empty="!loading && users.length === 0"
-    :detail-title="selected?.username || '成员详情'"
+    :detail-title="selected?.username || t('users.detail')"
     :detail-subtitle="selected?.id || ''"
   >
     <template #actions>
       <NebulaButton variant="primary" @click="openCreate">
-        新建用户
+        {{ t('users.create') }}
       </NebulaButton>
     </template>
     <template #filters>
       <NebulaInput
         v-model="keyword"
-        placeholder="搜索用户名、姓名或邮箱"
+        :placeholder="t('users.search')"
         class="search"
         @keydown.enter="loadUsers"
       />
     </template>
     <template #filterActions>
-      <NebulaButton variant="outline" @click="loadUsers">查询</NebulaButton>
-      <NebulaButton variant="secondary" @click="loadUsers">刷新</NebulaButton>
+      <NebulaButton variant="outline" @click="loadUsers">
+{{
+        t('common.query')
+      }}
+</NebulaButton>
+      <NebulaButton variant="secondary" @click="loadUsers">
+{{
+        t('common.refresh')
+      }}
+</NebulaButton>
     </template>
 
     <div class="page__table-wrap">
       <NebulaTable :data="users" row-key="id">
-        <NebulaTableColumn field="username" title="用户名" min-width="120" />
-        <NebulaTableColumn field="realName" title="姓名" min-width="100" />
-        <NebulaTableColumn field="email" title="邮箱" min-width="140" />
-        <NebulaTableColumn field="status" title="状态" width="90">
+        <NebulaTableColumn
+          field="username"
+          :title="t('users.username')"
+          min-width="120"
+        />
+        <NebulaTableColumn
+          field="realName"
+          :title="t('users.name')"
+          min-width="100"
+        />
+        <NebulaTableColumn
+          field="email"
+          :title="t('users.email')"
+          min-width="140"
+        />
+        <NebulaTableColumn field="status" :title="t('users.status')" width="90">
           <template #default="{ row }">
             <NebulaTag
               :variant="row.status === 'ACTIVE' ? 'success' : 'default'"
             >
-              {{ row.status === 'ACTIVE' ? '正常' : '禁用' }}
+              {{
+                row.status === 'ACTIVE'
+                  ? t('roles.normal')
+                  : t('common.disable')
+              }}
             </NebulaTag>
           </template>
         </NebulaTableColumn>
-        <NebulaTableColumn title="操作" width="230">
+        <NebulaTableColumn :title="t('users.actions')" width="230">
           <template #default="{ row }">
             <div class="row-actions">
               <NebulaButton variant="ghost" @click="openDetails(row)">
-                详情
+                {{ t('common.detail') }}
               </NebulaButton>
               <NebulaButton variant="secondary" @click="toggleStatus(row)">
-                {{ row.status === 'ACTIVE' ? '禁用' : '启用' }}
+                {{
+                  row.status === 'ACTIVE'
+                    ? t('common.disable')
+                    : t('common.enable')
+                }}
               </NebulaButton>
               <NebulaButton variant="ghost" @click="removeUser(row)">
-                删除
+                {{ t('common.delete') }}
               </NebulaButton>
             </div>
           </template>
@@ -198,7 +228,7 @@ function openDetails(user: UserRecord) {
     <template #dialogs>
       <NebulaDialog
         v-model:open="showDialog"
-        title="新建用户"
+        :title="t('users.create')"
         description="创建账号后，可在角色管理中分配访问范围。"
         content-class="settings-form-dialog"
       >

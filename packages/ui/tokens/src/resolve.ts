@@ -1,9 +1,10 @@
-import { generateAccentPalette } from './palette.ts';
 import type {
   ColorSchemePreference,
   ResolvedTheme,
   ThemePreference,
 } from './types.ts';
+
+import { generateAccentPalette } from './palette.ts';
 import {
   ACCENT_PRESETS,
   ORGANIZATION_DEFAULT_PREFERENCE,

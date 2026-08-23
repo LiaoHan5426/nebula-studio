@@ -1,17 +1,17 @@
 {
   "name": "@nebula-studio/query",
   "version": "0.0.0",
-  "description": "App-scoped Vue Query client factory.",
+  "description": "App-scoped Vue Query client, key factory, and Vue plugin install.",
   "private": true,
   "type": "module",
+  "scripts": {
+    "test": "vp test run"
+  },
   "exports": {
     ".": {
       "types": "./src/index.ts",
       "default": "./src/index.ts"
     }
-  },
-  "scripts": {
-    "test": "vp test run"
   },
   "dependencies": {
     "@tanstack/vue-query": "catalog:query",

@@ -1,17 +1,17 @@
 {
   "name": "@nebula-studio/state",
   "version": "0.0.0",
-  "description": "App-scoped Pinia factory and dispose helpers.",
+  "description": "App-scoped Pinia factory, persist plugin, and store helpers.",
   "private": true,
   "type": "module",
+  "scripts": {
+    "test": "vp test run"
+  },
   "exports": {
     ".": {
       "types": "./src/index.ts",
       "default": "./src/index.ts"
     }
-  },
-  "scripts": {
-    "test": "vp test run"
   },
   "dependencies": {
     "@nebula-studio/storage": "workspace:^",

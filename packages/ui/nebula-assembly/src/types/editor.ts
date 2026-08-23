@@ -2,6 +2,9 @@ import type { ComputedRef, Ref, ShallowRef } from 'vue';
 
 export type EditorTheme = 'dark' | 'light';
 
+/** Built-in syntax palettes. Do not map these from brand accent. */
+export type EditorSyntaxTheme = 'vs' | 'vs-dark';
+
 export interface EditorSize {
   height?: string;
   width?: string;

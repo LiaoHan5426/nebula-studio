@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+
 import {
   NebulaDrawer,
   NebulaEmptyState,
@@ -25,10 +27,10 @@ withDefaults(
     resultSummary: '',
     loading: false,
     empty: false,
-    emptyTitle: '暂无数据',
-    emptyDescription: '调整筛选条件或创建第一个对象。',
+    emptyTitle: '',
+    emptyDescription: '',
     detailOpen: false,
-    detailTitle: '详情',
+    detailTitle: '',
     detailSubtitle: '',
   },
 );
@@ -36,6 +38,9 @@ withDefaults(
 defineEmits<{
   'update:detailOpen': [value: boolean];
 }>();
+
+const { t } = useI18n();
+
 </script>
 
 <template>
@@ -59,12 +64,12 @@ defineEmits<{
     </NebulaFilterBar>
 
     <div v-if="loading" class="entity-list-page__loading" role="status">
-      正在加载…
+      {{ t('common.loading') }}
     </div>
     <NebulaEmptyState
       v-else-if="empty"
-      :title="emptyTitle"
-      :description="emptyDescription"
+      :title="emptyTitle || t('common.empty')"
+      :description="emptyDescription || t('common.emptyHint')"
     >
       <slot name="emptyAction"></slot>
     </NebulaEmptyState>
@@ -74,7 +79,7 @@ defineEmits<{
 
     <NebulaDrawer
       :open="detailOpen"
-      :title="detailTitle"
+      :title="detailTitle || t('common.detail')"
       :subtitle="detailSubtitle"
       width="440px"
       @update:open="$emit('update:detailOpen', $event)"

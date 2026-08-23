@@ -2,6 +2,7 @@
 import type { RoleRecord } from '@/shared/api/system';
 
 import { onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import {
   NebulaButton,
@@ -18,6 +19,7 @@ import EntityListPage from '@/shared/components/EntityListPage.vue';
 import { useConfirm } from '@/shared/composables/useConfirm';
 import { isApiSuccess } from '@/shared/types';
 
+const { t } = useI18n();
 const roles = ref<RoleRecord[]>([]);
 const loading = ref(false);
 const showDialog = ref(false);
@@ -78,7 +80,7 @@ async function saveRole() {
 
 async function removeRole(role: RoleRecord) {
   const confirmed = await useConfirm(
-    `删除角色 ${role.roleName} 会移除成员通过该角色获得的权限。是否继续？`,
+    t('roles.confirmDelete', { name: role.roleName }),
   );
   if (!confirmed) return;
   const response = await rolesApi.delete(role.id);
@@ -96,28 +98,44 @@ function openDetails(role: RoleRecord) {
 <template>
   <EntityListPage
     v-model:detail-open="detailOpen"
-    title="角色管理"
-    description="维护组织角色、继承关系和成员获得的访问范围。"
-    eyebrow="Access control"
-    :result-summary="`${roles.length} 个角色`"
+    :title="t('roles.title')"
+    :description="t('roles.description')"
+    :eyebrow="t('roles.eyebrow')"
+    :result-summary="t('roles.summary', { total: roles.length })"
     :loading="loading"
     :empty="!loading && roles.length === 0"
-    :detail-title="selected?.roleName || '角色详情'"
+    :detail-title="selected?.roleName || t('roles.detail')"
     :detail-subtitle="selected?.roleCode || ''"
   >
     <template #actions>
       <NebulaButton variant="primary" @click="openCreate">
-        新建角色
+        {{ t('roles.create') }}
       </NebulaButton>
-      <NebulaButton variant="secondary" @click="loadRoles">刷新</NebulaButton>
+      <NebulaButton variant="secondary" @click="loadRoles">
+{{
+        t('common.refresh')
+      }}
+</NebulaButton>
     </template>
 
     <div class="page__table-wrap">
       <NebulaTable :data="roles" row-key="id">
-        <NebulaTableColumn field="roleName" title="角色名称" min-width="120" />
-        <NebulaTableColumn field="roleCode" title="角色编码" min-width="120" />
-        <NebulaTableColumn field="description" title="描述" min-width="160" />
-        <NebulaTableColumn field="status" title="状态" width="90">
+        <NebulaTableColumn
+          field="roleName"
+          :title="t('roles.name')"
+          min-width="120"
+        />
+        <NebulaTableColumn
+          field="roleCode"
+          :title="t('roles.code')"
+          min-width="120"
+        />
+        <NebulaTableColumn
+          field="description"
+          :title="t('roles.descriptionCol')"
+          min-width="160"
+        />
+        <NebulaTableColumn field="status" :title="t('roles.status')" width="90">
           <template #default="{ row }">
             <NebulaTag
               :variant="row.status === 'ACTIVE' ? 'success' : 'default'"
@@ -126,7 +144,7 @@ function openDetails(role: RoleRecord) {
             </NebulaTag>
           </template>
         </NebulaTableColumn>
-        <NebulaTableColumn title="操作" width="160">
+        <NebulaTableColumn :title="t('roles.actions')" width="160">
           <template #default="{ row }">
             <NebulaButton variant="ghost" @click="openDetails(row)">
               详情

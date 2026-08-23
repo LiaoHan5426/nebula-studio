@@ -79,7 +79,7 @@ const { username, isLoggedIn, isShellHosted, logout } = useAuth();
   font-size: 12px;
   font-weight: 700;
   color: hsl(var(--primary-foreground));
-  background: linear-gradient(145deg, hsl(var(--primary)), #7c5cff);
+  background: hsl(var(--primary));
   border-radius: 50%;
 }
 

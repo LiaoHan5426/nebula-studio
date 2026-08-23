@@ -1,36 +1,50 @@
 <script setup lang="ts">
-import type { ResourceDetailViewModel } from './types';
-
-import { computed, onMounted, ref } from 'vue';
+import { computed, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 
 import {
   NebulaButton,
+  NebulaDetailSection,
   NebulaEmptyState,
   NebulaPageHeader,
   NebulaTag,
 } from '@nebula-studio/nebula-ui';
 
 import { useTenant } from '@/shared/composables/useTenant';
+import { errorMessageKey, mapIntegrationErrorCode } from '@/shared/i18n/errors';
+import { usePortalStore } from '@/shared/state/portalStore';
+import { useQuery } from '@tanstack/vue-query';
+import { storeToRefs } from 'pinia';
 
-import { loadResourceCatalog } from './api';
 import { catalogApplyPath } from './catalog-routes';
 import { toResourceDetail } from './mappers';
+import { resourceCatalogQueryOptions } from './queryOptions';
 import { resourceTypeRegistry } from './registry';
-import {
-  favoriteResourceIds,
-  recordRecentResource,
-  toggleFavoriteResource,
-  trackPortalEvent,
-} from './storage';
+import { trackPortalEvent } from './storage';
 
+const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 const { currentTenantId } = useTenant();
-const loading = ref(true);
-const error = ref('');
-const resource = ref<ResourceDetailViewModel>();
-const favorites = ref(favoriteResourceIds());
+const portal = usePortalStore();
+const { favorites } = storeToRefs(portal);
+
+const catalogQuery = useQuery(() =>
+  resourceCatalogQueryOptions(currentTenantId.value || undefined),
+);
+
+const resourceId = computed(() =>
+  decodeURIComponent(String(route.params.resourceId)),
+);
+
+const match = computed(() =>
+  catalogQuery.data.value?.items.find((item) => item.id === resourceId.value),
+);
+
+const resource = computed(() =>
+  match.value ? toResourceDetail(match.value) : undefined,
+);
 
 const definition = computed(() =>
   resource.value ? resourceTypeRegistry[resource.value.kind] : undefined,
@@ -47,59 +61,60 @@ const applyPath = computed(() =>
   resource.value ? catalogApplyPath(resource.value.id) : '/catalog',
 );
 
-async function load(): Promise<void> {
-  loading.value = true;
-  error.value = '';
-  try {
-    const result = await loadResourceCatalog(
-      currentTenantId.value || undefined,
+const missing = computed(
+  () =>
+    !catalogQuery.isPending.value && !catalogQuery.error.value && !match.value,
+);
+
+const loadError = computed(() => {
+  if (catalogQuery.error.value) {
+    return t(
+      errorMessageKey(mapIntegrationErrorCode(catalogQuery.error.value)),
     );
-    const id = decodeURIComponent(String(route.params.resourceId));
-    const match = result.items.find((item) => item.id === id);
-    if (!match) {
-      error.value = '该资源不存在、已下线，或你当前无权查看。';
-      return;
-    }
-    resource.value = toResourceDetail(match);
-    recordRecentResource(match);
-    trackPortalEvent('catalog_detail_viewed', {
-      resourceId: match.id,
-      kind: match.kind,
-    });
-  } catch (cause) {
-    error.value =
-      cause instanceof Error ? cause.message : '资源详情暂时无法加载。';
-  } finally {
-    loading.value = false;
   }
-}
+  if (missing.value) return t('catalog.detail.missing');
+  return '';
+});
+
+watch(
+  match,
+  (item) => {
+    if (!item) return;
+    portal.recordRecent(item.id);
+    trackPortalEvent('catalog_detail_viewed', {
+      resourceId: item.id,
+      kind: item.kind,
+    });
+  },
+  { immediate: true },
+);
 
 function toggleFavorite(): void {
   if (!resource.value) return;
-  favorites.value = toggleFavoriteResource(resource.value.id);
+  portal.toggleFavorite(resource.value.id);
 }
-
-onMounted(load);
 </script>
 
 <template>
   <main class="detail-page">
     <div class="back-row">
       <button type="button" @click="router.push('/catalog')">
-        ← 返回资源目录
+        {{ t('catalog.detail.back') }}
       </button>
     </div>
     <div
-      v-if="loading"
+      v-if="catalogQuery.isPending"
       class="detail-loading"
-      aria-label="正在加载资源详情"
+      :aria-label="t('catalog.detail.loadingAria')"
     ></div>
     <NebulaEmptyState
-      v-else-if="error || !resource || !definition"
-      title="无法打开资源"
-      :description="error"
+      v-else-if="loadError || !resource || !definition"
+      :title="t('catalog.detail.unavailable')"
+      :description="loadError"
     >
-      <NebulaButton @click="router.push('/catalog')">返回目录</NebulaButton>
+      <NebulaButton @click="router.push('/catalog')">
+        {{ t('catalog.backToCatalog') }}
+      </NebulaButton>
     </NebulaEmptyState>
     <template v-else>
       <section class="detail-hero">
@@ -111,7 +126,11 @@ onMounted(load);
         >
           <template #actions>
             <NebulaButton variant="outline" @click="toggleFavorite">
-              {{ isFavorite ? '★ 已收藏' : '☆ 收藏' }}
+              {{
+                isFavorite
+                  ? t('catalog.detail.favorited')
+                  : t('catalog.detail.favorite')
+              }}
             </NebulaButton>
             <NebulaButton v-if="canApply" @click="router.push(applyPath)">
               {{ definition.applyLabel }}
@@ -128,20 +147,22 @@ onMounted(load);
       </section>
 
       <p v-if="!canApply" class="offline-banner" role="status">
-        此资源当前不可申请。你可以返回目录选择同类型的在线资源。
+        {{ t('catalog.detail.offline') }}
       </p>
 
       <div class="detail-layout">
         <div class="detail-main">
-          <section class="detail-section">
-            <span class="section-eyebrow">适用场景</span>
-            <h2>这项资源可以做什么</h2>
+          <NebulaDetailSection
+            :title="t('catalog.detail.purposeTitle')"
+            :description="t('catalog.detail.purposeEyebrow')"
+          >
             <p>{{ resource.purpose }}</p>
-          </section>
+          </NebulaDetailSection>
 
-          <section class="detail-section">
-            <span class="section-eyebrow">接入信息</span>
-            <h2>{{ definition.label }} 详情</h2>
+          <NebulaDetailSection
+            :title="t('catalog.detail.accessTitle', { kind: definition.label })"
+            :description="t('catalog.detail.accessEyebrow')"
+          >
             <dl class="domain-details">
               <div
                 v-for="entry in definition.detailEntries(resource)"
@@ -151,64 +172,70 @@ onMounted(load);
                 <dd :class="{ 'is-code': entry.code }">{{ entry.value }}</dd>
               </div>
             </dl>
-          </section>
+          </NebulaDetailSection>
 
-          <section v-if="resource.kind === 'API'" class="detail-section">
-            <span class="section-eyebrow">Quick start</span>
-            <h2>调用示例</h2>
+          <NebulaDetailSection
+            v-if="resource.kind === 'API'"
+            :title="t('catalog.detail.callExample')"
+            description="Quick start"
+          >
             <pre><code>curl -X {{ resource.detail.method || 'GET' }} \
   "{{ resource.detail.endpointUri || '/gateway/resource' }}" \
   -H "Authorization: Bearer &lt;token&gt;"</code></pre>
-          </section>
+          </NebulaDetailSection>
 
-          <section v-else-if="resource.kind === 'TABLE'" class="detail-section">
-            <span class="section-eyebrow">数据范围</span>
-            <h2>订阅方式</h2>
-            <p>
-              支持按申请范围使用 CDC
-              或轮询方式订阅。字段范围与敏感数据策略将在审批后给出。
-            </p>
-          </section>
+          <NebulaDetailSection
+            v-else-if="resource.kind === 'TABLE'"
+            :title="t('catalog.detail.subscribeTitle')"
+            :description="t('catalog.detail.dataEyebrow')"
+          >
+            <p>{{ t('catalog.detail.subscribeBody') }}</p>
+          </NebulaDetailSection>
 
-          <section v-else class="detail-section">
-            <span class="section-eyebrow">配置模型</span>
-            <h2>Schema 驱动配置</h2>
-            <p>
-              连接配置由插件目录中的 configSchema
-              生成，审批通过后无需手写平台内部参数。
-            </p>
-          </section>
+          <NebulaDetailSection
+            v-else
+            :title="t('catalog.detail.schemaTitle')"
+            :description="t('catalog.detail.schemaEyebrow')"
+          >
+            <p>{{ t('catalog.detail.schemaBody') }}</p>
+          </NebulaDetailSection>
         </div>
 
         <aside class="detail-aside">
-          <h2>治理信息</h2>
-          <dl>
-            <div>
-              <dt>负责人</dt>
-              <dd>{{ resource.owner }}</dd>
-            </div>
-            <div>
-              <dt>服务等级</dt>
-              <dd>{{ resource.sla }}</dd>
-            </div>
-            <div>
-              <dt>权限范围</dt>
-              <dd>{{ resource.permissionScope }}</dd>
-            </div>
-            <div>
-              <dt>兼容性</dt>
-              <dd>{{ resource.compatibility.join('、') }}</dd>
-            </div>
-          </dl>
+          <NebulaDetailSection
+            :title="t('catalog.detail.governance')"
+            :divided="false"
+          >
+            <dl>
+              <div>
+                <dt>{{ t('catalog.detail.owner') }}</dt>
+                <dd>{{ resource.owner }}</dd>
+              </div>
+              <div>
+                <dt>{{ t('catalog.detail.sla') }}</dt>
+                <dd>{{ resource.sla }}</dd>
+              </div>
+              <div>
+                <dt>{{ t('catalog.detail.scope') }}</dt>
+                <dd>{{ resource.permissionScope }}</dd>
+              </div>
+              <div>
+                <dt>{{ t('catalog.detail.compat') }}</dt>
+                <dd>
+                  {{ resource.compatibility.join(t('catalog.sourceJoin')) }}
+                </dd>
+              </div>
+            </dl>
+          </NebulaDetailSection>
           <NebulaButton v-if="canApply" @click="router.push(applyPath)">
-            开始申请
+            {{ t('catalog.detail.startApply') }}
           </NebulaButton>
           <NebulaButton
             v-else
             variant="outline"
             @click="router.push('/catalog')"
           >
-            查找替代资源
+            {{ t('catalog.detail.findAlt') }}
           </NebulaButton>
         </aside>
       </div>
@@ -263,7 +290,7 @@ onMounted(load);
   font-size: 13px;
   font-weight: 900;
   color: hsl(var(--primary-foreground));
-  background: linear-gradient(145deg, hsl(var(--primary)), #7c5cff);
+  background: hsl(var(--primary));
   border-radius: 20px;
   box-shadow: 0 14px 30px hsl(var(--primary) / 25%);
 }

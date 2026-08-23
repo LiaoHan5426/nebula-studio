@@ -177,7 +177,7 @@ function switchSurface(): void {
   height: 36px;
   font-weight: 800;
   color: white;
-  background: linear-gradient(145deg, hsl(var(--primary)), #7c5cff);
+  background: hsl(var(--primary));
   border-radius: 11px;
   box-shadow: 0 8px 20px hsl(var(--primary) / 24%);
 }
