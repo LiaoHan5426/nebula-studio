@@ -10,7 +10,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LiaoHan5426/nebula-studio.git",
-    "directory": "packages/core/auth-provider"
+    "directory": "packages/platform/auth"
   },
   "license": "UNLICENSED",
   "author": "Liao Han <liaohan5426@gmail.com>",
@@ -42,6 +42,10 @@
     "./web": {
       "types": "./src/web.ts",
       "default": "./src/web.ts"
+    },
+    "./bootstrap": {
+      "types": "./src/bootstrap/index.ts",
+      "default": "./src/bootstrap/index.ts"
     }
   },
   "dependencies": {
@@ -50,6 +54,8 @@
     "vue": "catalog:vue"
   },
   "devDependencies": {
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "@nebula-studio/types": "workspace:^",
     "happy-dom": "catalog:vite",
     "vitest": "catalog:vite"
   }

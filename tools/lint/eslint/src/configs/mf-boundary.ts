@@ -605,13 +605,13 @@ export async function mfBoundary(): Promise<Linter.Config[]> {
       },
     },
     {
-      files: ['packages/core/auth/package.json'],
+      files: ['packages/platform/auth/package.json'],
       rules: {
         'no-restricted-syntax': [
           'error',
           forbidJsonDep(
             '@nebula-studio/app-shell',
-            '@nebula-studio/auth must not depend on app-shell',
+            '@nebula-studio/auth-provider must not depend on app-shell',
           ),
         ],
       },

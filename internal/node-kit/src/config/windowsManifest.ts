@@ -151,7 +151,9 @@ export function buildAppManifest(
       preloadIds,
       preloadCapabilities,
     );
-    assertRendererPackage(rootDir, win.renderer);
+    if (win.webLoad !== 'host') {
+      assertRendererPackage(rootDir, win.renderer);
+    }
     registerWebSurface(
       rootDir,
       win.renderer,
@@ -171,7 +173,9 @@ export function buildAppManifest(
         preloadIds,
         preloadCapabilities,
       );
-      assertRendererPackage(rootDir, modal.renderer);
+      if (modal.webLoad !== 'host') {
+        assertRendererPackage(rootDir, modal.renderer);
+      }
       registerWebSurface(
         rootDir,
         modal.renderer,

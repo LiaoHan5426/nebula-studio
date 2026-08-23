@@ -2,7 +2,6 @@ export {
   defineNebulaSubAppConfig,
   type DefineNebulaSubAppConfigOptions,
 } from './config/defineNebulaSubAppConfig.ts';
-export * from './config/studioRuntime.ts';
 export {
   httpOrigin,
   requireApiTarget,
@@ -17,21 +16,21 @@ export {
   resolveUnauthorizedProbeUrl,
   rewriteOriginHost,
   tryResolveStandalonePort,
-} from './config/studioRuntime.ts';
+} from '@nebula-studio-internal/node-kit/runtime-config';
 export type {
   ResolvedDevServer,
   ResolvedHealthCheck,
   ResolvedStandaloneApp,
-} from './config/studioRuntime.ts';
+} from '@nebula-studio-internal/node-kit/runtime-config';
 export {
   buildAppManifest,
   findMonorepoRoot,
   loadWindowsConfig,
-} from './config/windowsManifest.ts';
+} from '@nebula-studio-internal/node-kit/windows-manifest';
 export type {
   NebulaAppManifest,
   WindowsConfig,
-} from './config/windowsManifest.ts';
+} from '@nebula-studio-internal/node-kit/windows-manifest';
 export {
   defineNebulaConfig,
   type DefineNebulaConfigOptions,

@@ -24,7 +24,7 @@ export function resolveWindowConfigPaths(rootDir) {
     apiContextPath: join(
       rootDir,
       'internal',
-      'build-kit',
+      'node-kit',
       'src',
       'config',
       'api-context.json',
@@ -83,31 +83,36 @@ export function validateWindowsConfig(config, schema, ctx) {
     }
   }
 
-  const rendererIds = new Set();
+  const rendererEntries = new Map();
   if (config.windows) {
     for (const [windowId, win] of Object.entries(config.windows)) {
-      rendererIds.add(win.renderer);
-      assertRendererExists(
-        subWebDir,
-        win.renderer,
-        `windows.${windowId}.renderer`,
-        errors,
-      );
+      rendererEntries.set(win.renderer, win);
+      if (win.webLoad !== 'host') {
+        assertRendererExists(
+          subWebDir,
+          win.renderer,
+          `windows.${windowId}.renderer`,
+          errors,
+        );
+      }
     }
   }
   if (config.modalRenderers) {
     for (const [modalId, modal] of Object.entries(config.modalRenderers)) {
-      rendererIds.add(modal.renderer);
-      assertRendererExists(
-        subWebDir,
-        modal.renderer,
-        `modalRenderers.${modalId}.renderer`,
-        errors,
-      );
+      rendererEntries.set(modal.renderer, modal);
+      if (modal.webLoad !== 'host') {
+        assertRendererExists(
+          subWebDir,
+          modal.renderer,
+          `modalRenderers.${modalId}.renderer`,
+          errors,
+        );
+      }
     }
   }
 
-  for (const renderer of rendererIds) {
+  for (const [renderer, entry] of rendererEntries) {
+    if (entry.webLoad === 'host') continue;
     const mainTs = join(subWebDir, renderer, 'src', 'main.ts');
     const bootTs = join(subWebDir, renderer, 'src', 'boot.ts');
     if (!existsSync(mainTs)) {
@@ -194,7 +199,7 @@ export function generateWindowsTypeScript(config, apiContext) {
 
   lines.push('// AUTO-GENERATED — do not edit manually.');
   lines.push(
-    '// Source: configs/windows.json + internal/build-kit API context black box',
+    '// Source: configs/windows.json + internal/node-kit API context',
   );
   lines.push('');
   lines.push(
@@ -426,7 +431,7 @@ export function generateApiNamespacesSource(config, apiContext) {
   };
   return [
     '// AUTO-GENERATED — do not edit manually.',
-    '// Source: configs/environments.json apiTargets + internal/build-kit API context',
+    '// Source: configs/environments.json apiTargets + internal/node-kit API context',
     '',
     `export const GENERATED_API_NAMESPACES = ${JSON.stringify(apiContext.namespaces ?? {}, null, 2)} as const;`,
     '',

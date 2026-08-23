@@ -7,7 +7,7 @@ import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
 const inventoryPath = join(root, 'configs/package-inventory.json');
 const write = process.argv.includes('--write');
 
@@ -27,20 +27,16 @@ const knownDuplicateBootBlocks = [
       'apps/sub-web/docs/src/boot.ts',
       'apps/sub-web/settings/src/boot.ts',
       'apps/sub-web/integration/src/boot.ts',
-      'apps/sub-web/frontend/src/boot.ts',
-      'apps/sub-web/login/src/boot.ts',
     ],
     note: 'Standalone composition roots share explicit application-bootstrap lifecycle stages. Federation remotes use federation.ts instead.',
   },
   {
-    id: 'host-vs-standalone-workspace-login',
+    id: 'host-owned-workspace-login',
     files: [
       'apps/web/src/workspace/bootHostWorkspace.ts',
-      'apps/sub-web/frontend/src/boot.ts',
       'apps/web/src/auth/bootHostLogin.ts',
-      'apps/sub-web/login/src/boot.ts',
     ],
-    note: 'Host bootHost* still near-clones standalone workspace/login. Federation appearance helper was extracted to shell-protocol.',
+    note: 'Workspace and login are Host-owned composition roots; no standalone renderer package remains.',
   },
 ];
 
@@ -157,14 +153,14 @@ if (write) {
 } else {
   if (!existsSync(inventoryPath)) {
     failures.push(
-      'missing configs/package-inventory.json — run node ./scripts/check-inventory.mjs --write',
+      'missing configs/package-inventory.json — run nebula-vsh check-inventory --write',
     );
   } else {
     const committed = JSON.parse(readFileSync(inventoryPath, 'utf8'));
     const expected = { ...current, maxTotals: committed.maxTotals };
     if (stableStringify(expected) !== stableStringify(committed)) {
       failures.push(
-        'configs/package-inventory.json is stale — run node ./scripts/check-inventory.mjs --write',
+        'configs/package-inventory.json is stale — run nebula-vsh check-inventory --write',
       );
     }
     for (const key of ['apps', 'packages', 'internal', 'tools', 'all']) {

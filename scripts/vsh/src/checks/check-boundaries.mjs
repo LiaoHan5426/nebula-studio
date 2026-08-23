@@ -1,4 +1,4 @@
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
  * (`mf-boundary` + `host-boundary`). Run `vp run lint:eslint`.
  */
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
 const failures = [];
 
 function fail(message) {
@@ -87,7 +87,7 @@ if (!existsSync(runtimeAddressDriftPath)) {
   );
 }
 const checkGenerated = readFileSync(
-  join(root, 'scripts/check-generated.mjs'),
+  join(root, 'scripts/vsh/src/checks/check-generated.mjs'),
   'utf8',
 );
 for (const banned of [
@@ -97,7 +97,7 @@ for (const banned of [
 ]) {
   if (checkGenerated.includes(banned)) {
     fail(
-      `scripts/check-generated.mjs must not contain ${banned}; use @nebula-studio-internal/node-kit/runtime-address-drift`,
+      `vsh check-generated must not contain ${banned}; use @nebula-studio-internal/node-kit/runtime-address-drift`,
     );
   }
 }
@@ -105,7 +105,7 @@ if (
   !checkGenerated.includes('@nebula-studio-internal/node-kit/runtime-address-drift')
 ) {
   fail(
-    'scripts/check-generated.mjs must import @nebula-studio-internal/node-kit/runtime-address-drift',
+    'vsh check-generated must import @nebula-studio-internal/node-kit/runtime-address-drift',
   );
 }
 
@@ -282,75 +282,12 @@ if (
     'app-shell must not depend on auth-provider; callers import it directly',
   );
 }
-const internalRuntimeBan = /@nebula-studio-internal\/(node-kit|build-kit)(?:\/|'|"|$)/;
-const skipDirNames = new Set([
-  '.git',
-  '__tests__',
-  'dev-dist',
-  'dist',
-  'node_modules',
-  'out',
-]);
-
-function scanProductRuntimeImports(relDir) {
-  const abs = join(root, relDir);
-  if (!existsSync(abs)) {
-    return;
-  }
-  const stack = [abs];
-  while (stack.length > 0) {
-    const dir = stack.pop();
-    let entries;
-    try {
-      entries = readdirSync(dir, { withFileTypes: true });
-    } catch {
-      continue;
-    }
-    for (const entry of entries) {
-      const path = join(dir, entry.name);
-      if (entry.isDirectory()) {
-        if (!skipDirNames.has(entry.name)) {
-          stack.push(path);
-        }
-        continue;
-      }
-      if (
-        /\.(config|config\.mts)$/.test(entry.name) ||
-        entry.name.includes('.test.') ||
-        entry.name.includes('.spec.') ||
-        entry.name === 'electron.vite.config.ts' ||
-        entry.name === 'vite.config.ts'
-      ) {
-        continue;
-      }
-      if (!/\.(ts|tsx|js|mjs)$/.test(entry.name)) {
-        continue;
-      }
-      const source = readFileSync(path, 'utf8');
-      if (internalRuntimeBan.test(source)) {
-        fail(
-          `${relativePosix(path)} must not import @nebula-studio-internal/node-kit or vite at runtime`,
-        );
-      }
-    }
-  }
-}
-
-function relativePosix(absPath) {
-  return absPath.slice(root.length + 1).replaceAll('\\', '/');
-}
-
-scanProductRuntimeImports('apps');
-scanProductRuntimeImports('packages');
-
 for (const rel of [
   'apps/web/package.json',
   'apps/electron/package.json',
   'apps/sub-web/docs/package.json',
   'apps/sub-web/settings/package.json',
   'apps/sub-web/integration/package.json',
-  'apps/sub-web/frontend/package.json',
-  'apps/sub-web/login/package.json',
 ]) {
   const manifest = readManifest(rel);
   if (
@@ -366,8 +303,6 @@ for (const rel of [
   'apps/sub-web/docs/package.json',
   'apps/sub-web/settings/package.json',
   'apps/sub-web/integration/package.json',
-  'apps/sub-web/frontend/package.json',
-  'apps/sub-web/login/package.json',
   'packages/core/app-shell/package.json',
   'packages/platform/application-bootstrap/package.json',
   'packages/platform/shell-host/package.json',

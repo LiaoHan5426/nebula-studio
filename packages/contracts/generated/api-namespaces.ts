@@ -1,5 +1,5 @@
 // AUTO-GENERATED — do not edit manually.
-// Source: configs/environments.json apiTargets + internal/build-kit API context
+// Source: configs/environments.json apiTargets + internal/node-kit API context
 
 export const GENERATED_API_NAMESPACES = {
   platform: {
@@ -38,14 +38,6 @@ export const GENERATED_API_TARGETS = {
 } as const;
 
 export const GENERATED_STANDALONE_APPS = {
-  frontend: {
-    host: 'localhost',
-    port: 5175,
-    basePath: '/',
-    baseUrl: 'http://localhost:5175',
-    proxyPreset: 'standard',
-    embedPath: null,
-  },
   docs: {
     host: 'localhost',
     port: 5176,
@@ -69,14 +61,6 @@ export const GENERATED_STANDALONE_APPS = {
     baseUrl: 'http://localhost:5174',
     proxyPreset: 'integration',
     embedPath: '/?embed=integration',
-  },
-  login: {
-    host: 'localhost',
-    port: 5178,
-    basePath: '/',
-    baseUrl: 'http://localhost:5178',
-    proxyPreset: 'standard',
-    embedPath: '/?embed=login',
   },
 } as const;
 

@@ -14,8 +14,8 @@ import { createNebulaSharedConfig } from '../federation/createNebulaSharedConfig
 import { resolveSubAppRoot } from '../plugin/nebulaWorkspaceManifestPlugin.ts';
 import { createNebulaApiProxy } from '../proxy/createNebulaApiProxy.ts';
 import { createNebulaRendererViteConfig } from './createNebulaRendererViteConfig.ts';
-import { resolveStandaloneApp } from './studioRuntime.ts';
-import { loadWindowsConfig } from './windowsManifest.ts';
+import { resolveStandaloneApp } from '@nebula-studio-internal/node-kit/runtime-config';
+import { loadWindowsConfig } from '@nebula-studio-internal/node-kit/windows-manifest';
 
 export interface DefineNebulaSubAppConfigOptions {
   /** Sub-app directory name under apps/sub-web (e.g. integration). */

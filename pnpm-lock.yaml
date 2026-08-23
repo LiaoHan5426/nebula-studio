@@ -35,6 +35,9 @@ catalogs:
     ajv:
       specifier: ^8.20.0
       version: 8.20.0
+    circular-dependency-scanner:
+      specifier: ^3.1.0
+      version: 3.1.0
     openapi-typescript:
       specifier: ^7.13.0
       version: 7.13.0
@@ -407,7 +410,7 @@ importers:
         version: link:../../packages/platform/application-runtime
       '@nebula-studio/auth-provider':
         specifier: workspace:^
-        version: link:../../packages/core/auth-provider
+        version: link:../../packages/platform/auth
       '@nebula-studio/contracts':
         specifier: workspace:^
         version: link:../../packages/contracts
@@ -442,9 +445,6 @@ importers:
       '@nebula-studio-renderer/assembly-boot':
         specifier: workspace:^
         version: link:../../packages/platform/assembly-boot
-      '@nebula-studio-renderer/main':
-        specifier: workspace:^
-        version: link:../sub-web/frontend
       '@nebula-studio/application-bootstrap':
         specifier: workspace:^
         version: link:../../packages/platform/application-bootstrap
@@ -755,91 +755,6 @@ importers:
         specifier: catalog:vue
         version: 3.3.10(typescript@6.0.3)
 
-  apps/sub-web/frontend:
-    dependencies:
-      '@nebula-studio-electron/electron-bridge':
-        specifier: workspace:^
-        version: link:../../../packages/core/electron-shared
-      '@nebula-studio-renderer/assembly-boot':
-        specifier: workspace:^
-        version: link:../../../packages/platform/assembly-boot
-      '@nebula-studio/api-client':
-        specifier: workspace:^
-        version: link:../../../packages/core/api-client
-      '@nebula-studio/app-shell':
-        specifier: workspace:^
-        version: link:../../../packages/core/app-shell
-      '@nebula-studio/application-bootstrap':
-        specifier: workspace:^
-        version: link:../../../packages/platform/application-bootstrap
-      '@nebula-studio/application-runtime':
-        specifier: workspace:^
-        version: link:../../../packages/platform/application-runtime
-      '@nebula-studio/auth-provider':
-        specifier: workspace:^
-        version: link:../../../packages/core/auth-provider
-      '@nebula-studio/contracts':
-        specifier: workspace:^
-        version: link:../../../packages/contracts
-      '@nebula-studio/host-capabilities':
-        specifier: workspace:^
-        version: link:../../../packages/platform/host-capabilities
-      '@nebula-studio/nebula-layout':
-        specifier: workspace:^
-        version: link:../../../packages/ui/nebula-layout
-      '@nebula-studio/nebula-shell':
-        specifier: workspace:^
-        version: link:../../../packages/ui/shell-ui
-      '@nebula-studio/nebula-ui':
-        specifier: workspace:^
-        version: link:../../../packages/ui/nebula-ui
-      '@nebula-studio/shell-host':
-        specifier: workspace:^
-        version: link:../../../packages/platform/shell-host
-      '@nebula-studio/shell-protocol':
-        specifier: workspace:^
-        version: link:../../../packages/platform/shell-protocol
-      '@nebula-studio/styles':
-        specifier: workspace:^
-        version: link:../../../packages/styles
-      vue:
-        specifier: catalog:vue
-        version: 3.5.41(typescript@6.0.3)
-    devDependencies:
-      '@electron-toolkit/preload':
-        specifier: catalog:electron
-        version: 3.0.2(electron@43.4.0(supports-color@10.2.2))
-      '@nebula-studio-internal/build-kit':
-        specifier: workspace:^
-        version: link:../../../internal/build-kit
-      '@nebula-studio-internal/tsconfig':
-        specifier: workspace:^
-        version: link:../../../tools/tsconfig
-      '@nebula-studio/msw':
-        specifier: workspace:^
-        version: link:../../../packages/testing/msw
-      '@nebula-studio/types':
-        specifier: workspace:^
-        version: link:../../../packages/types
-      happy-dom:
-        specifier: catalog:vite
-        version: 20.11.2
-      typescript:
-        specifier: catalog:types
-        version: 6.0.3
-      vite:
-        specifier: ^8.1.3
-        version: 8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0)
-      vite-plus:
-        specifier: catalog:vite
-        version: 0.2.9(@types/node@26.2.0)(esbuild@0.28.2)(happy-dom@20.11.2)(jiti@2.7.0)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(sass@1.102.0)(tsx@4.23.12)(typescript@6.0.3)(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))(yaml@2.9.0)
-      vitest:
-        specifier: ^4.1.10
-        version: 4.1.10(@types/node@26.2.0)(@vitest/browser-preview@4.1.10)(happy-dom@20.11.2)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))
-      vue-tsc:
-        specifier: catalog:vue
-        version: 3.3.10(typescript@6.0.3)
-
   apps/sub-web/integration:
     dependencies:
       '@nebula-studio-renderer/assembly-boot':
@@ -847,7 +762,7 @@ importers:
         version: link:../../../packages/platform/assembly-boot
       '@nebula-studio/api-client':
         specifier: workspace:^
-        version: link:../../../packages/core/api-client
+        version: link:../../../packages/platform/api-client
       '@nebula-studio/application-bootstrap':
         specifier: workspace:^
         version: link:../../../packages/platform/application-bootstrap
@@ -856,7 +771,7 @@ importers:
         version: link:../../../packages/platform/application-contract
       '@nebula-studio/auth-provider':
         specifier: workspace:^
-        version: link:../../../packages/core/auth-provider
+        version: link:../../../packages/platform/auth
       '@nebula-studio/contracts':
         specifier: workspace:^
         version: link:../../../packages/contracts
@@ -902,9 +817,6 @@ importers:
       '@nebula-studio/shell-protocol':
         specifier: workspace:^
         version: link:../../../packages/platform/shell-protocol
-      '@nebula-studio/sse-events':
-        specifier: workspace:^
-        version: link:../../../packages/core/sse-events
       '@nebula-studio/state':
         specifier: workspace:^
         version: link:../../../packages/platform/state
@@ -914,9 +826,6 @@ importers:
       '@nebula-studio/styles':
         specifier: workspace:^
         version: link:../../../packages/styles
-      '@nebula-studio/tenant':
-        specifier: workspace:^
-        version: link:../../../packages/core/tenant
       '@tanstack/vue-query':
         specifier: catalog:query
         version: 5.101.4(vue@3.5.41(typescript@6.0.3))
@@ -967,73 +876,6 @@ importers:
         specifier: catalog:vue
         version: 3.3.10(typescript@6.0.3)
 
-  apps/sub-web/login:
-    dependencies:
-      '@nebula-studio-renderer/assembly-boot':
-        specifier: workspace:^
-        version: link:../../../packages/platform/assembly-boot
-      '@nebula-studio/app-shell':
-        specifier: workspace:^
-        version: link:../../../packages/core/app-shell
-      '@nebula-studio/application-bootstrap':
-        specifier: workspace:^
-        version: link:../../../packages/platform/application-bootstrap
-      '@nebula-studio/auth-provider':
-        specifier: workspace:^
-        version: link:../../../packages/core/auth-provider
-      '@nebula-studio/contracts':
-        specifier: workspace:^
-        version: link:../../../packages/contracts
-      '@nebula-studio/login-ui':
-        specifier: workspace:^
-        version: link:../../../packages/platform/login-ui
-      '@nebula-studio/msw':
-        specifier: workspace:^
-        version: link:../../../packages/testing/msw
-      '@nebula-studio/nebula-layout':
-        specifier: workspace:^
-        version: link:../../../packages/ui/nebula-layout
-      '@nebula-studio/nebula-ui':
-        specifier: workspace:^
-        version: link:../../../packages/ui/nebula-ui
-      '@nebula-studio/shell-host':
-        specifier: workspace:^
-        version: link:../../../packages/platform/shell-host
-      '@nebula-studio/shell-protocol':
-        specifier: workspace:^
-        version: link:../../../packages/platform/shell-protocol
-      '@nebula-studio/styles':
-        specifier: workspace:^
-        version: link:../../../packages/styles
-      vue:
-        specifier: catalog:vue
-        version: 3.5.41(typescript@6.0.3)
-    devDependencies:
-      '@electron-toolkit/preload':
-        specifier: catalog:electron
-        version: 3.0.2(electron@43.4.0(supports-color@10.2.2))
-      '@nebula-studio-internal/build-kit':
-        specifier: workspace:^
-        version: link:../../../internal/build-kit
-      '@nebula-studio-internal/tsconfig':
-        specifier: workspace:^
-        version: link:../../../tools/tsconfig
-      '@nebula-studio/types':
-        specifier: workspace:^
-        version: link:../../../packages/types
-      typescript:
-        specifier: catalog:types
-        version: 6.0.3
-      vite:
-        specifier: ^8.1.3
-        version: 8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0)
-      vite-plus:
-        specifier: catalog:vite
-        version: 0.2.9(@types/node@26.2.0)(esbuild@0.28.2)(happy-dom@20.11.2)(jiti@2.7.0)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(sass@1.102.0)(tsx@4.23.12)(typescript@6.0.3)(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))(yaml@2.9.0)
-      vue-tsc:
-        specifier: catalog:vue
-        version: 3.3.10(typescript@6.0.3)
-
   apps/sub-web/settings:
     dependencies:
       '@nebula-studio-renderer/assembly-boot':
@@ -1041,7 +883,7 @@ importers:
         version: link:../../../packages/platform/assembly-boot
       '@nebula-studio/api-client':
         specifier: workspace:^
-        version: link:../../../packages/core/api-client
+        version: link:../../../packages/platform/api-client
       '@nebula-studio/application-bootstrap':
         specifier: workspace:^
         version: link:../../../packages/platform/application-bootstrap
@@ -1050,7 +892,7 @@ importers:
         version: link:../../../packages/platform/application-contract
       '@nebula-studio/auth-provider':
         specifier: workspace:^
-        version: link:../../../packages/core/auth-provider
+        version: link:../../../packages/platform/auth
       '@nebula-studio/contracts':
         specifier: workspace:^
         version: link:../../../packages/contracts
@@ -1127,9 +969,9 @@ importers:
       '@nebula-studio-renderer/assembly-boot':
         specifier: workspace:^
         version: link:../../packages/platform/assembly-boot
-      '@nebula-studio-renderer/main':
+      '@nebula-studio/api-client':
         specifier: workspace:^
-        version: link:../sub-web/frontend
+        version: link:../../packages/platform/api-client
       '@nebula-studio/app-shell':
         specifier: workspace:^
         version: link:../../packages/core/app-shell
@@ -1141,7 +983,7 @@ importers:
         version: link:../../packages/platform/application-runtime
       '@nebula-studio/auth-provider':
         specifier: workspace:^
-        version: link:../../packages/core/auth-provider
+        version: link:../../packages/platform/auth
       '@nebula-studio/host-capabilities':
         specifier: workspace:^
         version: link:../../packages/platform/host-capabilities
@@ -1154,6 +996,9 @@ importers:
       '@nebula-studio/nebula-layout':
         specifier: workspace:^
         version: link:../../packages/ui/nebula-layout
+      '@nebula-studio/nebula-shell':
+        specifier: workspace:^
+        version: link:../../packages/ui/shell-ui
       '@nebula-studio/nebula-ui':
         specifier: workspace:^
         version: link:../../packages/ui/nebula-ui
@@ -1182,6 +1027,9 @@ importers:
       '@nebula-studio/types':
         specifier: workspace:^
         version: link:../../packages/types
+      happy-dom:
+        specifier: catalog:vite
+        version: 20.11.2
       typescript:
         specifier: catalog:types
         version: 6.0.3
@@ -1191,6 +1039,9 @@ importers:
       vite-plus:
         specifier: catalog:vite
         version: 0.2.9(@types/node@26.2.0)(esbuild@0.28.2)(happy-dom@20.11.2)(jiti@2.7.0)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(sass@1.102.0)(tsx@4.23.12)(typescript@6.0.3)(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))(yaml@2.9.0)
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.10(@types/node@26.2.0)(@vitest/browser-preview@4.1.10)(happy-dom@20.11.2)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))
       vue-tsc:
         specifier: catalog:vue
         version: 3.3.10(typescript@6.0.3)
@@ -1200,6 +1051,9 @@ importers:
       '@module-federation/vite':
         specifier: catalog:vite
         version: 1.20.7(typescript@6.0.3)(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))(vue-tsc@3.3.10(typescript@6.0.3))
+      '@nebula-studio-internal/node-kit':
+        specifier: workspace:^
+        version: link:../node-kit
       '@tailwindcss/vite':
         specifier: catalog:style
         version: 4.3.3(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))
@@ -1269,37 +1123,6 @@ importers:
         specifier: catalog:types
         version: 6.0.3
 
-  packages/core/api-client:
-    dependencies:
-      '@nebula-studio/contracts':
-        specifier: workspace:^
-        version: link:../../contracts
-      nprogress:
-        specifier: catalog:utils
-        version: 0.2.0
-    devDependencies:
-      '@nebula-studio-internal/tsconfig':
-        specifier: workspace:^
-        version: link:../../../tools/tsconfig
-      '@nebula-studio/types':
-        specifier: workspace:^
-        version: link:../../types
-      '@types/nprogress':
-        specifier: catalog:types
-        version: 0.2.3
-      happy-dom:
-        specifier: catalog:vite
-        version: 20.11.2
-      typescript:
-        specifier: catalog:types
-        version: 6.0.3
-      vite-plus:
-        specifier: catalog:vite
-        version: 0.2.9(@types/node@26.2.0)(esbuild@0.28.2)(happy-dom@20.11.2)(jiti@2.7.0)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(sass@1.102.0)(tsx@4.23.12)(typescript@6.0.3)(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))(yaml@2.9.0)
-      vitest:
-        specifier: ^4.1.10
-        version: 4.1.10(@types/node@26.2.0)(@vitest/browser-preview@4.1.10)(happy-dom@20.11.2)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))
-
   packages/core/app-shell:
     devDependencies:
       '@nebula-studio-internal/tsconfig':
@@ -1309,66 +1132,7 @@ importers:
         specifier: workspace:^
         version: link:../../types
 
-  packages/core/auth:
-    dependencies:
-      '@nebula-studio/auth-provider':
-        specifier: workspace:^
-        version: link:../auth-provider
-      '@nebula-studio/contracts':
-        specifier: workspace:^
-        version: link:../../contracts
-      '@nebula-studio/shell-protocol':
-        specifier: workspace:^
-        version: link:../../platform/shell-protocol
-    devDependencies:
-      '@nebula-studio-internal/tsconfig':
-        specifier: workspace:^
-        version: link:../../../tools/tsconfig
-      '@nebula-studio/types':
-        specifier: workspace:^
-        version: link:../../types
-      happy-dom:
-        specifier: catalog:vite
-        version: 20.11.2
-      typescript:
-        specifier: catalog:types
-        version: 6.0.3
-      vitest:
-        specifier: ^4.1.10
-        version: 4.1.10(@types/node@26.2.0)(@vitest/browser-preview@4.1.10)(happy-dom@20.11.2)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))
-
-  packages/core/auth-provider:
-    dependencies:
-      '@nebula-studio/contracts':
-        specifier: workspace:^
-        version: link:../../contracts
-      '@nebula-studio/shell-protocol':
-        specifier: workspace:^
-        version: link:../../platform/shell-protocol
-      vue:
-        specifier: catalog:vue
-        version: 3.5.41(typescript@6.0.3)
-    devDependencies:
-      happy-dom:
-        specifier: catalog:vite
-        version: 20.11.2
-      vitest:
-        specifier: ^4.1.10
-        version: 4.1.10(@types/node@26.2.0)(@vitest/browser-preview@4.1.10)(happy-dom@20.11.2)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))
-
   packages/core/electron-shared:
-    dependencies:
-      vue:
-        specifier: catalog:vue
-        version: 3.5.41(typescript@6.0.3)
-
-  packages/core/sse-events:
-    dependencies:
-      vue:
-        specifier: catalog:vue
-        version: 3.5.41(typescript@6.0.3)
-
-  packages/core/tenant:
     dependencies:
       vue:
         specifier: catalog:vue
@@ -1616,14 +1380,45 @@ importers:
         specifier: ^4.1.10
         version: 4.1.10(@types/node@26.2.0)(@vitest/browser-preview@4.1.10)(happy-dom@20.11.2)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))
 
+  packages/platform/api-client:
+    dependencies:
+      '@nebula-studio/contracts':
+        specifier: workspace:^
+        version: link:../../contracts
+      nprogress:
+        specifier: catalog:utils
+        version: 0.2.0
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../../tools/tsconfig
+      '@nebula-studio/types':
+        specifier: workspace:^
+        version: link:../../types
+      '@types/nprogress':
+        specifier: catalog:types
+        version: 0.2.3
+      happy-dom:
+        specifier: catalog:vite
+        version: 20.11.2
+      typescript:
+        specifier: catalog:types
+        version: 6.0.3
+      vite-plus:
+        specifier: catalog:vite
+        version: 0.2.9(@types/node@26.2.0)(esbuild@0.28.2)(happy-dom@20.11.2)(jiti@2.7.0)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(sass@1.102.0)(tsx@4.23.12)(typescript@6.0.3)(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))(yaml@2.9.0)
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.10(@types/node@26.2.0)(@vitest/browser-preview@4.1.10)(happy-dom@20.11.2)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))
+
   packages/platform/application-bootstrap:
     dependencies:
       '@nebula-studio-electron/electron-bridge':
         specifier: workspace:^
         version: link:../../core/electron-shared
-      '@nebula-studio/auth':
+      '@nebula-studio/auth-provider':
         specifier: workspace:^
-        version: link:../../core/auth
+        version: link:../auth
       '@nebula-studio/shell-protocol':
         specifier: workspace:^
         version: link:../shell-protocol
@@ -1710,6 +1505,31 @@ importers:
         specifier: catalog:types
         version: 6.0.3
 
+  packages/platform/auth:
+    dependencies:
+      '@nebula-studio/contracts':
+        specifier: workspace:^
+        version: link:../../contracts
+      '@nebula-studio/shell-protocol':
+        specifier: workspace:^
+        version: link:../shell-protocol
+      vue:
+        specifier: catalog:vue
+        version: 3.5.41(typescript@6.0.3)
+    devDependencies:
+      '@nebula-studio-internal/tsconfig':
+        specifier: workspace:^
+        version: link:../../../tools/tsconfig
+      '@nebula-studio/types':
+        specifier: workspace:^
+        version: link:../../types
+      happy-dom:
+        specifier: catalog:vite
+        version: 20.11.2
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.10(@types/node@26.2.0)(@vitest/browser-preview@4.1.10)(happy-dom@20.11.2)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(vite@8.1.3(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.102.0)(tsx@4.23.12)(yaml@2.9.0))
+
   packages/platform/federation-protocol:
     devDependencies:
       '@nebula-studio-internal/tsconfig':
@@ -1729,7 +1549,7 @@ importers:
         version: link:../application-contract
       '@nebula-studio/auth-provider':
         specifier: workspace:^
-        version: link:../../core/auth-provider
+        version: link:../auth
       '@nebula-studio/i18n':
         specifier: workspace:^
         version: link:../i18n
@@ -1773,7 +1593,7 @@ importers:
     dependencies:
       '@nebula-studio/auth-provider':
         specifier: workspace:^
-        version: link:../../core/auth-provider
+        version: link:../auth
       '@nebula-studio/nebula-layout':
         specifier: workspace:^
         version: link:../../ui/nebula-layout
@@ -1841,7 +1661,7 @@ importers:
         version: link:../../core/app-shell
       '@nebula-studio/auth-provider':
         specifier: workspace:^
-        version: link:../../core/auth-provider
+        version: link:../auth
       '@nebula-studio/i18n':
         specifier: workspace:^
         version: link:../i18n
@@ -2102,7 +1922,7 @@ importers:
         version: link:../../core/app-shell
       '@nebula-studio/auth-provider':
         specifier: workspace:^
-        version: link:../../core/auth-provider
+        version: link:../../platform/auth
       '@nebula-studio/nebula-layout':
         specifier: workspace:^
         version: link:../nebula-layout
@@ -2147,7 +1967,7 @@ importers:
   scripts/vsh:
     dependencies:
       circular-dependency-scanner:
-        specifier: ^3.1.0
+        specifier: 'catalog:'
         version: 3.1.0
 
   tools/lint/eslint:

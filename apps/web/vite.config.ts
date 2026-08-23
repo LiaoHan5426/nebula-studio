@@ -27,6 +27,11 @@ export default defineNebulaConfig({
     manifest: true,
   },
   merge: {
+    resolve: {
+      alias: {
+        '@': fileURLToPath(new URL('./src', import.meta.url)),
+      },
+    },
     plugins: [
       ...nebulaFederationHostPlugin('nebula_web_host'),
       nebulaHostCspNoncePlugin(),

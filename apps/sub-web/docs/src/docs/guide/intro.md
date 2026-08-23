@@ -33,7 +33,7 @@ nebula-studio/
 │   ├── ui/nebula-ui/       # 核心组件库
 │   ├── ui/shell-ui/        # Shell UI（@nebula-studio/nebula-shell）
 │   ├── core/app-shell/     # 应用壳层 SDK
-│   └── core/runtime/       # 运行时
+│   └── platform/           # 应用启动、运行时与宿主协议
 ├── apps/
 │   ├── web/                # 主应用
 │   └── sub-web/docs/       # 文档子应用

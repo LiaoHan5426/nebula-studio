@@ -6,8 +6,8 @@ import type { AuthBootstrapOptions, AuthStrategy } from '../types';
  * 认证逻辑：
  * - 检查 sessionStorage 中是否有有效 token（通过 auth-provider）
  * - 无 token 时由 router beforeEach guard 拦截到登录页
- * - 登录页使用 `@nebula-studio-renderer/login/app` 组件
- * - Host Web 嵌入登录由 `apps/web/src/auth/bootHostLogin.ts` 挂载同一组件
+ * - 登录页使用 `@nebula-studio/login-ui` 组件
+ * - Host Web 与 Electron 登录入口由 `apps/web/src/auth/bootHostLogin.ts` 挂载
  *
  * 迁移来源：
  * - integration/src/router/index.ts 的 beforeEach guard

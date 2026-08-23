@@ -8,7 +8,7 @@ import {
   rewriteFederationPublicPath,
 } from '../apps/mf-poc-host/electron-poc/poc-protocol.mjs';
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
 const marker = 'NEBULA_POC_DESIGNER_ONLY';
 
 function run(filter, script) {

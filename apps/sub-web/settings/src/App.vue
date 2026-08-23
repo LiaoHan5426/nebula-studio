@@ -31,6 +31,11 @@ body {
   color: hsl(var(--foreground));
   background: hsl(var(--background));
 }
+
+body::selection {
+  color: hsl(var(--primary-foreground));
+  background: hsl(var(--primary));
+}
 </style>
 
 <style lang="scss">
@@ -38,6 +43,12 @@ body {
   display: flex;
   flex-direction: column;
   gap: 14px;
+}
+
+.page > :is(.nebula-page-header, header:first-child),
+.entity-list-page > :first-child {
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid hsl(var(--border));
 }
 
 .page__actions {
@@ -49,7 +60,13 @@ body {
 .page__table-wrap {
   overflow: hidden;
   border: 1px solid hsl(var(--border) / 72%);
-  border-radius: 12px;
+  background: hsl(var(--background));
+  border-radius: var(--radius-md);
+}
+
+.page :is(input, select, textarea):focus-visible {
+  outline: 3px solid hsl(var(--primary) / 22%);
+  outline-offset: 1px;
 }
 
 .field {

@@ -18,12 +18,12 @@
 
 | 应用面 | 代码入口 | 当前主要页面 | 主要角色 | Phase 2 结论 |
 | --- | --- | --- | --- | --- |
-| Shell | `apps/sub-web/frontend` | 侧栏、标签、应用坞、iframe、通知、组织切换 | 所有登录用户 | `shell` surface，紧凑密度 |
+| Shell | `apps/web/src/workspace` | 侧栏、标签、应用坞、iframe、通知、组织切换 | 所有登录用户 | `shell` surface，紧凑密度 |
 | Integration Portal | `apps/sub-web/integration` | 库表订阅、我的服务 | 资源消费者 | `portal` surface，舒适密度 |
 | Integration Provider | 同上 | 数据源、服务注册/发布、Flow、DAG、任务、治理 | 资源提供方 | `provider` surface，紧凑密度 |
 | Integration Admin | 同上 | 插件、租户、审批、Executor、日志、拓扑 | 平台管理员 | `admin` surface，紧凑密度 |
 | Settings | `apps/sub-web/settings` | 用户、角色、权限、组织、应用、日志、外观、配置 | 用户/组织管理员/平台管理员 | `settings` surface，紧凑密度 |
-| Login | `apps/sub-web/login` | 账号登录、组织选择 | 未登录用户 | `auth` surface，舒适密度 |
+| Login | `apps/web/src/auth` + `packages/platform/login-ui` | 账号登录、组织选择 | 未登录用户 | `auth` surface，舒适密度 |
 | Docs | `apps/sub-web/docs` | 指南、组件、体验模式 | 用户/开发者 | `docs` surface，舒适密度 |
 
 ## 3. 角色与任务假设

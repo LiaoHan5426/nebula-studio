@@ -23,12 +23,14 @@ const locale = ref(capabilities?.locale?.locale ?? 'zh-CN');
 let stopLocale: (() => void) | undefined;
 
 onMounted(() => {
+  window.addEventListener('keydown', onDocsShortcut);
   stopLocale = capabilities?.locale?.subscribe?.((value) => {
     locale.value = value;
   });
 });
 
 onBeforeUnmount(() => {
+  window.removeEventListener('keydown', onDocsShortcut);
   stopLocale?.();
 });
 
@@ -37,22 +39,29 @@ async function setDocsLocale(next: 'en-US' | 'zh-CN'): Promise<void> {
 }
 
 const sidebar = computed(() => route.meta.sidebar as string | undefined);
-const pageTitle = computed(() => route.meta.title as string | undefined);
-const pageCategory = computed(() =>
-  sidebar.value === 'product-help'
-    ? t('category.help')
-    : sidebar.value === 'components' || sidebar.value === 'reference'
-      ? t('category.reference')
-      : sidebar.value === 'guide'
-        ? t('category.guide')
-        : sidebar.value === 'patterns'
-          ? t('category.patterns')
-          : sidebar.value === 'design'
-            ? t('category.design')
-            : '',
+// Component reference pages deliberately keep their source focused on demos
+// and API tables; the app frame supplies their single page heading. Markdown,
+// pattern and design pages own their headings and must not receive a duplicate.
+const layoutTitle = computed(() =>
+  sidebar.value === 'components' ? String(route.meta.title ?? '') : '',
 );
-const layoutTitle = computed(() => (sidebar.value ? pageTitle.value : ''));
 const searchQuery = ref('');
+const searchInput = ref<HTMLInputElement>();
+
+function onDocsShortcut(event: KeyboardEvent): void {
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+    event.preventDefault();
+    searchInput.value?.focus();
+  }
+  if (event.key === '/' && document.activeElement?.tagName !== 'INPUT') {
+    event.preventDefault();
+    searchInput.value?.focus();
+  }
+  if (event.key === 'Escape' && document.activeElement === searchInput.value) {
+    searchQuery.value = '';
+    searchInput.value?.blur();
+  }
+}
 
 const guideSidebar = [
   { text: '项目介绍', to: '/guide/intro' },
@@ -113,7 +122,7 @@ const componentsSidebar = [
 
 const patternsSidebar = [
   { text: '全局体验基线', to: '/patterns/experience-baseline' },
-  { text: 'PageHeader / FilterBar / Empty', to: '/patterns/catalog' },
+  { text: '页面模式与状态', to: '/patterns/catalog' },
 ];
 
 const designSidebar = [
@@ -199,7 +208,6 @@ function isActive(path: string): boolean {
 <template>
   <NebulaDocsLayout
     :title="layoutTitle"
-    :eyebrow="pageCategory"
     :embedded="isShellHosted"
     content-width="wide"
     density="comfortable"
@@ -208,17 +216,17 @@ function isActive(path: string): boolean {
   >
     <template #navigation>
       <RouterLink to="/" class="docs-nav__title">
-{{
-        t('shell.brand')
-      }}
-</RouterLink>
+        {{ t('shell.brand') }}
+      </RouterLink>
       <div class="docs-search">
         <input
+          ref="searchInput"
           v-model="searchQuery"
           type="search"
           :placeholder="t('shell.search')"
           :aria-label="t('shell.searchAria')"
         />
+        <kbd>Ctrl K</kbd>
         <div v-if="searchQuery" class="docs-search__results">
           <p v-if="searchResults.length === 0">{{ t('shell.noMatch') }}</p>
           <RouterLink
@@ -434,8 +442,8 @@ body {
 .docs-nav__title {
   display: block;
   padding: 0 4px 16px;
-  font-size: 17px;
-  font-weight: 750;
+  font-size: 19px;
+  font-weight: 780;
   color: hsl(var(--foreground));
   letter-spacing: -0.02em;
   text-decoration: none;
@@ -455,14 +463,36 @@ body {
 
 .docs-search input {
   width: 100%;
-  padding: 9px 10px;
+  min-height: 40px;
+  padding: 9px 58px 9px 12px;
   color: hsl(var(--foreground));
-  background: hsl(var(--background));
+  background: hsl(var(--card));
   border: 1px solid hsl(var(--border));
   border-radius: var(--radius-md);
 }
 
+.docs-search input:focus {
+  border-color: hsl(var(--primary) / 65%);
+  box-shadow: 0 0 0 3px hsl(var(--primary) / 12%);
+  outline: 0;
+}
+
+.docs-search kbd {
+  position: absolute;
+  top: 9px;
+  right: 8px;
+  padding: 3px 6px;
+  font: 600 10px/1.2 inherit;
+  color: hsl(var(--muted-foreground));
+  pointer-events: none;
+  background: hsl(var(--muted) / 65%);
+  border: 1px solid hsl(var(--border));
+  border-radius: 5px;
+}
+
 .docs-search__results {
+  top: calc(100% + 8px);
+  left: 0;
   position: absolute;
   z-index: 20;
   display: grid;
@@ -497,7 +527,8 @@ body {
 }
 
 .docs-nav__link {
-  padding: 8px 10px;
+  position: relative;
+  padding: 9px 11px;
   font-size: 14px;
   color: hsl(var(--muted-foreground));
   text-decoration: none;
@@ -511,6 +542,17 @@ body {
 .docs-nav__link--active {
   color: hsl(var(--primary));
   background: hsl(var(--primary) / 9%);
+}
+
+.docs-nav__link--active::before {
+  position: absolute;
+  top: 9px;
+  bottom: 9px;
+  left: 0;
+  width: 3px;
+  content: '';
+  background: hsl(var(--primary));
+  border-radius: 999px;
 }
 
 .docs-sidebar {

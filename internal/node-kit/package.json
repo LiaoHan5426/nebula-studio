@@ -27,6 +27,18 @@
       "types": "./src/monorepo.ts",
       "default": "./src/monorepo.ts"
     },
+    "./config": {
+      "types": "./src/config/apiContext.ts",
+      "default": "./src/config/apiContext.ts"
+    },
+    "./runtime-config": {
+      "types": "./src/config/studioRuntime.ts",
+      "default": "./src/config/studioRuntime.ts"
+    },
+    "./windows-manifest": {
+      "types": "./src/config/windowsManifest.ts",
+      "default": "./src/config/windowsManifest.ts"
+    },
     "./join-origin": "./src/joinOrigin.mjs",
     "./window-config": "./src/windowConfig.mjs",
     "./runtime-address-drift": "./src/runtimeAddressDrift.mjs",

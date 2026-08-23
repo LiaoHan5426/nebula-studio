@@ -230,6 +230,13 @@ function selectApp(viewId: string): void {
                   getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId)
                     .label
                 }}</span>
+                <span class="integration-tile-description">
+                  {{
+                    getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId)
+                      .description || '打开应用'
+                  }}
+                </span>
+                <span class="integration-tile-launch">打开应用 →</span>
               </div>
             </template>
           </NebulaDrag>
@@ -260,6 +267,13 @@ function selectApp(viewId: string): void {
                     .label
                 }}
               </span>
+              <span class="integration-tile-description">
+                {{
+                  getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId)
+                    .description || '打开应用'
+                }}
+              </span>
+              <span class="integration-tile-launch">打开应用 →</span>
             </div>
             <p v-if="!filteredGridViewIds.length" class="integration-empty">
               没有符合当前筛选条件的应用。
@@ -344,7 +358,7 @@ function selectApp(viewId: string): void {
   width: 100%;
   min-height: 100%;
   max-height: 100%;
-  padding: 22px 24px 24px;
+  padding: clamp(24px, 4vw, 52px);
   overflow: hidden;
   background: hsl(var(--background) / 96%);
 }
@@ -419,23 +433,24 @@ function selectApp(viewId: string): void {
 
 .integration-title {
   margin: 0;
-  font-size: 18px;
-  font-weight: 700;
+  font-size: clamp(26px, 3vw, 38px);
+  font-weight: 760;
   color: hsl(var(--foreground));
   letter-spacing: 0.2px;
 }
 
 .integration-desc {
+  max-width: 46rem;
   margin: 10px 0 0;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.5;
   color: hsl(var(--muted-foreground));
 }
 
 .integration-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 220px));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
   justify-content: flex-start;
   margin-top: 18px;
 }
@@ -447,18 +462,20 @@ function selectApp(viewId: string): void {
 .integration-tile {
   position: relative;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  gap: 4px 14px;
   align-items: center;
-  justify-content: center;
-  min-height: 132px;
-  padding: 16px 12px;
+  min-height: 112px;
+  padding: 18px;
   color: hsl(var(--foreground));
   cursor: pointer;
   user-select: none;
-  background: hsl(var(--muted) / 38%);
+  text-align: left;
+  background: hsl(var(--card) / 74%);
   border: 1px solid hsl(var(--border) / 72%);
-  border-radius: 14px;
+  border-radius: var(--radius-lg);
   transition:
     transform 0.18s ease,
     background 0.15s ease,
@@ -502,8 +519,10 @@ function selectApp(viewId: string): void {
 }
 
 .integration-tile:hover {
-  background: hsl(var(--primary) / 10%);
+  background: hsl(var(--card));
   border-color: hsl(var(--primary) / 42%);
+  box-shadow: 0 14px 32px hsl(var(--foreground) / 7%);
+  transform: translateY(-2px);
 }
 
 .integration-tile.dragging {
@@ -533,9 +552,37 @@ function selectApp(viewId: string): void {
 }
 
 .integration-tile-label {
+  grid-row: 1;
+  grid-column: 2;
   font-size: 14px;
-  font-weight: 600;
-  text-align: center;
+  font-weight: 700;
+}
+
+.integration-tile-description {
+  display: -webkit-box;
+  grid-row: 2;
+  grid-column: 2 / -1;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1.5;
+  color: hsl(var(--muted-foreground));
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.integration-tile-launch {
+  grid-row: 1;
+  grid-column: 3;
+  font-size: 11px;
+  font-weight: 700;
+  color: hsl(var(--primary));
+  opacity: 0;
+  transition: opacity var(--motion-fast, 160ms) ease;
+}
+
+.integration-tile:hover .integration-tile-launch,
+.integration-tile:focus-visible .integration-tile-launch {
+  opacity: 1;
 }
 
 .integration-tile-icon {
@@ -543,9 +590,15 @@ function selectApp(viewId: string): void {
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
-  color: hsl(var(--foreground));
+  grid-row: 1 / span 2;
+  grid-column: 1;
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+  color: hsl(var(--primary));
+  background: hsl(var(--primary) / 10%);
+  border: 1px solid hsl(var(--primary) / 16%);
+  border-radius: 13px;
 }
 
 .integration-tile-icon.sm {

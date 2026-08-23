@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, realpathSync } from 'node:fs';
 import { dirname, join, normalize, relative, sep } from 'node:path';
 
-import { findMonorepoRoot } from '../config/windowsManifest.ts';
+import { findMonorepoRoot } from '@nebula-studio-internal/node-kit/windows-manifest';
 
 const SKIP_PACKAGES = new Set([
   '@nebula-studio-internal/build-kit',

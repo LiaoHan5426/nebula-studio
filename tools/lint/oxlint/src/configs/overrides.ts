@@ -85,7 +85,7 @@ const overrides: OxlintConfig = {
       },
     },
     {
-      files: ['packages/core/auth/src/strategies/**/*'],
+      files: ['packages/platform/auth/src/bootstrap/strategies/**/*'],
       rules: {
         // Legacy private fields (_foo) on auth strategy classes; prefer #foo in new code.
         'no-underscore-dangle': [
@@ -98,7 +98,7 @@ const overrides: OxlintConfig = {
       },
     },
     {
-      files: ['packages/core/auth/src/AuthBootstrap.ts'],
+      files: ['packages/platform/auth/src/bootstrap/AuthBootstrap.ts'],
       rules: {
         'no-underscore-dangle': [
           'warn',
@@ -110,7 +110,7 @@ const overrides: OxlintConfig = {
       },
     },
     {
-      files: ['apps/sub-web/frontend/src/platform/integratedApps.ts'],
+      files: ['apps/web/src/platform/integratedApps.ts'],
       rules: {
         'no-underscore-dangle': [
           'warn',

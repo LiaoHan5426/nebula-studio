@@ -17,12 +17,9 @@
     "main": {
       "preload": "main",
       "renderer": "frontend",
+      "webLoad": "host",
       "preloadCapabilities": ["auth", "notify", "shell"],
-      "proxyPreset": "standard",
-      "standalone": {
-        "port": 5175,
-        "basePath": "/"
-      }
+      "proxyPreset": "standard"
     },
     "docs": {
       "preload": "docs",
@@ -63,11 +60,7 @@
       "renderer": "login",
       "webLoad": "host",
       "preloadCapabilities": ["auth"],
-      "proxyPreset": "standard",
-      "standalone": {
-        "port": 5178,
-        "basePath": "/"
-      }
+      "proxyPreset": "standard"
     }
   }
 }

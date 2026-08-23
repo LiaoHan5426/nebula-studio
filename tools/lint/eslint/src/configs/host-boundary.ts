@@ -81,9 +81,8 @@ const businessSourceGlobs = [
   'packages/ui/nebula-assembly/**/**',
   'apps/sub-web/docs/src/**/**',
   'apps/sub-web/integration/src/**/**',
-  'apps/sub-web/login/src/**/**',
   'apps/sub-web/settings/src/**/**',
-  'apps/sub-web/frontend/src/**/**',
+  'apps/web/src/**/**',
 ];
 
 const testAndDeclarationIgnores = [
@@ -93,7 +92,7 @@ const testAndDeclarationIgnores = [
   '**/*.spec.ts',
   '**/*.spec.tsx',
   '**/*.d.ts',
-  'apps/sub-web/frontend/src/App.vue',
+  'apps/web/src/workspace/WorkspaceApp.vue',
 ];
 
 export async function hostBoundary(): Promise<Linter.Config[]> {

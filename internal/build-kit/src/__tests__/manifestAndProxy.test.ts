@@ -5,12 +5,12 @@ import { fileURLToPath } from 'node:url';
 
 import { describe, expect, it } from 'vitest';
 
-import { loadApiContext } from '../config/apiContext.ts';
+import { loadApiContext } from '@nebula-studio-internal/node-kit/config';
 import {
   buildAppManifest,
   findMonorepoRoot,
   loadWindowsConfig,
-} from '../config/windowsManifest.ts';
+} from '@nebula-studio-internal/node-kit/windows-manifest';
 import { createNebulaApiProxy } from '../proxy/createNebulaApiProxy.ts';
 
 describe('windows manifest', () => {
@@ -28,6 +28,7 @@ describe('windows manifest', () => {
       'settings',
     ]);
     expect(manifest.embedSurfaces).toContain('login');
+    expect(manifest.embedSurfaces).toContain('frontend');
     expect(manifest.embedBootEntries).toEqual({});
     expect(manifest.preloadIds).toContain('main');
     expect(manifest.preloadCapabilities).toEqual({

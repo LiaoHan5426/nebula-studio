@@ -27,6 +27,8 @@ const enUS: MessageTree = {
     unsynced: 'Not synced',
   },
   nav: {
+    workspace: 'Settings workspace',
+    overview: 'Overview',
     brand: 'Settings',
     eyebrow: 'Settings',
     label: 'Settings navigation',
@@ -50,6 +52,11 @@ const enUS: MessageTree = {
     logs: 'Audit logs',
   },
   pages: {
+    'settings-overview': {
+      title: 'Settings',
+      description:
+        'Manage account, security, appearance, and governance entry points.',
+    },
     'settings-governance': {
       title: 'Governance workspace',
       description: 'Track member, access, configuration, and audit work.',
@@ -101,6 +108,14 @@ const enUS: MessageTree = {
     fallbackTitle: 'Settings',
     fallbackDescription:
       'Manage personal preferences, organization access, and platform runtime.',
+  },
+  overview: {
+    title: '{user}, manage your workspace',
+    description:
+      'Personal preferences and governance capabilities are organized by task and synchronized with Shell and open remotes.',
+    personalTitle: 'Personal settings',
+    personalHint:
+      'Frequently used settings come first. Organization and platform governance appear only when authorized.',
   },
   appearance: {
     paneTitle: 'Appearance & theme',

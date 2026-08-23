@@ -1,7 +1,7 @@
 import type { PluginOption } from 'vite';
 
 import type { NebulaRendererChunksOptions } from '../config/chunks/types.ts';
-import type { PreloadCapability } from '../config/windowsManifest.ts';
+import type { PreloadCapability } from '@nebula-studio-internal/node-kit/windows-manifest';
 
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';

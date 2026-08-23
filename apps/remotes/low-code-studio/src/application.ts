@@ -77,14 +77,33 @@ export const nebulaLowCodeStudioDesigner: NebulaRemoteApplication = {
         return () =>
           h('div', { class: 'lc-shell', 'data-lc-surface': 'designer' }, [
             h('div', { class: 'lc-shell__header' }, [
-              h(
-                'p',
-                {
-                  class: 'lc-shell__title',
-                  'data-lc-harness': DESIGNER_HARNESS_MARKER,
-                },
-                '低代码工作室',
-              ),
+              h('div', { class: 'lc-shell__identity' }, [
+                h(
+                  'span',
+                  { class: 'lc-shell__mark', 'aria-hidden': 'true' },
+                  'L',
+                ),
+                h('div', {}, [
+                  h('p', { class: 'lc-shell__eyebrow' }, 'Nebula Builder'),
+                  h(
+                    'h1',
+                    {
+                      class: 'lc-shell__title',
+                      'data-lc-harness': DESIGNER_HARNESS_MARKER,
+                    },
+                    '低代码工作室',
+                  ),
+                  h(
+                    'p',
+                    { class: 'lc-shell__subtitle' },
+                    '组合业务组件、校验数据绑定并发布受治理的应用版本',
+                  ),
+                ]),
+              ]),
+              h('div', { class: 'lc-shell__context' }, [
+                h('span', { class: 'lc-shell__status' }, '草稿'),
+                h('span', {}, applicationId),
+              ]),
               h(ApprovalQueue, {
                 applicationId,
                 capabilities: options.capabilities,

@@ -106,4 +106,20 @@ describe('useAppLifecycle', () => {
 
     expect(lc.activeShellTagKey.value).toBe('workspace');
   });
+
+  it('builds a host embed URL for runtime federation applications', () => {
+    const lc = useAppLifecycle({
+      ...createLifecycleOpts(),
+      isExternalView: vi.fn(() => false),
+    });
+
+    lc.availableViewIds.value = ['low-code-studio', 'demo-board'];
+
+    expect(lc.embedSrc.value['low-code-studio']).toBe(
+      '/index.html?embed=low-code-studio',
+    );
+    expect(lc.embedSrc.value['demo-board']).toBe(
+      '/index.html?embed=demo-board',
+    );
+  });
 });

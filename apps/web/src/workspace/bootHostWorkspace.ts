@@ -18,15 +18,15 @@ import {
   installAssemblyForSubApp,
   wrapSubAppWithAssembly,
 } from '@nebula-studio-renderer/assembly-boot';
-import FrontendApp from '@nebula-studio-renderer/main/app';
 import {
   bootstrapShellIntegratedApps,
   hydrateShellIntegratedAppsFromRuntime,
-} from '@nebula-studio-renderer/main/platform/integrated-apps';
+} from '@/platform/integratedApps';
+import WorkspaceApp from '@/workspace/WorkspaceApp.vue';
 
 /**
  * Host-owned workspace shell for Web (no embed query) and the Electron main window.
- * UI remains `@nebula-studio-renderer/main/app`; lifecycle is Host boot, not main/boot.
+ * Workspace UI and lifecycle are both owned by the Host.
  */
 export async function bootHostWorkspace(mode: RuntimeMode): Promise<void> {
   window.__NEBULA_RUNTIME_MODE__ = mode;
@@ -59,7 +59,7 @@ export async function bootHostWorkspace(mode: RuntimeMode): Promise<void> {
   await startApplication({
     appId: 'host-workspace',
     mode,
-    rootComponent: wrapSubAppWithAssembly(FrontendApp),
+    rootComponent: wrapSubAppWithAssembly(WorkspaceApp),
     auth: { enabled: mode !== 'electron' },
     shellEventBus: resolveShellEventBus(),
     beforeMountAsync: async () => {

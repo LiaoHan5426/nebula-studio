@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
 const validator = readFileSync(
   join(
     root,
@@ -39,11 +39,11 @@ const crossMigration = readFileSync(
   'utf8',
 );
 const apps = readFileSync(
-  join(root, 'apps/sub-web/frontend/src/platform/integratedApps.ts'),
+  join(root, 'apps/web/src/platform/integratedApps.ts'),
   'utf8',
 );
 const shellApp = readFileSync(
-  join(root, 'apps/sub-web/frontend/src/App.vue'),
+  join(root, 'apps/web/src/workspace/WorkspaceApp.vue'),
   'utf8',
 );
 
@@ -108,7 +108,7 @@ if (
 
 if (
   !bridge.includes('negotiateIframeProtocolVersion') ||
-  !bridge.includes('cancel (requestId') ||
+  !bridge.includes('cancel(requestId') ||
   !bridge.includes('IFRAME_REQUEST_TIMEOUT_MS')
 ) {
   console.error(

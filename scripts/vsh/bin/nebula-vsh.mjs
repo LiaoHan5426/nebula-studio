@@ -3,7 +3,6 @@ import { spawnSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { scanCircularDependencies } from '../src/check-circular.mjs';
 import { checkWorkspacePackages } from '../src/check-workspace.mjs';
 
 const packageRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -28,8 +27,8 @@ const checks = new Map([
   ['check-settings-mf', 'check-settings-mf.mjs'],
 ]);
 
-function runLegacy(script) {
-  const result = spawnSync(process.execPath, [join(workspaceRoot, 'scripts', script), ...args], {
+function runCheck(script) {
+  const result = spawnSync(process.execPath, [join(packageRoot, 'src', 'checks', script), ...args], {
     cwd: workspaceRoot,
     stdio: 'inherit',
   });
@@ -37,10 +36,14 @@ function runLegacy(script) {
 }
 
 if (checks.has(command)) {
-  runLegacy(checks.get(command));
+  runCheck(checks.get(command));
 } else switch (command) {
   case 'check-workspace': await checkWorkspacePackages(workspaceRoot); break;
-  case 'scan-circular': await scanCircularDependencies(workspaceRoot); break;
+  case 'scan-circular': {
+    const { scanCircularDependencies } = await import('../src/check-circular.mjs');
+    await scanCircularDependencies(workspaceRoot);
+    break;
+  }
   default:
     console.error(`Usage: nebula-vsh <${['scan-circular', 'check-workspace', ...checks.keys()].join('|')}>`);
     process.exitCode = 2;

@@ -56,14 +56,14 @@ export function apiContextPath(
 export function loadApiContext(rootDir?: string): ApiContext {
   const candidates = [
     rootDir
-      ? join(rootDir, 'internal', 'vite', 'src', 'config', API_CONTEXT_FILE)
+      ? join(rootDir, 'internal', 'node-kit', 'src', 'config', API_CONTEXT_FILE)
       : '',
     apiContextPath(),
   ].filter(Boolean);
   const file = candidates.find((path) => existsSync(path));
   if (!file) {
     throw new Error(
-      `[nebula-vite] Missing API context black box ${API_CONTEXT_FILE}`,
+      `[nebula-node-kit] Missing API context ${API_CONTEXT_FILE}`,
     );
   }
   return JSON.parse(readFileSync(file, 'utf8')) as ApiContext;
@@ -82,7 +82,7 @@ export function requireApiProxyPreset(
 ): ApiProxyRouteConfig[] {
   const routes = API_PROXY_PRESETS[preset];
   if (!routes?.length) {
-    throw new Error(`[nebula-vite] Unknown API proxy preset "${preset}"`);
+    throw new Error(`[nebula-node-kit] Unknown API proxy preset "${preset}"`);
   }
   return routes;
 }

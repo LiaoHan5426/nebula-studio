@@ -1,16 +1,17 @@
 import type {
   ApiResponse as TenantApiResponse,
   TenantRecord,
-} from '@nebula-studio/tenant';
+} from './tenantCore';
 
 /**
- * Tenant composable — delegates to `@nebula-studio/tenant`.
+ * Integration-owned tenant composition. Extract again only when a second app
+ * needs the same policy and API shape.
  *
  * This file re-exports the core composable factory bound to integration-app
  * API adapters so existing `@/shared/composables/useTenant` imports continue
  * to work unchanged.
  */
-import { createUseTenant } from '@nebula-studio/tenant';
+import { createUseTenant } from './tenantCore';
 
 import { tenantApi } from '@/features/tenant/api';
 import { isApiSuccess } from '@/shared/types';

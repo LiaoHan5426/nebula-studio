@@ -1,8 +1,10 @@
+/** @vitest-environment happy-dom */
+
 import { startApplication } from '@nebula-studio/application-bootstrap';
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { bootFrontend } from '../boot';
+import { bootHostWorkspace } from '../workspace/bootHostWorkspace';
 
 vi.mock('@nebula-studio-renderer/assembly-boot', () => ({
   installAssemblyForSubApp: vi.fn(),
@@ -11,15 +13,17 @@ vi.mock('@nebula-studio-renderer/assembly-boot', () => ({
 vi.mock('@nebula-studio/nebula-ui', () => ({}));
 vi.mock('@nebula-studio/nebula-layout', () => ({}));
 vi.mock('@nebula-studio/styles/document', () => ({}));
-vi.mock('../App.vue', () => ({ default: {} }));
-vi.mock('../platform/integratedApps', () => ({
+vi.mock('@/workspace/WorkspaceApp.vue', () => ({ default: {} }));
+vi.mock('@/platform/integratedApps', () => ({
   bootstrapShellIntegratedApps: vi.fn(),
   hydrateShellIntegratedAppsFromRuntime: vi.fn(async () => undefined),
 }));
-vi.mock('@nebula-studio/app-shell', () => ({
+vi.mock('@nebula-studio/auth-provider/web', () => ({
   redirectShellToWebLogin: vi.fn(),
-  resolveShellEventBus: vi.fn(() => ({})),
   shouldRedirectUnauthenticatedWebShell: vi.fn(() => false),
+}));
+vi.mock('@nebula-studio/shell-protocol', () => ({
+  resolveShellEventBus: vi.fn(() => ({})),
 }));
 vi.mock('@nebula-studio/shell-host', () => ({
   installShellHostBridge: vi.fn(),
@@ -31,7 +35,7 @@ vi.mock('@nebula-studio/application-bootstrap', () => ({
 
 const mockStartApplication = vi.mocked(startApplication);
 
-describe('bootFrontend', () => {
+describe('bootHostWorkspace', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     Reflect.set(globalThis, '__NEBULA_MSW_ENABLED__', false);
@@ -39,7 +43,7 @@ describe('bootFrontend', () => {
   });
 
   it('mounts the Electron shell without requiring an existing session', async () => {
-    await bootFrontend({ mode: 'electron' });
+    await bootHostWorkspace('electron');
 
     expect(mockStartApplication).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -50,7 +54,7 @@ describe('bootFrontend', () => {
   });
 
   it('keeps authentication enabled for web modes', async () => {
-    await bootFrontend({ mode: 'standalone' });
+    await bootHostWorkspace('standalone');
 
     expect(mockStartApplication).toHaveBeenCalledWith(
       expect.objectContaining({

@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "totals": {
-    "apps": 12,
-    "packages": 39,
+    "apps": 10,
+    "packages": 36,
     "internal": 2,
     "tools": 6,
     "scripts": 1,
-    "all": 60
+    "all": 55
   },
   "maxTotals": {
     "apps": 12,
@@ -52,18 +52,8 @@
       "category": "apps"
     },
     {
-      "name": "@nebula-studio-renderer/main",
-      "dir": "apps/sub-web/frontend",
-      "category": "apps"
-    },
-    {
       "name": "@nebula-studio-renderer/integration",
       "dir": "apps/sub-web/integration",
-      "category": "apps"
-    },
-    {
-      "name": "@nebula-studio-renderer/login",
-      "dir": "apps/sub-web/login",
       "category": "apps"
     },
     {
@@ -92,38 +82,13 @@
       "category": "packages"
     },
     {
-      "name": "@nebula-studio/api-client",
-      "dir": "packages/core/api-client",
-      "category": "packages"
-    },
-    {
       "name": "@nebula-studio/app-shell",
       "dir": "packages/core/app-shell",
       "category": "packages"
     },
     {
-      "name": "@nebula-studio/auth",
-      "dir": "packages/core/auth",
-      "category": "packages"
-    },
-    {
-      "name": "@nebula-studio/auth-provider",
-      "dir": "packages/core/auth-provider",
-      "category": "packages"
-    },
-    {
       "name": "@nebula-studio-electron/electron-bridge",
       "dir": "packages/core/electron-shared",
-      "category": "packages"
-    },
-    {
-      "name": "@nebula-studio/sse-events",
-      "dir": "packages/core/sse-events",
-      "category": "packages"
-    },
-    {
-      "name": "@nebula-studio/tenant",
-      "dir": "packages/core/tenant",
       "category": "packages"
     },
     {
@@ -172,6 +137,11 @@
       "category": "packages"
     },
     {
+      "name": "@nebula-studio/api-client",
+      "dir": "packages/platform/api-client",
+      "category": "packages"
+    },
+    {
       "name": "@nebula-studio/application-bootstrap",
       "dir": "packages/platform/application-bootstrap",
       "category": "packages"
@@ -189,6 +159,11 @@
     {
       "name": "@nebula-studio-renderer/assembly-boot",
       "dir": "packages/platform/assembly-boot",
+      "category": "packages"
+    },
+    {
+      "name": "@nebula-studio/auth-provider",
+      "dir": "packages/platform/auth",
       "category": "packages"
     },
     {
@@ -323,21 +298,17 @@
       "files": [
         "apps/sub-web/docs/src/boot.ts",
         "apps/sub-web/settings/src/boot.ts",
-        "apps/sub-web/integration/src/boot.ts",
-        "apps/sub-web/frontend/src/boot.ts",
-        "apps/sub-web/login/src/boot.ts"
+        "apps/sub-web/integration/src/boot.ts"
       ],
       "note": "Standalone composition roots share explicit application-bootstrap lifecycle stages. Federation remotes use federation.ts instead."
     },
     {
-      "id": "host-vs-standalone-workspace-login",
+      "id": "host-owned-workspace-login",
       "files": [
         "apps/web/src/workspace/bootHostWorkspace.ts",
-        "apps/sub-web/frontend/src/boot.ts",
-        "apps/web/src/auth/bootHostLogin.ts",
-        "apps/sub-web/login/src/boot.ts"
+        "apps/web/src/auth/bootHostLogin.ts"
       ],
-      "note": "Host bootHost* still near-clones standalone workspace/login. Federation appearance helper was extracted to shell-protocol."
+      "note": "Workspace and login are Host-owned composition roots; no standalone renderer package remains."
     }
   ],
   "notes": {

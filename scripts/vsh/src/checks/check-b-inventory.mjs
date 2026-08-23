@@ -8,7 +8,7 @@ import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
 const inventoryPath = join(root, 'configs/b-track-inventory.json');
 const write = process.argv.includes('--write');
 
@@ -139,7 +139,7 @@ if (write) {
   const committed = readFileSync(inventoryPath, 'utf8');
   if (committed !== stableStringify(current)) {
     console.error(
-      '[check:b-inventory] configs/b-track-inventory.json is stale — run node ./scripts/check-b-inventory.mjs --write',
+      '[check:b-inventory] configs/b-track-inventory.json is stale — run nebula-vsh check-b-inventory --write',
     );
     process.exit(1);
   }

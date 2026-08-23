@@ -26,6 +26,8 @@ const zhCN: MessageTree = {
     unsynced: '未同步',
   },
   nav: {
+    workspace: '设置工作区',
+    overview: '概览',
     brand: '设置中心',
     eyebrow: '设置',
     label: '设置导航',
@@ -49,6 +51,10 @@ const zhCN: MessageTree = {
     logs: '审计日志',
   },
   pages: {
+    'settings-overview': {
+      title: '设置中心',
+      description: '集中管理账号、安全、界面偏好与治理入口。',
+    },
     'settings-governance': {
       title: '设置治理工作台',
       description: '汇总成员、授权、配置和审计治理待办。',
@@ -99,6 +105,13 @@ const zhCN: MessageTree = {
     },
     fallbackTitle: '设置中心',
     fallbackDescription: '管理个人偏好、组织访问和平台运行配置。',
+  },
+  overview: {
+    title: '{user}，管理你的工作环境',
+    description:
+      '个人偏好与治理能力按任务组织，修改会同步到 Shell 和已打开的 Remote。',
+    personalTitle: '个人设置',
+    personalHint: '优先展示高频设置；组织和平台治理入口仅对有权限的成员显示。',
   },
   appearance: {
     paneTitle: '外观与主题',

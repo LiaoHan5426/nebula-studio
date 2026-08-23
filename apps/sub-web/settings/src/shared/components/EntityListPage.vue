@@ -40,7 +40,6 @@ defineEmits<{
 }>();
 
 const { t } = useI18n();
-
 </script>
 
 <template>
@@ -97,7 +96,7 @@ const { t } = useI18n();
 <style scoped>
 .entity-list-page {
   display: grid;
-  gap: var(--space-4);
+  gap: var(--space-5);
 }
 
 .entity-list-page__loading {
@@ -105,7 +104,8 @@ const { t } = useI18n();
   padding: var(--space-6);
   color: hsl(var(--muted-foreground));
   text-align: center;
-  background: hsl(var(--muted) / 35%);
-  border-radius: var(--radius-lg);
+  background: hsl(var(--muted) / 22%);
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-md);
 }
 </style>

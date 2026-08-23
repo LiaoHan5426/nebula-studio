@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
 
-const root = fileURLToPath(new URL('..', import.meta.url));
+const root = fileURLToPath(new URL('../../../../', import.meta.url));
 const distDir = join(root, 'apps', 'web', 'dist');
 const manifestPath = join(distDir, '.vite', 'manifest.json');
 const baseline = JSON.parse(

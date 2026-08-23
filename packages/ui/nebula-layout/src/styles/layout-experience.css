@@ -8,9 +8,7 @@
   width: 100%;
   min-height: 100%;
   color: hsl(var(--foreground));
-  background:
-    radial-gradient(circle at 88% 4%, hsl(var(--primary) / 8%), transparent 24rem),
-    linear-gradient(145deg, hsl(var(--background)), hsl(var(--background-deep) / 76%));
+  background: hsl(var(--background-deep));
 }
 
 .nebula-experience-layout__skip-link {
@@ -26,7 +24,9 @@
   box-shadow: var(--shadow-floating);
   opacity: 0;
   transform: translate(-50%, -160%);
-  transition: transform 160ms ease, opacity 160ms ease;
+  transition:
+    transform 160ms ease,
+    opacity 160ms ease;
 }
 
 .nebula-experience-layout__skip-link:focus {
@@ -59,15 +59,12 @@
   min-width: 0;
   padding: calc(var(--experience-padding) * 0.75);
   overflow: auto;
-  background: hsl(var(--sidebar) / 58%);
-  border-right: 1px solid hsl(var(--border) / 72%);
-  backdrop-filter: blur(18px) saturate(1.1);
+  background: hsl(var(--sidebar));
+  border-right: 1px solid hsl(var(--border) / 78%);
 }
 
 .nebula-experience-layout.is-portal .nebula-experience-layout__navigation {
-  background:
-    linear-gradient(180deg, hsl(var(--primary) / 7%), transparent 14rem),
-    hsl(var(--background));
+  background: hsl(var(--sidebar));
 }
 
 .nebula-experience-layout__main {
@@ -84,10 +81,10 @@
   grid-template-columns: minmax(0, 1fr) auto;
   gap: var(--space-4) var(--space-6);
   align-items: end;
-  padding: clamp(1.5rem, 3vw, 2.75rem) var(--experience-padding) clamp(1.25rem, 2vw, 2rem);
-  background: hsl(var(--background) / 72%);
-  border-bottom: 1px solid hsl(var(--border) / 52%);
-  backdrop-filter: blur(18px) saturate(1.08);
+  padding: clamp(1.5rem, 3vw, 2.75rem) var(--experience-padding)
+    clamp(1.25rem, 2vw, 2rem);
+  background: hsl(var(--background));
+  border-bottom: 1px solid hsl(var(--border) / 72%);
 }
 
 .nebula-experience-layout__eyebrow {
@@ -133,6 +130,7 @@
   min-height: 0;
   padding: clamp(1rem, 2.5vw, var(--experience-padding));
   overflow: auto;
+  background: hsl(var(--background-deep));
 }
 
 .nebula-experience-layout__content-inner {
@@ -150,8 +148,8 @@
 }
 
 .nebula-experience-layout__content-inner > :is(section, article, .nebula-card) {
-  border-color: hsl(var(--border) / 58%);
-  box-shadow: 0 1px 2px hsl(var(--foreground) / 3%), 0 14px 38px hsl(var(--foreground) / 4%);
+  border-color: hsl(var(--border) / 72%);
+  box-shadow: 0 1px 2px hsl(var(--foreground) / 4%);
 }
 
 .nebula-experience-layout.is-embedded {
@@ -182,7 +180,11 @@
       hsl(var(--primary) / 14%),
       transparent 30rem
     ),
-    radial-gradient(circle at 88% 86%, hsl(var(--primary) / 10%), transparent 28rem),
+    radial-gradient(
+      circle at 88% 86%,
+      hsl(var(--primary) / 10%),
+      transparent 28rem
+    ),
     hsl(var(--background-deep));
 }
 

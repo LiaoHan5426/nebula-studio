@@ -4,7 +4,7 @@
 
 ### Web 宿主
 
-`apps/web` 提供浏览器壳和各子应用 embed 入口。它消费 app-shell 的统一窗口配置，并在开发期自动发现 `integration`、`frontend`、`login`、`settings`、`docs`。适用于日常跨应用开发和 E2E。
+`apps/web` 提供浏览器壳、Host-owned Workspace/Login 和 Remote 加载入口。它从后端 registry 发现 `integration`、`settings`、`docs` 等应用，不再把 Frontend/Login 维护为独立 renderer 包。
 
 ### Electron 宿主
 
@@ -14,13 +14,13 @@
 
 | 子应用 | 路径 | 主要职责 | 可独立启动 |
 | --- | --- | --- | --- |
-| 工作台 | `apps/sub-web/frontend` | 应用集成入口、壳层内容区和组织上下文 | 是 |
+| 工作台 | `apps/web/src/workspace` | 应用集成入口、壳层内容区和组织上下文 | Host 内置 |
 | Integration | `apps/sub-web/integration` | 接口集成、治理、任务、订阅、监控等业务 | 是，默认 `5174` |
-| Login | `apps/sub-web/login` | 登录 UI 和认证流程 | 是 |
+| Login | `apps/web/src/auth` + `packages/platform/login-ui` | Host 认证入口和共享登录 UI | Host 内置 |
 | Settings | `apps/sub-web/settings` | 系统配置、用户与平台设置 | 是 |
 | Docs | `apps/sub-web/docs` | Nebula UI 指南、组件说明和交互示例 | 是 |
 
-子应用通常同时导出 Vue App、boot 或 router 入口，供 Web/Electron 宿主直接组合；不要把“独立 Vite 页面”当成唯一运行方式。
+Federation Remote 同时保留 application expose 与 standalone 入口；Workspace/Login 是 Host seed，不走 Remote，也不再维护重复 standalone renderer。
 
 ## Integration 功能地图
 

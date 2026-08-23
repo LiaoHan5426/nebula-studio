@@ -1,7 +1,7 @@
 import type { ProxyOptions } from 'vite';
 
-import { resolveApiProxyRoutes } from '../config/studioRuntime.ts';
-import { loadWindowsConfig } from '../config/windowsManifest.ts';
+import { resolveApiProxyRoutes } from '@nebula-studio-internal/node-kit/runtime-config';
+import { loadWindowsConfig } from '@nebula-studio-internal/node-kit/windows-manifest';
 
 export type NebulaApiProxyPreset = 'integration' | 'standard';
 

@@ -1,8 +1,8 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
 
 const shellEntry = readFileSync(
   join(root, 'apps/web/src/shell-entry.ts'),
@@ -60,9 +60,9 @@ if (hostWorkspace.includes('webPresentation')) {
   );
   process.exit(1);
 }
-if (!hostWorkspace.includes('@nebula-studio-renderer/main/app')) {
+if (!hostWorkspace.includes('@/workspace/WorkspaceApp.vue')) {
   console.error(
-    '[check:host-workspace] Host workspace boot must mount the shared Frontend App UI',
+    '[check:host-workspace] Host workspace boot must mount its Host-owned Workspace UI',
   );
   process.exit(1);
 }
@@ -100,6 +100,10 @@ if (electronBoot.includes('@nebula-studio-renderer/main/boot')) {
   console.error(
     '[check:host-workspace] Electron renderer must not call sub-web main/boot',
   );
+  process.exit(1);
+}
+if (existsSync(join(root, 'apps/sub-web/frontend/package.json'))) {
+  console.error('[check:host-workspace] obsolete frontend renderer package must stay deleted');
   process.exit(1);
 }
 

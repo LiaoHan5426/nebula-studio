@@ -3,7 +3,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
 const boot = readFileSync(
   join(root, 'apps/electron/src/renderer/boot.ts'),
   'utf8',
@@ -81,7 +81,6 @@ const hostEditorLeakPattern =
   /monaco-editor(?:-vue3)?|bpmn-js|@nebula-studio\/nebula-(?:flow-editor|dag-editor|code-editor)/;
 const hostManifests = [
   join(root, 'apps/web/package.json'),
-  join(root, 'apps/sub-web/frontend/package.json'),
 ];
 for (const manifestPath of hostManifests) {
   const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
@@ -113,7 +112,6 @@ function walkFiles(directory, visit, fileTest) {
 
 const hostSourceRoots = [
   join(root, 'apps/web/src'),
-  join(root, 'apps/sub-web/frontend/src'),
 ];
 for (const sourceRoot of hostSourceRoots) {
   walkFiles(

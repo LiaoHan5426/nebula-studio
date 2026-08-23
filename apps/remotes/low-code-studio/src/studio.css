@@ -7,24 +7,87 @@
     13px/1.45 system-ui,
     sans-serif;
   color: hsl(var(--foreground));
-  background: hsl(var(--background-deep));
+  background:
+    radial-gradient(
+      circle at 78% 0%,
+      hsl(var(--primary) / 9%),
+      transparent 28rem
+    ),
+    hsl(var(--background-deep));
 }
 
 .lc-shell__header {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  padding: 0.65rem 0.9rem 0;
+  padding: 1rem 1.15rem;
+  background: hsl(var(--background) / 78%);
+  border-bottom: 1px solid hsl(var(--border) / 70%);
+  backdrop-filter: blur(18px);
+}
+
+.lc-shell__identity {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.lc-shell__mark {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  font-weight: 800;
+  color: hsl(var(--primary-foreground));
+  background: hsl(var(--primary));
+  border-radius: 0.8rem;
+  box-shadow: 0 10px 24px hsl(var(--primary) / 24%);
+}
+
+.lc-shell__eyebrow,
+.lc-shell__subtitle {
+  margin: 0;
+}
+
+.lc-shell__eyebrow {
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: hsl(var(--primary));
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
 }
 
 .lc-shell__title {
   padding: 0;
   margin: 0;
-  font-size: 0.75rem;
+  font-size: 1rem;
+  color: hsl(var(--foreground));
+  letter-spacing: -0.01em;
+}
+
+.lc-shell__subtitle {
+  margin-top: 0.1rem;
+  font-size: 0.7rem;
   color: hsl(var(--muted-foreground));
-  letter-spacing: 0.04em;
+}
+
+.lc-shell__context {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.38rem 0.6rem;
+  font-size: 0.7rem;
+  color: hsl(var(--muted-foreground));
+  background: hsl(var(--muted) / 35%);
+  border: 1px solid hsl(var(--border));
+  border-radius: 999px;
+}
+
+.lc-shell__status {
+  font-weight: 750;
+  color: hsl(var(--warning));
 }
 
 .lc-approval {
@@ -137,7 +200,7 @@
   gap: 0.5rem 0.75rem;
   align-items: center;
   padding: 0.65rem 0.9rem;
-  background: hsl(var(--header));
+  background: hsl(var(--card) / 72%);
   border-bottom: 1px solid hsl(var(--border));
 }
 
@@ -181,7 +244,7 @@
   min-height: 0;
   padding: 0.75rem;
   overflow: auto;
-  background: hsl(var(--sidebar));
+  background: hsl(var(--sidebar) / 72%);
 }
 
 .lc-editor__palette {
@@ -203,7 +266,7 @@
 
 .lc-editor__canvas {
   min-height: 0;
-  padding: 1rem;
+  padding: clamp(1rem, 2.5vw, 2rem);
   overflow: auto;
   background:
     linear-gradient(hsl(var(--border) / 18%) 1px, transparent 1px),

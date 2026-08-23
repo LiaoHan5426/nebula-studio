@@ -43,9 +43,18 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: SettingsLayout,
-    redirect: () =>
-      canAccessSettings('organization') ? '/governance' : '/profile',
+    redirect: '/overview',
     children: [
+      {
+        path: 'overview',
+        name: 'settings-overview',
+        component: () => import('@/features/personal/SettingsOverviewPage.vue'),
+        meta: settingsMeta(
+          '设置中心',
+          'settings.home',
+          '集中管理账号、安全、界面偏好与治理入口。',
+        ),
+      },
       {
         path: 'governance',
         name: 'settings-governance',
@@ -187,8 +196,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/index.html',
-    redirect: () =>
-      canAccessSettings('organization') ? '/governance' : '/profile',
+    redirect: '/overview',
   },
 ];
 

@@ -9,7 +9,7 @@ const settings = resolveStandaloneApp('settings');
 const integration = resolveStandaloneApp('integration');
 
 /**
- * Standalone Vite remotes (own origin, `boot.ts` + `bootMicroApp`).
+ * Standalone Vite applications (own origin, `boot.ts` + `startApplication`).
  * Not Host `/?embed=` Federation.
  */
 test.describe('standalone remotes', () => {

@@ -570,7 +570,21 @@ export function useAppLifecycle(opts: UseAppLifecycleOptions) {
     }
     for (const id of availableViewIds.value) {
       const runtimeSrc = opts.resolveIframeSrc?.(id);
-      if (runtimeSrc) out[id] = runtimeSrc;
+      if (runtimeSrc) {
+        out[id] = runtimeSrc;
+        continue;
+      }
+      // Runtime-discovered and host-owned federation applications are not
+      // necessarily part of the generated window manifest. The Web shell
+      // still hosts them through the same-origin embed entry, where web-boot
+      // resolves their federation registration. Without this fallback the
+      // launcher creates a tab but IframeHost has no src and renders a blank
+      // content area (notably low-code-studio and demo-board).
+      if (!opts.isExternalView?.(id)) {
+        out[id] = embedded.buildEmbeddedSurfaceUrl(
+          id as Parameters<typeof embedded.buildEmbeddedSurfaceUrl>[0],
+        );
+      }
     }
     return out;
   });

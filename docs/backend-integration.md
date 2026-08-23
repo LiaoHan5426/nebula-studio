@@ -83,7 +83,7 @@ demo 种子账号：
 X-Tenant-Id: <tenant-id>
 ```
 
-`@nebula-studio/tenant` 负责加载当前用户租户、选择默认租户和切换租户。开发页面时不要各自实现另一套租户存储键。
+Integration 的 `shared/composables/tenantCore` 负责加载当前用户租户、选择默认租户和切换租户。它是应用内能力；其他应用如需复用，必须先形成稳定的跨应用契约，不能复制另一套租户存储键。
 
 演示租户为 `tenant-a`。网关演示服务需要 API Key 时，凭据值记为 `[REDACTED]`，请求头为 `X-API-Key`。
 
@@ -98,7 +98,7 @@ X-Tenant-Id: <tenant-id>
 
 ## SSE
 
-订阅事件由 `@nebula-studio/sse-events` 管理，Integration 默认连接 `/api/subscribe/camel` 下的事件端点，并携带当前认证信息。排障顺序：
+订阅事件由 Integration 的 `shared/composables/subscriptionEventsCore` 管理，默认连接 `/api/subscribe/camel` 下的事件端点，并携带当前认证信息。排障顺序：
 
 1. 确认 Console `8080` 已启动；
 2. 确认登录 token 有效且租户正确；

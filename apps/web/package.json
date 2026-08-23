@@ -16,6 +16,8 @@
   "author": "Liao Han <liaohan5426@gmail.com>",
   "type": "module",
   "scripts": {
+    "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false",
+    "test": "vp test run",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
@@ -23,7 +25,7 @@
   "dependencies": {
     "@nebula-studio-electron/electron-bridge": "workspace:^",
     "@nebula-studio-renderer/assembly-boot": "workspace:^",
-    "@nebula-studio-renderer/main": "workspace:^",
+    "@nebula-studio/api-client": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
     "@nebula-studio/application-bootstrap": "workspace:^",
     "@nebula-studio/application-runtime": "workspace:^",
@@ -32,6 +34,7 @@
     "@nebula-studio/login-ui": "workspace:^",
     "@nebula-studio/msw": "workspace:^",
     "@nebula-studio/nebula-layout": "workspace:^",
+    "@nebula-studio/nebula-shell": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
     "@nebula-studio/shell-host": "workspace:^",
     "@nebula-studio/shell-protocol": "workspace:^",
@@ -43,9 +46,11 @@
     "@nebula-studio-internal/build-kit": "workspace:^",
     "@nebula-studio-internal/tsconfig": "workspace:^",
     "@nebula-studio/types": "workspace:^",
+    "happy-dom": "catalog:vite",
     "typescript": "catalog:types",
     "vite": "catalog:vite",
     "vite-plus": "catalog:vite",
+    "vitest": "catalog:vite",
     "vue-tsc": "catalog:vue"
   }
 }

@@ -6,10 +6,8 @@
     "apps/remotes/low-code-studio/src/runtime-application.ts",
     "apps/sub-web/docs/src/boot.ts",
     "apps/sub-web/docs/src/federation.ts",
-    "apps/sub-web/frontend/src/boot.ts",
     "apps/sub-web/integration/src/boot.ts",
     "apps/sub-web/integration/src/federation.ts",
-    "apps/sub-web/login/src/boot.ts",
     "apps/sub-web/settings/src/boot.ts",
     "apps/sub-web/settings/src/federation.ts",
     "apps/web/src/auth/bootHostLogin.ts",
@@ -18,20 +16,18 @@
     "packages/styles/src/index.css",
     "packages/types/index.d.ts"
   ],
-  "storageKeys": ["nebula.theme.v1", "nebula_current_org_id", "tenant_id"],
+  "storageKeys": [
+    "nebula.theme.v1",
+    "nebula_current_org_id",
+    "tenant_id"
+  ],
   "rawColorFiles": [
     "apps/sub-web/docs/src/pages/design/ThemeMatrixPage.vue",
     "apps/sub-web/docs/src/utils/shikiRender.ts",
-    "apps/sub-web/frontend/src/assets/base.css",
-    "apps/sub-web/integration/src/app/AppHeader.vue",
-    "apps/sub-web/integration/src/app/AppLayout.vue",
-    "apps/sub-web/integration/src/features/resource-catalog/ResourceDetailPage.vue",
-    "apps/sub-web/login/src/App.vue",
     "apps/sub-web/settings/src/features/appearance/AppearancePage.vue",
-    "apps/sub-web/settings/src/features/personal/ProfilePage.vue",
     "packages/editors/flow-editor/src/styles/bpmn-theme.css",
+    "packages/platform/login-ui/src/App.vue",
     "packages/testing/msw/src/handlers/settings.ts",
-    "packages/ui/nebula-layout/src/styles/layout-experience.css",
     "packages/ui/nebula-ui/src/components/avatar/NebulaAvatar.vue",
     "packages/ui/nebula-ui/src/styles.css",
     "packages/ui/tokens/src/resolve.ts"

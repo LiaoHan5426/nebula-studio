@@ -26,11 +26,9 @@ Nebula Studio 使用 pnpm workspace 组织代码，日常命令统一通过 Vite
 | 路径 | 包名 | 说明 |
 | --- | --- | --- |
 | [`apps/electron`](../apps/electron/README.md) | `@nebula-studio/electron` | Electron 桌面宿主 |
-| [`apps/web`](../apps/web/README.md) | `@nebula-studio/web` | Web 宿主 |
+| [`apps/web`](../apps/web/README.md) | `@nebula-studio/web` | Web/Electron 共用的 Host Workspace 与 Login composition |
 | [`apps/sub-web/docs`](../apps/sub-web/docs/README.md) | `@nebula-studio-renderer/docs` | UI 组件文档子应用 |
-| [`apps/sub-web/frontend`](../apps/sub-web/frontend/README.md) | `@nebula-studio-renderer/main` | 主工作台 renderer；目录名与包名不同 |
 | [`apps/sub-web/integration`](../apps/sub-web/integration/README.md) | `@nebula-studio-renderer/integration` | 企业接口集成平台 |
-| [`apps/sub-web/login`](../apps/sub-web/login/README.md) | `@nebula-studio-renderer/login` | 登录子应用 |
 | [`apps/sub-web/settings`](../apps/sub-web/settings/README.md) | `@nebula-studio-renderer/settings` | 设置子应用 |
 
 preload 实现集中在 `apps/electron-preload/src`。构建工具根据生成的窗口 manifest 创建虚拟入口，由 `unified.ts` 按窗口 ID 组装 `auth`、`notify`、`settings`、`shell` 等能力；不再为每个窗口维护独立包。
@@ -40,19 +38,20 @@ preload 实现集中在 `apps/electron-preload/src`。构建工具根据生成�
 | 路径 | 包名 | 职责 |
 | --- | --- | --- |
 | [`packages/contracts`](../packages/contracts/README.md) | `@nebula-studio/contracts` | auth、system、integration 及生成契约 |
-| `packages/core/api-client` | `@nebula-studio/api-client` | 请求头、响应解析、401 和进度处理 |
+| `packages/platform/api-client` | `@nebula-studio/api-client` | 请求头、响应解析、401 和进度处理 |
 | [`packages/core/app-shell`](../packages/core/app-shell/README.md) | `@nebula-studio/app-shell` | 窗口配置、认证 helper、协议再导出 |
 | `packages/platform/shell-host` | `@nebula-studio/shell-host` | Web/Electron 壳适配（presentation stub、Host bridge 安装） |
 | `packages/platform/shell-protocol` | `@nebula-studio/shell-protocol` | embed 消息、事件总线、presentation 标记（无 Host 实现） |
 | `packages/platform/login-ui` | `@nebula-studio/login-ui` | 登录表单 UI（Host 与 standalone Remote 共用，非 renderer 包） |
-| `packages/core/auth` | `@nebula-studio/auth` | 按运行模式编排认证策略 |
-| `packages/core/auth-provider` | `@nebula-studio/auth-provider` | 全局认证会话及 Vue 注入 |
+| `packages/platform/auth` | `@nebula-studio/auth-provider` | 会话、适配器、Vue 注入及 `./bootstrap` 认证策略 |
 | [`packages/core/electron-shared`](../packages/core/electron-shared/README.md) | `@nebula-studio-electron/electron-bridge` | Electron/preload/renderer 桥接类型与实现 |
 | [`packages/ui/shell-ui`](../packages/ui/shell-ui) | `@nebula-studio/nebula-shell` | Shell Vue 组件与生命周期（已移出 core） |
 | `packages/testing/msw` | `@nebula-studio/msw` | 本地 Mock Service Worker handlers（非产品运行时） |
-| `packages/core/runtime` | `@nebula-studio/runtime` | 子应用启动和运行模式抽象 |
-| `packages/core/sse-events` | `@nebula-studio/sse-events` | 订阅事件 SSE 连接管理 |
-| `packages/core/tenant` | `@nebula-studio/tenant` | 租户列表、选择和持久化 |
+| `packages/platform/application-bootstrap` | `@nebula-studio/application-bootstrap` | 独立应用显式启动阶段与清理协议 |
+| `packages/platform/application-runtime` | `@nebula-studio/application-runtime` | Federation 应用注册、加载和生命周期 |
+
+租户状态与订阅事件只被 Integration 使用，已下沉到
+`apps/sub-web/integration/src/shared/composables`，不再作为伪共享 workspace 包发布。
 
 ## UI、编辑器与功能包
 

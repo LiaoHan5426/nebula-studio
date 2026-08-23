@@ -166,9 +166,9 @@ const customConfig: Linter.Config[] = [
     },
   },
 
-  // renderer 隔离：frontend 不能引用 integration / settings
+  // Host 隔离：Web workspace 不能静态引用 Remote 业务实现
   {
-    files: ['apps/sub-web/frontend/**/**'],
+    files: ['apps/web/src/**/**'],
     ignores: restrictedImportIgnores,
     rules: {
       'no-restricted-imports': [
@@ -177,11 +177,11 @@ const customConfig: Linter.Config[] = [
           patterns: [
             {
               group: ['@nebula-studio-renderer/integration'],
-              message: 'frontend 禁止引用 integration renderer',
+              message: 'Web Host 禁止引用 integration renderer',
             },
             {
               group: ['@nebula-studio-renderer/settings'],
-              message: 'frontend 禁止引用 settings renderer',
+              message: 'Web Host 禁止引用 settings renderer',
             },
           ],
         },
@@ -267,29 +267,6 @@ const customConfig: Linter.Config[] = [
                 '@nebula-studio-renderer/main',
               ],
               message: 'Remote 禁止依赖 Host / frontend(main)',
-            },
-          ],
-        },
-      ],
-    },
-  },
-
-  // renderer 隔离：login 不能引用 integration / contracts/integration
-  {
-    files: ['apps/sub-web/login/**/**'],
-    ignores: restrictedImportIgnores,
-    rules: {
-      'no-restricted-imports': [
-        'error',
-        {
-          patterns: [
-            {
-              group: ['@nebula-studio-renderer/integration'],
-              message: 'login 禁止引用 integration renderer',
-            },
-            {
-              group: ['@nebula-studio/contracts/integration'],
-              message: 'login 禁止引用 contracts/integration',
             },
           ],
         },

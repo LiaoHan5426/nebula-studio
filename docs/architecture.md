@@ -14,7 +14,7 @@ Electron 主进程 / Web 宿主
  docs / login / settings / integration 等子应用
             │
             ▼
- runtime / auth / api-client / tenant / sse-events
+ application-bootstrap / application-runtime / auth / api-client
             │
             ▼
  UI、编辑器、功能包、contracts
@@ -56,21 +56,21 @@ Electron 主进程 / Web 宿主
 
 ## 子应用运行模式
 
-`@nebula-studio/runtime` 和 `@nebula-studio/auth` 将运行环境归一为三种模式：
+`@nebula-studio/application-bootstrap`、`@nebula-studio/application-runtime` 和 `@nebula-studio/auth` 分别承担独立应用启动、Federation 生命周期与认证：
 
 - `standalone`：子应用由自身 Vite 服务直接运行；
 - `platform-embed`：子应用嵌入 Web 壳，通过壳桥接认证和导航；
 - `electron`：子应用运行在 Electron renderer 中，通过 preload/bridge 使用宿主能力。
 
-子应用应通过 runtime、app-shell 或 electron bridge 获取能力，避免用 URL 或全局对象散落判断运行环境。
+子应用应通过 application-runtime、app-shell 或 electron bridge 获取能力，避免用 URL 或全局对象散落判断运行环境。
 
 ## 状态与跨应用协作
 
 - 认证会话由 `@nebula-studio/auth-provider` 统一管理，底层与 app-shell 的 session storage 协作。
-- 租户选择由 `@nebula-studio/tenant` 管理，当前租户键为 `tenant_id`。
+- 租户选择当前是 Integration 应用内能力，当前租户键为 `tenant_id`。
 - app-shell 提供事件总线和宿主 bridge，用于认证、租户、通知和视图状态同步。
 - API 请求通过 `@nebula-studio/api-client` 统一注入认证/租户头并处理 401。
-- SSE 订阅通过 `@nebula-studio/sse-events` 管理连接、重连和错误状态。
+- SSE 订阅由 Integration 应用内 composable 管理连接、重连和错误状态。
 
 ## 依赖方向
 

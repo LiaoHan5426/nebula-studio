@@ -3,7 +3,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
 const boot = readFileSync(
   join(root, 'apps/electron/src/renderer/boot.ts'),
   'utf8',
@@ -31,7 +31,7 @@ if (!boot.includes('bootFederationRenderer')) {
   process.exit(1);
 }
 const integratedApps = readFileSync(
-  join(root, 'apps/sub-web/frontend/src/platform/integratedApps.ts'),
+  join(root, 'apps/web/src/platform/integratedApps.ts'),
   'utf8',
 );
 if (!integratedApps.includes('hydrateShellIntegratedAppsFromRuntime')) {

@@ -1,7 +1,4 @@
-import type {
-  EmbeddedShellWindowId,
-  ShellIntegratedAppMeta,
-} from '@nebula-studio/app-shell';
+import type { ShellIntegratedAppMeta } from '@nebula-studio/app-shell';
 
 type ShellChromeCatalogEntry = Omit<ShellIntegratedAppMeta, 'id'>;
 
@@ -10,10 +7,7 @@ type ShellChromeCatalogEntry = Omit<ShellIntegratedAppMeta, 'id'>;
  * (V014). Runtime overlay from `/api/system/frontend-apps/runtime` is the
  * product source of truth. Do not put these fields back into `windows.json`.
  */
-export const SHELL_CHROME_CATALOG: Record<
-  EmbeddedShellWindowId,
-  ShellChromeCatalogEntry
-> = {
+export const SHELL_CHROME_CATALOG: Record<string, ShellChromeCatalogEntry> = {
   docs: {
     label: '文档',
     description: '查找产品帮助、任务指引和开发者参考。',
@@ -56,8 +50,39 @@ export const SHELL_CHROME_CATALOG: Record<
     integratable: true,
     requiresAuth: true,
   },
+  'low-code-studio': {
+    label: '低代码工作室',
+    description: '设计、预览并发布受治理的低代码应用。',
+    category: 'product',
+    helpKey: 'low-code.studio',
+    searchKeywords: ['低代码', '设计器', '页面', '发布', '大屏'],
+    roles: ['authenticated'],
+    returnTo: '/',
+    iconSvg:
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 8h8v8H8z"/><path d="M12 3v5M12 16v5M3 12h5M16 12h5"/></svg>',
+    defaultEnabled: true,
+    integratable: true,
+    requiresAuth: true,
+  },
+  'demo-board': {
+    label: '运营大屏',
+    description: '查看由低代码工作室发布的实时运营视图。',
+    category: 'product',
+    helpKey: 'low-code.runtime',
+    searchKeywords: ['大屏', '运营', '指标', '低代码'],
+    roles: ['authenticated'],
+    returnTo: '/',
+    iconSvg:
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 15v-4M12 15V8M16 15V6"/></svg>',
+    defaultEnabled: true,
+    integratable: true,
+    requiresAuth: true,
+  },
 };
 
 /** Fallback integrable grid order when runtime is unavailable. */
-export const SHELL_INTEGRABLE_DISPLAY_ORDER: readonly EmbeddedShellWindowId[] =
-  ['integration'];
+export const SHELL_INTEGRABLE_DISPLAY_ORDER: readonly string[] = [
+  'integration',
+  'low-code-studio',
+  'demo-board',
+];

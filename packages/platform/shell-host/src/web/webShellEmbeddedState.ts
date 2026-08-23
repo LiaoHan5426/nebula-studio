@@ -1,5 +1,3 @@
-import type { EmbeddedShellWindowId } from '@nebula-studio/app-shell/shell-config';
-
 import { getEmbeddedShellWindowIds } from '@nebula-studio/app-shell/shell-config';
 import {
   getDefaultEnabledShellIntegrableIds,
@@ -18,7 +16,7 @@ type PreferenceIpcListener = (
   payload: Record<string, unknown>,
 ) => void;
 
-const WEB_ENABLED_STORAGE_KEY = 'nebula-studio-shell-enabled-integrations';
+const WEB_ENABLED_STORAGE_KEY = 'nebula-studio-shell-enabled-integrations-v2';
 
 /**
  * Web 宿主：在内存 + localStorage（启用列表）+ sessionStorage（当前子应用视图）中模拟 `shell:get-state` / 子应用启停，
@@ -38,34 +36,32 @@ export function createWebShellEmbeddedStateHandlers(options: {
 }) {
   const embeddedIds = getEmbeddedShellWindowIds();
 
-  const isEmbeddedChromeId = (id: string): id is EmbeddedShellWindowId =>
-    embeddedIds.includes(id as EmbeddedShellWindowId);
+  const isEmbeddedChromeId = (id: string): boolean =>
+    embeddedIds.includes(id as (typeof embeddedIds)[number]);
 
-  const computeDefaultEnabledEmbeddedIds = (): Set<EmbeddedShellWindowId> => {
+  const computeDefaultEnabledEmbeddedIds = (): Set<string> => {
     const integratable = new Set(listShellIntegrableAppIds());
     const defaultOn = new Set(getDefaultEnabledShellIntegrableIds());
-    const out = new Set<EmbeddedShellWindowId>();
+    const out = new Set<string>();
     for (const id of embeddedIds) {
       if (!integratable.has(id)) out.add(id);
       else if (defaultOn.has(id)) out.add(id);
     }
+    for (const id of defaultOn) out.add(id);
     return out;
   };
 
-  const normalizeEnabledList = (
-    raw: unknown,
-  ): EmbeddedShellWindowId[] | null => {
+  const normalizeEnabledList = (raw: unknown): string[] | null => {
     if (!Array.isArray(raw)) return null;
-    const valid = new Set(embeddedIds);
+    const valid = new Set([...embeddedIds, ...listShellIntegrableAppIds()]);
     const out = raw.filter(
-      (x): x is EmbeddedShellWindowId =>
-        typeof x === 'string' && valid.has(x as EmbeddedShellWindowId),
+      (x): x is string => typeof x === 'string' && valid.has(x),
     );
     return out.length ? out : null;
   };
 
   let enabledEmbeddedLoaded = false;
-  let enabledEmbeddedViewOrder: EmbeddedShellWindowId[] = [];
+  let enabledEmbeddedViewOrder: string[] = [];
   let activeEmbeddedViewId: null | string = null;
 
   const ensureEnabledEmbeddedLoaded = (): void => {
@@ -93,41 +89,25 @@ export function createWebShellEmbeddedStateHandlers(options: {
     );
   };
 
-  const hasEnabledEmbedded = (id: EmbeddedShellWindowId): boolean =>
+  const hasEnabledEmbedded = (id: string): boolean =>
     enabledEmbeddedViewOrder.includes(id);
 
   const availableEmbeddedIds = (): string[] => {
-    const chrome = enabledEmbeddedViewOrder.filter((id) =>
-      isEmbeddedChromeId(id),
-    );
-    const extras = listShellIntegrableAppIds().filter(
-      (id) => !isEmbeddedChromeId(id),
-    );
-    return [...chrome, ...extras];
+    return [...enabledEmbeddedViewOrder];
   };
 
-  const dormantIntegrableIds = (): EmbeddedShellWindowId[] =>
-    listShellIntegrableAppIds().filter(
-      (id): id is EmbeddedShellWindowId =>
-        isEmbeddedChromeId(id) && !hasEnabledEmbedded(id),
-    );
+  const dormantIntegrableIds = (): string[] =>
+    listShellIntegrableAppIds().filter((id) => !hasEnabledEmbedded(id));
 
   const ensureActiveEmbeddedConsistent = (): void => {
     const avail = availableEmbeddedIds();
-    if (
-      activeEmbeddedViewId &&
-      avail.includes(activeEmbeddedViewId as EmbeddedShellWindowId)
-    ) {
+    if (activeEmbeddedViewId && avail.includes(activeEmbeddedViewId)) {
       return;
     }
     try {
       const raw = sessionStorage.getItem(SHELL_ACTIVE_VIEW_STORAGE_KEY);
       const id = typeof raw === 'string' ? raw.trim() : '';
-      if (
-        id &&
-        avail.includes(id as EmbeddedShellWindowId) &&
-        embeddedIds.includes(id as EmbeddedShellWindowId)
-      ) {
+      if (id && avail.includes(id)) {
         activeEmbeddedViewId = id;
         return;
       }
@@ -150,15 +130,10 @@ export function createWebShellEmbeddedStateHandlers(options: {
 
   const shellSetActiveView = (viewId: string): boolean => {
     ensureEnabledEmbeddedLoaded();
-    if (isShellIntegrableAppId(viewId) && !isEmbeddedChromeId(viewId)) {
-      activeEmbeddedViewId = viewId;
-      persistActiveViewPreference(viewId);
-      return true;
-    }
-    if (!isEmbeddedChromeId(viewId)) {
+    if (!isShellIntegrableAppId(viewId) && !isEmbeddedChromeId(viewId)) {
       return false;
     }
-    if (!hasEnabledEmbedded(viewId as EmbeddedShellWindowId)) {
+    if (!hasEnabledEmbedded(viewId)) {
       return false;
     }
     activeEmbeddedViewId = viewId;
@@ -169,7 +144,6 @@ export function createWebShellEmbeddedStateHandlers(options: {
   const shellEnableEmbeddedView = (viewId: string): boolean => {
     ensureEnabledEmbeddedLoaded();
     if (!isShellIntegrableAppId(viewId)) return false;
-    if (!isEmbeddedChromeId(viewId)) return false;
     if (hasEnabledEmbedded(viewId)) {
       activeEmbeddedViewId = viewId;
       persistActiveViewPreference(viewId);
@@ -185,7 +159,6 @@ export function createWebShellEmbeddedStateHandlers(options: {
   const shellDisableEmbeddedView = (viewId: string): boolean => {
     ensureEnabledEmbeddedLoaded();
     if (!isShellIntegrableAppId(viewId)) return false;
-    if (!isEmbeddedChromeId(viewId)) return false;
     if (!hasEnabledEmbedded(viewId)) return true;
     enabledEmbeddedViewOrder = enabledEmbeddedViewOrder.filter(
       (id) => id !== viewId,
@@ -198,16 +171,22 @@ export function createWebShellEmbeddedStateHandlers(options: {
 
   const shellReorderEmbeddedViews = (orderedViewIds: string[]): boolean => {
     ensureEnabledEmbeddedLoaded();
-    const next = orderedViewIds.filter(
-      (id): id is EmbeddedShellWindowId =>
-        typeof id === 'string' &&
-        embeddedIds.includes(id as EmbeddedShellWindowId) &&
-        hasEnabledEmbedded(id as EmbeddedShellWindowId),
+    const currentIntegratable = enabledEmbeddedViewOrder.filter(
+      isShellIntegrableAppId,
     );
-    if (next.length !== enabledEmbeddedViewOrder.length) return false;
+    const next = orderedViewIds.filter(
+      (id): id is string =>
+        typeof id === 'string' &&
+        isShellIntegrableAppId(id) &&
+        hasEnabledEmbedded(id),
+    );
+    if (next.length !== currentIntegratable.length) return false;
     const nextSet = new Set(next);
-    if (nextSet.size !== enabledEmbeddedViewOrder.length) return false;
-    enabledEmbeddedViewOrder = [...next];
+    if (nextSet.size !== currentIntegratable.length) return false;
+    const pinned = enabledEmbeddedViewOrder.filter(
+      (id) => !isShellIntegrableAppId(id),
+    );
+    enabledEmbeddedViewOrder = [...pinned, ...next];
     persistWebEnabledEmbedded();
     ensureActiveEmbeddedConsistent();
     persistActiveViewPreference(activeEmbeddedViewId);

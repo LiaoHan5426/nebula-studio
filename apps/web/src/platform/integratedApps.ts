@@ -43,9 +43,13 @@ for (const id of _embeddedIds) {
     _catalog[id] = { ...w };
   }
 }
+for (const id of ['low-code-studio', 'demo-board']) {
+  const entry = SHELL_CHROME_CATALOG[id];
+  if (entry) _catalog[id] = { ...entry };
+}
 
 export const shellIntegratedAppsCatalog = _catalog as Readonly<
-  Record<EmbeddedShellWindowId, ShellIntegratedAppCatalogEntry>
+  Record<string, ShellIntegratedAppCatalogEntry>
 >;
 
 /** 应用集成面板中的展示顺序（不含侧栏固定入口如「设置」），runtime 不可用时回退 */
@@ -117,6 +121,7 @@ const RUNTIME_DRIVER_ICON =
 function runtimeEntryToMeta(
   entry: FrontendRuntimeEntry,
 ): ShellIntegratedAppMeta {
+  const curated = shellIntegratedAppsCatalog[entry.id];
   const category = asShellCategory(entry.category) ?? 'product';
   const meta: ShellIntegratedAppMeta = {
     id: entry.id,
@@ -127,7 +132,10 @@ function runtimeEntryToMeta(
     requiresAuth: entry.requiresAuth !== false,
     defaultEnabled: entry.defaultEnabled !== false,
   };
-  if (entry.description !== undefined) meta.description = entry.description;
+  if (curated?.description !== undefined)
+    meta.description = curated.description;
+  else if (entry.description !== undefined)
+    meta.description = entry.description;
   if (entry.helpKey !== undefined) meta.helpKey = entry.helpKey;
   if (entry.searchKeywords !== undefined)
     meta.searchKeywords = entry.searchKeywords;
@@ -137,12 +145,8 @@ function runtimeEntryToMeta(
   return meta;
 }
 
-function isRuntimeDriverCatalogEntry(entry: FrontendRuntimeEntry): boolean {
-  return (
-    entry.webEnabled !== false &&
-    (isIframeRuntimeEntry(entry) || isExternalRuntimeEntry(entry)) &&
-    !isEmbeddedCatalogId(entry.id)
-  );
+function isDynamicRuntimeCatalogEntry(entry: FrontendRuntimeEntry): boolean {
+  return entry.webEnabled !== false && !isEmbeddedCatalogId(entry.id);
 }
 
 function asShellCategory(
@@ -174,7 +178,7 @@ export function overlayRuntimeOnWindowsCatalog(
   const chrome = _embeddedIds.map((id) => {
     const base: ShellIntegratedAppMeta = {
       id,
-      ...shellIntegratedAppsCatalog[id],
+      ...shellIntegratedAppsCatalog[id]!,
     };
     const entry = byId.get(id);
     if (!entry) {
@@ -205,7 +209,10 @@ export function overlayRuntimeOnWindowsCatalog(
   });
   return [
     ...chrome,
-    ...entries.filter(isRuntimeDriverCatalogEntry).map(runtimeEntryToMeta),
+    ...entries.filter(isDynamicRuntimeCatalogEntry).map(runtimeEntryToMeta),
+    ...['low-code-studio', 'demo-board']
+      .filter((id) => !byId.has(id))
+      .map((id) => ({ id, ...shellIntegratedAppsCatalog[id]! })),
   ];
 }
 
@@ -213,13 +220,13 @@ function isRuntimeIntegratable(entry: FrontendRuntimeEntry): boolean {
   if (entry.integratable !== undefined) {
     return entry.integratable;
   }
-  if (isRuntimeDriverCatalogEntry(entry)) {
+  if (isDynamicRuntimeCatalogEntry(entry)) {
     return true;
   }
   if (!isEmbeddedCatalogId(entry.id)) {
     return false;
   }
-  return shellIntegratedAppsCatalog[entry.id].integratable !== false;
+  return shellIntegratedAppsCatalog[entry.id]?.integratable !== false;
 }
 
 export function integrableOrderFromRuntime(
@@ -228,7 +235,8 @@ export function integrableOrderFromRuntime(
   const ordered = [...entries]
     .filter(
       (entry) =>
-        (isEmbeddedCatalogId(entry.id) || isRuntimeDriverCatalogEntry(entry)) &&
+        (isEmbeddedCatalogId(entry.id) ||
+          isDynamicRuntimeCatalogEntry(entry)) &&
         entry.webEnabled !== false &&
         isRuntimeIntegratable(entry),
     )

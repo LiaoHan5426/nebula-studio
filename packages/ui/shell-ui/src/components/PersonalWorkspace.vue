@@ -32,6 +32,30 @@ const greeting = computed(() => {
   return props.username ? `${prefix}，${props.username}` : prefix;
 });
 
+const summaryPriority: Record<NonNullable<WorkspaceSummary['tone']>, number> = {
+  danger: 0,
+  warning: 1,
+  info: 2,
+  success: 3,
+  neutral: 4,
+};
+
+const orderedSummaries = computed(() =>
+  [...props.model.summaries].toSorted((left, right) => {
+    const tone =
+      summaryPriority[left.tone ?? 'neutral'] -
+      summaryPriority[right.tone ?? 'neutral'];
+    if (tone !== 0) return tone;
+    return Number(right.value) - Number(left.value);
+  }),
+);
+
+const attentionCount = computed(() =>
+  props.model.summaries
+    .filter((item) => item.tone === 'danger' || item.tone === 'warning')
+    .reduce((total, item) => total + (Number(item.value) || 0), 0),
+);
+
 function summaryVariant(
   tone: WorkspaceSummary['tone'],
 ): 'danger' | 'default' | 'info' | 'success' | 'warning' {
@@ -59,9 +83,32 @@ function summaryVariant(
       </template>
     </NebulaPageHeader>
 
+    <section class="personal-workspace__focus" aria-label="今日焦点">
+      <div class="personal-workspace__focus-copy">
+        <span class="personal-workspace__focus-mark" aria-hidden="true"></span>
+        <div>
+          <strong>{{
+            attentionCount
+              ? `有 ${attentionCount} 项需要关注`
+              : '工作区运行平稳'
+          }}</strong>
+          <p>
+            {{
+              attentionCount
+                ? '异常与待处理事项已优先排列，可以直接从摘要进入。'
+                : '当前没有高优先级事项，可以继续最近任务或查找资源。'
+            }}
+          </p>
+        </div>
+      </div>
+      <NebulaButton variant="ghost" size="sm" @click="emit('search')">
+        查找资源
+      </NebulaButton>
+    </section>
+
     <section class="personal-workspace__summaries" aria-label="工作摘要">
       <button
-        v-for="summary in model.summaries"
+        v-for="summary in orderedSummaries"
         :key="summary.id"
         type="button"
         class="personal-workspace__summary"
@@ -189,6 +236,41 @@ function summaryVariant(
   gap: var(--space-3);
 }
 
+.personal-workspace__focus {
+  display: flex;
+  gap: var(--space-4);
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  background: linear-gradient(
+    90deg,
+    hsl(var(--primary) / 12%),
+    hsl(var(--card) / 48%)
+  );
+  border: 1px solid hsl(var(--primary) / 24%);
+  border-radius: var(--radius-lg);
+}
+
+.personal-workspace__focus-copy {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.personal-workspace__focus-mark {
+  width: 9px;
+  height: 9px;
+  background: hsl(var(--primary));
+  border-radius: 50%;
+  box-shadow: 0 0 0 6px hsl(var(--primary) / 12%);
+}
+
+.personal-workspace__focus p {
+  margin: 3px 0 0;
+  font-size: var(--font-size-caption);
+  color: hsl(var(--muted-foreground));
+}
+
 .personal-workspace__summary {
   display: grid;
   gap: var(--space-2);
@@ -197,10 +279,28 @@ function summaryVariant(
   color: hsl(var(--foreground));
   text-align: left;
   cursor: pointer;
-  background: hsl(var(--card) / 84%);
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    145deg,
+    hsl(var(--card) / 92%),
+    hsl(var(--muted) / 26%)
+  );
   border: 1px solid hsl(var(--border) / 72%);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-soft);
+}
+
+.personal-workspace__summary::before {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  content: '';
+  background: hsl(var(--primary) / 72%);
+}
+
+.personal-workspace__summary:has(.nebula-tag[data-variant='danger'])::before {
+  background: hsl(var(--destructive));
 }
 
 .personal-workspace__summary:disabled {
@@ -331,6 +431,10 @@ function summaryVariant(
 
   .personal-workspace__summaries {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .personal-workspace__focus {
+    align-items: flex-start;
   }
 }
 </style>

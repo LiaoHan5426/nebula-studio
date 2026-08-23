@@ -46,6 +46,14 @@
     "./electron": {
       "types": "./src/electron/index.ts",
       "default": "./src/electron/index.ts"
+    },
+    "./proxy": {
+      "types": "./src/proxy/index.ts",
+      "default": "./src/proxy/index.ts"
+    },
+    "./testing": {
+      "types": "./src/testing/index.ts",
+      "default": "./src/testing/index.ts"
     }
   },
   "peerDependencies": {
@@ -57,6 +65,7 @@
     }
   },
   "dependencies": {
+    "@nebula-studio-internal/node-kit": "workspace:^",
     "@module-federation/vite": "catalog:vite",
     "@tailwindcss/vite": "catalog:style",
     "@vitejs/plugin-vue": "catalog:vite",

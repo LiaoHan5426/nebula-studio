@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 import { describe, expect, it } from 'vitest';
 
-import { findMonorepoRoot } from '../config/windowsManifest.ts';
+import { findMonorepoRoot } from '@nebula-studio-internal/node-kit/windows-manifest';
 import {
   isRepoWideTailwindSourceCss,
   resolveTailwindSourceGraph,

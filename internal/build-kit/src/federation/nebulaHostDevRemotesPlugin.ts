@@ -8,12 +8,12 @@ import { createRequire } from 'node:module';
 import { createServer } from 'node:net';
 import { dirname, join } from 'node:path';
 
-import { resolveStandaloneApp } from '../config/studioRuntime.ts';
+import { resolveStandaloneApp } from '@nebula-studio-internal/node-kit/runtime-config';
 import {
   buildAppManifest,
   findMonorepoRoot,
   loadWindowsConfig,
-} from '../config/windowsManifest.ts';
+} from '@nebula-studio-internal/node-kit/windows-manifest';
 
 /** Keep in sync with `HOST_MF_GATEWAY_PREFIX` in application-runtime hostDevMf.ts */
 export const HOST_MF_GATEWAY_PREFIX = '/__nebula-mf';

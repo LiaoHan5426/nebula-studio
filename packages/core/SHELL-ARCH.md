@@ -11,8 +11,8 @@
 | `shell-protocol` | `@nebula-studio/shell-protocol` | 无宿主假设的 embed 消息、事件总线、presentation 标记、runtime mode |
 | `shell`（`packages/ui/shell-ui`） | `@nebula-studio/nebula-shell` | Shell UI 组合式函数与组件（OrgSwitcher、AppDock、IframeHost） |
 | application bootstrap | `@nebula-studio/application-bootstrap` | standalone / Host 显式生命周期；运行模式类型在 `shell-protocol` |
-| `tenant` | `@nebula-studio/tenant` | 租户状态 composable（`createUseTenant`） |
-| `auth` / `auth-provider` | `@nebula-studio/auth` | 认证引导与 session 提供 |
+租户状态与 SSE 订阅属于 Integration 的应用内能力，不属于 Shell 公共协议。
+| auth | `@nebula-studio/auth-provider` | session、运行模式策略与 `./bootstrap` 认证引导 |
 
 > **命名说明**：`shell` 包保留现有包名。UI 组合逻辑在 `shell-ui`，无宿主协议在 `shell-protocol`，Web/Electron 适配在 `shell-host`，由 Host/standalone boot 注入。`app-shell` 不反向依赖 `shell-host`。
 
@@ -21,11 +21,8 @@
 ```
 apps/web/src/workspace/bootHostWorkspace.ts
   → installShellHostBridge + installWebPresentation（shell-host；Web 只装 window.api）
-  → startApplication（application-bootstrap）挂载 frontend/app
-    → AuthBootstrap（auth）
-
-apps/sub-web/frontend/src/boot.ts（standalone）
-  → main.ts 显式 mode: 'standalone'
+  → startApplication（application-bootstrap）挂载 Host-owned WorkspaceApp
+    → AuthBootstrap（auth-provider/bootstrap）
 
 apps/sub-web/integration/boot.ts
   → resolveShellEventBus（继承宿主总线）

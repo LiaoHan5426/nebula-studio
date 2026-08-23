@@ -92,4 +92,26 @@ describe('shell catalog from frontend runtime', () => {
       integrableOrderFromRuntime([settings, docs, integration, iframe]),
     ).toEqual(['integration', 'iframe-demo']);
   });
+
+  it('adds dynamic federation applications to the launcher', () => {
+    const studio: FrontendRuntimeEntry = {
+      driver: 'federation',
+      electronEnabled: true,
+      id: 'low-code-studio',
+      integratable: true,
+      name: '低代码工作室',
+      roles: ['authenticated'],
+      sortOrder: 70,
+      source: 'frontend',
+      webEnabled: true,
+    };
+    const metas = overlayRuntimeOnWindowsCatalog([integration, studio]);
+    expect(metas.find((meta) => meta.id === 'low-code-studio')?.label).toBe(
+      '低代码工作室',
+    );
+    expect(integrableOrderFromRuntime([integration, studio])).toEqual([
+      'integration',
+      'low-code-studio',
+    ]);
+  });
 });

@@ -49,7 +49,6 @@
     "@nebula-studio-internal/build-kit": "workspace:^",
     "@nebula-studio-internal/tsconfig": "workspace:^",
     "@nebula-studio-renderer/assembly-boot": "workspace:^",
-    "@nebula-studio-renderer/main": "workspace:^",
     "@nebula-studio/application-bootstrap": "workspace:^",
     "@nebula-studio/login-ui": "workspace:^",
     "@nebula-studio/msw": "workspace:^",
