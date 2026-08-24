@@ -19,7 +19,7 @@
     "@commitlint/config-conventional": "catalog:lint"
   },
   "devDependencies": {
-    "@commitlint/types": "catalog:",
+    "@commitlint/types": "catalog:lint",
     "vite-plus": "catalog:vite"
   },
   "inlinedDependencies": {

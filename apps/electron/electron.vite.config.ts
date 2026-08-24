@@ -27,6 +27,7 @@ export default defineNebulaConfig({
     renderer: {
       resolve: {
         alias: {
+          '@': resolve(import.meta.dirname, '../web/src'),
           '@nebula-host-boot/workspace': resolve(
             import.meta.dirname,
             '../web/src/workspace/bootHostWorkspace.ts',

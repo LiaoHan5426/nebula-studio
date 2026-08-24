@@ -65,8 +65,8 @@
     }
   },
   "dependencies": {
-    "@nebula-studio-internal/node-kit": "workspace:^",
     "@module-federation/vite": "catalog:vite",
+    "@nebula-studio-internal/node-kit": "workspace:^",
     "@tailwindcss/vite": "catalog:style",
     "@vitejs/plugin-vue": "catalog:vite",
     "postcss": "catalog:style",
