@@ -15,7 +15,18 @@ export type {
   NebulaElectronRendererOptions,
   NebulaElectronRendererPatch,
 } from './nebulaElectronRenderer.ts';
-export { nebulaRendererOptimizeDeps } from './nebulaRendererOptimizeDeps.ts';
+export {
+  createNebulaOptimizeDeps,
+  NEBULA_OPTIMIZE_DEPS_CANDIDATES,
+  nebulaRendererOptimizeDeps,
+  resolveNebulaHostedRemoteCacheDir,
+  resolveNebulaHostedRemoteEnv,
+  resolveNebulaOptimizeDepsInclude,
+} from './nebulaRendererOptimizeDeps.ts';
+export type {
+  CreateNebulaOptimizeDepsOptions,
+  NebulaHostedRemoteEnv,
+} from './nebulaRendererOptimizeDeps.ts';
 export type {
   NebulaRendererPluginId,
   NebulaRendererPluginSelection,

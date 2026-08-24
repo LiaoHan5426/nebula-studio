@@ -5,6 +5,9 @@ import { fileURLToPath } from 'node:url';
 import { federation } from '@module-federation/vite';
 
 import { createNebulaRendererViteConfig } from '../config/createNebulaRendererViteConfig.ts';
+import { resolveNebulaHostedRemoteEnv } from '../config/nebulaRendererOptimizeDeps.ts';
+import { resolveFederationDevRemoteOrigin } from '@nebula-studio-internal/node-kit/runtime-config';
+import { loadWindowsConfig } from '@nebula-studio-internal/node-kit/windows-manifest';
 import { asVitePlugins } from './asVitePlugins.ts';
 import { createNebulaSharedConfig } from './createNebulaSharedConfig.ts';
 import { nebulaCssNamespacePlugin } from './nebulaCssNamespacePlugin.ts';
@@ -22,6 +25,9 @@ export function defineNebulaRemoteConfig(
   options: DefineNebulaRemoteConfigOptions,
 ) {
   const root = fileURLToPath(new URL('.', options.configModuleUrl));
+  const windows = loadWindowsConfig();
+  const hostedRemote = resolveNebulaHostedRemoteEnv();
+  const hostedByHost = hostedRemote !== undefined;
   const cssNamespace = options.cssNamespace ?? options.appId;
   const plugins: Plugin[] = [
     nebulaCssNamespacePlugin(cssNamespace),
@@ -30,20 +36,22 @@ export function defineNebulaRemoteConfig(
         name: options.federationName,
         filename: 'remoteEntry.js',
         manifest: true,
+        ...(hostedByHost ? { dts: false } : {}),
         exposes: options.exposes ?? {},
         shared: createNebulaSharedConfig(),
       }),
     ),
   ];
 
-  const remotePort = Number(process.env.NEBULA_REMOTE_PORT) || options.devPort;
+  const remotePort = hostedRemote?.port ?? options.devPort;
   const remoteOrigin =
-    process.env.NEBULA_REMOTE_ORIGIN ??
-    `http://localhost:${String(remotePort)}`;
+    hostedRemote?.origin ??
+    resolveFederationDevRemoteOrigin(remotePort, windows);
 
   return createNebulaRendererViteConfig({
     root,
     chunks: { enabled: false },
+    hostedRemote: hostedByHost,
     build: {
       outDir: 'dist',
       emptyOutDir: true,
@@ -56,6 +64,13 @@ export function defineNebulaRemoteConfig(
         'Access-Control-Allow-Origin': '*',
       },
     },
-    merge: { plugins },
+    merge: {
+      plugins,
+      ...(hostedRemote
+        ? {
+            cacheDir: hostedRemote.cacheDir,
+          }
+        : {}),
+    },
   });
 }

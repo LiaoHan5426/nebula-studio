@@ -14,7 +14,12 @@ import { createNebulaSharedConfig } from '../federation/createNebulaSharedConfig
 import { resolveSubAppRoot } from '../plugin/nebulaWorkspaceManifestPlugin.ts';
 import { createNebulaApiProxy } from '../proxy/createNebulaApiProxy.ts';
 import { createNebulaRendererViteConfig } from './createNebulaRendererViteConfig.ts';
-import { resolveStandaloneApp } from '@nebula-studio-internal/node-kit/runtime-config';
+import { resolveNebulaHostedRemoteEnv } from './nebulaRendererOptimizeDeps.ts';
+import {
+  resolveFederationDevHost,
+  resolveFederationDevRemoteOrigin,
+  resolveStandaloneApp,
+} from '@nebula-studio-internal/node-kit/runtime-config';
 import { loadWindowsConfig } from '@nebula-studio-internal/node-kit/windows-manifest';
 
 export interface DefineNebulaSubAppConfigOptions {
@@ -56,17 +61,15 @@ export function defineNebulaSubAppConfig(
     Parameters<typeof createNebulaRendererViteConfig>[0]['server']
   > = {};
 
-  const envPort = Number(process.env.NEBULA_REMOTE_PORT);
-  const port =
-    Number.isInteger(envPort) && envPort > 0
-      ? envPort
-      : (options.devPort ?? standalone?.port);
+  const hostedRemote = resolveNebulaHostedRemoteEnv();
+  const hostedByHost = hostedRemote !== undefined;
+  const port = hostedRemote?.port ?? options.devPort ?? standalone?.port;
   if (port !== undefined) {
     server.port = port;
   }
-  if (process.env.NEBULA_REMOTE_PORT) {
+  if (hostedByHost) {
     server.strictPort = true;
-    server.host = '127.0.0.1';
+    server.host = resolveFederationDevHost(windows);
   } else if (standalone?.host) {
     server.host = standalone.host;
   }
@@ -87,7 +90,6 @@ export function defineNebulaSubAppConfig(
   }
 
   const plugins: Plugin[] = [...(options.plugins ?? [])];
-  const hostedByHost = Boolean(process.env.NEBULA_REMOTE_PORT);
   if (options.federation) {
     // Iframe / standalone remotes own a document. Do not rewrite Tailwind.
     // Same-document CSS isolation stays on defineNebulaRemoteConfig (PoC).
@@ -106,8 +108,12 @@ export function defineNebulaSubAppConfig(
     server.cors = true;
     if (process.env.NEBULA_REMOTE_ORIGIN) {
       server.origin = process.env.NEBULA_REMOTE_ORIGIN;
+    } else if (hostedRemote?.origin) {
+      server.origin = hostedRemote.origin;
+    } else if (standalone) {
+      server.origin = standalone.baseUrl;
     } else if (port !== undefined) {
-      server.origin = `http://localhost:${port}`;
+      server.origin = resolveFederationDevRemoteOrigin(port, windows);
     }
     server.headers = {
       ...server.headers,
@@ -125,14 +131,15 @@ export function defineNebulaSubAppConfig(
     server,
   };
 
-  if (hostedByHost) {
-    merge.cacheDir = `node_modules/.vite/mf-remote-${process.env.NEBULA_REMOTE_PORT}`;
+  if (hostedRemote) {
+    merge.cacheDir = hostedRemote.cacheDir;
   }
 
   return createNebulaRendererViteConfig({
     root,
     base: process.env.VITE_BASE_PATH ?? standalone?.basePath ?? '/',
     chunks: options.chunks ?? { enabled: false },
+    hostedRemote: hostedByHost,
     build: {
       outDir: 'dist',
       emptyOutDir: true,

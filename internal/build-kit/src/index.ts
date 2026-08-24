@@ -45,6 +45,14 @@ export {
   type NebulaSharedLibrary,
 } from './federation/createNebulaSharedConfig.ts';
 export {
+  createNebulaOptimizeDeps,
+  type CreateNebulaOptimizeDepsOptions,
+  NEBULA_OPTIMIZE_DEPS_CANDIDATES,
+  resolveNebulaHostedRemoteCacheDir,
+  resolveNebulaHostedRemoteEnv,
+  type NebulaHostedRemoteEnv,
+} from './config/nebulaRendererOptimizeDeps.ts';
+export {
   defineNebulaFederationPocConfig,
   type DefineNebulaFederationPocConfigOptions,
 } from './federation/defineNebulaFederationPocConfig.ts';

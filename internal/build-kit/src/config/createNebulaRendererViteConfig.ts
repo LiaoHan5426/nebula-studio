@@ -14,7 +14,7 @@ import {
 import { nebulaClientDefinePlugin } from '../plugin/nebulaClientDefine.ts';
 import { nebulaTailwindSourcePlugin } from '../plugin/nebulaTailwindSourcePlugin.ts';
 import { nebulaRendererChunkBuildPartial } from './chunks/index.ts';
-import { nebulaRendererOptimizeDeps } from './nebulaRendererOptimizeDeps.ts';
+import { createNebulaOptimizeDeps } from './nebulaRendererOptimizeDeps.ts';
 import { resolveNebulaRendererPluginList } from './nebulaRendererPlugins.ts';
 import { nebulaRendererResolve } from './nebulaRendererResolve.ts';
 import { handleNebulaRendererWarning } from './nebulaRendererWarnings.ts';
@@ -47,6 +47,11 @@ export interface CreateNebulaRendererViteConfigOptions {
    * 新增内置能力时先在 `nebulaRendererPlugins.ts` 的 `NebulaRendererPluginId` / `BUILTIN_REGISTRY` 登记。
    */
   plugins?: NebulaRendererPluginSelection;
+  /**
+   * Host-composed Module Federation remotes. Disables optimizer rediscovery so
+   * Vite 8 does not crash with `browserHash` of undefined during parallel boot.
+   */
+  hostedRemote?: boolean;
   root: string;
   server?: UserConfig['server'];
 }
@@ -63,6 +68,7 @@ export function createNebulaRendererViteConfig(
     plugins: pluginSelection,
     merge: userMerge,
     chunks: chunksOptions,
+    hostedRemote = false,
   } = opts;
 
   let baseConfig: UserConfig = {
@@ -75,7 +81,7 @@ export function createNebulaRendererViteConfig(
     base,
     root,
     resolve: nebulaRendererResolve,
-    optimizeDeps: nebulaRendererOptimizeDeps,
+    optimizeDeps: createNebulaOptimizeDeps({ root, hostedRemote }),
     define: {
       ...nebulaBuildNodeVersionDefine(),
       ...nebulaMswDefine(),

@@ -19,7 +19,10 @@ import { nebulaSubWebAliasPlugin } from '../plugin/nebulaSubWebAlias.ts';
 import { nebulaTailwindSourcePlugin } from '../plugin/nebulaTailwindSourcePlugin.ts';
 import { nebulaVueDemoPlugin } from '../plugin/nebulaVueDemoPlugin.ts';
 import { nebulaRendererChunkBuildPartial } from './chunks/index.ts';
-import { nebulaRendererOptimizeDeps } from './nebulaRendererOptimizeDeps.ts';
+import {
+  createNebulaOptimizeDeps,
+  nebulaRendererOptimizeDeps,
+} from './nebulaRendererOptimizeDeps.ts';
 import { resolveNebulaRendererPluginList } from './nebulaRendererPlugins.ts';
 import { nebulaRendererResolve } from './nebulaRendererResolve.ts';
 import { handleNebulaRendererWarning } from './nebulaRendererWarnings.ts';
@@ -82,7 +85,9 @@ export function nebulaElectronRendererPartial(
       ],
     }),
     resolve: nebulaRendererResolve,
-    optimizeDeps: nebulaRendererOptimizeDeps,
+    optimizeDeps: options.appRoot
+      ? createNebulaOptimizeDeps({ root: options.appRoot })
+      : nebulaRendererOptimizeDeps,
     build: {
       rollupOptions: {
         onwarn: handleNebulaRendererWarning,

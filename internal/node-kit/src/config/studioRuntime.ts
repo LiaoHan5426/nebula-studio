@@ -41,6 +41,42 @@ export function httpOrigin(host: string, port: number, basePath = '/'): string {
   return joinOrigin(`http://${host}:${port}`, basePath);
 }
 
+export function resolveFederationDevHost(
+  config: WindowsConfig = loadWindowsConfig(),
+): string {
+  const host = config.federationDev?.host;
+  if (!host) {
+    throw new Error(
+      '[nebula-vite] Missing federationDev.host in environments.json',
+    );
+  }
+  return host;
+}
+
+export function resolveFederationDevRemoteCacheDir(
+  port: number,
+  config: WindowsConfig = loadWindowsConfig(),
+): string {
+  const baseDir = config.federationDev?.remoteCacheDir;
+  if (!baseDir) {
+    throw new Error(
+      '[nebula-vite] Missing federationDev.remoteCacheDir in environments.json',
+    );
+  }
+  return `${baseDir.replace(/[\\/]+$/, '')}/${port}`;
+}
+
+export function resolveFederationDevRemoteOrigin(
+  port: number,
+  config: WindowsConfig = loadWindowsConfig(),
+): string {
+  return httpOrigin(resolveFederationDevHost(config), port);
+}
+
+export function resolveFederationDevEntryOrigin(entry: string): string {
+  return new URL(entry).origin;
+}
+
 export function rewriteOriginHost(origin: string, host: string): string {
   const url = new URL(origin);
   url.hostname = host;

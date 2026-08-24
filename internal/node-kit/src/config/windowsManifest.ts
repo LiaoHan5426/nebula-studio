@@ -48,6 +48,10 @@ export interface WindowsConfig {
       packagedHost: string;
     }
   >;
+  federationDev?: {
+    host: string;
+    remoteCacheDir: string;
+  };
   modalRenderers?: Record<string, RendererRuntimeFields>;
   realStack?: {
     healthChecks: RealStackHealthCheckConfig[];
@@ -122,10 +126,11 @@ export function loadWindowsConfig(rootDir?: string): WindowsConfig {
   ) as WindowsConfig;
   const environments = JSON.parse(
     readFileSync(environmentsPath, 'utf-8'),
-  ) as Pick<WindowsConfig, 'apiTargets' | 'federationDevEntries'>;
+  ) as Pick<WindowsConfig, 'apiTargets' | 'federationDev' | 'federationDevEntries'>;
   return {
     ...windows,
     apiTargets: environments.apiTargets ?? {},
+    federationDev: environments.federationDev,
     federationDevEntries: environments.federationDevEntries ?? {},
     realStack: JSON.parse(readFileSync(realStackPath, 'utf-8')),
     e2e: JSON.parse(readFileSync(e2ePath, 'utf-8')),

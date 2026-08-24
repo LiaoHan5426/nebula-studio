@@ -5,6 +5,10 @@
     "console": "http://localhost:8080",
     "executor": "http://localhost:8088"
   },
+  "federationDev": {
+    "host": "127.0.0.1",
+    "remoteCacheDir": "node_modules/.vite/federation-remotes"
+  },
   "federationDevEntries": {
     "low-code-studio": {
       "name": "nebula_low_code_studio",

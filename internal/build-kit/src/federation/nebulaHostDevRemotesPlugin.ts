@@ -8,11 +8,17 @@ import { createRequire } from 'node:module';
 import { createServer } from 'node:net';
 import { dirname, join } from 'node:path';
 
-import { resolveStandaloneApp } from '@nebula-studio-internal/node-kit/runtime-config';
+import {
+  resolveFederationDevEntryOrigin,
+  resolveFederationDevHost,
+  resolveFederationDevRemoteOrigin,
+  resolveStandaloneApp,
+} from '@nebula-studio-internal/node-kit/runtime-config';
 import {
   buildAppManifest,
   findMonorepoRoot,
   loadWindowsConfig,
+  type WindowsConfig,
 } from '@nebula-studio-internal/node-kit/windows-manifest';
 
 /** Keep in sync with `HOST_MF_GATEWAY_PREFIX` in application-runtime hostDevMf.ts */
@@ -139,10 +145,14 @@ export function isWebHostRoot(root: string): boolean {
   return root.replaceAll('\\', '/').endsWith('/apps/web');
 }
 
-export function isLoopbackOriginOnPort(origin: string, port: number): boolean {
+export function isOriginOnConfiguredHostPort(
+  origin: string,
+  hosts: readonly string[],
+  port: number,
+): boolean {
   try {
     const url = new URL(origin);
-    if (url.hostname !== '127.0.0.1' && url.hostname !== 'localhost') {
+    if (!hosts.includes(url.hostname)) {
       return false;
     }
     const originPort = url.port
@@ -187,24 +197,27 @@ export function collectFederationDevRemotes(
   const root = rootDir ?? findMonorepoRoot(process.cwd());
   const windows = loadWindowsConfig(root);
   const manifest = buildAppManifest(windows, root);
-  return manifest.federationSurfaces
+  const firstPartyRemotes = manifest.federationSurfaces
     .map((appId) => {
       const standalone = resolveStandaloneApp(appId, windows);
       return {
         appId,
         packageName: `@nebula-studio-renderer/${appId}`,
         appDir: join(root, 'apps', 'sub-web', appId),
-        configuredOrigin: `http://127.0.0.1:${standalone.port}`,
+        configuredOrigin: standalone.baseUrl,
       };
-    })
-    .concat([
-      {
-        appId: 'low-code-studio',
-        packageName: '@nebula-studio-renderer/low-code-studio',
-        appDir: join(root, 'apps', 'remotes', 'low-code-studio'),
-        configuredOrigin: 'http://127.0.0.1:5194',
-      },
-    ]);
+    });
+  const packagedRemotes = new Map<string, FederationDevRemote>();
+  for (const entry of Object.values(windows.federationDevEntries ?? {})) {
+    if (packagedRemotes.has(entry.packagedHost)) continue;
+    packagedRemotes.set(entry.packagedHost, {
+      appId: entry.packagedHost,
+      packageName: `@nebula-studio-renderer/${entry.packagedHost}`,
+      appDir: join(root, 'apps', 'remotes', entry.packagedHost),
+      configuredOrigin: resolveFederationDevEntryOrigin(entry.defaultHttpEntry),
+    });
+  }
+  return firstPartyRemotes.concat([...packagedRemotes.values()]);
 }
 
 export async function probeMfManifest(origin: string): Promise<boolean> {
@@ -220,11 +233,11 @@ export async function probeMfManifest(origin: string): Promise<boolean> {
   }
 }
 
-export async function reserveLoopbackPort(): Promise<number> {
+export async function reserveLoopbackPort(host: string): Promise<number> {
   return new Promise((resolve, reject) => {
     const server = createServer();
     server.once('error', reject);
-    server.listen(0, '127.0.0.1', () => {
+    server.listen(0, host, () => {
       const address = server.address();
       if (!address || typeof address === 'string') {
         server.close();
@@ -289,8 +302,9 @@ export function resolveViteCli(fromDir: string): string {
 function spawnRemoteVite(
   remote: FederationDevRemote,
   port: number,
+  host: string,
+  origin: string,
 ): ChildProcess {
-  const origin = `http://127.0.0.1:${port}`;
   const viteCli = resolveViteCli(remote.appDir);
   const child = spawn(
     process.execPath,
@@ -301,7 +315,7 @@ function spawnRemoteVite(
       String(port),
       '--strictPort',
       '--host',
-      '127.0.0.1',
+      host,
     ],
     {
       cwd: remote.appDir,
@@ -342,11 +356,13 @@ async function resolveRemoteOrigin(
   remote: FederationDevRemote,
   children: ChildProcess[],
   compose: boolean,
+  devHost: string,
+  windows: WindowsConfig,
   hostPort?: number,
 ): Promise<string> {
   const configuredIsHost =
     hostPort !== undefined &&
-    isLoopbackOriginOnPort(remote.configuredOrigin, hostPort);
+    isOriginOnConfiguredHostPort(remote.configuredOrigin, [devHost], hostPort);
   if (
     !configuredIsHost &&
     (await probeMfManifest(remote.configuredOrigin)) &&
@@ -362,10 +378,10 @@ async function resolveRemoteOrigin(
       `[nebula-vite] ${remote.appId} remote is not running at ${remote.configuredOrigin}`,
     );
   }
-  const port = await reserveLoopbackPort();
-  const origin = `http://127.0.0.1:${port}`;
+  const port = await reserveLoopbackPort(devHost);
+  const origin = resolveFederationDevRemoteOrigin(port, windows);
   console.info(`[nebula-vite] starting ${remote.appId} remote at ${origin}`);
-  const child = spawnRemoteVite(remote, port);
+  const child = spawnRemoteVite(remote, port, devHost, origin);
   children.push(child);
   await waitForMfManifest(origin);
   return origin;
@@ -402,9 +418,10 @@ export function nebulaHostDevRemotesPlugin(): Plugin {
     },
     configureServer(server) {
       const compose = process.env.NEBULA_HOST_COMPOSE_REMOTES !== '0';
-      const remotes = collectFederationDevRemotes(
-        findMonorepoRoot(server.config.root),
-      );
+      const root = findMonorepoRoot(server.config.root);
+      const windows = loadWindowsConfig(root);
+      const devHost = resolveFederationDevHost(windows);
+      const remotes = collectFederationDevRemotes(root);
       const children: ChildProcess[] = [];
       const origins = new Map<string, Promise<string>>();
       const hostPort = server.config.server.port;
@@ -413,6 +430,8 @@ export function nebulaHostDevRemotesPlugin(): Plugin {
           remote,
           children,
           compose,
+          devHost,
+          windows,
           hostPort,
         );
         void pending.catch((error) => {
@@ -439,13 +458,22 @@ export function nebulaHostDevRemotesPlugin(): Plugin {
         void (async () => {
           try {
             const origin = await pending;
-            const incoming = new URL(req.url ?? '/', 'http://127.0.0.1');
+            const incoming = new URL(
+              req.url ?? '/',
+              resolveFederationDevRemoteOrigin(
+                Number(server.config.server.port ?? 80),
+                windows,
+              ),
+            );
             const upstream = new URL(parsed.rest || '/', origin);
             upstream.search = incoming.search;
-            const hostHeader = req.headers.host ?? 'localhost';
+            const hostHeader = req.headers.host ?? devHost;
             if (
-              isLoopbackOriginOnPort(
+              isOriginOnConfiguredHostPort(
                 upstream.origin,
+                [devHost, windows.shell?.web?.host].filter(
+                  (host): host is string => Boolean(host),
+                ),
                 Number(hostHeader.split(':')[1] || '80'),
               )
             ) {
