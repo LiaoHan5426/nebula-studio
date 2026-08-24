@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-  HOST_DEV_MF_GATEWAY_PREFIX,
+  HOST_MF_GATEWAY_PREFIX,
   hostDevMfEntryUrl,
   shouldRewriteLoopbackManifestToHostGateway,
 } from '../hostDevMf.ts';
@@ -21,7 +21,7 @@ describe('host dev MF gateway urls', () => {
         'http://127.0.0.1:5180',
       ),
     ).toBe(
-      `http://127.0.0.1:5180${HOST_DEV_MF_GATEWAY_PREFIX}/integration/mf-manifest.json`,
+      `http://127.0.0.1:5180${HOST_MF_GATEWAY_PREFIX}/integration/mf-manifest.json`,
     );
     expect(
       hostDevMfEntryUrl(
@@ -30,7 +30,7 @@ describe('host dev MF gateway urls', () => {
         'http://127.0.0.1:5180',
       ),
     ).toBe(
-      `http://127.0.0.1:5180${HOST_DEV_MF_GATEWAY_PREFIX}/integration/mf-manifest.json`,
+      `http://127.0.0.1:5180${HOST_MF_GATEWAY_PREFIX}/integration/mf-manifest.json`,
     );
   });
 

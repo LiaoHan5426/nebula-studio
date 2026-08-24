@@ -19,8 +19,8 @@ export type LowCodeSandboxHostMessage =
 
 export type LowCodeSandboxGuestMessage =
   | { height: number; type: typeof SANDBOX_MESSAGE.resize; width: number }
-  | { message: string; type: typeof SANDBOX_MESSAGE.error; }
-  | { name: string; payload?: unknown; type: typeof SANDBOX_MESSAGE.event; }
+  | { message: string; type: typeof SANDBOX_MESSAGE.error }
+  | { name: string; payload?: unknown; type: typeof SANDBOX_MESSAGE.event }
   | { type: typeof SANDBOX_MESSAGE.ready };
 
 export const SANDBOX_SRCDOC = `<!doctype html><html><body>

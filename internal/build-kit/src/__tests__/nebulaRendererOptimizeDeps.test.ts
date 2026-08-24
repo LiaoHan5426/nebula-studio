@@ -60,11 +60,21 @@ describe('createNebulaOptimizeDeps', () => {
   });
 
   it('only treats a positive integer NEBULA_REMOTE_PORT as hosted remote mode', () => {
-    expect(resolveNebulaHostedRemoteEnv({ NEBULA_REMOTE_PORT: '' })).toBeUndefined();
-    expect(resolveNebulaHostedRemoteEnv({ NEBULA_REMOTE_PORT: 'abc' })).toBeUndefined();
-    expect(resolveNebulaHostedRemoteEnv({ NEBULA_REMOTE_PORT: '-1' })).toBeUndefined();
-    expect(resolveNebulaHostedRemoteEnv({ NEBULA_REMOTE_PORT: '0' })).toBeUndefined();
-    expect(resolveNebulaHostedRemoteEnv({ NEBULA_REMOTE_PORT: '5179' })).toEqual({
+    expect(
+      resolveNebulaHostedRemoteEnv({ NEBULA_REMOTE_PORT: '' }),
+    ).toBeUndefined();
+    expect(
+      resolveNebulaHostedRemoteEnv({ NEBULA_REMOTE_PORT: 'abc' }),
+    ).toBeUndefined();
+    expect(
+      resolveNebulaHostedRemoteEnv({ NEBULA_REMOTE_PORT: '-1' }),
+    ).toBeUndefined();
+    expect(
+      resolveNebulaHostedRemoteEnv({ NEBULA_REMOTE_PORT: '0' }),
+    ).toBeUndefined();
+    expect(
+      resolveNebulaHostedRemoteEnv({ NEBULA_REMOTE_PORT: '5179' }),
+    ).toEqual({
       cacheDir: resolveFederationDevRemoteCacheDir(5179),
       origin: resolveFederationDevRemoteOrigin(5179),
       port: 5179,

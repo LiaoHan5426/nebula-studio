@@ -5,7 +5,8 @@ import { tryUseNebulaAssembly } from '@nebula-studio/nebula-assembly';
 /** Settings owns the confirmation workflow; the shared assembly owns its overlay state. */
 export function useConfirmState(): ConfirmOverlayState {
   const assembly = tryUseNebulaAssembly();
-  if (!assembly) throw new Error('Settings confirmation requires NebulaAssembly');
+  if (!assembly)
+    throw new Error('Settings confirmation requires NebulaAssembly');
   return assembly.overlay.confirmState;
 }
 

@@ -50,8 +50,7 @@ preload 实现集中在 `apps/electron-preload/src`。构建工具根据生成�
 | `packages/platform/application-bootstrap` | `@nebula-studio/application-bootstrap` | 独立应用显式启动阶段与清理协议 |
 | `packages/platform/application-runtime` | `@nebula-studio/application-runtime` | Federation 应用注册、加载和生命周期 |
 
-租户状态与订阅事件只被 Integration 使用，已下沉到
-`apps/sub-web/integration/src/shared/composables`，不再作为伪共享 workspace 包发布。
+租户状态与订阅事件只被 Integration 使用，已下沉到 `apps/sub-web/integration/src/shared/composables`，不再作为伪共享 workspace 包发布。
 
 ## UI、编辑器与功能包
 

@@ -12,7 +12,9 @@ interface AppearanceCapabilities {
   theme?: {
     resolved?: { scheme: 'dark' | 'light' };
     scheme: 'dark' | 'light' | 'system';
-    subscribe?(listener: (theme: { scheme: 'dark' | 'light' }) => void): () => void;
+    subscribe?(
+      listener: (theme: { scheme: 'dark' | 'light' }) => void,
+    ): () => void;
   };
 }
 
@@ -50,7 +52,8 @@ export function subscribeRemoteMountAppearance(
   const apply = (scheme?: string, locale?: string) => {
     applyRemoteMountAppearance(container, { cssNamespace, scheme, locale });
   };
-  const currentScheme = capabilities.theme?.resolved?.scheme ?? capabilities.theme?.scheme;
+  const currentScheme =
+    capabilities.theme?.resolved?.scheme ?? capabilities.theme?.scheme;
   apply(currentScheme, capabilities.locale?.locale);
 
   const disposers: Array<() => void> = [];
@@ -59,7 +62,8 @@ export function subscribeRemoteMountAppearance(
   });
   if (stopTheme) disposers.push(stopTheme);
   const stopLocale = capabilities.locale?.subscribe?.((locale) => {
-    const scheme = capabilities.theme?.resolved?.scheme ?? capabilities.theme?.scheme;
+    const scheme =
+      capabilities.theme?.resolved?.scheme ?? capabilities.theme?.scheme;
     apply(scheme, locale);
   });
   if (stopLocale) disposers.push(stopLocale);

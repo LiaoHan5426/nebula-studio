@@ -10,7 +10,8 @@ export const nebulaChunkRuleShellCore: NebulaManualChunkRule = (id) => {
   if (n.includes('/packages/core/app-shell/')) return 'shell-core';
   if (n.includes('/packages/platform/shell-protocol/')) return 'shell-core';
   if (n.includes('/packages/platform/shell-host/')) return 'shell-core';
-  if (n.includes('/packages/platform/application-bootstrap/')) return 'shell-core';
+  if (n.includes('/packages/platform/application-bootstrap/'))
+    return 'shell-core';
   if (n.includes('/packages/platform/auth/')) return 'shell-core';
   if (n.includes('/packages/ui/shell-ui/')) return 'shell-core';
 };

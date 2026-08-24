@@ -1,7 +1,7 @@
 export const LOW_CODE_SCHEMA_VERSION = 'low-code.definition.v1';
 
 export type LowCodeBinding =
-  | { expression: string; kind: 'expr'; }
+  | { expression: string; kind: 'expr' }
   | { kind: 'literal'; value: unknown }
   | { kind: 'path'; path: string };
 

@@ -126,7 +126,10 @@ export function loadWindowsConfig(rootDir?: string): WindowsConfig {
   ) as WindowsConfig;
   const environments = JSON.parse(
     readFileSync(environmentsPath, 'utf-8'),
-  ) as Pick<WindowsConfig, 'apiTargets' | 'federationDev' | 'federationDevEntries'>;
+  ) as Pick<
+    WindowsConfig,
+    'apiTargets' | 'federationDev' | 'federationDevEntries'
+  >;
   return {
     ...windows,
     apiTargets: environments.apiTargets ?? {},

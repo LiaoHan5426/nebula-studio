@@ -6,6 +6,7 @@ import { describe, expect, it } from 'vitest';
 import {
   resolveFederationDevEntryOrigin,
   resolveFederationDevHost,
+  resolveStandaloneApp,
 } from '@nebula-studio-internal/node-kit/runtime-config';
 import {
   findMonorepoRoot,
@@ -13,7 +14,7 @@ import {
 } from '@nebula-studio-internal/node-kit/windows-manifest';
 import {
   collectFederationDevRemotes,
-  HOST_DEV_MF_GATEWAY_PREFIX,
+  HOST_MF_GATEWAY_PREFIX,
   hostOwnedRemotePublicPath,
   isLikelyMfManifestJson,
   isOriginOnConfiguredHostPort,
@@ -29,7 +30,7 @@ describe('host dev remotes gateway', () => {
   it('parses Host-relative MF paths', () => {
     expect(
       parseHostDevMfRequestUrl(
-        `${HOST_DEV_MF_GATEWAY_PREFIX}/integration/mf-manifest.json?x=1`,
+        `${HOST_MF_GATEWAY_PREFIX}/integration/mf-manifest.json?x=1`,
       ),
     ).toEqual({
       appId: 'integration',
@@ -37,7 +38,7 @@ describe('host dev remotes gateway', () => {
     });
     expect(parseHostDevMfRequestUrl('/other')).toBeNull();
     expect(
-      parseHostDevMfRequestUrl(`${HOST_DEV_MF_GATEWAY_PREFIX}/../docs/x`),
+      parseHostDevMfRequestUrl(`${HOST_MF_GATEWAY_PREFIX}/../docs/x`),
     ).toBeNull();
   });
 
@@ -60,28 +61,27 @@ describe('host dev remotes gateway', () => {
       'low-code-studio',
       'settings',
     ]);
-    for (const remote of remotes) {
-      if (remote.appId === 'low-code-studio') {
-        expect(remote.configuredOrigin).toBe(
-          resolveFederationDevEntryOrigin(
-            windows.federationDevEntries?.['low-code-studio']?.defaultHttpEntry ??
-              '',
-          ),
+    const expectedOrigins = Object.fromEntries(
+      remotes.map((remote) => {
+        const packaged = Object.values(windows.federationDevEntries ?? {}).find(
+          (entry) => entry.packagedHost === remote.appId,
         );
-      } else {
-        expect(remote.configuredOrigin).toBe(
-          new URL(
-            windows.windows[remote.appId]?.standalone?.basePath ?? '/',
-            `http://${windows.shell?.web?.host}:${String(
-              windows.windows[remote.appId]?.standalone?.port,
-            )}`,
-          ).toString().replace(/\/$/, ''),
-        );
-      }
-      expect(remote.packageName).toBe(
-        `@nebula-studio-renderer/${remote.appId}`,
-      );
-    }
+        const origin = packaged
+          ? resolveFederationDevEntryOrigin(packaged.defaultHttpEntry)
+          : resolveStandaloneApp(remote.appId, windows).baseUrl;
+        return [remote.appId, origin];
+      }),
+    );
+    expect(
+      Object.fromEntries(
+        remotes.map((remote) => [remote.appId, remote.configuredOrigin]),
+      ),
+    ).toEqual(expectedOrigins);
+    expect(remotes.map((remote) => remote.packageName).toSorted()).toEqual(
+      remotes
+        .map((remote) => `@nebula-studio-renderer/${remote.appId}`)
+        .toSorted(),
+    );
   });
 
   it('resolves the Vite CLI as a Node entry instead of vp.cmd', () => {
@@ -106,7 +106,9 @@ describe('host dev remotes gateway', () => {
     expect(isWebHostRoot('F:/repo/apps/web')).toBe(true);
     expect(isWebHostRoot('F:/repo/apps/electron')).toBe(false);
     const devHost = resolveFederationDevHost(
-      loadWindowsConfig(findMonorepoRoot(dirname(fileURLToPath(import.meta.url)))),
+      loadWindowsConfig(
+        findMonorepoRoot(dirname(fileURLToPath(import.meta.url))),
+      ),
     );
     expect(
       isOriginOnConfiguredHostPort(`http://${devHost}:5174`, [devHost], 5174),
@@ -129,7 +131,9 @@ describe('host dev remotes gateway', () => {
   it('pins proxied manifests to the Host gateway instead of the child port', () => {
     const root = findMonorepoRoot(dirname(fileURLToPath(import.meta.url)));
     const remotes = collectFederationDevRemotes(root);
-    const lowCode = remotes.find((remote) => remote.appId === 'low-code-studio');
+    const lowCode = remotes.find(
+      (remote) => remote.appId === 'low-code-studio',
+    );
     expect(lowCode).toBeDefined();
     expect(
       JSON.parse(

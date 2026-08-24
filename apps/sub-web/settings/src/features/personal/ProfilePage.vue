@@ -35,10 +35,8 @@ const roles = computed(() => getAuthRoles());
         <p>{{ t('profile.userId', { id: userId }) }}</p>
       </div>
       <NebulaButton variant="outline" disabled>
-{{
-        t('profile.edit')
-      }}
-</NebulaButton>
+        {{ t('profile.edit') }}
+      </NebulaButton>
     </section>
     <section class="personal-section">
       <h2>{{ t('profile.rolesHeading') }}</h2>
@@ -46,10 +44,8 @@ const roles = computed(() => getAuthRoles());
       <div class="role-list">
         <NebulaTag v-for="role in roles" :key="role">{{ role }}</NebulaTag>
         <NebulaTag v-if="roles.length === 0">
-{{
-          t('profile.member')
-        }}
-</NebulaTag>
+          {{ t('profile.member') }}
+        </NebulaTag>
       </div>
     </section>
   </main>

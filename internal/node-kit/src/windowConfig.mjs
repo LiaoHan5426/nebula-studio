@@ -198,9 +198,7 @@ export function generateWindowsTypeScript(config, apiContext) {
   const lines = [];
 
   lines.push('// AUTO-GENERATED — do not edit manually.');
-  lines.push(
-    '// Source: configs/windows.json + internal/node-kit API context',
-  );
+  lines.push('// Source: configs/windows.json + internal/node-kit API context');
   lines.push('');
   lines.push(
     "export type GeneratedPreloadCapability = 'auth' | 'notify' | 'settings' | 'shell';",

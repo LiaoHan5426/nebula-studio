@@ -160,7 +160,8 @@ async function runAuth(
 
   if (options.auth?.enabled) {
     try {
-      const { AuthBootstrap } = await import('@nebula-studio/auth-provider/bootstrap');
+      const { AuthBootstrap } =
+        await import('@nebula-studio/auth-provider/bootstrap');
       const { ok, dispose } = await AuthBootstrap.register(
         mode as RuntimeMode,
         {

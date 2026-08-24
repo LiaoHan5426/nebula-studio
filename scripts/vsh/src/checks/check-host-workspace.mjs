@@ -2,7 +2,13 @@ import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
+const root = join(
+  dirname(fileURLToPath(import.meta.url)),
+  '..',
+  '..',
+  '..',
+  '..',
+);
 
 const shellEntry = readFileSync(
   join(root, 'apps/web/src/shell-entry.ts'),
@@ -103,7 +109,9 @@ if (electronBoot.includes('@nebula-studio-renderer/main/boot')) {
   process.exit(1);
 }
 if (existsSync(join(root, 'apps/sub-web/frontend/package.json'))) {
-  console.error('[check:host-workspace] obsolete frontend renderer package must stay deleted');
+  console.error(
+    '[check:host-workspace] obsolete frontend renderer package must stay deleted',
+  );
   process.exit(1);
 }
 

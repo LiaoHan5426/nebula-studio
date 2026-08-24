@@ -7,7 +7,13 @@ import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
+const root = join(
+  dirname(fileURLToPath(import.meta.url)),
+  '..',
+  '..',
+  '..',
+  '..',
+);
 const inventoryPath = join(root, 'configs/package-inventory.json');
 const write = process.argv.includes('--write');
 
@@ -93,7 +99,14 @@ function collectPackages() {
 
 function buildInventory() {
   const packages = collectPackages();
-  const totals = { apps: 0, packages: 0, internal: 0, tools: 0, scripts: 0, all: 0 };
+  const totals = {
+    apps: 0,
+    packages: 0,
+    internal: 0,
+    tools: 0,
+    scripts: 0,
+    all: 0,
+  };
   for (const item of packages) {
     totals[item.category] += 1;
     totals.all += 1;

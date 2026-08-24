@@ -166,10 +166,8 @@ function displayValue(config: ConfigItem): string {
     >
       <div class="config-page__toolbar">
         <NebulaButton @click="showCreate = true">
-{{
-          t('config.create')
-        }}
-</NebulaButton>
+          {{ t('config.create') }}
+        </NebulaButton>
         <NebulaSelect
           v-model="selectedScope"
           :options="[

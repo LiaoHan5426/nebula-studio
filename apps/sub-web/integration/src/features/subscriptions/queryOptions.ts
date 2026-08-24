@@ -29,7 +29,7 @@ export function subscriptionsQueryOptions(tenantId?: string) {
 
 export function createSubscriptionMutationOptions() {
   return mutationOptions({
-    mutationFn: (input: { config: SubscriptionConfig; tenantId: string; }) =>
+    mutationFn: (input: { config: SubscriptionConfig; tenantId: string }) =>
       subscriptionApi.create(input.tenantId, input.config),
   });
 }

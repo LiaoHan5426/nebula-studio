@@ -121,7 +121,9 @@ const overrides: OxlintConfig = {
       },
     },
     {
-      files: ['packages/platform/application-bootstrap/src/startApplication.ts'],
+      files: [
+        'packages/platform/application-bootstrap/src/startApplication.ts',
+      ],
       rules: {
         'no-underscore-dangle': [
           'warn',

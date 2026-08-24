@@ -69,7 +69,10 @@ const customConfig: Linter.Config[] = [
               message: 'contracts 禁止依赖 Vue',
             },
             {
-              group: ['@nebula-studio/application-bootstrap', '@nebula-studio/app-shell'],
+              group: [
+                '@nebula-studio/application-bootstrap',
+                '@nebula-studio/app-shell',
+              ],
               message: 'contracts 禁止依赖 runtime / app-shell',
             },
           ],

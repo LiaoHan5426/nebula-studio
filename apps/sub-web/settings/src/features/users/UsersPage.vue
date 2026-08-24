@@ -141,15 +141,11 @@ function openDetails(user: UserRecord) {
     </template>
     <template #filterActions>
       <NebulaButton variant="outline" @click="loadUsers">
-{{
-        t('common.query')
-      }}
-</NebulaButton>
+        {{ t('common.query') }}
+      </NebulaButton>
       <NebulaButton variant="secondary" @click="loadUsers">
-{{
-        t('common.refresh')
-      }}
-</NebulaButton>
+        {{ t('common.refresh') }}
+      </NebulaButton>
     </template>
 
     <div class="page__table-wrap">

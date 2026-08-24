@@ -21,9 +21,7 @@ test.describe('standalone remotes', () => {
     await expectAssemblyMarkers(page);
   });
 
-  test('settings standalone login uses shared login-ui', async ({
-    page,
-  }) => {
+  test('settings standalone login uses shared login-ui', async ({ page }) => {
     await page.goto(`${settings.baseUrl}/login`);
     await expect(
       page.getByRole('button', { name: '登录', exact: true }),

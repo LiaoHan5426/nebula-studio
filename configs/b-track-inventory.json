@@ -16,11 +16,7 @@
     "packages/styles/src/index.css",
     "packages/types/index.d.ts"
   ],
-  "storageKeys": [
-    "nebula.theme.v1",
-    "nebula_current_org_id",
-    "tenant_id"
-  ],
+  "storageKeys": ["nebula.theme.v1", "nebula_current_org_id", "tenant_id"],
   "rawColorFiles": [
     "apps/sub-web/docs/src/pages/design/ThemeMatrixPage.vue",
     "apps/sub-web/docs/src/utils/shikiRender.ts",

@@ -72,9 +72,13 @@ const patterns: Array<{
     parts: ['Loading', 'Empty', 'Error', 'Forbidden', 'Offline'],
   },
 ];
-const current = computed(() =>
-  patterns.find((item) => item.id === active.value)!,
-);
+const current = computed(() => {
+  const found = patterns.find((item) => item.id === active.value);
+  if (!found) {
+    throw new Error(`Unknown pattern: ${active.value}`);
+  }
+  return found;
+});
 const rows = computed(() =>
   ['Orders API', 'Billing table', 'Customer events'].filter((name) =>
     name.toLowerCase().includes(query.value.toLowerCase()),
@@ -337,6 +341,7 @@ const feedbackCopy = computed(() => {
   display: grid;
   gap: var(--space-6);
 }
+
 .segmented {
   display: flex;
   width: max-content;
@@ -344,19 +349,22 @@ const feedbackCopy = computed(() => {
   background: hsl(var(--muted));
   border-radius: var(--radius-md);
 }
+
 .segmented button {
   padding: 7px 11px;
   color: hsl(var(--muted-foreground));
+  cursor: pointer;
   background: transparent;
   border: 0;
   border-radius: calc(var(--radius-md) - 2px);
-  cursor: pointer;
 }
+
 .segmented button.active {
   color: hsl(var(--foreground));
   background: hsl(var(--background));
   box-shadow: 0 1px 2px hsl(var(--foreground) / 8%);
 }
+
 .workbench {
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr);
@@ -366,11 +374,13 @@ const feedbackCopy = computed(() => {
   border: 1px solid hsl(var(--border));
   border-radius: var(--radius-lg);
 }
+
 .workbench > nav {
   padding: var(--space-2);
   background: hsl(var(--sidebar));
   border-right: 1px solid hsl(var(--border));
 }
+
 .workbench > nav button {
   display: grid;
   grid-template-columns: 24px 1fr;
@@ -378,31 +388,37 @@ const feedbackCopy = computed(() => {
   padding: 12px 10px;
   color: hsl(var(--muted-foreground));
   text-align: left;
+  cursor: pointer;
   background: transparent;
   border: 0;
   border-radius: var(--radius-md);
-  cursor: pointer;
 }
+
 .workbench > nav button.active {
   color: hsl(var(--foreground));
   background: hsl(var(--accent));
 }
+
 .workbench > nav span {
   grid-row: 1/3;
   font-size: 10px;
   color: hsl(var(--primary));
 }
+
 .workbench > nav strong {
   font-size: 13px;
 }
+
 .workbench > nav small {
   margin-top: 3px;
   line-height: 1.4;
 }
+
 .stage {
   min-width: 0;
   padding: clamp(20px, 3vw, 36px);
 }
+
 .stage-head {
   display: flex;
   gap: var(--space-4);
@@ -410,13 +426,14 @@ const feedbackCopy = computed(() => {
   padding-bottom: var(--space-5);
   border-bottom: 1px solid hsl(var(--border));
 }
+
 .stage-head > div:last-child {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
-  align-content: flex-start;
-  justify-content: flex-end;
+  place-content: flex-start flex-end;
 }
+
 .stage-head span,
 .page-head > div > span {
   font-size: 10px;
@@ -425,36 +442,44 @@ const feedbackCopy = computed(() => {
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
+
 .stage-head h2 {
   margin: 4px 0;
   font-size: 22px;
 }
+
 .stage-head p,
 .page-head p {
   margin: 0;
   color: hsl(var(--muted-foreground));
 }
+
 .surface {
   margin-top: var(--space-5);
 }
+
 .page-head {
   display: flex;
   gap: var(--space-4);
   align-items: flex-start;
   justify-content: space-between;
 }
+
 .page-head h3 {
   margin: 4px 0;
   font-size: 20px;
 }
+
 .actions {
   display: flex;
   gap: var(--space-2);
 }
+
 .table {
   margin-top: var(--space-3);
   border-top: 1px solid hsl(var(--border));
 }
+
 .table > div {
   display: grid;
   grid-template-columns: minmax(10rem, 1fr) 7rem 7rem 4rem;
@@ -464,43 +489,52 @@ const feedbackCopy = computed(() => {
   padding-inline: var(--space-3);
   border-bottom: 1px solid hsl(var(--border));
 }
+
 .table > div:first-child {
   min-height: 36px;
   font-size: 11px;
   color: hsl(var(--muted-foreground));
   background: hsl(var(--muted) / 35%);
 }
+
 .table button {
   color: hsl(var(--primary));
   background: none;
   border: 0;
 }
+
 .ok {
   color: hsl(var(--success));
 }
+
 .description {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   margin: var(--space-5) 0;
   border-block: 1px solid hsl(var(--border));
 }
+
 .description div,
 .metrics div {
   padding: var(--space-4);
   border-right: 1px solid hsl(var(--border));
 }
+
 .description div:last-child,
 .metrics div:last-child {
   border: 0;
 }
+
 .description dt {
   font-size: 11px;
   color: hsl(var(--muted-foreground));
 }
+
 .description dd {
   margin: 6px 0 0;
   font-weight: 650;
 }
+
 .activity p {
   display: flex;
   justify-content: space-between;
@@ -508,22 +542,28 @@ const feedbackCopy = computed(() => {
   margin: 0;
   border-bottom: 1px solid hsl(var(--border));
 }
+
 .activity p span {
   color: hsl(var(--muted-foreground));
 }
+
 .settings-demo {
   max-width: 720px;
 }
+
 .settings-demo header {
   padding-bottom: var(--space-4);
   border-bottom: 1px solid hsl(var(--border));
 }
+
 .settings-demo h3 {
   margin: 0;
 }
+
 .settings-demo p {
   color: hsl(var(--muted-foreground));
 }
+
 .settings-demo > label {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 240px;
@@ -531,15 +571,18 @@ const feedbackCopy = computed(() => {
   padding: var(--space-4) 0;
   border-bottom: 1px solid hsl(var(--border));
 }
+
 .settings-demo label span {
   font-weight: 650;
 }
+
 .settings-demo label small {
   display: block;
   margin-top: 4px;
   font-weight: 400;
   color: hsl(var(--muted-foreground));
 }
+
 .settings-demo select,
 .editor-demo input,
 .editor-demo select {
@@ -550,6 +593,7 @@ const feedbackCopy = computed(() => {
   border: 1px solid hsl(var(--border));
   border-radius: var(--radius-md);
 }
+
 .validation {
   display: grid;
   gap: 3px;
@@ -559,6 +603,7 @@ const feedbackCopy = computed(() => {
   background: hsl(var(--success) / 8%);
   border-left: 3px solid hsl(var(--success));
 }
+
 .settings-demo footer {
   display: flex;
   align-items: center;
@@ -566,31 +611,36 @@ const feedbackCopy = computed(() => {
   margin-top: var(--space-4);
   color: hsl(var(--muted-foreground));
 }
+
 .metrics {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   margin: var(--space-5) 0;
   border-block: 1px solid hsl(var(--border));
 }
+
 .metrics span,
 .metrics small {
   display: block;
   color: hsl(var(--muted-foreground));
 }
+
 .metrics strong {
   display: block;
   margin: 8px 0;
   font-size: 26px;
 }
+
 .editor-demo {
   display: grid;
-  grid-template-columns: 150px minmax(0, 1fr) 190px;
   grid-template-rows: 42px 340px 30px;
+  grid-template-columns: 150px minmax(0, 1fr) 190px;
   margin-top: var(--space-5);
   overflow: hidden;
   border: 1px solid hsl(var(--border));
   border-radius: var(--radius-md);
 }
+
 .editor-demo header {
   display: flex;
   grid-column: 1/-1;
@@ -599,11 +649,13 @@ const feedbackCopy = computed(() => {
   padding: 0 10px;
   border-bottom: 1px solid hsl(var(--border));
 }
+
 .editor-demo header span {
   margin-left: auto;
   font-size: 11px;
   color: hsl(var(--muted-foreground));
 }
+
 .editor-demo button {
   padding: 6px 9px;
   color: inherit;
@@ -611,24 +663,29 @@ const feedbackCopy = computed(() => {
   border: 1px solid hsl(var(--border));
   border-radius: 5px;
 }
+
 .editor-demo button.primary {
   color: hsl(var(--primary-foreground));
   background: hsl(var(--primary));
 }
+
 .editor-demo aside,
 .editor-demo section {
   display: grid;
-  align-content: start;
   gap: 8px;
+  align-content: start;
   padding: 12px;
   background: hsl(var(--sidebar));
 }
+
 .editor-demo aside {
   border-right: 1px solid hsl(var(--border));
 }
+
 .editor-demo section {
   border-left: 1px solid hsl(var(--border));
 }
+
 .editor-demo main {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -637,28 +694,34 @@ const feedbackCopy = computed(() => {
   padding: 28px;
   background: hsl(var(--background-deep));
 }
+
 .editor-demo main > span {
   grid-column: 1/-1;
   color: hsl(var(--muted-foreground));
 }
+
 .editor-demo main div {
   padding: 18px;
   background: hsl(var(--background));
   border: 1px solid hsl(var(--border));
 }
+
 .editor-demo main strong,
 .editor-demo main small {
   display: block;
 }
+
 .editor-demo main strong {
   margin-top: 8px;
   font-size: 20px;
 }
+
 .editor-demo section label {
   display: grid;
   gap: 4px;
   font-size: 11px;
 }
+
 .editor-demo footer {
   grid-column: 1/-1;
   padding: 7px 10px;
@@ -666,65 +729,81 @@ const feedbackCopy = computed(() => {
   color: hsl(var(--muted-foreground));
   border-top: 1px solid hsl(var(--border));
 }
+
 .feedback-demo > .segmented {
   margin-bottom: var(--space-5);
 }
+
 .skeleton {
   display: grid;
   gap: 10px;
   padding: var(--space-6);
 }
+
 .skeleton i {
   height: 12px;
   background: hsl(var(--muted));
   border-radius: 4px;
   animation: pulse 1.2s ease-in-out infinite alternate;
 }
+
 .skeleton i:nth-child(2) {
   width: 72%;
 }
+
 .skeleton i:nth-child(3) {
   width: 45%;
 }
+
 .skeleton span {
   color: hsl(var(--muted-foreground));
 }
+
 [data-density='compact'] .table > div {
   min-height: 36px;
 }
+
 [data-density='compact'] .stage {
   padding: 20px;
 }
+
 @keyframes pulse {
   to {
     opacity: 0.45;
   }
 }
+
 @media (prefers-reduced-motion: reduce) {
   .skeleton i {
     animation: none;
   }
 }
+
 @media (width<=900px) {
   .workbench {
     grid-template-columns: 1fr;
   }
+
   .workbench > nav {
     display: flex;
     overflow: auto;
     border-right: 0;
     border-bottom: 1px solid hsl(var(--border));
   }
+
   .workbench > nav button {
     min-width: 170px;
   }
+
   .description,
   .metrics {
     grid-template-columns: 1fr 1fr;
   }
+
   .editor-demo {
     grid-template-columns: 110px minmax(0, 1fr);
   }
+
   .editor-demo section {
     display: none;
   }

@@ -79,7 +79,11 @@ const hasHeading = computed(
         </div>
       </header>
 
-      <main :id="contentId" class="nebula-experience-layout__content" tabindex="-1">
+      <main
+        :id="contentId"
+        class="nebula-experience-layout__content"
+        tabindex="-1"
+      >
         <div class="nebula-experience-layout__content-inner">
           <slot></slot>
         </div>

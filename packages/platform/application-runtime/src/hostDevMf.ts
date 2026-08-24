@@ -1,7 +1,5 @@
 /** Keep in sync with `HOST_MF_GATEWAY_PREFIX` in nebulaHostDevRemotesPlugin.ts */
 export const HOST_MF_GATEWAY_PREFIX = '/__nebula-mf';
-/** @deprecated Use HOST_MF_GATEWAY_PREFIX */
-export const HOST_DEV_MF_GATEWAY_PREFIX = HOST_MF_GATEWAY_PREFIX;
 
 const LOOPBACK_HOSTS = new Set(['127.0.0.1', 'localhost']);
 

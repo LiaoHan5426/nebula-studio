@@ -167,6 +167,14 @@ function isEmbeddedCatalogId(id: string): id is EmbeddedShellWindowId {
   return _embeddedIds.includes(id as EmbeddedShellWindowId);
 }
 
+function catalogEntry(id: string): ShellIntegratedAppCatalogEntry {
+  const entry = shellIntegratedAppsCatalog[id];
+  if (!entry) {
+    throw new Error(`Missing shell catalog entry: ${id}`);
+  }
+  return entry;
+}
+
 export function overlayRuntimeOnWindowsCatalog(
   entries: readonly FrontendRuntimeEntry[],
 ): ShellIntegratedAppMeta[] {
@@ -178,7 +186,7 @@ export function overlayRuntimeOnWindowsCatalog(
   const chrome = _embeddedIds.map((id) => {
     const base: ShellIntegratedAppMeta = {
       id,
-      ...shellIntegratedAppsCatalog[id]!,
+      ...catalogEntry(id),
     };
     const entry = byId.get(id);
     if (!entry) {
@@ -212,7 +220,10 @@ export function overlayRuntimeOnWindowsCatalog(
     ...entries.filter(isDynamicRuntimeCatalogEntry).map(runtimeEntryToMeta),
     ...['low-code-studio', 'demo-board']
       .filter((id) => !byId.has(id))
-      .map((id) => ({ id, ...shellIntegratedAppsCatalog[id]! })),
+      .flatMap((id) => {
+        const entry = shellIntegratedAppsCatalog[id];
+        return entry ? [{ id, ...entry }] : [];
+      }),
   ];
 }
 

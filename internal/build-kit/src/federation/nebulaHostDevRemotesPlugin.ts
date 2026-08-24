@@ -18,13 +18,11 @@ import {
   buildAppManifest,
   findMonorepoRoot,
   loadWindowsConfig,
-  type WindowsConfig,
 } from '@nebula-studio-internal/node-kit/windows-manifest';
+import type { WindowsConfig } from '@nebula-studio-internal/node-kit/windows-manifest';
 
 /** Keep in sync with `HOST_MF_GATEWAY_PREFIX` in application-runtime hostDevMf.ts */
 export const HOST_MF_GATEWAY_PREFIX = '/__nebula-mf';
-/** @deprecated Use HOST_MF_GATEWAY_PREFIX */
-export const HOST_DEV_MF_GATEWAY_PREFIX = HOST_MF_GATEWAY_PREFIX;
 
 export interface FederationDevRemote {
   appDir: string;
@@ -197,16 +195,15 @@ export function collectFederationDevRemotes(
   const root = rootDir ?? findMonorepoRoot(process.cwd());
   const windows = loadWindowsConfig(root);
   const manifest = buildAppManifest(windows, root);
-  const firstPartyRemotes = manifest.federationSurfaces
-    .map((appId) => {
-      const standalone = resolveStandaloneApp(appId, windows);
-      return {
-        appId,
-        packageName: `@nebula-studio-renderer/${appId}`,
-        appDir: join(root, 'apps', 'sub-web', appId),
-        configuredOrigin: standalone.baseUrl,
-      };
-    });
+  const firstPartyRemotes = manifest.federationSurfaces.map((appId) => {
+    const standalone = resolveStandaloneApp(appId, windows);
+    return {
+      appId,
+      packageName: `@nebula-studio-renderer/${appId}`,
+      appDir: join(root, 'apps', 'sub-web', appId),
+      configuredOrigin: standalone.baseUrl,
+    };
+  });
   const packagedRemotes = new Map<string, FederationDevRemote>();
   for (const entry of Object.values(windows.federationDevEntries ?? {})) {
     if (packagedRemotes.has(entry.packagedHost)) continue;
@@ -308,15 +305,7 @@ function spawnRemoteVite(
   const viteCli = resolveViteCli(remote.appDir);
   const child = spawn(
     process.execPath,
-    [
-      viteCli,
-      'dev',
-      '--port',
-      String(port),
-      '--strictPort',
-      '--host',
-      host,
-    ],
+    [viteCli, 'dev', '--port', String(port), '--strictPort', '--host', host],
     {
       cwd: remote.appDir,
       env: {

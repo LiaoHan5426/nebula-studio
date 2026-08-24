@@ -2,7 +2,13 @@ import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
+const root = join(
+  dirname(fileURLToPath(import.meta.url)),
+  '..',
+  '..',
+  '..',
+  '..',
+);
 
 const webBoot = readFileSync(join(root, 'apps/web/src/web-boot.ts'), 'utf8');
 const hostLogin = readFileSync(
@@ -116,7 +122,9 @@ if (electronBoot.includes('@nebula-studio-renderer/login/boot')) {
   process.exit(1);
 }
 if (existsSync(join(root, 'apps/sub-web/login/package.json'))) {
-  console.error('[check:login-host] obsolete login renderer package must stay deleted');
+  console.error(
+    '[check:login-host] obsolete login renderer package must stay deleted',
+  );
   process.exit(1);
 }
 

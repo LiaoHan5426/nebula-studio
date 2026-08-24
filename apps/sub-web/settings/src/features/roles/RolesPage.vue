@@ -112,10 +112,8 @@ function openDetails(role: RoleRecord) {
         {{ t('roles.create') }}
       </NebulaButton>
       <NebulaButton variant="secondary" @click="loadRoles">
-{{
-        t('common.refresh')
-      }}
-</NebulaButton>
+        {{ t('common.refresh') }}
+      </NebulaButton>
     </template>
 
     <div class="page__table-wrap">

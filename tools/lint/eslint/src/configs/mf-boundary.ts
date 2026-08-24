@@ -207,7 +207,8 @@ export async function mfBoundary(): Promise<Linter.Config[]> {
               ...remoteImportPatterns,
               {
                 group: ['@nebula-studio-renderer/login'],
-                message: 'docs 禁止引用 login renderer；登录 UI 用 @nebula-studio/login-ui',
+                message:
+                  'docs 禁止引用 login renderer；登录 UI 用 @nebula-studio/login-ui',
               },
               {
                 group: ['@nebula-studio-renderer/settings'],
@@ -223,10 +224,7 @@ export async function mfBoundary(): Promise<Linter.Config[]> {
       },
     },
     {
-      files: [
-        'apps/sub-web/settings/**/**',
-        'apps/sub-web/integration/**/**',
-      ],
+      files: ['apps/sub-web/settings/**/**', 'apps/sub-web/integration/**/**'],
       ignores: restrictedImportIgnores,
       rules: {
         'no-restricted-imports': [
@@ -255,7 +253,10 @@ export async function mfBoundary(): Promise<Linter.Config[]> {
             patterns: [
               ...remoteImportPatterns,
               {
-                group: ['@nebula-studio/shell-host', '@nebula-studio/application-bootstrap'],
+                group: [
+                  '@nebula-studio/shell-host',
+                  '@nebula-studio/application-bootstrap',
+                ],
                 message: 'Federation 入口禁止 import shell-host / runtime',
               },
               {
@@ -281,7 +282,10 @@ export async function mfBoundary(): Promise<Linter.Config[]> {
             patterns: [
               ...remoteImportPatterns,
               {
-                group: ['@nebula-studio/shell-host', '@nebula-studio/application-bootstrap'],
+                group: [
+                  '@nebula-studio/shell-host',
+                  '@nebula-studio/application-bootstrap',
+                ],
                 message: 'Federation 入口禁止 import shell-host / runtime',
               },
               {
@@ -307,7 +311,10 @@ export async function mfBoundary(): Promise<Linter.Config[]> {
             patterns: [
               ...remoteImportPatterns,
               {
-                group: ['@nebula-studio/shell-host', '@nebula-studio/application-bootstrap'],
+                group: [
+                  '@nebula-studio/shell-host',
+                  '@nebula-studio/application-bootstrap',
+                ],
                 message: 'Federation 入口禁止 import shell-host / runtime',
               },
               {
@@ -428,7 +435,9 @@ export async function mfBoundary(): Promise<Linter.Config[]> {
       },
     },
     {
-      files: ['packages/platform/application-bootstrap/src/startApplication.ts'],
+      files: [
+        'packages/platform/application-bootstrap/src/startApplication.ts',
+      ],
       rules: {
         'no-restricted-syntax': [
           'error',

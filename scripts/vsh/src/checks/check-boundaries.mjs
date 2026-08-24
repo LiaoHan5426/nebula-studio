@@ -12,7 +12,13 @@ import { fileURLToPath } from 'node:url';
  * (`mf-boundary` + `host-boundary`). Run `vp run lint:eslint`.
  */
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
+const root = join(
+  dirname(fileURLToPath(import.meta.url)),
+  '..',
+  '..',
+  '..',
+  '..',
+);
 const failures = [];
 
 function fail(message) {
@@ -38,7 +44,10 @@ function depNames(manifest, groups = ['dependencies', 'peerDependencies']) {
   return names;
 }
 
-const windowConfigKitPath = join(root, 'internal/node-kit/src/windowConfig.mjs');
+const windowConfigKitPath = join(
+  root,
+  'internal/node-kit/src/windowConfig.mjs',
+);
 if (!existsSync(windowConfigKitPath)) {
   fail(
     'window config generation must live in internal/node-kit/src/windowConfig.mjs',
@@ -61,7 +70,9 @@ for (const banned of [
   }
 }
 if (
-  !generateWindowConfigs.includes('@nebula-studio-internal/node-kit/window-config')
+  !generateWindowConfigs.includes(
+    '@nebula-studio-internal/node-kit/window-config',
+  )
 ) {
   fail(
     'scripts/generate-window-configs.mjs must import @nebula-studio-internal/node-kit/window-config',
@@ -102,7 +113,9 @@ for (const banned of [
   }
 }
 if (
-  !checkGenerated.includes('@nebula-studio-internal/node-kit/runtime-address-drift')
+  !checkGenerated.includes(
+    '@nebula-studio-internal/node-kit/runtime-address-drift',
+  )
 ) {
   fail(
     'vsh check-generated must import @nebula-studio-internal/node-kit/runtime-address-drift',
@@ -110,7 +123,9 @@ if (
 }
 
 if (
-  !generateContracts.includes('@nebula-studio-internal/node-kit/frontend-openapi')
+  !generateContracts.includes(
+    '@nebula-studio-internal/node-kit/frontend-openapi',
+  )
 ) {
   fail(
     'scripts/generate-contracts.mjs must ensure FrontendApplication OpenAPI via @nebula-studio-internal/node-kit/frontend-openapi',
@@ -321,7 +336,9 @@ for (const rel of [
   }
   if (
     manifest &&
-    depNames(manifest, ['dependencies']).has('@nebula-studio-internal/build-kit')
+    depNames(manifest, ['dependencies']).has(
+      '@nebula-studio-internal/build-kit',
+    )
   ) {
     fail(
       `${rel} production deps must not include @nebula-studio-internal/build-kit`,

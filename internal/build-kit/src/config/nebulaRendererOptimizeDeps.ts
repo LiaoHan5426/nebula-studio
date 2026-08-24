@@ -40,9 +40,7 @@ export const NEBULA_OPTIMIZE_DEPS_CANDIDATES = [
 ] as const;
 
 /** Transitive packages the federation plugin injects even when not declared. */
-const FEDERATION_RUNTIME_PACKAGES = new Set([
-  '@module-federation/runtime',
-]);
+const FEDERATION_RUNTIME_PACKAGES = new Set(['@module-federation/runtime']);
 
 export interface CreateNebulaOptimizeDepsOptions {
   extraInclude?: readonly string[];
@@ -61,7 +59,7 @@ export interface NebulaHostedRemoteEnv {
   port: number;
 }
 
-function packageNameOf (id: string): string {
+function packageNameOf(id: string): string {
   if (id.startsWith('@')) {
     const [scope, name] = id.split('/');
     return `${scope}/${name ?? ''}`;
@@ -69,11 +67,11 @@ function packageNameOf (id: string): string {
   return id.split('/')[0] ?? id;
 }
 
-export function resolveNebulaHostedRemoteCacheDir (port: number): string {
+export function resolveNebulaHostedRemoteCacheDir(port: number): string {
   return resolveFederationDevRemoteCacheDir(port);
 }
 
-export function resolveNebulaHostedRemoteEnv (
+export function resolveNebulaHostedRemoteEnv(
   env: NodeJS.ProcessEnv = process.env,
 ): NebulaHostedRemoteEnv | undefined {
   const port = Number(env.NEBULA_REMOTE_PORT);
@@ -83,12 +81,14 @@ export function resolveNebulaHostedRemoteEnv (
   const config = loadWindowsConfig();
   return {
     cacheDir: resolveFederationDevRemoteCacheDir(port, config),
-    origin: env.NEBULA_REMOTE_ORIGIN ?? resolveFederationDevRemoteOrigin(port, config),
+    origin:
+      env.NEBULA_REMOTE_ORIGIN ??
+      resolveFederationDevRemoteOrigin(port, config),
     port,
   };
 }
 
-function readDeclaredPackages (root: string): Set<string> {
+function readDeclaredPackages(root: string): Set<string> {
   const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')) as {
     dependencies?: Record<string, string>;
     devDependencies?: Record<string, string>;
@@ -99,7 +99,7 @@ function readDeclaredPackages (root: string): Set<string> {
   ]);
 }
 
-function findNearestPackageJson (fromFile: string): string | undefined {
+function findNearestPackageJson(fromFile: string): string | undefined {
   let current = dirname(fromFile);
   while (true) {
     const candidate = join(current, 'package.json');
@@ -115,7 +115,7 @@ function findNearestPackageJson (fromFile: string): string | undefined {
   }
 }
 
-function addDeclaredPackagesFromWorkspaceDependencies (
+function addDeclaredPackagesFromWorkspaceDependencies(
   declared: Set<string>,
   root: string,
 ): void {
@@ -135,7 +135,7 @@ function addDeclaredPackagesFromWorkspaceDependencies (
   }
 }
 
-export function resolveNebulaOptimizeDepsInclude (
+export function resolveNebulaOptimizeDepsInclude(
   root: string,
   candidates: readonly string[] = NEBULA_OPTIMIZE_DEPS_CANDIDATES,
 ): string[] {
@@ -158,7 +158,7 @@ export function resolveNebulaOptimizeDepsInclude (
   return include;
 }
 
-export function createNebulaOptimizeDeps (
+export function createNebulaOptimizeDeps(
   options: CreateNebulaOptimizeDepsOptions,
 ): NonNullable<UserConfig['optimizeDeps']> {
   const include = [

@@ -26,8 +26,8 @@ const FORBIDDEN = new Set([
 ]);
 
 type Expr =
-  | { argument: Expr; kind: 'unary'; op: '!' | '-'; }
-  | { key: string; kind: 'member'; object: Expr; }
+  | { argument: Expr; kind: 'unary'; op: '!' | '-' }
+  | { key: string; kind: 'member'; object: Expr }
   | {
       kind: 'binary';
       left: Expr;

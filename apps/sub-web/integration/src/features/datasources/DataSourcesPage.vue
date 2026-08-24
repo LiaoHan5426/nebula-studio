@@ -218,7 +218,10 @@ function loadDataSources() {
       :title="t('datasources.create')"
       @update:open="showCreate = $event"
     >
-      <label class="field"><span>{{ t('datasources.fields.name') }}</span><input v-model="form.name" /></label>
+      <label class="field"
+        ><span>{{ t('datasources.fields.name') }}</span
+        ><input v-model="form.name"
+      /></label>
       <label class="field">
         <span>{{ t('datasources.fields.connector') }}</span>
         <select v-model="form.connectorId" class="field__select">
@@ -234,13 +237,31 @@ function loadDataSources() {
       <template
         v-if="selectedConnector()?.connectorType !== ConnectorType.PROTOCOL"
       >
-        <label class="field"><span>{{ t('datasources.fields.host') }}</span><input v-model="form.host" /></label>
-        <label class="field"><span>{{ t('datasources.fields.port') }}</span><input v-model.number="form.port" type="number" /></label>
-        <label class="field"><span>{{ t('datasources.fields.database') }}</span><input v-model="form.database" /></label>
-        <label class="field"><span>{{ t('datasources.fields.username') }}</span><input v-model="form.username" /></label>
-        <label class="field"><span>{{ t('datasources.fields.password') }}</span><input v-model="form.password" type="password" /></label>
+        <label class="field"
+          ><span>{{ t('datasources.fields.host') }}</span
+          ><input v-model="form.host"
+        /></label>
+        <label class="field"
+          ><span>{{ t('datasources.fields.port') }}</span
+          ><input v-model.number="form.port" type="number"
+        /></label>
+        <label class="field"
+          ><span>{{ t('datasources.fields.database') }}</span
+          ><input v-model="form.database"
+        /></label>
+        <label class="field"
+          ><span>{{ t('datasources.fields.username') }}</span
+          ><input v-model="form.username"
+        /></label>
+        <label class="field"
+          ><span>{{ t('datasources.fields.password') }}</span
+          ><input v-model="form.password" type="password"
+        /></label>
       </template>
-      <label v-else class="field"><span>{{ t('datasources.fields.endpoint') }}</span><input v-model="form.endpointUri" /></label>
+      <label v-else class="field"
+        ><span>{{ t('datasources.fields.endpoint') }}</span
+        ><input v-model="form.endpointUri"
+      /></label>
       <div class="modal__actions">
         <NebulaButton variant="outline" @click="showCreate = false">
           {{ t('datasources.cancel') }}
@@ -257,16 +278,30 @@ function loadDataSources() {
       @update:open="showEdit = $event"
     >
       <template v-if="editing">
-        <label class="field"><span>{{ t('datasources.fields.name') }}</span><input v-model="editing.name" /></label>
+        <label class="field"
+          ><span>{{ t('datasources.fields.name') }}</span
+          ><input v-model="editing.name"
+        /></label>
         <template v-if="'host' in editing.config">
-          <label class="field"><span>{{ t('datasources.fields.host') }}</span><input v-model="(editing.config as DatabaseConfig).host" /></label>
-          <label class="field"><span>{{ t('datasources.fields.port') }}</span><input
+          <label class="field"
+            ><span>{{ t('datasources.fields.host') }}</span
+            ><input v-model="(editing.config as DatabaseConfig).host"
+          /></label>
+          <label class="field"
+            ><span>{{ t('datasources.fields.port') }}</span
+            ><input
               v-model.number="(editing.config as DatabaseConfig).port"
               type="number"
           /></label>
-          <label class="field"><span>{{ t('datasources.fields.database') }}</span><input v-model="(editing.config as DatabaseConfig).database" /></label>
+          <label class="field"
+            ><span>{{ t('datasources.fields.database') }}</span
+            ><input v-model="(editing.config as DatabaseConfig).database"
+          /></label>
         </template>
-        <label v-else class="field"><span>{{ t('datasources.fields.endpoint') }}</span><input v-model="(editing.config as ProtocolConfig).endpointUri" /></label>
+        <label v-else class="field"
+          ><span>{{ t('datasources.fields.endpoint') }}</span
+          ><input v-model="(editing.config as ProtocolConfig).endpointUri"
+        /></label>
         <div class="modal__actions">
           <NebulaButton variant="outline" @click="showEdit = false">
             {{ t('datasources.cancel') }}

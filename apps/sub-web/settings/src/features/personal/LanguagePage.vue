@@ -62,10 +62,8 @@ const currentLabel = computed(() =>
         @update:model-value="save"
       />
       <NebulaTag>
-{{
-        t('language.current', { label: currentLabel })
-      }}
-</NebulaTag>
+        {{ t('language.current', { label: currentLabel }) }}
+      </NebulaTag>
     </section>
   </main>
 </template>

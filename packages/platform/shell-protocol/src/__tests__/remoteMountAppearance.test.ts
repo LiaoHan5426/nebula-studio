@@ -26,21 +26,27 @@ describe('remoteMountAppearance', () => {
 
   it('tracks host theme and locale subscriptions', () => {
     const container = document.createElement('div');
-    let themeListener: ((theme: { scheme: 'dark' | 'light' }) => void) | undefined;
+    let themeListener:
+      | ((theme: { scheme: 'dark' | 'light' }) => void)
+      | undefined;
     let localeListener: ((locale: string) => void) | undefined;
     const stop = subscribeRemoteMountAppearance(container, 'settings', {
       theme: {
         scheme: 'light',
         subscribe(listener) {
           themeListener = listener;
-          return () => { themeListener = undefined; };
+          return () => {
+            themeListener = undefined;
+          };
         },
       },
       locale: {
         locale: 'zh-CN',
         subscribe(listener) {
           localeListener = listener;
-          return () => { localeListener = undefined; };
+          return () => {
+            localeListener = undefined;
+          };
         },
       },
     });

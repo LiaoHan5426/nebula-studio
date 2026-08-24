@@ -28,23 +28,33 @@ const checks = new Map([
 ]);
 
 function runCheck(script) {
-  const result = spawnSync(process.execPath, [join(packageRoot, 'src', 'checks', script), ...args], {
-    cwd: workspaceRoot,
-    stdio: 'inherit',
-  });
+  const result = spawnSync(
+    process.execPath,
+    [join(packageRoot, 'src', 'checks', script), ...args],
+    {
+      cwd: workspaceRoot,
+      stdio: 'inherit',
+    },
+  );
   process.exitCode = result.status ?? 1;
 }
 
 if (checks.has(command)) {
   runCheck(checks.get(command));
-} else switch (command) {
-  case 'check-workspace': await checkWorkspacePackages(workspaceRoot); break;
-  case 'scan-circular': {
-    const { scanCircularDependencies } = await import('../src/check-circular.mjs');
-    await scanCircularDependencies(workspaceRoot);
-    break;
+} else
+  switch (command) {
+    case 'check-workspace':
+      await checkWorkspacePackages(workspaceRoot);
+      break;
+    case 'scan-circular': {
+      const { scanCircularDependencies } =
+        await import('../src/check-circular.mjs');
+      await scanCircularDependencies(workspaceRoot);
+      break;
+    }
+    default:
+      console.error(
+        `Usage: nebula-vsh <${['scan-circular', 'check-workspace', ...checks.keys()].join('|')}>`,
+      );
+      process.exitCode = 2;
   }
-  default:
-    console.error(`Usage: nebula-vsh <${['scan-circular', 'check-workspace', ...checks.keys()].join('|')}>`);
-    process.exitCode = 2;
-}

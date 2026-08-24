@@ -2,7 +2,13 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
+const root = join(
+  dirname(fileURLToPath(import.meta.url)),
+  '..',
+  '..',
+  '..',
+  '..',
+);
 const webBoot = readFileSync(join(root, 'apps/web/src/web-boot.ts'), 'utf8');
 const electronFederation = readFileSync(
   join(root, 'apps/electron/src/renderer/bootFederation.ts'),
