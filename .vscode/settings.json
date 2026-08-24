@@ -25,9 +25,10 @@
   "oxc.typeAware": true,
   "oxc.configPath": "./vite.config.ts",
   "oxc.fmt.configPath": "./vite.config.ts",
-  "eslint.useFlatConfig": true,
-  // ESLint 10 removed constructor option `extensions`. Keep this empty so
-  // user-level `eslint.options.extensions` cannot break the language server.
+  // ESLint 10 只支持 flat config（根目录 eslint.config.mjs）。不要再设
+  // eslint.useFlatConfig：扩展会提示该选项被忽略。
+  // ESLint 10 已移除 constructor 的 `extensions`。保持空对象，避免用户级
+  // `eslint.options.extensions` 把 language server 打挂。
   "eslint.options": {},
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
