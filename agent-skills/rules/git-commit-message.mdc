@@ -1,9 +1,18 @@
 ---
-description: Git 提交信息规范（中文）
+description: Git 提交信息规范（中文，对齐 commitlint）
 alwaysApply: true
 scene: git_message
 ---
 
 # Git 提交信息规范
 
-以 `agent-skills/skills/git-commit-message/SKILL.md` 为准；需要细节时读取该文件。
+撰写提交信息时必须能通过仓库 commitlint（`commitlint.config.mjs` / `@nebula-studio-internal/commitlint`）。细节见 `agent-skills/skills/git-commit-message/SKILL.md`。
+
+硬性格式：
+
+- `type(scope): 中文描述`（scope 可选）；type 仅限：`feat` `fix` `docs` `style` `refactor` `perf` `test` `build` `ci` `chore` `revert`
+- 标题 ≤ 100 字符，结尾不加 `.`
+- 类型与 scope 英文小写；标题和正文用中文
+- 正文可选，空行分隔，每行 ≤ 100 字符
+
+不要使用源代码管理「生成提交信息」按钮的结果直接提交；该按钮不读 commitlint。

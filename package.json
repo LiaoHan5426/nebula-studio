@@ -72,9 +72,15 @@
     "generate:configs": "node ./scripts/generate-window-configs.mjs",
     "generate:manifest": "node ./scripts/generate-window-configs.mjs",
     "generate:contracts": "node ./scripts/generate-contracts.mjs",
-    "generate:contracts:strict": "node ./scripts/generate-contracts.mjs --strict"
+    "generate:contracts:strict": "node ./scripts/generate-contracts.mjs --strict",
+    "devlog": "node ./scripts/devlog.mjs",
+    "changeset": "vp exec changeset",
+    "lint:commits": "vp exec commitlint --last --verbose"
   },
   "devDependencies": {
+    "@changesets/cli": "catalog:release",
+    "@commitlint/cli": "catalog:lint",
+    "@nebula-studio-internal/commitlint": "workspace:^",
     "@nebula-studio-internal/eslint": "workspace:^",
     "@nebula-studio-internal/node-kit": "workspace:^",
     "@nebula-studio-internal/oxfmt": "workspace:^",

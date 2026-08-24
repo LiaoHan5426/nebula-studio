@@ -1,0 +1,29 @@
+{
+  "name": "@nebula-studio-internal/commitlint",
+  "version": "0.0.0",
+  "description": "Shared commit message rules for Nebula Studio.",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "scripts": {
+    "check": "vp check",
+    "build": "vp pack",
+    "stub": "vp pack",
+    "dev": "vp pack --watch"
+  },
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@commitlint/config-conventional": "catalog:lint"
+  },
+  "devDependencies": {
+    "@commitlint/types": "catalog:",
+    "vite-plus": "catalog:vite"
+  },
+  "inlinedDependencies": {
+    "@commitlint/types": "21.2.0",
+    "conventional-commits-parser": "7.1.2"
+  }
+}
