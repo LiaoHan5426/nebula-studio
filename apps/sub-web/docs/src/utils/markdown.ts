@@ -8,10 +8,12 @@ import MarkdownIt from 'markdown-it';
 import { getHighlighter } from './highlighter';
 import { SHIKI_DUAL_THEMES } from './shikiRender';
 
+type MarkdownRenderer = ReturnType<typeof MarkdownIt>;
+
 /**
  * 创建带 Shiki 代码高亮的 markdown-it 实例。
  */
-export async function createMarkdownRendererWithHighlight(): Promise<MarkdownIt> {
+export async function createMarkdownRendererWithHighlight(): Promise<MarkdownRenderer> {
   const h = await getHighlighter();
 
   const md = MarkdownIt({

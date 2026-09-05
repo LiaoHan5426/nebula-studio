@@ -131,6 +131,7 @@ export async function defineNebulaElectronViteConfig(
           // 加载源码，相对导入无扩展名会 ERR_MODULE_NOT_FOUND。
           externalizeDeps: {
             exclude: [
+              '@electron-toolkit/utils',
               '@nebula-studio-electron/electron-bridge',
               '@nebula-studio-internal/node-kit',
               '@nebula-studio/app-shell',
@@ -141,6 +142,8 @@ export async function defineNebulaElectronViteConfig(
               '@nebula-studio/host-capabilities',
               '@nebula-studio/shell-host',
               '@nebula-studio/shell-protocol',
+              '@nebula-studio/tokens',
+              'yaml',
             ],
           },
         },

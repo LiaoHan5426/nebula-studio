@@ -5,7 +5,7 @@ import type {
   NebulaRendererChunksOptions,
 } from './chunks/types.ts';
 import type { NebulaRendererPluginSelection } from './nebulaRendererPlugins.ts';
-import type { NebulaRendererOnWarn } from './nebulaRendererWarnings.ts';
+import type { NebulaRendererRolldownOptions } from './nebulaRendererWarnings.ts';
 
 import tailwindcss from '@tailwindcss/vite';
 import { mergeConfig } from 'vite';
@@ -25,7 +25,10 @@ import {
 } from './nebulaRendererOptimizeDeps.ts';
 import { resolveNebulaRendererPluginList } from './nebulaRendererPlugins.ts';
 import { nebulaRendererResolve } from './nebulaRendererResolve.ts';
-import { handleNebulaRendererWarning } from './nebulaRendererWarnings.ts';
+import {
+  NEBULA_RENDERER_CHUNK_SIZE_WARNING_LIMIT_KB,
+  nebulaRendererRolldownOptions,
+} from './nebulaRendererWarnings.ts';
 
 /**
  * 供 `electron-vite` 的 `renderer` 使用。`build` 不直接沿用 `vite` 的 `UserConfig['build']`，
@@ -36,8 +39,9 @@ export type NebulaElectronRendererPatch = Pick<
   'define' | 'optimizeDeps' | 'plugins' | 'resolve'
 > & {
   build?: {
+    chunkSizeWarningLimit?: number;
+    rolldownOptions?: NebulaRendererRolldownOptions;
     rollupOptions?: {
-      onwarn?: NebulaRendererOnWarn;
       output?: {
         manualChunks?: (
           id: string,
@@ -89,9 +93,8 @@ export function nebulaElectronRendererPartial(
       ? createNebulaOptimizeDeps({ root: options.appRoot })
       : nebulaRendererOptimizeDeps,
     build: {
-      rollupOptions: {
-        onwarn: handleNebulaRendererWarning,
-      },
+      rolldownOptions: nebulaRendererRolldownOptions,
+      chunkSizeWarningLimit: NEBULA_RENDERER_CHUNK_SIZE_WARNING_LIMIT_KB,
     },
   };
   const chunkPartial = nebulaRendererChunkBuildPartial(options.chunks);

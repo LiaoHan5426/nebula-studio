@@ -22,39 +22,39 @@
     "start": "vp exec electron-vite preview",
     "dev": "vp exec electron-vite dev",
     "build": "vp run typecheck && vp exec electron-vite build",
-    "build:unpack": "vp run build && vp exec electron-builder --dir",
+    "clear-unpacked": "node ./scripts/clear-unpacked-output.mjs",
+    "build:unpack": "vp run build && node ./scripts/electron-builder-out.mjs --dir",
+    "pack:win": "vp run build && node ./scripts/electron-builder-out.mjs --win",
     "postinstall": "install-electron && electron-builder install-app-deps",
-    "pack:win": "vp run build && vp exec electron-builder --win",
     "pack:mac": "vp run build && vp exec electron-builder --mac",
     "pack:linux": "vp run build && vp exec electron-builder --linux"
   },
   "main": "./out/main/index.js",
   "dependencies": {
+    "electron-updater": "^6.8.9"
+  },
+  "devDependencies": {
     "@electron-toolkit/preload": "catalog:electron",
     "@electron-toolkit/utils": "catalog:electron",
     "@nebula-studio-electron/electron-bridge": "workspace:^",
+    "@nebula-studio-internal/build-kit": "workspace:^",
+    "@nebula-studio-internal/tsconfig": "workspace:^",
+    "@nebula-studio-renderer/assembly-boot": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
+    "@nebula-studio/application-bootstrap": "workspace:^",
     "@nebula-studio/application-runtime": "workspace:^",
     "@nebula-studio/auth-provider": "workspace:^",
     "@nebula-studio/contracts": "workspace:^",
     "@nebula-studio/federation-protocol": "workspace:^",
     "@nebula-studio/host-capabilities": "workspace:^",
-    "@nebula-studio/shell-host": "workspace:^",
-    "@nebula-studio/shell-protocol": "workspace:^",
-    "@nebula-studio/tokens": "workspace:^",
-    "electron-updater": "catalog:electron",
-    "yaml": "catalog:parser"
-  },
-  "devDependencies": {
-    "@nebula-studio-internal/build-kit": "workspace:^",
-    "@nebula-studio-internal/tsconfig": "workspace:^",
-    "@nebula-studio-renderer/assembly-boot": "workspace:^",
-    "@nebula-studio/application-bootstrap": "workspace:^",
     "@nebula-studio/login-ui": "workspace:^",
     "@nebula-studio/msw": "workspace:^",
     "@nebula-studio/nebula-layout": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
+    "@nebula-studio/shell-host": "workspace:^",
+    "@nebula-studio/shell-protocol": "workspace:^",
     "@nebula-studio/styles": "workspace:^",
+    "@nebula-studio/tokens": "workspace:^",
     "@nebula-studio/types": "workspace:^",
     "@types/node": "catalog:types",
     "electron": "catalog:electron",
@@ -63,7 +63,8 @@
     "typescript": "catalog:types",
     "vite": "catalog:vite",
     "vue": "catalog:vue",
-    "vue-tsc": "catalog:vue"
+    "vue-tsc": "catalog:vue",
+    "yaml": "catalog:parser"
   },
   "packageManager": "pnpm"
 }

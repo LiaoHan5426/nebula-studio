@@ -1,13 +1,18 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { handleNebulaRendererWarning } from '../config/nebulaRendererWarnings';
+import {
+  handleNebulaRendererLog,
+  NEBULA_RENDERER_CHUNK_SIZE_WARNING_LIMIT_KB,
+  nebulaRendererRolldownOptions,
+} from '../config/nebulaRendererWarnings';
 
-describe('handleNebulaRendererWarning', () => {
+describe('handleNebulaRendererLog', () => {
   it('ignores invalid third-party pure annotations', () => {
     const defaultHandler = vi.fn();
 
-    handleNebulaRendererWarning(
-      { code: 'INVALID_ANNOTATION', message: 'ignored' } as never,
+    handleNebulaRendererLog(
+      'warn',
+      { code: 'INVALID_ANNOTATION', message: 'ignored' },
       defaultHandler,
     );
 
@@ -15,11 +20,21 @@ describe('handleNebulaRendererWarning', () => {
   });
 
   it('forwards other warnings', () => {
-    const warning = { code: 'OTHER_WARNING', message: 'forwarded' } as never;
+    const log = { code: 'OTHER_WARNING', message: 'forwarded' };
     const defaultHandler = vi.fn();
 
-    handleNebulaRendererWarning(warning, defaultHandler);
+    handleNebulaRendererLog('warn', log, defaultHandler);
 
-    expect(defaultHandler).toHaveBeenCalledWith(warning);
+    expect(defaultHandler).toHaveBeenCalledWith('warn', log);
+  });
+});
+
+describe('nebulaRendererRolldownOptions', () => {
+  it('disables pluginTimings for Module Federation renderer builds', () => {
+    expect(nebulaRendererRolldownOptions.checks?.pluginTimings).toBe(false);
+  });
+
+  it('raises the reporter limit for Vue / icon / Shiki chunks', () => {
+    expect(NEBULA_RENDERER_CHUNK_SIZE_WARNING_LIMIT_KB).toBe(2048);
   });
 });

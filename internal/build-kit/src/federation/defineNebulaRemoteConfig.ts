@@ -36,7 +36,9 @@ export function defineNebulaRemoteConfig(
         name: options.federationName,
         filename: 'remoteEntry.js',
         manifest: true,
-        ...(hostedByHost ? { dts: false } : {}),
+        // Host loads remotes via runtime + mf-manifest, not generated @mf-types.
+        // Standalone `vite build` otherwise runs dts-plugin tsc and logs TYPE-001.
+        dts: false,
         exposes: options.exposes ?? {},
         shared: createNebulaSharedConfig(),
       }),

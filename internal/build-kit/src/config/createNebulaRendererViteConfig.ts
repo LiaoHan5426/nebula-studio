@@ -17,7 +17,10 @@ import { nebulaRendererChunkBuildPartial } from './chunks/index.ts';
 import { createNebulaOptimizeDeps } from './nebulaRendererOptimizeDeps.ts';
 import { resolveNebulaRendererPluginList } from './nebulaRendererPlugins.ts';
 import { nebulaRendererResolve } from './nebulaRendererResolve.ts';
-import { handleNebulaRendererWarning } from './nebulaRendererWarnings.ts';
+import {
+  NEBULA_RENDERER_CHUNK_SIZE_WARNING_LIMIT_KB,
+  nebulaRendererRolldownOptions,
+} from './nebulaRendererWarnings.ts';
 
 export interface CreateNebulaRendererViteConfigOptions {
   base?: string;
@@ -88,9 +91,8 @@ export function createNebulaRendererViteConfig(
       ...defineExtra,
     },
     build: {
-      rolldownOptions: {
-        onwarn: handleNebulaRendererWarning,
-      },
+      rolldownOptions: nebulaRendererRolldownOptions,
+      chunkSizeWarningLimit: NEBULA_RENDERER_CHUNK_SIZE_WARNING_LIMIT_KB,
     },
   };
 

@@ -1,6 +1,10 @@
 # Monorepo：pnpm-lock.yaml 在仓库根目录；electron-builder 仅在 app 目录内探测锁文件。
 # 须在 apps/electron/package.json 中声明 packageManager（与根目录一致），否则易误判为 npm。
 # electron-updater 必须写 semver（勿用 catalog:），否则 builder 26 会把 "catalog:electron" 当成非法版本。
+# 主进程 / preload / renderer 均已打包进 out/；Vue、i18n 等只放 devDependencies，
+# 避免 builder 把 pnpm workspace link 扫成 duplicate dependency references。
+# Windows：仓库内 dist/win-unpacked 易被 Cursor/Defender 锁住（EPERM）。
+# unpack 默认写到 %LOCALAPPDATA%\NebulaStudio\electron-builder（可用环境变量覆盖）。
 # @electron/get 须由 pnpm overrides 钉到 v5+，否则 builder 下载 Electron 时读不到 ElectronDownloadCacheMode.ReadWrite。
 # npm 包名是 @nebula-studio/electron；NSIS 会把 ${name} 里的 / 当成路径，导致 Can't open output file。
 appId: com.electron.app
@@ -30,7 +34,9 @@ extraFiles:
     to: config
 win:
   executableName: nebula-studio
-  signAndEditExecutable: false
+  # Skip Authenticode only. signAndEditExecutable: false also skips rcedit
+  # (icon / version metadata) and prints a long builder warning.
+  signExecutable: false
 nsis:
   artifactName: nebula-studio-${version}-setup.${ext}
   shortcutName: ${productName}
@@ -61,3 +67,7 @@ publish:
   url: https://example.com/auto-updates
 electronDownload:
   mirror: https://npmmirror.com/mirrors/electron/
+# Use the already-unpacked electron npm package. Re-extracting the zip into
+# dist/*.tmp then renaming hits Windows EBUSY on default_app.asar (Defender /
+# Explorer). Copying node_modules/electron/dist skips that rename.
+electronDist: node_modules/electron/dist

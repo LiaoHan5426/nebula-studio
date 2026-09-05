@@ -99,7 +99,8 @@ export function defineNebulaSubAppConfig(
           name: options.federation.name,
           filename: 'remoteEntry.js',
           manifest: true,
-          ...(hostedByHost ? { dts: false } : {}),
+          // Host loads remotes via runtime + mf-manifest, not generated @mf-types.
+          dts: false,
           exposes: options.federation.exposes,
           shared: createNebulaSharedConfig(),
         }),

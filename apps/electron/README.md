@@ -33,7 +33,8 @@ Electron **应用根包**：主进程、preload 与各 **Vue renderer** 的 **el
 | `dev` / `start` | electron-vite 开发 / 预览 |
 | `build` | typecheck + electron-vite build |
 | `typecheck` | 主进程 tsc + renderer vue-tsc + `vp run --filter "@nebula-studio-renderer/*" typecheck` |
-| `pack:*` | electron-builder 各平台 |
+| `build:unpack` / `pack:win` | 默认解包到 `%LOCALAPPDATA%\NebulaStudio\electron-builder\win-unpacked`（避开仓库 dist 文件锁） |
+| `pack:mac` / `pack:linux` | electron-builder 对应平台 |
 
 完整依赖与脚本见 [package.json](./package.json)。
 

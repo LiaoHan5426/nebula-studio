@@ -3,7 +3,7 @@ import type { Plugin, ResolvedConfig } from 'vite';
 import type { TailwindSourceGraph } from '../styles/resolveTailwindSourceGraph.ts';
 
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { isAbsolute, join, resolve } from 'node:path';
 
 import {
   assertTailwindSourceGraphIsolated,
@@ -51,6 +51,11 @@ function collectCssFiles(dir: string, acc: string[] = []): string[] {
   return acc;
 }
 
+/** Vite `build.outDir` may already be absolute (electron-vite renderer). */
+export function resolveViteBuildOutDir(root: string, outDir: string): string {
+  return isAbsolute(outDir) ? outDir : resolve(root, outDir);
+}
+
 export function nebulaTailwindSourcePlugin(appRoot: string): Plugin {
   let graph: TailwindSourceGraph | undefined;
   let resolved: ResolvedConfig | undefined;
@@ -78,7 +83,10 @@ export function nebulaTailwindSourcePlugin(appRoot: string): Plugin {
       if (!graph || !resolved || resolved.command !== 'build') {
         return;
       }
-      const outDir = join(resolved.root, resolved.build.outDir);
+      const outDir = resolveViteBuildOutDir(
+        resolved.root,
+        resolved.build.outDir,
+      );
       mkdirSync(outDir, { recursive: true });
       const cssFiles = collectCssFiles(outDir);
       let utilitySelectorCount = 0;
