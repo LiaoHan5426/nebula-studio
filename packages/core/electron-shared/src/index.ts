@@ -2,6 +2,15 @@ export type AppNotifyType = 'message' | 'notification';
 export type AppNotifyLevel = 'danger' | 'info' | 'success' | 'warning';
 export type NotifySource = string;
 
+export type {
+  ElectronAPI,
+  ElectronIpcRenderer,
+  ElectronNodeProcess,
+  ElectronWebFrame,
+  ElectronWebUtils,
+  IpcRendererListener,
+} from './electronApi';
+
 export interface AppNotifyDetailChoice {
   key: string;
   label: string;

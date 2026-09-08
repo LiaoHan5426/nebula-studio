@@ -7,8 +7,8 @@ import formValidationDemo from '@/examples/form/FormValidation.vue?demo';
 <template>
   <div class="doc-section">
     <p>
-      表单组件基于 VeeValidate 管理字段状态和提交过程，并通过 Zod Schema
-      提供类型安全的字段级、跨字段和异步校验能力。
+      表单组件基于 TanStack Form 管理字段状态和提交过程，并通过 Zod 4 Schema
+      （Standard Schema）提供类型安全的字段级、跨字段和异步校验能力。
     </p>
 
     <h2 id="architecture">职责边界</h2>
@@ -57,8 +57,8 @@ import formValidationDemo from '@/examples/form/FormValidation.vue?demo';
         <tr>
           <td><code>validationSchema</code></td>
           <td>
-            VeeValidate TypedSchema，推荐使用
-            <code>toTypedSchema(zodSchema)</code>
+            Zod 4 Schema，直接传入
+            <code>z.object({ ... })</code>，无需适配器
           </td>
           <td>—</td>
         </tr>

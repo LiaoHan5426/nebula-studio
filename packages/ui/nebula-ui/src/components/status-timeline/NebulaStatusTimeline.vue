@@ -1,14 +1,6 @@
-<script lang="ts">
-export interface NebulaTimelineItem {
-  description?: string;
-  id: string;
-  state?: 'complete' | 'current' | 'error' | 'pending';
-  timestamp?: string;
-  title: string;
-}
-</script>
-
 <script setup lang="ts">
+import type { NebulaTimelineItem } from './types';
+
 withDefaults(defineProps<{ items: NebulaTimelineItem[]; label?: string }>(), {
   label: '状态进度',
 });

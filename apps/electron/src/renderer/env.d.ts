@@ -1,5 +1,5 @@
 // / <reference types="vite/client" />
-import type { ElectronAPI } from '@electron-toolkit/preload';
+import type { ElectronAPI } from '@nebula-studio-electron/electron-bridge';
 
 /** 供 `tsconfig.renderer` 下分析 `boot` 所动态加载的各子应用时，与 preload 中 `contextBridge` 一致 */
 declare global {

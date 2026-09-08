@@ -12,18 +12,15 @@ import {
   NebulaSwitch,
 } from '@nebula-studio/nebula-ui';
 
-import { toTypedSchema } from '@vee-validate/zod';
 import { z } from 'zod';
 
-const validationSchema = toTypedSchema(
-  z.object({
-    role: z.string().min(1, '请选择角色'),
-    mode: z.string().min(1, '请选择运行模式'),
-    startDate: z.string().min(1, '请选择开始日期'),
-    notifications: z.boolean(),
-    agreement: z.literal(true, { error: '请阅读并同意使用条款' }),
-  }),
-);
+const validationSchema = z.object({
+  role: z.string().min(1, '请选择角色'),
+  mode: z.string().min(1, '请选择运行模式'),
+  startDate: z.string().min(1, '请选择开始日期'),
+  notifications: z.boolean(),
+  agreement: z.literal(true, { error: '请阅读并同意使用条款' }),
+});
 
 const roles = [
   { label: '管理员', value: 'admin' },

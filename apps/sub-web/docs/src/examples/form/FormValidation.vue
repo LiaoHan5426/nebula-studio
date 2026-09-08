@@ -8,21 +8,18 @@ import {
   NebulaInput,
 } from '@nebula-studio/nebula-ui';
 
-import { toTypedSchema } from '@vee-validate/zod';
 import { z } from 'zod';
 
-const validationSchema = toTypedSchema(
-  z
-    .object({
-      email: z.string().min(1, '请输入邮箱').email('请输入有效的邮箱地址'),
-      password: z.string().min(8, '密码至少需要 8 个字符'),
-      confirmPassword: z.string().min(1, '请再次输入密码'),
-    })
-    .refine((values) => values.password === values.confirmPassword, {
-      message: '两次输入的密码不一致',
-      path: ['confirmPassword'],
-    }),
-);
+const validationSchema = z
+  .object({
+    email: z.email('请输入有效的邮箱地址'),
+    password: z.string().min(8, '密码至少需要 8 个字符'),
+    confirmPassword: z.string().min(1, '请再次输入密码'),
+  })
+  .refine((values) => values.password === values.confirmPassword, {
+    message: '两次输入的密码不一致',
+    path: ['confirmPassword'],
+  });
 
 const submittedValues = ref('');
 

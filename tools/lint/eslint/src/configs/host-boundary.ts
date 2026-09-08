@@ -57,9 +57,15 @@ const hostBranchSelectors: RestrictedSyntaxSelector[] = [
       'Do not probe the electron global in pages/features/editors. Use nebula-assembly HostAdapter from boot.',
   },
   {
+    selector:
+      "ImportDeclaration[source.value='@nebula-studio-electron/electron-bridge'] ImportSpecifier[imported.name=/^(electronAPI|exposeElectronAPI)$/]",
+    message:
+      'Do not import Electron preload runtime from pages/features/editors. Preload stays in apps/electron-preload; use HostAdapter / boot wiring.',
+  },
+  {
     selector: "ImportDeclaration[source.value='@electron-toolkit/preload']",
     message:
-      'Do not import @electron-toolkit/preload from pages/features/editors. Preload stays in apps/electron-preload and boot.',
+      '@electron-toolkit/preload is removed. Use ElectronAPI types from @nebula-studio-electron/electron-bridge and keep preload in apps/electron-preload.',
   },
   {
     selector: "ImportSpecifier[imported.name='detectRuntimeMode']",

@@ -30,8 +30,6 @@
   },
   "main": "./out/main/index.js",
   "dependencies": {
-    "@electron-toolkit/preload": "catalog:electron",
-    "@electron-toolkit/utils": "catalog:electron",
     "@nebula-studio-electron/electron-bridge": "workspace:^",
     "@nebula-studio/app-shell": "workspace:^",
     "@nebula-studio/application-runtime": "workspace:^",

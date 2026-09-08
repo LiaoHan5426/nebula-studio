@@ -16,6 +16,8 @@ import {
 
 import { BrowserWindow, ipcMain, net } from 'electron';
 
+import { sendToWindow } from '../runtime/electronMainUtils';
+
 /**
  * 认证 IPC 模块：管理登录会话状态和认证相关 IPC 通信。
  * 从 WindowManager 中拆分，职责单一。
@@ -60,7 +62,7 @@ export class IpcAuthModule implements MainModule {
           this.#authSession = { user: result.username, token: result.token };
           const modalWin = BrowserWindow.fromWebContents(event.sender);
           const shellWin = modalWin?.getParentWindow();
-          shellWin?.webContents.send('auth:session-changed', this.#authSession);
+          sendToWindow(shellWin, 'auth:session-changed', this.#authSession);
           this.#windowManager?.broadcast(
             'auth:session-changed',
             this.#authSession,
@@ -95,7 +97,7 @@ export class IpcAuthModule implements MainModule {
           userId: payload.userId,
         };
         const mainWindow = this.#windowManager?.getMainWindow();
-        mainWindow?.webContents.send('auth:session-changed', this.#authSession);
+        sendToWindow(mainWindow, 'auth:session-changed', this.#authSession);
         this.#windowManager?.broadcast(
           'auth:session-changed',
           this.#authSession,
@@ -115,7 +117,7 @@ export class IpcAuthModule implements MainModule {
       const shellWin =
         BrowserWindow.fromWebContents(event.sender) ??
         this.#windowManager?.getMainWindow();
-      shellWin?.webContents.send('auth:session-changed', null);
+      sendToWindow(shellWin, 'auth:session-changed', null);
       this.#windowManager?.broadcast('auth:session-changed', null);
       return true;
     });

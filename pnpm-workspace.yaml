@@ -70,13 +70,12 @@ catalogs:
     monaco-editor: ^0.55.1
     monaco-editor-vue3: ^1.0.5
   electron:
-    '@electron-toolkit/preload': ^3.0.2
-    '@electron-toolkit/utils': ^4.0.0
     electron: ^43.4.1
     electron-builder: ^26.15.7
     electron-updater: ^6.8.9
     electron-vite: ^5.0.0
   form:
+    '@tanstack/vue-form': ^1.33.5
     '@tiptap/core': ^2.27.2
     '@tiptap/extension-code-block': ^2.27.2
     '@tiptap/extension-color': ^2.27.2
@@ -94,8 +93,6 @@ catalogs:
     '@tiptap/pm': ^2.27.2
     '@tiptap/starter-kit': ^2.27.2
     '@tiptap/vue-3': ^2.27.2
-    '@vee-validate/zod': ^4.15.1
-    vee-validate: ^4.15.1
     zod: ^4.4.3
   lint:
     '@commitlint/cli': ^21.2.2
@@ -104,9 +101,9 @@ catalogs:
     '@eslint-community/eslint-plugin-eslint-comments': ^4.7.2
     '@eslint/js': ^10.0.1
     '@stylistic/stylelint-plugin': ^5.3.0
-    '@typescript-eslint/parser': ^8.67.0
+    '@typescript-eslint/parser': ^8.68.0
     conventional-commits-parser: 7.1.2
-    eslint: ^10.9.0
+    eslint: ^10.9.1
     eslint-plugin-better-tailwindcss: ^4.7.0
     eslint-plugin-command: ^3.5.3
     eslint-plugin-jsonc: ^3.4.2
@@ -117,7 +114,7 @@ catalogs:
     eslint-plugin-vue: ^10.10.0
     eslint-plugin-yml: ^3.8.1
     oxfmt: ^0.61.0
-    oxlint: ^1.79.0
+    oxlint: ^1.80.0
     stylelint: ^17.14.1
     stylelint-config-recess-order: ^7.8.0
     stylelint-config-recommended-scss: ^17.0.1
@@ -130,13 +127,13 @@ catalogs:
   markdown:
     highlight.js: ^11.12.0
     markdown-it: ^14.3.0
-    marked: ^18.0.10
+    marked: ^18.0.11
     shiki: ^4.4.3
   parser:
     node-sql-parser: ^5.4.0
     yaml: ^2.9.0
   query:
-    '@tanstack/vue-query': ^5.102.0
+    '@tanstack/vue-query': ^5.102.3
   release:
     '@changesets/cli': ^3.0.1
     bumpp: ^11.1.0
@@ -161,12 +158,12 @@ catalogs:
     '@types/nprogress': ^0.2.3
     typescript: ^6.0.3
   ui:
-    '@iconify-json/lucide': ^1.2.125
+    '@iconify-json/lucide': ^1.2.126
     '@iconify/vue': ^4.3.0
-    reka-ui: ^2.10.3
+    reka-ui: ^2.10.4
     vuedraggable: ^4.1.0
-    vxe-pc-ui: ^4.17.13
-    vxe-table: ^4.20.13
+    vxe-pc-ui: ^4.17.16
+    vxe-table: ^4.21.1
     xe-utils: ^4.0.12
   ui-utils:
     class-variance-authority: ^0.7.1
@@ -185,19 +182,19 @@ catalogs:
     unconfig: ^7.5.0
   vite:
     '@module-federation/runtime': ^0.21.6
-    '@module-federation/vite': ^1.20.7
+    '@module-federation/vite': ^1.20.8
     '@vitejs/plugin-vue': ^6.0.8
     '@vitejs/plugin-vue-jsx': ^5.1.6
     happy-dom: ^20.11.6
     vite: ^8.2.2
-    vite-plus: ^0.2.9
+    vite-plus: ^0.3.0
     vitest: ^4.1.11
   vue:
     '@vue/test-utils': ^2.4.11
     '@vueuse/core': ^13.9.0
     pinia: ^3.0.4
     vue: ^3.5.41
-    vue-i18n: ^11.4.8
+    vue-i18n: ^11.4.9
     vue-router: ^4.6.4
     vue-tsc: ^3.3.11
 allowBuilds:

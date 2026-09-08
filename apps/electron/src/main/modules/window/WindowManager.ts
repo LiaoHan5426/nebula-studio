@@ -1,7 +1,5 @@
 import type { WebContents } from 'electron';
 
-import type { EmbeddedShellWindowId } from '@nebula-studio/app-shell';
-
 import type { EmbeddedWindowId } from '../../windowRegistry';
 import type { AbstractSecurityRule } from '../security/AbstractSecurityRule';
 
@@ -13,11 +11,15 @@ import {
   listShellIntegrableAppIds,
 } from '@nebula-studio/app-shell/shell-integration';
 
-import { is } from '@electron-toolkit/utils';
 import { BrowserView, BrowserWindow, ipcMain, shell } from 'electron';
 
 import appConfig from '../../../../app.config';
 import icon from '../../../../resources/icon.png?asset';
+import {
+  is,
+  sendToWebContents,
+  sendToWindow,
+} from '../../runtime/electronMainUtils';
 import {
   listEmbeddedWindowIds,
   resolveRendererEntry,
@@ -90,11 +92,16 @@ function loadRendererContents(
 }
 
 export class WindowManager {
-  #activeEmbeddedViewId: EmbeddedWindowId | null = null;
+  #activeEmbeddedViewId: null | string = null;
   /** 为 false 时收起所有 BrowserView，便于壳层 HTML 展示全屏覆盖层（如应用集成界面）。 */
   #embeddedContentVisible = true;
   #embeddedViewsById = new Map<EmbeddedWindowId, BrowserView>();
-  #enabledEmbeddedViewOrder: EmbeddedWindowId[] = [];
+  /**
+   * Enabled launcher / embed order. Includes chrome windows from `windows.json`
+   * plus host-owned integrable apps (e.g. low-code-studio) that are not window
+   * entries — aligned with Web `computeDefaultEnabledEmbeddedIds`.
+   */
+  #enabledEmbeddedViewOrder: string[] = [];
   #loginWindow: BrowserWindow | null = null;
   #mainWindow: BrowserWindow | null = null;
   readonly #relayoutEmbeddedViewsByShellWindow = new WeakMap<
@@ -112,9 +119,9 @@ export class WindowManager {
   }
 
   broadcast(channel: string, payload: unknown = null): void {
-    this.#mainWindow?.webContents.send(channel, payload);
+    sendToWindow(this.#mainWindow, channel, payload);
     for (const view of this.#embeddedViewsById.values()) {
-      view.webContents.send(channel, payload);
+      sendToWebContents(view.webContents, channel, payload);
     }
   }
 
@@ -206,11 +213,11 @@ export class WindowManager {
     this.#mainWindow.focus();
   }
 
-  getActiveEmbeddedViewId(): EmbeddedWindowId | null {
+  getActiveEmbeddedViewId(): null | string {
     return this.#activeEmbeddedViewId;
   }
 
-  getAvailableEmbeddedViewIds(): EmbeddedWindowId[] {
+  getAvailableEmbeddedViewIds(): string[] {
     return [...this.#enabledEmbeddedViewOrder];
   }
 
@@ -253,8 +260,7 @@ export class WindowManager {
     });
     win.on('closed', () => {
       this.#loginWindow = null;
-      // 登录窗口关闭时通知渲染进程，由 IpcAuthModule 判断会话状态
-      this.#mainWindow?.webContents.send('auth:login-dismissed');
+      // Parent may already be destroying when a modal child closes with it.
       this.broadcast('auth:login-dismissed');
     });
     this.#loginWindow = win;
@@ -306,8 +312,7 @@ export class WindowManager {
       activeViewId: this.#activeEmbeddedViewId,
       availableViewIds: this.getAvailableEmbeddedViewIds(),
       dormantIntegrableIds: listShellIntegrableAppIds().filter(
-        (id) =>
-          !this.#enabledEmbeddedViewOrder.includes(id as EmbeddedWindowId),
+        (id) => !this.#enabledEmbeddedViewOrder.includes(id),
       ),
     }));
 
@@ -324,7 +329,7 @@ export class WindowManager {
       (_event, payload: { viewId?: string }) => {
         const viewId = payload?.viewId;
         if (typeof viewId !== 'string' || !viewId) return false;
-        return this.setActiveEmbeddedView(viewId as EmbeddedWindowId);
+        return this.setActiveEmbeddedView(viewId);
       },
     );
 
@@ -333,21 +338,11 @@ export class WindowManager {
       (_event, payload: { viewId?: string }) => {
         const viewId = payload?.viewId;
         if (typeof viewId !== 'string' || !viewId) return false;
-        const wid = viewId as EmbeddedShellWindowId;
-        if (!listShellIntegrableAppIds().includes(wid)) return false;
-        if (usesBrowserViewEmbed() && !this.#embeddedViewsById.has(wid)) {
-          return false;
+        if (!this.#isEnableableEmbeddedView(viewId)) return false;
+        if (!this.#enabledEmbeddedViewOrder.includes(viewId)) {
+          this.#enabledEmbeddedViewOrder.push(viewId);
         }
-        if (
-          !usesBrowserViewEmbed() &&
-          !listEmbeddedWindowIds().includes(wid as EmbeddedWindowId)
-        ) {
-          return false;
-        }
-        if (!this.#enabledEmbeddedViewOrder.includes(wid)) {
-          this.#enabledEmbeddedViewOrder.push(wid);
-        }
-        return this.setActiveEmbeddedView(wid as EmbeddedWindowId);
+        return this.setActiveEmbeddedView(viewId);
       },
     );
 
@@ -356,22 +351,12 @@ export class WindowManager {
       (_event, payload: { viewId?: string }) => {
         const viewId = payload?.viewId;
         if (typeof viewId !== 'string' || !viewId) return false;
-        const wid = viewId as EmbeddedShellWindowId;
-        if (!listShellIntegrableAppIds().includes(wid)) return false;
-        if (usesBrowserViewEmbed() && !this.#embeddedViewsById.has(wid)) {
-          return false;
-        }
-        if (
-          !usesBrowserViewEmbed() &&
-          !listEmbeddedWindowIds().includes(wid as EmbeddedWindowId)
-        ) {
-          return false;
-        }
-        if (!this.#enabledEmbeddedViewOrder.includes(wid)) return true;
+        if (!this.#isEnableableEmbeddedView(viewId)) return false;
+        if (!this.#enabledEmbeddedViewOrder.includes(viewId)) return true;
         this.#enabledEmbeddedViewOrder = this.#enabledEmbeddedViewOrder.filter(
-          (id) => id !== wid,
+          (id) => id !== viewId,
         );
-        if (this.#activeEmbeddedViewId === wid) {
+        if (this.#activeEmbeddedViewId === viewId) {
           this.#activeEmbeddedViewId =
             this.getAvailableEmbeddedViewIds()[0] ?? null;
           if (this.#mainWindow) {
@@ -388,12 +373,10 @@ export class WindowManager {
         const ordered = payload?.orderedViewIds;
         if (!Array.isArray(ordered)) return false;
         const next = ordered.filter(
-          (id): id is EmbeddedWindowId =>
+          (id): id is string =>
             typeof id === 'string' &&
-            this.#enabledEmbeddedViewOrder.includes(id as EmbeddedWindowId) &&
-            (usesBrowserViewEmbed()
-              ? this.#embeddedViewsById.has(id as EmbeddedWindowId)
-              : listEmbeddedWindowIds().includes(id as EmbeddedWindowId)),
+            this.#enabledEmbeddedViewOrder.includes(id) &&
+            this.#isEnableableEmbeddedView(id),
         );
         if (next.length !== this.#enabledEmbeddedViewOrder.length) return false;
         if (new Set(next).size !== this.#enabledEmbeddedViewOrder.length)
@@ -432,12 +415,17 @@ export class WindowManager {
     );
   }
 
-  setActiveEmbeddedView(viewId: EmbeddedWindowId): boolean {
+  setActiveEmbeddedView(viewId: string): boolean {
     if (!this.#enabledEmbeddedViewOrder.includes(viewId)) return false;
     if (usesBrowserViewEmbed()) {
-      const view = this.#embeddedViewsById.get(viewId);
-      if (!view) return false;
-    } else if (!listEmbeddedWindowIds().includes(viewId)) {
+      const view = this.#embeddedViewsById.get(viewId as EmbeddedWindowId);
+      // Federation-only integrable apps have no BrowserView; shell iframe host
+      // still needs an active view id for navigation (same as Web).
+      if (!view && !listShellIntegrableAppIds().includes(viewId)) return false;
+    } else if (
+      !listEmbeddedWindowIds().includes(viewId as EmbeddedWindowId) &&
+      !listShellIntegrableAppIds().includes(viewId)
+    ) {
       return false;
     }
     this.#activeEmbeddedViewId = viewId;
@@ -460,10 +448,14 @@ export class WindowManager {
     }
   }
 
-  #initialEnabledEmbeddedViewOrder(): EmbeddedWindowId[] {
+  /**
+   * Match Web shell: chrome windows + every default-enabled integrable app
+   * (including federation-only ids like low-code-studio / demo-board).
+   */
+  #initialEnabledEmbeddedViewOrder(): string[] {
     const integratable = new Set<string>(listShellIntegrableAppIds());
     const defaultOn = new Set<string>(getDefaultEnabledShellIntegrableIds());
-    const next: EmbeddedWindowId[] = [];
+    const next: string[] = [];
     for (const id of listEmbeddedWindowIds()) {
       if (!integratable.has(id)) {
         next.push(id);
@@ -471,7 +463,26 @@ export class WindowManager {
         next.push(id);
       }
     }
+    for (const id of defaultOn) {
+      if (!next.includes(id)) {
+        next.push(id);
+      }
+    }
     return next;
+  }
+
+  #isEnableableEmbeddedView(viewId: string): boolean {
+    if (!listShellIntegrableAppIds().includes(viewId)) {
+      return false;
+    }
+    if (usesBrowserViewEmbed()) {
+      // windows.json embeds need a BrowserView; host-owned federation apps do not.
+      return (
+        this.#embeddedViewsById.has(viewId as EmbeddedWindowId) ||
+        !listEmbeddedWindowIds().includes(viewId as EmbeddedWindowId)
+      );
+    }
+    return true;
   }
 
   #layoutEmbeddedBrowserViews(

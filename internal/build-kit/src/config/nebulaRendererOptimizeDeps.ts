@@ -1,8 +1,8 @@
-import { createRequire } from 'node:module';
-import { readFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-
 import type { UserConfig } from 'vite';
+
+import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+import { dirname, join } from 'node:path';
 
 import {
   resolveFederationDevRemoteCacheDir,
@@ -32,7 +32,7 @@ export const NEBULA_OPTIMIZE_DEPS_CANDIDATES = [
   'nprogress',
   'reka-ui',
   'tailwind-merge',
-  'vee-validate',
+  '@tanstack/vue-form',
   'vxe-pc-ui',
   'vxe-table',
   'markdown-it',

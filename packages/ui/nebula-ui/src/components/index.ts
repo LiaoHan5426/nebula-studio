@@ -27,7 +27,13 @@ export { default as NebulaEmptyState } from './empty-state/NebulaEmptyState.vue'
 export { default as NebulaFilterBar } from './filter-bar/NebulaFilterBar.vue';
 export { default as NebulaForm } from './form/NebulaForm.vue';
 export { default as NebulaFormItem } from './form/NebulaFormItem.vue';
-export type { NebulaFormControlProps } from './form/types';
+export type {
+  NebulaFormApi,
+  NebulaFormControlProps,
+  NebulaFormRule,
+  NebulaFormSchema,
+  NebulaFormValues,
+} from './form/types';
 export { default as NebulaIcon } from './icon/NebulaIcon.vue';
 export { PRESET_ICONS } from './icon/preset';
 export { default as NebulaInput } from './input/NebulaInput.vue';

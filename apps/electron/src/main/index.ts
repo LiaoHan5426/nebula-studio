@@ -1,6 +1,6 @@
+import { bootstrapShellChromeIntegratedApps } from '@nebula-studio/app-shell';
 import { GENERATED_STANDALONE_APPS } from '@nebula-studio/contracts/generated';
 
-import { electronApp, is, optimizer } from '@electron-toolkit/utils';
 import { app } from 'electron';
 
 import { MainAppLauncher } from './bootstrap/MainAppLauncher';
@@ -22,8 +22,12 @@ import { allowInternalOrigins } from './modules/security/BlockNotAllowedOrigins'
 import { SingleInstanceAppModule } from './modules/SingleInstanceAppModule';
 import { WindowManager } from './modules/window/WindowManager';
 import { WindowManagerModule } from './modules/window/WindowManagerModule';
+import { electronApp, is, optimizer } from './runtime/electronMainUtils';
 
 app.whenReady().then(async () => {
+  // Match Web host: populate integrable registry before shell:get-state defaults.
+  bootstrapShellChromeIntegratedApps();
+
   const configManager = new ConfigManager();
   const logger = new ApplicationLogger({
     configuredLogDir: configManager.getLogDir(),

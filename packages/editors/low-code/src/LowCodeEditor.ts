@@ -20,7 +20,7 @@ import {
   TRUSTED_COMPONENT_LOCK,
 } from '@nebula-studio/low-code-kit';
 
-import { createDocumentHistory } from './host.ts';
+import { cloneDraft, createDocumentHistory } from './host.ts';
 import {
   appendChild,
   deleteNode,
@@ -45,6 +45,13 @@ function mergeLock(lock: ExactComponentLock): ExactComponentLock {
 
 function actionButton(label: string, options: Record<string, unknown>) {
   return h('button', { type: 'button', ...options }, label);
+}
+
+/** Insert into a Box container (selected Box, or its parent Box). */
+function resolveInsertParentId(tree: LowCodeNode, selectedId: string): string {
+  const hit = findNode(tree, selectedId);
+  if (hit?.type === 'Box') return selectedId;
+  return findParentId(tree, selectedId) || 'root';
 }
 
 export const LowCodeEditor = defineComponent({
@@ -75,7 +82,7 @@ export const LowCodeEditor = defineComponent({
     };
 
     const patchSelected = (updater: (node: LowCodeNode) => LowCodeNode) => {
-      const next = structuredClone(document.value) as LowCodeDraftDocument;
+      const next = cloneDraft(document.value);
       next.tree = mapTree(next.tree, (node) =>
         node.id === selectedId.value ? updater(node) : node,
       );
@@ -269,15 +276,13 @@ export const LowCodeEditor = defineComponent({
                       draggingType.value = '';
                     },
                     onClick: () => {
-                      const next = structuredClone(
-                        document.value,
-                      ) as LowCodeDraftDocument;
-                      const added = createPaletteNode(item.type);
-                      next.tree = appendChild(
-                        next.tree,
+                      const parentId = resolveInsertParentId(
+                        document.value.tree,
                         selectedId.value || 'root',
-                        added,
                       );
+                      const next = cloneDraft(document.value);
+                      const added = createPaletteNode(item.type);
+                      next.tree = appendChild(next.tree, parentId, added);
                       persist(next);
                       selectedId.value = added.id;
                     },
@@ -334,9 +339,7 @@ export const LowCodeEditor = defineComponent({
                       'application/x-nebula-component',
                     ) || draggingType.value;
                   if (!type) return;
-                  const next = structuredClone(
-                    document.value,
-                  ) as LowCodeDraftDocument;
+                  const next = cloneDraft(document.value);
                   const added = createPaletteNode(type);
                   next.tree = appendChild(next.tree, parentId, added);
                   persist(next);

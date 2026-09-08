@@ -23,6 +23,12 @@ export {
 } from './common/helpCenter';
 export type { HelpTopic, TaskGuide, TaskGuideId } from './common/helpCenter';
 export {
+  bootstrapShellChromeIntegratedApps,
+  buildShellChromeIntegratedAppMetas,
+  SHELL_CHROME_CATALOG,
+  SHELL_INTEGRABLE_DISPLAY_ORDER,
+} from './common/shellChromeCatalog';
+export {
   embeddedViewRequiresShellAuth,
   getDefaultEnabledShellIntegrableIds,
   getShellIntegratedAppMeta,

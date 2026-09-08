@@ -39,7 +39,6 @@
     "@nebula-studio/shell-protocol": "workspace:^",
     "@nebula-studio/styles": "workspace:^",
     "@nebula-studio/tokens": "workspace:^",
-    "@vee-validate/zod": "catalog:form",
     "markdown-it": "catalog:markdown",
     "shiki": "catalog:markdown",
     "vue": "catalog:vue",
@@ -48,7 +47,6 @@
     "zod": "catalog:form"
   },
   "devDependencies": {
-    "@electron-toolkit/preload": "catalog:electron",
     "@nebula-studio-internal/build-kit": "workspace:^",
     "@nebula-studio-internal/tsconfig": "workspace:^",
     "@nebula-studio/types": "workspace:^",

@@ -1,4 +1,3 @@
-import { electronAPI } from '@electron-toolkit/preload';
 import { contextBridge } from 'electron';
 
 import {
@@ -7,6 +6,7 @@ import {
   createSettingsCapability,
   createShellCapability,
 } from './capabilities/index.ts';
+import { electronAPI } from './electronApi.ts';
 
 export type PreloadCapability = 'auth' | 'notify' | 'settings' | 'shell';
 

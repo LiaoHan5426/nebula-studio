@@ -1,4 +1,4 @@
-import { electronAPI } from '@electron-toolkit/preload';
+import { electronAPI } from '../electronApi.ts';
 
 /**
  * 统一 Shell 能力模块。

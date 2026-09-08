@@ -4,8 +4,9 @@ import type { MainModule, MainModuleContext } from '../bootstrap/MainModule';
 
 import { resolveTheme } from '@nebula-studio/tokens';
 
-import { is } from '@electron-toolkit/utils';
 import { ipcMain, nativeTheme } from 'electron';
+
+import { is } from '../runtime/electronMainUtils';
 
 type ThemeMode = 'dark' | 'light' | 'system';
 

@@ -449,7 +449,7 @@ function selectApp(viewId: string): void {
 
 .integration-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 14px;
   justify-content: flex-start;
   margin-top: 18px;
@@ -463,16 +463,16 @@ function selectApp(viewId: string): void {
   position: relative;
   display: flex;
   display: grid;
-  grid-template-columns: 48px minmax(0, 1fr) auto;
   grid-template-rows: auto auto;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
   gap: 4px 14px;
   align-items: center;
   min-height: 112px;
   padding: 18px;
   color: hsl(var(--foreground));
+  text-align: left;
   cursor: pointer;
   user-select: none;
-  text-align: left;
   background: hsl(var(--card) / 74%);
   border: 1px solid hsl(var(--border) / 72%);
   border-radius: var(--radius-lg);
@@ -563,11 +563,11 @@ function selectApp(viewId: string): void {
   grid-row: 2;
   grid-column: 2 / -1;
   overflow: hidden;
+  -webkit-line-clamp: 2;
   font-size: 12px;
   line-height: 1.5;
   color: hsl(var(--muted-foreground));
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
 }
 
 .integration-tile-launch {
@@ -588,10 +588,10 @@ function selectApp(viewId: string): void {
 .integration-tile-icon {
   display: flex;
   flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
   grid-row: 1 / span 2;
   grid-column: 1;
+  align-items: center;
+  justify-content: center;
   width: 44px;
   height: 44px;
   padding: 10px;
