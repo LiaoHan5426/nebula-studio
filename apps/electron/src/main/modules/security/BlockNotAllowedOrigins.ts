@@ -2,8 +2,7 @@ import type { WebContents } from 'electron';
 
 import { URL } from 'node:url';
 
-import { is } from '@electron-toolkit/utils';
-
+import { is } from '../../runtime/electronMainUtils';
 import { AbstractSecurityRule } from './AbstractSecurityRule';
 
 /**

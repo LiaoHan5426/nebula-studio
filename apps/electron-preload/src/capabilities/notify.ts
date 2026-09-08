@@ -6,8 +6,9 @@ import type {
 } from '@nebula-studio-electron/electron-bridge';
 import type { IpcRendererEvent } from 'electron';
 
-import { electronAPI } from '@electron-toolkit/preload';
 import { ipcRenderer } from 'electron';
+
+import { electronAPI } from '../electronApi.ts';
 
 /**
  * 统一 Notify 能力模块。

@@ -113,8 +113,11 @@ const remoteJsonDepBans = [
   ),
   forbidJsonDep(
     '@electron-toolkit/preload',
-    'Remote production deps must not include @electron-toolkit/preload',
-    'dependencies',
+    'Remote must not depend on removed @electron-toolkit/preload; use @nebula-studio-electron/electron-bridge types only',
+  ),
+  forbidJsonDep(
+    '@electron-toolkit/utils',
+    'Remote must not depend on removed @electron-toolkit/utils',
   ),
   forbidJsonDep(
     '@nebula-studio-internal/node-kit',

@@ -49,12 +49,12 @@
   "dependencies": {
     "@iconify-json/lucide": "catalog:ui",
     "@iconify/vue": "catalog:ui",
+    "@tanstack/vue-form": "catalog:form",
     "@vueuse/core": "catalog:vue",
     "class-variance-authority": "catalog:ui-utils",
     "clsx": "catalog:ui-utils",
     "reka-ui": "catalog:ui",
     "tailwind-merge": "catalog:ui-utils",
-    "vee-validate": "catalog:form",
     "vue": "catalog:vue",
     "vuedraggable": "catalog:ui",
     "vxe-pc-ui": "catalog:ui",

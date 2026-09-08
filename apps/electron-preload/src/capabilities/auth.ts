@@ -3,7 +3,7 @@ import type {
   ElectronAuthLoginResult,
 } from '@nebula-studio/contracts/auth';
 
-import { electronAPI } from '@electron-toolkit/preload';
+import { electronAPI } from '../electronApi.ts';
 
 /**
  * 统一 Auth 能力模块。

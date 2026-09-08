@@ -1,22 +1,21 @@
 <script setup lang="ts">
-import type {
-  GenericObject,
-  InvalidSubmissionContext,
-  TypedSchema,
-} from 'vee-validate';
+import type { NebulaFormSchema, NebulaFormValues } from './types';
 
-import { Form } from 'vee-validate';
+import { computed, provide } from 'vue';
+
+import { useForm } from '@tanstack/vue-form';
 
 import { cn } from '../../utils/cn';
+import { nebulaFormContextKey } from './types';
 
 const props = withDefaults(
   defineProps<{
     class?: string;
-    initialValues?: GenericObject;
+    initialValues?: NebulaFormValues;
     keepValues?: boolean;
     name?: string;
     validateOnMount?: boolean;
-    validationSchema?: Record<string, unknown> | TypedSchema;
+    validationSchema?: NebulaFormSchema;
   }>(),
   {
     validationSchema: undefined,
@@ -29,29 +28,66 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  invalidSubmit: [context: InvalidSubmissionContext];
+  invalidSubmit: [context: { errors: unknown; values: NebulaFormValues }];
   reset: [];
-  submit: [values: GenericObject];
+  submit: [values: NebulaFormValues];
 }>();
+
+const formValidators = computed(() => {
+  const schema = props.validationSchema;
+  if (!schema) {
+    return undefined;
+  }
+  return {
+    ...(props.validateOnMount ? { onMount: schema } : {}),
+    onChange: schema,
+    onSubmit: schema,
+  };
+});
+
+const form = useForm({
+  defaultValues: { ...props.initialValues },
+  onSubmit: async ({ value }) => {
+    emit('submit', value);
+  },
+  onSubmitInvalid: ({ formApi, value }) => {
+    emit('invalidSubmit', {
+      values: value,
+      errors: formApi.state.errorMap,
+    });
+  },
+  validators: formValidators.value as never,
+});
+
+provide(nebulaFormContextKey, form as never);
+
+function handleSubmit(event: Event): void {
+  event.preventDefault();
+  event.stopPropagation();
+  void form.handleSubmit();
+}
+
+function handleReset(event: Event): void {
+  event.preventDefault();
+  form.reset();
+  emit('reset');
+}
 </script>
 
 <template>
-  <Form
-    v-slot="form"
-    as="form"
+  <form
     :class="cn('nebula-form', props.class)"
-    :initial-values="initialValues"
-    :keep-values="keepValues"
     :name="name"
-    :validate-on-mount="validateOnMount"
-    :validation-schema="validationSchema"
     novalidate
-    @invalid-submit="emit('invalidSubmit', $event)"
-    @reset="emit('reset')"
-    @submit="emit('submit', $event)"
+    @reset="handleReset"
+    @submit="handleSubmit"
   >
-    <slot v-bind="form"></slot>
-  </Form>
+    <slot
+      :form="form"
+      :keep-values="keepValues"
+      :values="form.state.values"
+    ></slot>
+  </form>
 </template>
 
 <style scoped>

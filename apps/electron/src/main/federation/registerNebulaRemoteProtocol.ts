@@ -9,8 +9,9 @@ import {
   pickFederationRemoteRoots,
 } from '@nebula-studio/federation-protocol';
 
-import { is } from '@electron-toolkit/utils';
 import { protocol } from 'electron';
+
+import { is } from '../runtime/electronMainUtils';
 
 protocol.registerSchemesAsPrivileged([
   {

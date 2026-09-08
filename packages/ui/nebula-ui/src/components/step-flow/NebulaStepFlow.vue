@@ -1,13 +1,6 @@
-<script lang="ts">
-export interface NebulaStepItem {
-  description?: string;
-  id: string;
-  label: string;
-  state?: 'complete' | 'current' | 'error' | 'pending';
-}
-</script>
-
 <script setup lang="ts">
+import type { NebulaStepItem } from './types';
+
 withDefaults(defineProps<{ label?: string; steps: NebulaStepItem[] }>(), {
   label: '流程步骤',
 });

@@ -27,7 +27,6 @@ export async function node(): Promise<Linter.Config[]> {
               '@vue/test-utils',
               '@playwright/test',
               'electron',
-              '@electron-toolkit/preload',
               'vue-router',
               'vxe-pc-ui',
               'vxe-table',

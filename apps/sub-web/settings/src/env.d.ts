@@ -1,7 +1,7 @@
 // / <reference types="vite/client" />
 // / <reference types="@nebula-studio/types/sub-web" />
 
-import type { ElectronAPI } from '@electron-toolkit/preload';
+import type { ElectronAPI } from '@nebula-studio-electron/electron-bridge';
 
 type ThemeMode = 'dark' | 'light';
 

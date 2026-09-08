@@ -5,10 +5,13 @@ import type {
 import type { FrontendRuntimeEntry } from '@nebula-studio/contracts/system';
 
 import {
+  bootstrapShellChromeIntegratedApps,
+  buildShellChromeIntegratedAppMetas,
   getEmbeddedShellWindowIds,
   registerShellIntegratedApps,
   resetShellIntegratedAppRegistry,
   setShellIntegrableOrder,
+  SHELL_INTEGRABLE_DISPLAY_ORDER,
 } from '@nebula-studio/app-shell';
 import {
   fetchFrontendRuntimeEntries,
@@ -19,11 +22,6 @@ import {
 } from '@nebula-studio/application-runtime';
 import { readWebAuthSession } from '@nebula-studio/auth-provider/storage';
 
-import {
-  SHELL_CHROME_CATALOG,
-  SHELL_INTEGRABLE_DISPLAY_ORDER,
-} from './shellChromeCatalog';
-
 type ShellIntegratedAppCatalogEntry = Omit<ShellIntegratedAppMeta, 'id'>;
 
 const SHELL_CATEGORIES = new Set<
@@ -32,20 +30,14 @@ const SHELL_CATEGORIES = new Set<
 
 /**
  * Fallback catalog when `/api/system/frontend-apps/runtime` is unavailable.
- * Labels come from `shellChromeCatalog` (registry snapshot), not `windows.json`.
+ * Labels come from shared chrome catalog (registry snapshot), not `windows.json`.
  */
 const _embeddedIds = getEmbeddedShellWindowIds();
 
 const _catalog: Record<string, ShellIntegratedAppCatalogEntry> = {};
-for (const id of _embeddedIds) {
-  const w = SHELL_CHROME_CATALOG[id];
-  if (w) {
-    _catalog[id] = { ...w };
-  }
-}
-for (const id of ['low-code-studio', 'demo-board']) {
-  const entry = SHELL_CHROME_CATALOG[id];
-  if (entry) _catalog[id] = { ...entry };
+for (const meta of buildShellChromeIntegratedAppMetas()) {
+  const { id, ...entry } = meta;
+  _catalog[id] = entry;
 }
 
 export const shellIntegratedAppsCatalog = _catalog as Readonly<
@@ -263,11 +255,9 @@ export function buildShellIntegratedAppMetas(): ShellIntegratedAppMeta[] {
   return overlayRuntimeOnWindowsCatalog([]);
 }
 
-/** Web / Electron 主进程 / 壳 renderer 统一调用，注册可集成子应用元数据 */
+/** Web / Electron 壳 renderer：注册 chrome 回退目录（与主进程 `bootstrapShellChromeIntegratedApps` 同源） */
 export function bootstrapShellIntegratedApps(): void {
-  resetShellIntegratedAppRegistry();
-  registerShellIntegratedApps(buildShellIntegratedAppMetas());
-  setShellIntegrableOrder([...shellIntegrableDisplayOrder]);
+  bootstrapShellChromeIntegratedApps();
 }
 
 function hostRuntimeAuth(): { tenantId: string; token?: string } {

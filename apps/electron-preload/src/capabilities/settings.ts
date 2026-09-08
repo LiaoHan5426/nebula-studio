@@ -2,8 +2,9 @@ import type { IpcRendererEvent } from 'electron';
 
 import type { ThemePreference } from '@nebula-studio/tokens';
 
-import { electronAPI } from '@electron-toolkit/preload';
 import { ipcRenderer } from 'electron';
+
+import { electronAPI } from '../electronApi.ts';
 
 type ThemeMode = 'dark' | 'light' | 'system';
 

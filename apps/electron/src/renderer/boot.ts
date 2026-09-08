@@ -46,16 +46,14 @@ function installRendererHmrFallback(rendererPkg: RendererPkg): void {
   });
 }
 
-function windowIdFromSearch(): AnyBootWindowId {
+function surfaceFromSearch(): null | string {
   const params = new URLSearchParams(window.location.search);
   const q = params.get('renderer') ?? params.get(WEB_SHELL_EMBED_QUERY);
-  if (q !== null && q in appConfig.windows) {
-    return q as WindowId;
-  }
-  if (q !== null && q in appConfig.modalRenderers) {
-    return q as ModalId;
-  }
-  return 'main';
+  return q && q.trim() ? q.trim() : null;
+}
+
+function isConfiguredWindowOrModal(id: string): id is AnyBootWindowId {
+  return id in appConfig.windows || id in appConfig.modalRenderers;
 }
 
 async function bootHostOwnedRenderer(pkg: 'frontend' | 'login'): Promise<void> {
@@ -73,21 +71,47 @@ async function start(): Promise<void> {
   if (window.parent !== window) {
     installShellIframeElectronBridge();
   }
-  const windowId = windowIdFromSearch();
-  const pkg = resolveRendererEntry(windowId).renderer as RendererPkg;
-  if (isFederationRenderer(pkg)) {
-    await bootFederationRenderer(pkg);
-    return;
+
+  const surface = surfaceFromSearch();
+
+  // windows.json / modalRenderers: host shell, login, or MF remotes (docs/…)
+  if (surface && isConfiguredWindowOrModal(surface)) {
+    const pkg = resolveRendererEntry(surface).renderer as RendererPkg;
+    if (isFederationRenderer(pkg)) {
+      await bootFederationRenderer(pkg);
+      return;
+    }
+    if (isHostOwnedRenderer(pkg)) {
+      installRendererHmrFallback(pkg);
+      console.info(
+        `[electron-boot] host-owned renderer "${pkg}" ${window.location.href}`,
+      );
+      await bootHostOwnedRenderer(pkg);
+      return;
+    }
+    throw new Error(`boot: renderer "${pkg}" has no registered loader`);
   }
-  if (isHostOwnedRenderer(pkg)) {
-    installRendererHmrFallback(pkg);
+
+  // Host-owned federation apps not in windows.json (low-code-studio, demo-board,
+  // runtime-discovered remotes). Must NOT fall through to main — that re-boots
+  // the Workspace shell inside the iframe (nested chrome / hall of mirrors).
+  if (surface && surface !== 'main') {
     console.info(
-      `[electron-boot] host-owned renderer "${pkg}" ${window.location.href}`,
+      `[electron-boot] federation surface "${surface}" ${window.location.href}`,
     );
-    await bootHostOwnedRenderer(pkg);
+    await bootFederationRenderer(surface);
     return;
   }
-  throw new Error(`boot: renderer "${pkg}" has no registered loader`);
+
+  const pkg = resolveRendererEntry('main').renderer as RendererPkg;
+  if (!isHostOwnedRenderer(pkg)) {
+    throw new Error(`boot: main renderer "${pkg}" is not host-owned`);
+  }
+  installRendererHmrFallback(pkg);
+  console.info(
+    `[electron-boot] host-owned renderer "${pkg}" ${window.location.href}`,
+  );
+  await bootHostOwnedRenderer(pkg);
 }
 
 void start();

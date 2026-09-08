@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import type { RuleExpression } from 'vee-validate';
+import type { Component } from 'vue';
 
-import { computed, useId } from 'vue';
+import type { NebulaFormRule } from './types';
 
-import { Field } from 'vee-validate';
+import { computed, inject, useId } from 'vue';
 
 import { cn } from '../../utils/cn';
+import { firstFormError, nebulaFormContextKey } from './types';
 
 const props = withDefaults(
   defineProps<{
@@ -15,7 +16,7 @@ const props = withDefaults(
     label?: string;
     name: string;
     required?: boolean;
-    rules?: RuleExpression<unknown>;
+    rules?: NebulaFormRule;
     validateOnBlur?: boolean;
     validateOnChange?: boolean;
     validateOnInput?: boolean;
@@ -35,23 +36,80 @@ const props = withDefaults(
   },
 );
 
+const form = inject(nebulaFormContextKey);
+if (!form) {
+  throw new Error('NebulaFormItem must be used inside NebulaForm.');
+}
+
+const FormField = form.Field as Component;
+
 const generatedId = useId();
 const controlId = computed(() => props.id || `nebula-field-${generatedId}`);
 const hintId = computed(() => `${controlId.value}-hint`);
 const errorId = computed(() => `${controlId.value}-error`);
 
-function createControlProps<T extends object>(
-  field: T,
+const fieldValidators = computed(() => {
+  const rule = props.rules;
+  if (!rule) {
+    return undefined;
+  }
+
+  const run = ({ value }: { value: unknown }) => {
+    const result = rule(value);
+    if (result === true || result === undefined) {
+      return undefined;
+    }
+    return result;
+  };
+
+  return {
+    onBlur: props.validateOnBlur ? run : undefined,
+    onChange:
+      props.validateOnChange ||
+      props.validateOnInput ||
+      props.validateOnModelUpdate
+        ? run
+        : undefined,
+    onSubmit: run,
+  };
+});
+
+function errorMessageOf(field: {
+  state: {
+    meta: { errors: unknown[]; isBlurred?: boolean; isTouched?: boolean };
+  };
+}): string {
+  const message = firstFormError(field.state.meta.errors);
+  if (!message) {
+    return '';
+  }
+  const attempts = Number(
+    (form as { state?: { submissionAttempts?: number } }).state
+      ?.submissionAttempts ?? 0,
+  );
+  if (
+    attempts > 0 ||
+    field.state.meta.isBlurred ||
+    field.state.meta.isTouched
+  ) {
+    return message;
+  }
+  return '';
+}
+
+function createControlProps(
+  field: {
+    handleBlur: () => void;
+    handleChange: (value: unknown) => void;
+    state: { value: unknown };
+  },
   invalid: boolean,
   describedBy?: string,
 ): Record<string, unknown> {
-  // componentField 同时包含原生 input/change 监听器。它们绑定到复合控件时会把
-  // DOM Event 或原生 checkbox 的 "on" 写回字段，因此复合控件只使用 v-model 与 blur。
-  const modelField = { ...field } as Record<string, unknown>;
-  delete modelField.onChange;
-  delete modelField.onInput;
   return {
-    ...modelField,
+    modelValue: field.state.value,
+    'onUpdate:modelValue': (value: unknown) => field.handleChange(value),
+    onBlur: () => field.handleBlur(),
     id: controlId.value,
     name: props.name,
     required: props.required,
@@ -62,18 +120,19 @@ function createControlProps<T extends object>(
 </script>
 
 <template>
-  <Field
-    v-slot="{ componentField, errorMessage, meta, value }"
-    :label="label || name"
-    :name="name"
-    :rules="rules"
-    :validate-on-blur="validateOnBlur"
-    :validate-on-change="validateOnChange"
-    :validate-on-input="validateOnInput"
-    :validate-on-model-update="validateOnModelUpdate"
+  <FormField
+    :name="name as never"
+    :validators="fieldValidators"
+    v-slot="{ field }"
   >
     <div
-      :class="cn('nebula-form-item', errorMessage && 'is-invalid', props.class)"
+      :class="
+        cn(
+          'nebula-form-item',
+          errorMessageOf(field) && 'is-invalid',
+          props.class,
+        )
+      "
       :data-field-name="name"
     >
       <label v-if="label" class="nebula-form-item__label" :for="controlId">
@@ -90,34 +149,42 @@ function createControlProps<T extends object>(
         <slot
           :control-props="
             createControlProps(
-              componentField,
-              Boolean(errorMessage),
-              errorMessage ? errorId : hint ? hintId : undefined,
+              field,
+              Boolean(errorMessageOf(field)),
+              errorMessageOf(field) ? errorId : hint ? hintId : undefined,
             )
           "
-          :described-by="errorMessage ? errorId : hint ? hintId : undefined"
-          :error-message="errorMessage"
-          :field="componentField"
+          :described-by="
+            errorMessageOf(field) ? errorId : hint ? hintId : undefined
+          "
+          :error-message="errorMessageOf(field)"
+          :field="
+            createControlProps(
+              field,
+              Boolean(errorMessageOf(field)),
+              errorMessageOf(field) ? errorId : hint ? hintId : undefined,
+            )
+          "
           :id="controlId"
-          :invalid="Boolean(errorMessage)"
-          :meta="meta"
-          :value="value"
+          :invalid="Boolean(errorMessageOf(field))"
+          :meta="field.state.meta"
+          :value="field.state.value"
         ></slot>
       </div>
 
       <p
-        v-if="errorMessage"
+        v-if="errorMessageOf(field)"
         :id="errorId"
         class="nebula-form-item__error"
         role="alert"
       >
-        {{ errorMessage }}
+        {{ errorMessageOf(field) }}
       </p>
       <p v-else-if="hint" :id="hintId" class="nebula-form-item__hint">
         {{ hint }}
       </p>
     </div>
-  </Field>
+  </FormField>
 </template>
 
 <style scoped>

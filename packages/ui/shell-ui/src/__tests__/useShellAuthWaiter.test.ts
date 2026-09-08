@@ -1,3 +1,4 @@
+/** @vitest-environment happy-dom */
 /**
  * useShellAuthWaiter 单元测试。
  *
