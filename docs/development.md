@@ -29,8 +29,9 @@ vp test
 
 按职责选择位置：
 
-- 运行时基础能力：`packages/core`；
-- UI 和布局：`packages/ui`；
+- 平台运行时与能力底座：`packages/platform`；
+- 低代码核心与运行时：`packages/low-code`；
+- UI、布局与设计 Tokens：`packages/ui`；
 - 编辑器：`packages/editors`；
 - 可复用业务功能：`packages/features`；
 - 前后端类型契约：`packages/contracts`；

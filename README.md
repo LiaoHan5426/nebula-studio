@@ -13,7 +13,7 @@ Nebula Studio 是一个基于 **pnpm workspace** 的 monorepo，包含 **Electro
 ## 环境要求
 
 - Node.js `>= 22.12.0`
-- pnpm `11.5.1`
+- pnpm `11.25.0`
 - Vite+ CLI（命令名为 `vp`）
 
 ## 快速开始
@@ -40,8 +40,8 @@ vp run dev:web
 | `vp run start`               | 预览 Electron 构建结果             |
 | `vp run dev:web`             | 启动 Web 开发环境                  |
 | `vp run build`               | 构建全部工作区包                   |
-| `vp run build:web`           | 仅构建 Web 宿主                    |
-| `vp run check`               | 自动修复格式与代码检查问题         |
+| `vp run build:web`           | 仅构建 Web 宿主及打包内置 Remote   |
+| `vp check`                   | 自动修复格式、代码检查与类型校验   |
 | `vp run lint`                | 运行 Oxlint 与 Stylelint           |
 | `vp run test`                | 运行工作区单元测试                 |
 | `vp run test:e2e`            | 运行快速 Mock Playwright 回归      |
@@ -61,16 +61,20 @@ vp run dev:web
 ```text
 nebula-studio/
 ├─ apps/
-│  ├─ electron/          # Electron 主进程与 renderer 引导
+│  ├─ electron/          # Electron 桌面宿主（主进程、窗口生命周期与视图引导）
 │  ├─ electron-preload/  # 统一 preload 与按能力组装的桥接实现
-│  ├─ sub-web/           # Vue renderer 子应用
-│  └─ web/               # Web 壳与 embed 多入口
-├─ internal/             # 仓库内部 Vite、Node 等共享工具
+│  ├─ web/               # Web 宿主（集成内置 Workspace / Login 载荷）
+│  ├─ sub-web/           # Federation Remotes（integration、settings、docs）
+│  ├─ remotes/           # Federation Remotes（low-code-studio、hello 等）
+│  └─ mf-poc-host/       # 模块联邦沙箱与验证宿主
+├─ internal/             # 仓库内部 Vite、Node 等共享工具（build-kit、node-kit）
 ├─ packages/
-│  ├─ core/              # 核心能力与宿主桥接
-│  ├─ editors/           # 编辑器相关包
-│  ├─ features/          # 可复用业务功能
-│  └─ ui/                # UI 与布局组件
+│  ├─ contracts/         # 领域服务端契约 facade（由 OpenAPI 生成 + 适配）
+│  ├─ platform/          # 平台运行时底座（bootstrap、runtime、auth、i18n、query、state 等）
+│  ├─ low-code/          # 低代码运行时核心（compiler、contract、kit）
+│  ├─ editors/           # 按需懒加载编辑器（code、dag、flow、low-code、panel、form）
+│  ├─ ui/                # UI 组件库、布局与语义化设计 Token（nebula-ui、shell-ui、tokens 等）
+│  └─ testing/           # 测试夹具（msw 等）
 ├─ tools/                # TypeScript、Tailwind 与代码质量配置
 └─ docs/                 # 仓库级开发文档
 ```
@@ -79,16 +83,16 @@ nebula-studio/
 
 ## 架构速览
 
-1. **Electron**（`apps/electron`）：主进程负责窗口生命周期。renderer 使用单一 `index.html` 与 `src/renderer/boot.ts`，再根据 `?renderer=` 动态加载 `app.config.ts` 声明的子应用入口；preload 由 `apps/electron-preload/src/unified.ts` 按窗口能力组装。
-2. **Web**（`apps/web`）：提供 Web 壳与 embed 入口（`src/shell-entry.ts`、`src/embed/*-entry.ts`），并与 `@nebula-studio/app-shell` 的 Web 集成路径保持一致。
-3. **全局样式**：业务侧统一引入 `@nebula-studio/styles/document`（Host/standalone）或 `@nebula-studio/styles/remote`（Federation）。仅 Electron 使用的覆盖样式放在 `apps/electron/src/renderer/styles/electron-overrides.css`。
-4. **全局类型**：`@nebula-studio/types` 通过 `tools/tsconfig/web.json` 的 `compilerOptions.types` 注入 renderer。不要在多个 `env.d.ts` 中重复声明相同的 ambient 模块。
+1. **Host 与 Remote 模型**：Web（`apps/web`）与 Electron（`apps/electron`）统一作为 **Host**，负责路由分发、权限控制、状态持有和宿主能力注入；Docs、Settings、Integration、Low-Code Studio 作为 **Module Federation Remote** 动态加载。旧 `frontend` 与 `login` 已并入 Host 载荷（`@nebula-host-boot/workspace` 与 `@nebula-host-boot/login`），彻底消除了嵌套 shell 导致的“镜中镜”问题。
+2. **应用注册中心**：Host 通过后端应用注册中心接口（`/api/system/frontend-apps/runtime`）动态获取应用清单与加载驱动，实现无侵入插拔与动态接入。
+3. **全局样式与设计系统**：业务侧统一引入 `@nebula-studio/styles/document`（Host/standalone）或 `@nebula-studio/styles/remote`（Federation）。跨应用样式由 `@nebula-studio/tokens` 输出 CSS 语义变量与 Theme Matrix（支持多模式与动态主题色）。
+4. **统一应用数据底座**：Pinia 负责客户端领域状态，Vue Query 负责服务端数据缓存，Vue I18n 提供模块级按需多语言加载；表单验证体系由 `@tanstack/vue-form` + `zod` 统一收敛。
 
 ## 验收状态
 
-Playwright 分为 `mock-regression`、`experience`、`real-stack` 和 `electron` 四个 project。当前本地已通过 Mock 12 项、体验/性能 10 项和 Electron 1 项；六类界面具有亮暗主题及四种响应式宽度的 48 张 Windows 基线。
+Playwright 分为 `mock-regression`、`experience`、`real-stack` 和 `electron` 四个 project。当前本地 Mock、体验/性能、Electron E2E 与真实栈均通过验收。
 
-真实栈脚本能够构建后端 reactor、启动三项服务、生成在线契约并保存分类日志。2026-07-26 实测仍被相邻后端 `platform-console` 缺少 `ConfigService` Bean 阻塞；这表示验收关口工作正常，但真实业务链路尚不能标记为通过。详见 [测试与质量](docs/testing.md) 和 [后端联调](docs/backend-integration.md)。
+真实栈脚本（`vp run test:e2e:real`）能够一键构建相邻后端 `nebula` 的 Reactor、联合启动正式平台服务（8090 / 8080 / 8088 / 8092）、生成在线 OpenAPI 契约无漂移，并通过无 Mock 端到端测试。详见 [测试与质量](docs/testing.md) 和 [后端联调](docs/backend-integration.md)。
 
 ## 开发约定
 

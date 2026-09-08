@@ -7,7 +7,7 @@
 - Windows 桌面开发需要可用的 Electron 构建环境
 - 联调需要 JDK 25+、Maven 3.9+ 和后端所需数据库
 
-虽然根 `package.json` 保留 `pnpm@11.5.1` 的 `packageManager` 声明，但日常安装、脚本、检查和测试都使用 `vp`。
+虽然根 `package.json` 保留 `pnpm@11.25.0` 的 `packageManager` 声明，但日常安装、脚本、检查和测试都使用 `vp`。
 
 ## 安装依赖
 
@@ -47,13 +47,14 @@ vp run --filter @nebula-studio-renderer/integration dev
 
 ## 首次后端联调
 
-完整的集成平台开发通常需要三个进程：
+完整的集成平台开发通常需要对应的后端平台进程（或轻量演示进程）：
 
 | 服务 | 默认端口 | 主要用途 |
 | --- | --- | --- |
-| `demo-camel-console` | `8080` | Camel Console、认证、租户、订阅、监控等 API |
-| `demo-camel-executor` | `8081` | Executor 路由、网关和执行器 API |
-| `platform-console` | `8090` | system、platform、治理、版本和发布聚合 API |
+| `platform-integration` (或 `demo-camel-console`) | `8080` | Camel Console、认证、租户、订阅、监控等 API |
+| `platform-integration-executor` (或 `demo-camel-executor`) | `8088` | Executor 路由、网关和执行器 API |
+| `platform-console` | `8090` | system、platform、治理、版本、发布与低代码只读 API |
+| `platform-low-code-write` | `8092` | 低代码设计态保存/发布写安全网关 |
 
 启动顺序、代理表和示例账号见 [后端联调](./backend-integration.md)。只开发不依赖 API 的壳层或组件时，可以不启动全部后端。
 

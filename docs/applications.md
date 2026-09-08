@@ -19,6 +19,7 @@
 | Login | `apps/web/src/auth` + `packages/platform/login-ui` | Host 认证入口和共享登录 UI | Host 内置 |
 | Settings | `apps/sub-web/settings` | 系统配置、用户与平台设置 | 是 |
 | Docs | `apps/sub-web/docs` | Nebula UI 指南、组件说明和交互示例 | 是 |
+| Low-Code Studio | `apps/remotes/low-code-studio` | 低代码设计器（拖拽/属性编辑）与运行态大屏渲染 | 是 |
 
 Federation Remote 同时保留 application expose 与 standalone 入口；Workspace/Login 是 Host seed，不走 Remote，也不再维护重复 standalone renderer。
 

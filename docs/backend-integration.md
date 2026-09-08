@@ -1,10 +1,10 @@
 # 后端联调
 
-前端仓库与相邻的 Nebula 后端仓库配合开发。当前过渡架构包含三个后端进程：Camel 运行时仍由 Console/Executor 承担，Platform Console 聚合平台域 API。
+前端仓库与相邻的 Nebula 后端仓库配合开发。当前架构包含四个后端平台进程：Console 聚合系统与平台治理，Integration 负责 Camel 定义面与租户认证，Integration Executor 负责运行路由与网关执行，Low-Code Write 作为独立的写安全网关。
 
 ## 启动后端
 
-以下命令分别在后端仓库中执行。三个服务都是常驻进程，应使用独立终端。
+以下命令分别在后端仓库中执行。各服务都是常驻进程，排障与调试时应使用独立终端。
 
 完整验收优先在 Studio 根目录运行：
 
@@ -12,7 +12,7 @@
 vp run test:e2e:real
 ```
 
-该命令会先从相邻 `../nebula` 构建所需 Maven reactor，再启动三个正式 Platform 应用和 Web，执行在线契约差异检查与 Playwright。手工启动方式适合单服务排障。
+该命令会先从相邻 `../nebula` 构建所需 Maven reactor，再启动正式 Platform 应用和 Web，执行在线契约差异检查与 Playwright 测试。
 
 ### Platform Integration（8080）
 
@@ -21,7 +21,7 @@ cd ..\nebula\nebula-platform\platform-integration
 mvn spring-boot:run -DskipTests
 ```
 
-### Platform Integration Executor（8081）
+### Platform Integration Executor（8088）
 
 ```powershell
 cd ..\nebula\nebula-platform\platform-integration-executor
@@ -35,21 +35,29 @@ cd ..\nebula\nebula-platform\platform-console
 mvn spring-boot:run -DskipTests
 ```
 
-三个正式应用默认需要可访问的 PostgreSQL。数据库配置、构建前置和 Flyway 说明见 `../nebula/docs/quick-start.md`。
+### Platform Low-Code Write（8092）
 
-> 当前实测状态（2026-08-01）：`vp run test:e2e:real` 已从停止状态构建并启动三个正式应用，健康、监控端点未认证 401、在线契约和无 Mock Playwright 均通过。失败日志仍保存在 `test-results/real-stack` 的分服务日志中；脚本只终止本次启动且进程所有权校验通过的服务，不清理复用的用户进程。
+```powershell
+cd ..\nebula\nebula-platform\platform-low-code-write
+mvn spring-boot:run -DskipTests
+```
+
+正式应用默认需要可访问的 PostgreSQL。数据库配置、构建前置和 Flyway 说明见 `../nebula/docs/quick-start.md`。
+
+> 当前实测状态：`vp run test:e2e:real` 已从停止状态构建并启动正式应用，健康、监控端点未认证 401、在线契约和无 Mock Playwright 均通过。失败日志保存在 `test-results/real-stack` 的分服务日志中；脚本只终止本次启动且进程所有权校验通过的服务，不误杀已复用的用户服务。
 
 ## 开发代理
 
-Integration 独立开发服务器由 `defineNebulaSubAppConfig()` 读取窗口注册表的 `proxyPreset`，并通过 `createNebulaApiProxy()` 生成代理；匹配遵循从具体到通用的顺序。
+开发服务器由 `defineNebulaSubAppConfig()` 读取环境配置的 `apiTargets`，并通过 `createNebulaApiProxy()` 生成代理；匹配遵循从具体到通用的顺序。
 
 | 前端路径 | 目标 | 说明 |
 | --- | --- | --- |
-| `/api/integration/gateway` | `http://localhost:8081` | Executor 网关调用 |
-| `/api/integration/demo` | `http://localhost:8081` | Executor 兼容演示 API |
-| `/api/executor` | `http://localhost:8081` | Executor 路由和状态 |
+| `/api/integration/gateway` | `http://localhost:8088` | Executor 网关调用 |
+| `/api/integration/demo` | `http://localhost:8088` | Executor 兼容演示 API |
+| `/api/executor` | `http://localhost:8088` | Executor 路由和状态 |
+| `/api/low-code/write` | `http://localhost:8092` | 低代码独立写网关（验签与发布） |
 | `/api/system` | `http://localhost:8090` | 系统域 |
-| `/api/platform` | `http://localhost:8090` | 平台聚合域 |
+| `/api/platform` | `http://localhost:8090` | 平台聚合域与低代码只读 Catalog |
 | `/api/security/governance` | `http://localhost:8090` | 安全治理 |
 | `/api/version` | `http://localhost:8090` | 版本域 |
 | `/api/release`、`/api/releases` | `http://localhost:8090` | 发布域 |
@@ -57,7 +65,7 @@ Integration 独立开发服务器由 `defineNebulaSubAppConfig()` 读取窗口�
 
 代理对包含 `/events` 的 SSE 请求关闭超时和响应缓冲。调整代理时要保留该行为，否则浏览器可能迟迟收不到事件。
 
-Web、Electron 和 standalone 共享同一 API 实现：`configs/windows.json` 只保留可部署的 backend origin 与子应用 `proxyPreset`，浏览器 API namespace 和路由规则由 `internal/build-kit` 统一管理。子应用不再维护独立 `vite.proxy.ts`。
+Web、Electron 和 standalone 共享同一 API 目标配置：`configs/environments.json` 维护后端 origin（8090、8080、8088、8092），浏览器 API namespace 和路由规则由 `internal/build-kit` 统一管理。子应用不再维护独立 `vite.proxy.ts`。
 
 ## 认证
 

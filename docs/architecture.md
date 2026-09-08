@@ -1,62 +1,66 @@
 # 整体架构
 
-Nebula Studio 是一个同时面向 Electron 与浏览器的 Vue 3 monorepo。核心原则是：子应用尽量保持宿主无关，Web 与 Electron 通过统一的 app-shell 和 runtime 接入认证、布局、通知及主题能力。
+Nebula Studio 是一个基于 **Module Federation** 与 **Vite+**、同时面向 Electron 桌面端与 Web 浏览器的 Vue 3 工作区。架构核心原则是：Host 负责应用发现、远程加载、导航路由、全局认证与宿主能力注入，Remote 负责独立领域业务，两者通过标准能力契约与生命周期协议协同。
 
 ## 分层
 
 ```text
-Electron 主进程 / Web 宿主
-            │
-            ▼
-  app-shell + nebula-shell
-            │
-            ▼
- docs / login / settings / integration 等子应用
-            │
-            ▼
- application-bootstrap / application-runtime / auth / api-client
-            │
-            ▼
- UI、编辑器、功能包、contracts
-            │
-            ▼
- 后端 Console :8080 / Executor :8081 / Platform :8090
+Web 宿主 (:5173) / Electron 桌面宿主
+                  │
+                  ▼（Module Federation 动态装载 / Host Capability 注入）
+ Docs / Settings / Integration / Low-Code Studio 等 Federation Remote
+                  │
+                  ▼
+ application-bootstrap / application-runtime / federation-protocol / host-capabilities
+                  │
+                  ▼
+   UI (nebula-ui/tokens/shell-ui) / 编辑器 (editors/*) / 低代码运行时 (low-code/*) / 契约 (contracts/*)
+                  │
+                  ▼
+ 后端 Console :8080 / Executor :8088 / Platform :8090 / Low-Code Write :8092
 ```
 
-## 宿主层
+## 宿主层（Host）
 
 ### Electron
 
-`apps/electron` 管理主进程和窗口生命周期。renderer 使用共同的引导入口：Federation 应用走 runtime Remote；工作台与登录走 Host `bootHostWorkspace` / `bootHostLogin`。`apps/electron-preload/*` 只暴露声明过的能力，业务 renderer 不直接依赖 Electron API。
+`apps/electron` 管理主进程和窗口生命周期。renderer 使用统一引导机制：内置工作台与登录走 Host `bootHostWorkspace` / `bootHostLogin`，其余子应用统一经 runtime 走 Federation Remote 动态装载；`apps/electron-preload/*` 通过 contextIsolation 提供安全受控的 HostCapability 注入，Remote 业务组件不直接调用 Electron 内部 API。
 
 ### Web
 
-`apps/web` 是浏览器宿主，开发端口为 `5173`。它通过 Vite 的子应用发现和别名插件加载 `frontend`、`integration`、`login`、`settings`、`docs`，并复用 `@nebula-studio/app-shell` 的展示与认证约定。
+`apps/web` 是浏览器宿主，开发端口为 `5173`。它内置 Workspace 与 Login 载荷，通过 Module Federation 动态装载 `integration`、`settings`、`docs`、`low-code-studio` 等 Remote，并向子应用注入标准的认证、主题、Locale 与导航 Capability。
 
-## 配置单源
+## 配置体系
 
-`configs/windows.json` 定义：
+配置职责已拆分为单一职责配置文件：
 
-- 窗口 ID、renderer 和 preload 对应关系；
-- 显示名称、顺序、是否可集成及是否要求认证；
-- Electron 内嵌展示方式；
-- API base 与本地开发 target。
+- `configs/windows.json`：窗口 ID、renderer、preload 契约、显示名称、顺序与 presentation 配置；
+- `configs/environments.json`：后端服务 origin 与 API targets 配置（console 8090、integration 8080、executor 8088、low-code-write 8092）；
+- `configs/real-stack.json`：真实栈运行与健康检查配置；
+- `configs/e2e.json`：E2E 测试套件配置。
 
-运行 `vp run generate:configs` 后，配置被生成到 app-shell 等消费者使用的文件中。不要直接手改 `_generated-*` 文件。
+运行 `vp run generate:configs` 后，配置被生成到 app-shell 与构建工具消费的文件中。严禁直接手改 `_generated-*` 文件。
 
-当前窗口/子应用关系：
+当前核心应用关系：
 
-| ID            | renderer      | 用途               | 需要认证 |
-| ------------- | ------------- | ------------------ | -------- |
-| `main`        | `frontend`    | 工作台和应用集成壳 | 否       |
-| `docs`        | `docs`        | UI 文档            | 否       |
-| `settings`    | `settings`    | 设置               | 是       |
-| `integration` | `integration` | 集成平台           | 是       |
-| `login`       | `login`       | 模态登录应用       | 否       |
+| ID | 类型 | 路径/来源 | 用途 | 需要认证 |
+| --- | --- | --- | --- | --- |
+| `main` | **Host 内置** | `apps/web/src/workspace` | 工作台和应用集成壳（@nebula-host-boot/workspace） | 否 |
+| `login` | **Host 内置** | `apps/web/src/auth` | 统一登录流认证面板（@nebula-host-boot/login） | 否 |
+| `docs` | **Federation Remote** | `apps/sub-web/docs` | UI 组件文档与交互示例 | 否 |
+| `settings` | **Federation Remote** | `apps/sub-web/settings` | 个人、组织与平台设置 | 是 |
+| `integration` | **Federation Remote** | `apps/sub-web/integration` | 企业接口与 Camel 流程集成平台 | 是 |
+| `low-code-studio` | **Federation Remote** | `apps/remotes/low-code-studio` | 低代码设计器与应用大屏运行态 | 是 |
 
 ## 子应用运行模式
 
-`@nebula-studio/application-bootstrap`、`@nebula-studio/application-runtime` 和 `@nebula-studio/auth` 分别承担独立应用启动、Federation 生命周期与认证：
+`@nebula-studio/application-bootstrap`、`@nebula-studio/application-runtime` 与 `@nebula-studio/host-capabilities` 分别承担生命周期与能力注入：
+
+- `standalone`：子应用由自身 Vite 服务直接运行，适合单包独立开发与隔离测试；
+- `platform-embed`：子应用作为 Federation Remote 被 Web Host 动态装载，通过注入的 HostCapability 共享认证、主题和导航；
+- `electron`：子应用运行在 Electron renderer 中，通过 Host 载荷与 preload bridge 消费桌面能力。
+
+子应用统一通过 application-runtime 或 host-capabilities 获取能力，严禁用 URL 或全局 `window` 散落判断运行环境。
 
 - `standalone`：子应用由自身 Vite 服务直接运行；
 - `platform-embed`：子应用嵌入 Web 壳，通过壳桥接认证和导航；
