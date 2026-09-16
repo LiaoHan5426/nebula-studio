@@ -36,6 +36,9 @@ overrides:
   # app-builder-lib 26 调用 ElectronDownloadCacheMode.ReadWrite（@electron/get v5+）。
   # 其声明依赖 ^3.0.0 会解析到 3.0.0，pack:win 报 Cannot read properties of undefined (reading 'ReadWrite')。
   '@electron/get': 'catalog:electron'
+  # 与 vite-plus@0.3.2 锁定的 oxfmt/oxlint 对齐，避免 fmt/lint 配置出现双版本类型冲突。
+  'oxfmt@*': 'catalog:lint'
+  'oxlint@*': 'catalog:lint'
   # Vite+：用 @* 只覆盖 semver/peer 声明，保留 catalog: 引用由 catalog 解析到 vite-plus-core。
   # 禁止把 vite override 成上游 vite@8，否则 vp pack 会报 Expected vite-plus-core, found vite。
   'vite@*': 'catalog:vite'
@@ -116,8 +119,8 @@ catalogs:
     eslint-plugin-unused-imports: ^4.4.1
     eslint-plugin-vue: ^10.11.0
     eslint-plugin-yml: ^3.8.1
-    oxfmt: ^0.61.0
-    oxlint: ^1.83.0
+    oxfmt: 0.67.0
+    oxlint: 1.82.0
     stylelint: ^17.15.0
     stylelint-config-recess-order: ^7.8.0
     stylelint-config-recommended-scss: ^17.0.1
