@@ -36,8 +36,10 @@ overrides:
   # app-builder-lib 26 调用 ElectronDownloadCacheMode.ReadWrite（@electron/get v5+）。
   # 其声明依赖 ^3.0.0 会解析到 3.0.0，pack:win 报 Cannot read properties of undefined (reading 'ReadWrite')。
   '@electron/get': 'catalog:electron'
-  vite: 'catalog:vite'
-  vitest: 'catalog:vite'
+  # Vite+：用 @* 只覆盖 semver/peer 声明，保留 catalog: 引用由 catalog 解析到 vite-plus-core。
+  # 禁止把 vite override 成上游 vite@8，否则 vp pack 会报 Expected vite-plus-core, found vite。
+  'vite@*': 'catalog:vite'
+  'vitest@*': 'catalog:vite'
 catalogMode: prefer
 
 catalog:
@@ -48,7 +50,7 @@ catalog:
 catalogs:
   bpmn:
     '@bpmn-io/cm-theme': ^0.2.2
-    bpmn-js: ^18.27.1
+    bpmn-js: ^18.28.0
     bpmn-js-properties-panel: ^5.65.0
     camunda-bpmn-moddle: ^8.0.1
   dag:
@@ -63,7 +65,7 @@ catalogs:
     '@codemirror/lang-markdown': ^6.5.2
     '@codemirror/lang-python': ^6.2.1
     '@codemirror/language': ^6.12.4
-    '@codemirror/state': ^6.7.2
+    '@codemirror/state': ^6.7.4
     '@codemirror/theme-one-dark': ^6.1.3
     '@codemirror/view': ^6.43.11
     codemirror: ^6.0.2
@@ -72,39 +74,39 @@ catalogs:
   electron:
     '@electron/get': ^5.1.0
     electron: 44.2.0
-    electron-builder: ^26.16.0
+    electron-builder: ^26.16.1
     electron-updater: ^6.8.9
     electron-vite: ^5.0.0
   form:
     '@tanstack/vue-form': ^1.33.5
-    '@tiptap/core': ^2.27.2
-    '@tiptap/extension-code-block': ^2.27.2
-    '@tiptap/extension-color': ^2.27.2
-    '@tiptap/extension-highlight': ^2.27.2
-    '@tiptap/extension-image': ^2.27.2
-    '@tiptap/extension-link': ^2.27.2
-    '@tiptap/extension-placeholder': ^2.27.2
-    '@tiptap/extension-table': ^2.27.2
-    '@tiptap/extension-table-cell': ^2.27.2
-    '@tiptap/extension-table-header': ^2.27.2
-    '@tiptap/extension-table-row': ^2.27.2
-    '@tiptap/extension-text-align': ^2.27.2
-    '@tiptap/extension-text-style': ^2.27.2
-    '@tiptap/extension-underline': ^2.27.2
-    '@tiptap/pm': ^2.27.2
-    '@tiptap/starter-kit': ^2.27.2
-    '@tiptap/vue-3': ^2.27.2
-    zod: ^4.5.4
+    '@tiptap/core': ^2.27.3
+    '@tiptap/extension-code-block': ^2.27.3
+    '@tiptap/extension-color': ^2.27.3
+    '@tiptap/extension-highlight': ^2.27.3
+    '@tiptap/extension-image': ^2.27.3
+    '@tiptap/extension-link': ^2.27.3
+    '@tiptap/extension-placeholder': ^2.27.3
+    '@tiptap/extension-table': ^2.27.3
+    '@tiptap/extension-table-cell': ^2.27.3
+    '@tiptap/extension-table-header': ^2.27.3
+    '@tiptap/extension-table-row': ^2.27.3
+    '@tiptap/extension-text-align': ^2.27.3
+    '@tiptap/extension-text-style': ^2.27.3
+    '@tiptap/extension-underline': ^2.27.3
+    '@tiptap/pm': ^2.27.3
+    '@tiptap/starter-kit': ^2.27.3
+    '@tiptap/vue-3': ^2.27.3
+    zod: ^4.6.5
   lint:
     '@commitlint/cli': ^21.2.2
     '@commitlint/config-conventional': ^21.2.2
     '@commitlint/types': ^21.2.0
-    '@eslint-community/eslint-plugin-eslint-comments': ^4.7.2
+    '@eslint-community/eslint-plugin-eslint-comments': ^4.8.1
     '@eslint/js': ^10.0.1
     '@stylistic/stylelint-plugin': ^5.3.0
-    '@typescript-eslint/parser': ^8.69.0
+    '@typescript-eslint/parser': ^8.70.0
     conventional-commits-parser: 7.1.2
-    eslint: ^10.9.1
+    eslint: ^10.10.0
     eslint-plugin-better-tailwindcss: ^4.7.0
     eslint-plugin-command: ^3.5.3
     eslint-plugin-jsonc: ^3.4.2
@@ -112,11 +114,11 @@ catalogs:
     eslint-plugin-perfectionist: ^5.11.0
     eslint-plugin-pnpm: ^1.9.1
     eslint-plugin-unused-imports: ^4.4.1
-    eslint-plugin-vue: ^10.10.0
+    eslint-plugin-vue: ^10.11.0
     eslint-plugin-yml: ^3.8.1
     oxfmt: ^0.61.0
-    oxlint: ^1.81.0
-    stylelint: ^17.14.1
+    oxlint: ^1.83.0
+    stylelint: ^17.15.0
     stylelint-config-recess-order: ^7.8.0
     stylelint-config-recommended-scss: ^17.0.1
     stylelint-config-recommended-vue: ^1.6.1
@@ -127,16 +129,16 @@ catalogs:
     yaml-eslint-parser: ^2.1.0
   markdown:
     highlight.js: ^11.12.0
-    markdown-it: ^15.0.1
-    marked: ^18.0.11
+    markdown-it: ^15.0.2
+    marked: ^18.0.13
     shiki: ^4.4.3
   parser:
     node-sql-parser: ^5.4.0
-    yaml: ^2.9.0
+    yaml: ^2.9.1
   query:
     '@tanstack/vue-query': ^5.102.8
   release:
-    '@changesets/cli': ^3.0.1
+    '@changesets/cli': ^3.0.3
     bumpp: ^11.1.0
   style:
     '@iconify/tailwind4': ^1.2.3
@@ -145,31 +147,31 @@ catalogs:
     postcss: ^8.5.28
     postcss-html: ^1.8.1
     postcss-scss: ^4.0.9
-    sass: ^1.104.0
-    sass-embedded: ^1.104.0
+    sass: ^1.104.1
+    sass-embedded: ^1.104.1
     tailwindcss: ^4.3.3
     tw-animate-css: ^1.4.0
   template:
     '@types/mustache': ^4.2.6
     mustache: ^4.2.0
   test:
-    '@playwright/test': ^1.62.1
+    '@playwright/test': ^1.63.0
   types:
-    '@types/node': ^24.13.3
+    '@types/node': ^24.13.4
     '@types/nprogress': ^0.2.3
     typescript: ^6.0.3
   ui:
-    '@iconify-json/lucide': ^1.2.129
+    '@iconify-json/lucide': ^1.2.132
     '@iconify/vue': ^4.3.0
     reka-ui: ^2.10.4
     vuedraggable: ^4.1.0
-    vxe-pc-ui: ^4.17.29
-    vxe-table: ^4.21.5
+    vxe-pc-ui: ^4.18.12
+    vxe-table: ^4.21.10
     xe-utils: ^4.0.13
   ui-utils:
     class-variance-authority: ^0.7.1
     clsx: ^2.1.1
-    tailwind-merge: ^3.6.0
+    tailwind-merge: ^3.7.0
   utils:
     '@fastify/deepmerge': ^3.2.1
     '@manypkg/get-packages': ^2.2.2
@@ -183,12 +185,13 @@ catalogs:
     unconfig: ^7.5.0
   vite:
     '@module-federation/runtime': ^0.21.6
-    '@module-federation/vite': ^1.21.3
-    '@vitejs/plugin-vue': ^6.0.8
+    '@module-federation/vite': ^1.21.6
+    '@vitejs/plugin-vue': ^6.0.9
     '@vitejs/plugin-vue-jsx': ^5.1.6
-    happy-dom: ^20.14.0
-    vite: ^8.2.2
-    vite-plus: ^0.3.0
+    happy-dom: ^20.14.5
+    # Vite+ 要求 vite 解析到同版本的 vite-plus-core，不能使用上游 vite。
+    vite: npm:@voidzero-dev/vite-plus-core@0.3.2
+    vite-plus: 0.3.2
     vitest: ^5.0.0
   vue:
     '@vue/test-utils': ^2.5.0

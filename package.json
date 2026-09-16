@@ -99,11 +99,12 @@
     "openapi-typescript": "catalog:",
     "tailwindcss": "catalog:style",
     "unconfig": "catalog:utils",
+    "vite": "catalog:vite",
     "vite-plus": "catalog:vite",
     "vitest": "catalog:vite"
   },
   "engines": {
     "node": ">=22.12.0"
   },
-  "packageManager": "pnpm@11.25.0"
+  "packageManager": "pnpm@11.27.0"
 }

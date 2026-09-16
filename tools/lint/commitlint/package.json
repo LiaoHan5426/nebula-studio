@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "@commitlint/types": "catalog:lint",
+    "vite": "catalog:vite",
     "vite-plus": "catalog:vite"
   },
   "inlinedDependencies": {

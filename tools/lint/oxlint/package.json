@@ -36,6 +36,7 @@
   "devDependencies": {
     "@types/node": "catalog:types",
     "typescript": "catalog:types",
+    "vite": "catalog:vite",
     "vite-plus": "catalog:vite"
   }
 }
