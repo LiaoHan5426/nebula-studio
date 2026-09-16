@@ -50,7 +50,7 @@ bus.emit('auth:logout', { reason: 'session-expired' });
 
 ## API 基座（W12 / G7）
 
-权威配置：`configs/environments.json` 配置 `apiTargets`（后端 origin），`configs/windows.json` 只描述 Shell/Electron 窗口。浏览器相对路径按 target 分组，来自 API context 黑盒。
+权威配置：`env/.env.[mode]` 的 `NEBULA_*_TARGET`（后端 origin），`configs/windows.json` 只描述 Shell/Electron 窗口；`configs/federation-dev.json` 描述 Federation 开发接线。浏览器相对路径按 target 分组，来自 API context 黑盒。
 
 - `GENERATED_API_NAMESPACES.platform.platform` → `/api/platform`
 - `GENERATED_API_TARGETS.platform` → `http://localhost:8090`

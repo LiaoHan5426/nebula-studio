@@ -1,21 +1,56 @@
+import type { ErrorObject, SchemaObject } from 'ajv';
+
+import type { ApiContext } from './config/apiContext.ts';
+import type {
+  RendererRuntimeFields,
+  WindowsConfig,
+} from './config/windowsManifest.ts';
+
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
 import Ajv from 'ajv';
 
-import { joinOrigin } from './joinOrigin.mjs';
+import {
+  loadEnvironmentsConfig,
+  resolveNebulaEnvMode,
+} from './config/environments.ts';
+import { joinOrigin } from './joinOrigin.ts';
 
 export { joinOrigin };
+export { loadEnvironmentsConfig, resolveNebulaEnvMode };
 
-export function resolveWindowConfigPaths(rootDir) {
+export interface WindowConfigPaths {
+  apiContextPath: string;
+  apiNamespacesPath: string;
+  configPath: string;
+  e2ePath: string;
+  e2eSchemaPath: string;
+  federationDevPath: string;
+  federationDevSchemaPath: string;
+  realStackPath: string;
+  realStackSchemaPath: string;
+  schemaPath: string;
+  subWebDir: string;
+  windowsOutputPath: string;
+}
+
+export interface ValidateWindowsConfigContext {
+  apiContext: ApiContext;
+  apiTargets?: Record<string, string>;
+  realStack?: WindowsConfig['realStack'];
+  subWebDir: string;
+}
+
+export function resolveWindowConfigPaths(rootDir: string): WindowConfigPaths {
   return {
     configPath: join(rootDir, 'configs', 'windows.json'),
     schemaPath: join(rootDir, 'configs', 'windows.schema.json'),
-    environmentsPath: join(rootDir, 'configs', 'environments.json'),
-    environmentsSchemaPath: join(
+    federationDevPath: join(rootDir, 'configs', 'federation-dev.json'),
+    federationDevSchemaPath: join(
       rootDir,
       'configs',
-      'environments.schema.json',
+      'federation-dev.schema.json',
     ),
     realStackPath: join(rootDir, 'configs', 'real-stack.json'),
     realStackSchemaPath: join(rootDir, 'configs', 'real-stack.schema.json'),
@@ -49,18 +84,25 @@ export function resolveWindowConfigPaths(rootDir) {
   };
 }
 
-export function loadJsonFile(path) {
+export function loadJsonFile(path: string): unknown {
   return JSON.parse(readFileSync(path, 'utf8'));
 }
 
-export function collectRuntimeEntries(config) {
+export function collectRuntimeEntries(
+  config: Pick<WindowsConfig, 'modalRenderers' | 'windows'>,
+): RendererRuntimeFields[] {
   return [
     ...Object.values(config.windows ?? {}),
     ...Object.values(config.modalRenderers ?? {}),
   ];
 }
 
-function assertRendererExists(subWebDir, renderer, field, errors) {
+function assertRendererExists(
+  subWebDir: string,
+  renderer: string,
+  field: string,
+  errors: string[],
+): void {
   const rendererDir = join(subWebDir, renderer);
   if (!existsSync(rendererDir)) {
     errors.push(
@@ -69,12 +111,16 @@ function assertRendererExists(subWebDir, renderer, field, errors) {
   }
 }
 
-export function validateWindowsConfig(config, schema, ctx) {
+export function validateWindowsConfig(
+  config: WindowsConfig,
+  schema: SchemaObject,
+  ctx: ValidateWindowsConfigContext,
+): string[] {
   const { subWebDir, apiContext } = ctx;
   const ajv = new Ajv({ allErrors: true, strict: false });
   const validate = ajv.compile(schema);
   const valid = validate(config);
-  const errors = [];
+  const errors: string[] = [];
 
   if (!valid && validate.errors) {
     for (const err of validate.errors) {
@@ -83,7 +129,7 @@ export function validateWindowsConfig(config, schema, ctx) {
     }
   }
 
-  const rendererEntries = new Map();
+  const rendererEntries = new Map<string, RendererRuntimeFields>();
   if (config.windows) {
     for (const [windowId, win] of Object.entries(config.windows)) {
       rendererEntries.set(win.renderer, win);
@@ -131,7 +177,7 @@ export function validateWindowsConfig(config, schema, ctx) {
   for (const target of Object.keys(apiContext.namespaces ?? {})) {
     if (!apiTargets[target]) {
       errors.push(
-        `api context namespaces.${target}: missing apiTargets.${target} in environments.json`,
+        `api context namespaces.${target}: missing apiTargets.${target} (set NEBULA_*_TARGET in env/.env)`,
       );
     }
   }
@@ -163,7 +209,7 @@ export function validateWindowsConfig(config, schema, ctx) {
     );
   }
 
-  const ports = new Map();
+  const ports = new Map<number, string>();
   const shellPort = config.shell?.web?.port;
   if (typeof shellPort === 'number') {
     ports.set(shellPort, 'shell.web');
@@ -185,17 +231,26 @@ export function validateWindowsConfig(config, schema, ctx) {
   return errors;
 }
 
-function validateJsonDocument(document, schema, label) {
+function validateJsonDocument(
+  document: unknown,
+  schema: SchemaObject,
+  label: string,
+): string[] {
   const validate = new Ajv({ allErrors: true, strict: false }).compile(schema);
   if (validate(document)) return [];
   return (validate.errors ?? []).map(
-    (error) =>
+    (error: ErrorObject) =>
       `${label}${error.instancePath || '(root)'}: ${error.message ?? 'validation error'}`,
   );
 }
 
-export function generateWindowsTypeScript(config, apiContext) {
-  const lines = [];
+export function generateWindowsTypeScript(
+  config: WindowsConfig,
+  apiContext:
+    | Pick<ApiContext, 'namespaces'>
+    | { namespaces?: Record<string, Record<string, string>> },
+): string {
+  const lines: string[] = [];
 
   lines.push('// AUTO-GENERATED — do not edit manually.');
   lines.push('// Source: configs/windows.json + internal/node-kit API context');
@@ -373,8 +428,19 @@ export function generateWindowsTypeScript(config, apiContext) {
   return lines.join('\n');
 }
 
-export function collectStandaloneApps(config) {
-  const standaloneApps = {};
+export interface StandaloneAppInfo {
+  basePath: string;
+  baseUrl: string;
+  embedPath: null | string;
+  host: string;
+  port: number;
+  proxyPreset: null | string;
+}
+
+export function collectStandaloneApps(
+  config: WindowsConfig,
+): Record<string, StandaloneAppInfo> {
+  const standaloneApps: Record<string, StandaloneAppInfo> = {};
   for (const entry of collectRuntimeEntries(config)) {
     if (!entry.standalone) continue;
     const host = entry.standalone.host ?? config.shell?.web?.host;
@@ -401,9 +467,11 @@ export function collectStandaloneApps(config) {
   return standaloneApps;
 }
 
-export function collectFederationDevEntries(config) {
+export function collectFederationDevEntries(
+  config: WindowsConfig,
+): NonNullable<WindowsConfig['federationDevEntries']> {
   const standaloneApps = collectStandaloneApps(config);
-  const entries = {};
+  const entries: NonNullable<WindowsConfig['federationDevEntries']> = {};
   for (const [windowId, win] of Object.entries(config.windows ?? {})) {
     if (win.webLoad !== 'federation') continue;
     const standalone = standaloneApps[win.renderer];
@@ -422,14 +490,19 @@ export function collectFederationDevEntries(config) {
   return entries;
 }
 
-export function generateApiNamespacesSource(config, apiContext) {
+export function generateApiNamespacesSource(
+  config: WindowsConfig,
+  apiContext:
+    | Pick<ApiContext, 'namespaces'>
+    | { namespaces?: Record<string, Record<string, string>> },
+): string {
   const federationDevEntries = {
     ...collectFederationDevEntries(config),
     ...config.federationDevEntries,
   };
   return [
     '// AUTO-GENERATED — do not edit manually.',
-    '// Source: configs/environments.json apiTargets + internal/node-kit API context',
+    '// Source: env/.env.[mode] NEBULA_*_TARGET + internal/node-kit API context',
     '',
     `export const GENERATED_API_NAMESPACES = ${JSON.stringify(apiContext.namespaces ?? {}, null, 2)} as const;`,
     '',
@@ -444,36 +517,50 @@ export function generateApiNamespacesSource(config, apiContext) {
   ].join('\n');
 }
 
-export function buildWindowConfigArtifacts(rootDir) {
+export function buildWindowConfigArtifacts(
+  rootDir: string,
+  options: { mode?: string } = {},
+) {
   const paths = resolveWindowConfigPaths(rootDir);
-  const windows = loadJsonFile(paths.configPath);
-  const environments = loadJsonFile(paths.environmentsPath);
-  const realStack = loadJsonFile(paths.realStackPath);
-  const e2e = loadJsonFile(paths.e2ePath);
-  const config = {
+  const windows = loadJsonFile(paths.configPath) as WindowsConfig;
+  const environments = loadEnvironmentsConfig(rootDir, {
+    mode: options.mode,
+  });
+  const realStack = loadJsonFile(
+    paths.realStackPath,
+  ) as WindowsConfig['realStack'];
+  const e2e = loadJsonFile(paths.e2ePath) as WindowsConfig['e2e'];
+  const config: WindowsConfig = {
     ...windows,
+    envMode: environments.mode,
     apiTargets: environments.apiTargets ?? {},
+    federationDev: environments.federationDev,
     federationDevEntries: environments.federationDevEntries ?? {},
     realStack,
     e2e,
   };
-  const schema = loadJsonFile(paths.schemaPath);
+  const schema = loadJsonFile(paths.schemaPath) as SchemaObject;
   if (!existsSync(paths.apiContextPath)) {
     throw new Error(`Missing API context black box at ${paths.apiContextPath}`);
   }
-  const apiContext = loadJsonFile(paths.apiContextPath);
+  const apiContext = loadJsonFile(paths.apiContextPath) as ApiContext;
+  const federationDevDoc = loadJsonFile(paths.federationDevPath);
   const errors = [
     ...validateJsonDocument(
-      environments,
-      loadJsonFile(paths.environmentsSchemaPath),
-      'environments',
+      federationDevDoc,
+      loadJsonFile(paths.federationDevSchemaPath) as SchemaObject,
+      'federation-dev',
     ),
     ...validateJsonDocument(
       realStack,
-      loadJsonFile(paths.realStackSchemaPath),
+      loadJsonFile(paths.realStackSchemaPath) as SchemaObject,
       'real-stack',
     ),
-    ...validateJsonDocument(e2e, loadJsonFile(paths.e2eSchemaPath), 'e2e'),
+    ...validateJsonDocument(
+      e2e,
+      loadJsonFile(paths.e2eSchemaPath) as SchemaObject,
+      'e2e',
+    ),
     ...validateWindowsConfig(windows, schema, {
       subWebDir: paths.subWebDir,
       apiContext,
@@ -488,12 +575,13 @@ export function buildWindowConfigArtifacts(rootDir) {
   }
   return {
     paths,
+    environments,
     windowsTs: generateWindowsTypeScript(config, apiContext),
     apiNamespacesTs: generateApiNamespacesSource(config, apiContext),
   };
 }
 
-export function writeWindowConfigArtifacts(rootDir) {
+export function writeWindowConfigArtifacts(rootDir: string): WindowConfigPaths {
   const { paths, windowsTs, apiNamespacesTs } =
     buildWindowConfigArtifacts(rootDir);
   mkdirSync(dirname(paths.windowsOutputPath), { recursive: true });

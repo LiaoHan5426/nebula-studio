@@ -1,8 +1,11 @@
 import type { NebulaApiProxyPresetName } from './apiContext.ts';
+import type { NebulaEnvMode } from './environments.ts';
 
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+import { loadEnvironmentsConfig } from './environments.ts';
 
 export type PreloadCapability = 'auth' | 'notify' | 'settings' | 'shell';
 
@@ -39,6 +42,12 @@ export interface WindowsConfig {
   apiTargets?: Record<string, string>;
   e2e?: { mockRoutePatterns: string[] };
   electronEmbeddedPresentation?: 'browser-view' | 'iframe';
+  /** Active env profile resolved from env/.env.[mode] + NEBULA_ENV. */
+  envMode?: NebulaEnvMode;
+  federationDev?: {
+    host: string;
+    remoteCacheDir: string;
+  };
   federationDevEntries?: Record<
     string,
     {
@@ -48,10 +57,6 @@ export interface WindowsConfig {
       packagedHost: string;
     }
   >;
-  federationDev?: {
-    host: string;
-    remoteCacheDir: string;
-  };
   modalRenderers?: Record<string, RendererRuntimeFields>;
   realStack?: {
     healthChecks: RealStackHealthCheckConfig[];
@@ -105,7 +110,10 @@ export function findMonorepoRoot(fromDir: string): string {
   }
 }
 
-export function loadWindowsConfig(rootDir?: string): WindowsConfig {
+export function loadWindowsConfig(
+  rootDir?: string,
+  options: { mode?: string } = {},
+): WindowsConfig {
   const root = rootDir ?? findMonorepoRoot(process.cwd());
   const configPath = join(root, 'configs', 'windows.json');
   if (!existsSync(configPath)) {
@@ -113,10 +121,9 @@ export function loadWindowsConfig(rootDir?: string): WindowsConfig {
       `[nebula-vite] Missing configs/windows.json at ${configPath}`,
     );
   }
-  const environmentsPath = join(root, 'configs', 'environments.json');
   const realStackPath = join(root, 'configs', 'real-stack.json');
   const e2ePath = join(root, 'configs', 'e2e.json');
-  for (const requiredPath of [environmentsPath, realStackPath, e2ePath]) {
+  for (const requiredPath of [realStackPath, e2ePath]) {
     if (!existsSync(requiredPath)) {
       throw new Error(`[nebula-vite] Missing split config at ${requiredPath}`);
     }
@@ -124,14 +131,10 @@ export function loadWindowsConfig(rootDir?: string): WindowsConfig {
   const windows = JSON.parse(
     readFileSync(configPath, 'utf-8'),
   ) as WindowsConfig;
-  const environments = JSON.parse(
-    readFileSync(environmentsPath, 'utf-8'),
-  ) as Pick<
-    WindowsConfig,
-    'apiTargets' | 'federationDev' | 'federationDevEntries'
-  >;
+  const environments = loadEnvironmentsConfig(root, { mode: options.mode });
   return {
     ...windows,
+    envMode: environments.mode,
     apiTargets: environments.apiTargets ?? {},
     federationDev: environments.federationDev,
     federationDevEntries: environments.federationDevEntries ?? {},

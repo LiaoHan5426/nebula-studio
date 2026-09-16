@@ -27,7 +27,7 @@ export const DEFAULT_ADDRESS_ALLOWLIST = [
   /^scripts[\\/]vsh[\\/]src[\\/]checks[\\/]check-generated\.mjs$/,
   /^scripts[\\/]vsh[\\/]src[\\/]checks[\\/]check-boundaries\.mjs$/,
   /^scripts[\\/]vsh[\\/]src[\\/]checks[\\/]check-remote-resilience\.mjs$/,
-  /^internal[\\/]node-kit[\\/]src[\\/]runtimeAddressDrift\.mjs$/,
+  /^internal[\\/]node-kit[\\/]src[\\/]runtimeAddressDrift\.ts$/,
   /^internal[\\/]node-kit[\\/]src[\\/]__tests__[\\/]/,
   /[\\/]__tests__[\\/]/,
   /\.(?:spec|test)\.ts$/,
@@ -60,7 +60,27 @@ export const DEFAULT_SCANNED_EXTENSIONS = new Set([
   '.vue',
 ]);
 
-export function scanRuntimeAddressDrift(rootDir, options = {}) {
+export interface ScanRuntimeAddressDriftOptions {
+  allowlist?: RegExp[];
+  ignoredDirectories?: Set<string>;
+  pattern?: RegExp;
+  scannedExtensions?: Set<string>;
+  scanRoots?: string[];
+}
+
+interface CollectContext {
+  allowlist: RegExp[];
+  ignoredDirectories: Set<string>;
+  offenders: string[];
+  pattern: RegExp;
+  rootDir: string;
+  scannedExtensions: Set<string>;
+}
+
+export function scanRuntimeAddressDrift(
+  rootDir: string,
+  options: ScanRuntimeAddressDriftOptions = {},
+): string[] {
   const scanRoots = options.scanRoots ?? DEFAULT_ADDRESS_SCAN_ROOTS;
   const allowlist = options.allowlist ?? DEFAULT_ADDRESS_ALLOWLIST;
   const ignoredDirectories =
@@ -68,7 +88,7 @@ export function scanRuntimeAddressDrift(rootDir, options = {}) {
   const scannedExtensions =
     options.scannedExtensions ?? DEFAULT_SCANNED_EXTENSIONS;
   const pattern = options.pattern ?? RUNTIME_ADDRESS_PATTERN;
-  const offenders = [];
+  const offenders: string[] = [];
   for (const entry of scanRoots) {
     collectOffenders(join(rootDir, entry), {
       rootDir,
@@ -82,13 +102,13 @@ export function scanRuntimeAddressDrift(rootDir, options = {}) {
   return offenders;
 }
 
-function collectOffenders(path, ctx) {
+function collectOffenders(path: string, ctx: CollectContext): void {
   if (!statSync(path, { throwIfNoEntry: false })) return;
   const stat = statSync(path);
   const relativePath = relative(ctx.rootDir, path);
   if (ctx.allowlist.some((pattern) => pattern.test(relativePath))) return;
   if (stat.isDirectory()) {
-    if (ctx.ignoredDirectories.has(path.split(/[\\/]/).at(-1))) return;
+    if (ctx.ignoredDirectories.has(path.split(/[\\/]/).at(-1) ?? '')) return;
     for (const child of readdirSync(path)) {
       collectOffenders(join(path, child), ctx);
     }

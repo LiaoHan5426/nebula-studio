@@ -1,13 +1,15 @@
-const stringSchema = { type: 'string' };
-const booleanSchema = { type: 'boolean' };
-const int32Schema = { type: 'integer', format: 'int32' };
-const stringArraySchema = { type: 'array', items: stringSchema };
+type JsonSchema = Record<string, unknown>;
 
-function objectSchema(properties) {
+const stringSchema: JsonSchema = { type: 'string' };
+const booleanSchema: JsonSchema = { type: 'boolean' };
+const int32Schema: JsonSchema = { type: 'integer', format: 'int32' };
+const stringArraySchema: JsonSchema = { type: 'array', items: stringSchema };
+
+function objectSchema (properties: Record<string, JsonSchema>): JsonSchema {
   return { type: 'object', properties };
 }
 
-function okArray(schemaName) {
+function okArray (schemaName: string): Record<string, unknown> {
   return {
     200: {
       description: 'OK',
@@ -23,7 +25,7 @@ function okArray(schemaName) {
   };
 }
 
-function okObject(schemaName) {
+function okObject (schemaName: string): Record<string, unknown> {
   return {
     200: {
       description: 'OK',
@@ -36,7 +38,7 @@ function okObject(schemaName) {
   };
 }
 
-function jsonBody(schemaName) {
+function jsonBody (schemaName: string): Record<string, unknown> {
   return {
     required: true,
     content: {
@@ -54,7 +56,7 @@ const idParam = {
   schema: stringSchema,
 };
 
-export const FRONTEND_APPLICATION_SCHEMAS = {
+export const FRONTEND_APPLICATION_SCHEMAS: Record<string, JsonSchema> = {
   FrontendRuntimeEntryView: objectSchema({
     id: stringSchema,
     name: stringSchema,
@@ -200,7 +202,7 @@ export const FRONTEND_APPLICATION_SCHEMAS = {
   }),
 };
 
-export const FRONTEND_APPLICATION_PATHS = {
+export const FRONTEND_APPLICATION_PATHS: Record<string, unknown> = {
   '/api/system/frontend-apps/runtime': {
     get: {
       tags: ['frontend-application-rest-service'],
@@ -322,12 +324,46 @@ export const FRONTEND_APPLICATION_PATHS = {
   },
 };
 
-export function ensureFrontendApplicationOpenApi(spec) {
-  const next = spec && typeof spec === 'object' ? spec : {};
+export interface OpenApiPathOperation {
+  [key: string]: unknown;
+  operationId?: string;
+}
+
+export interface OpenApiPathItem {
+  [key: string]: unknown;
+  delete?: OpenApiPathOperation;
+  get?: OpenApiPathOperation;
+  patch?: OpenApiPathOperation;
+  post?: OpenApiPathOperation;
+  put?: OpenApiPathOperation;
+}
+
+export interface OpenApiDocument {
+  [key: string]: unknown;
+  components?: {
+    [key: string]: unknown;
+    schemas?: Record<string, unknown>;
+  };
+  paths?: Record<string, OpenApiPathItem>;
+}
+
+export interface EnsuredOpenApiDocument extends OpenApiDocument {
+  components: {
+    [key: string]: unknown;
+    schemas: Record<string, unknown>;
+  };
+  paths: Record<string, OpenApiPathItem>;
+}
+
+export function ensureFrontendApplicationOpenApi (
+  spec: unknown,
+): EnsuredOpenApiDocument {
+  const next: OpenApiDocument =
+    spec && typeof spec === 'object' ? (spec as OpenApiDocument) : {};
   next.paths ??= {};
   next.components ??= {};
   next.components.schemas ??= {};
   Object.assign(next.paths, FRONTEND_APPLICATION_PATHS);
   Object.assign(next.components.schemas, FRONTEND_APPLICATION_SCHEMAS);
-  return next;
+  return next as EnsuredOpenApiDocument;
 }

@@ -1,5 +1,5 @@
 // AUTO-GENERATED — do not edit manually.
-// Source: configs/environments.json apiTargets + internal/node-kit API context
+// Source: env/.env.[mode] NEBULA_*_TARGET + internal/node-kit API context
 
 export const GENERATED_API_NAMESPACES = {
   platform: {

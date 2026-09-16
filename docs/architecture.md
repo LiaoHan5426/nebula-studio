@@ -34,8 +34,9 @@ Web 宿主 (:5173) / Electron 桌面宿主
 
 配置职责已拆分为单一职责配置文件：
 
+- `env/.env` / `.env.[mode]`：后端 origin（`NEBULA_*_TARGET`）与可选 Federation host 覆盖；通过 `NEBULA_ENV` 选择 mode；
+- `configs/federation-dev.json`：Federation 开发 host / remote 入口接线；
 - `configs/windows.json`：窗口 ID、renderer、preload 契约、显示名称、顺序与 presentation 配置；
-- `configs/environments.json`：后端服务 origin 与 API targets 配置（console 8090、integration 8080、executor 8088、low-code-write 8092）；
 - `configs/real-stack.json`：真实栈运行与健康检查配置；
 - `configs/e2e.json`：E2E 测试套件配置。
 

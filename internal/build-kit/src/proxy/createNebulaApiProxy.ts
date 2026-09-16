@@ -15,7 +15,7 @@ export interface CreateNebulaApiProxyOptions {
   preset: NebulaApiProxyPreset;
   /** Enable SSE-friendly proxy settings (no timeout/buffering). Default true. */
   sse?: boolean;
-  /** Override dev proxy targets; falls back to configs/environments.json apiTargets. */
+  /** Override dev proxy targets; falls back to env/.env NEBULA_*_TARGET via loadWindowsConfig. */
   targets?: NebulaApiProxyTargets;
 }
 

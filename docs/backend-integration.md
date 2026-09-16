@@ -65,7 +65,22 @@ mvn spring-boot:run -DskipTests
 
 代理对包含 `/events` 的 SSE 请求关闭超时和响应缓冲。调整代理时要保留该行为，否则浏览器可能迟迟收不到事件。
 
-Web、Electron 和 standalone 共享同一 API 目标配置：`configs/environments.json` 维护后端 origin（8090、8080、8088、8092），浏览器 API namespace 和路由规则由 `internal/build-kit` 统一管理。子应用不再维护独立 `vite.proxy.ts`。
+Web、Electron 和 standalone 共享同一 API 目标配置：`env/.env` / `.env.[mode]`（`NEBULA_PLATFORM_TARGET` / `NEBULA_CONSOLE_TARGET` / `NEBULA_EXECUTOR_TARGET`），默认 development：8090 / 8080 / 8088。浏览器 API namespace 和路由规则由 `internal/build-kit` 统一管理。子应用不再维护独立 `vite.proxy.ts`。
+
+切换环境：
+
+```powershell
+# 默认 development（本地联调）
+$env:NEBULA_ENV = 'development'
+
+# 预发 / vite preview 对 staging
+$env:NEBULA_ENV = 'preview'
+
+# 生产（写 env/.env.production.local 或在 CI 注入 NEBULA_*_TARGET）
+$env:NEBULA_ENV = 'production'   # 也可用 product / prod
+```
+
+本地覆盖（已 gitignore）：`env/.env.local` / `.env.development.local` / `.env.preview.local` / `.env.production.local`。键清单见 `env/.env.example`。
 
 ## 认证
 

@@ -47,7 +47,7 @@ export function resolveFederationDevHost(
   const host = config.federationDev?.host;
   if (!host) {
     throw new Error(
-      '[nebula-vite] Missing federationDev.host in environments.json',
+      '[nebula-vite] Missing federationDev.host in configs/federation-dev.json (or NEBULA_FEDERATION_DEV_HOST)',
     );
   }
   return host;
@@ -60,7 +60,7 @@ export function resolveFederationDevRemoteCacheDir(
   const baseDir = config.federationDev?.remoteCacheDir;
   if (!baseDir) {
     throw new Error(
-      '[nebula-vite] Missing federationDev.remoteCacheDir in environments.json',
+      '[nebula-vite] Missing federationDev.remoteCacheDir in configs/federation-dev.json (or NEBULA_FEDERATION_REMOTE_CACHE_DIR)',
     );
   }
   return `${baseDir.replace(/[\\/]+$/, '')}/${port}`;
@@ -87,7 +87,7 @@ export function requireApiTarget(config: WindowsConfig, name: string): string {
   const target = config.apiTargets?.[name];
   if (!target) {
     throw new Error(
-      `[nebula-vite] Missing apiTargets.${name} in environments.json`,
+      `[nebula-vite] Missing apiTargets.${name} (set NEBULA_*_TARGET in env/.env)`,
     );
   }
   return target;

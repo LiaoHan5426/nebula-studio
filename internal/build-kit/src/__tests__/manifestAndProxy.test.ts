@@ -3,14 +3,14 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { describe, expect, it } from 'vitest';
-
 import { loadApiContext } from '@nebula-studio-internal/node-kit/config';
 import {
   buildAppManifest,
   findMonorepoRoot,
   loadWindowsConfig,
 } from '@nebula-studio-internal/node-kit/windows-manifest';
+import { describe, expect, it } from 'vitest';
+
 import { createNebulaApiProxy } from '../proxy/createNebulaApiProxy.ts';
 
 describe('windows manifest', () => {
@@ -76,7 +76,7 @@ describe('windows manifest', () => {
 });
 
 describe('createNebulaApiProxy', () => {
-  it('groups API namespaces by environments.json apiTargets keys', () => {
+  it('groups API namespaces by env apiTargets keys', () => {
     const root = findMonorepoRoot(
       join(dirname(fileURLToPath(import.meta.url)), '../../..'),
     );

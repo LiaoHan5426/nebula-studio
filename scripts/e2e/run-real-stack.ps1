@@ -14,7 +14,23 @@ if ([string]::IsNullOrWhiteSpace($BackendRoot)) {
 $studioRoot = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
 $artifactRoot = Join-Path $studioRoot "test-results\real-stack"
 New-Item -ItemType Directory -Force -Path $artifactRoot | Out-Null
-$environmentConfig = Get-Content (Join-Path $studioRoot "configs\environments.json") -Raw | ConvertFrom-Json
+if (-not $env:NEBULA_ENV) {
+    $env:NEBULA_ENV = "development"
+}
+Push-Location $studioRoot
+try {
+    $environmentConfigJson = & node --input-type=module -e @'
+import { loadEnvironmentsConfig } from "./internal/node-kit/src/config/environments.ts";
+const config = loadEnvironmentsConfig(process.cwd());
+process.stdout.write(JSON.stringify(config));
+'@
+    if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($environmentConfigJson)) {
+        throw "[real-stack] failed to load env (NEBULA_ENV=$($env:NEBULA_ENV); env/.env.[mode])"
+    }
+} finally {
+    Pop-Location
+}
+$environmentConfig = $environmentConfigJson | ConvertFrom-Json
 $realStackConfig = Get-Content (Join-Path $studioRoot "configs\real-stack.json") -Raw | ConvertFrom-Json
 
 function Join-Url {
@@ -33,7 +49,7 @@ function Get-ApiTargetOrigin {
     param([string]$Target)
     $origin = $environmentConfig.apiTargets.$Target
     if ([string]::IsNullOrWhiteSpace($origin)) {
-        throw "[real-stack] apiTargets.$Target is missing in configs/environments.json"
+        throw "[real-stack] apiTargets.$Target is missing (NEBULA_ENV=$($env:NEBULA_ENV); check env/.env / NEBULA_*_TARGET)"
     }
     return $origin
 }

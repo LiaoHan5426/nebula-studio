@@ -68,7 +68,7 @@ if (stale.length > 0) {
 const drift = scanRuntimeAddressDrift(root);
 if (drift.length > 0) {
   console.error(
-    'Runtime addresses must come from configs/environments.json or generated helpers:',
+    'Runtime addresses must come from env/.env or generated helpers:',
   );
   for (const item of drift) {
     console.error(`  - ${item}`);

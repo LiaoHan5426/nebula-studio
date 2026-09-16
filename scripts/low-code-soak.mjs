@@ -1,13 +1,12 @@
-import { readFileSync } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
 import process from 'node:process';
+import { fileURLToPath } from 'node:url';
 
-const environments = JSON.parse(
-  readFileSync(
-    new URL('../configs/environments.json', import.meta.url),
-    'utf8',
-  ),
-);
+import { loadEnvironmentsConfig } from '@nebula-studio-internal/node-kit/env-config';
+
+const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const environments = loadEnvironmentsConfig(root);
 const baseUrl =
   process.env.NEBULA_SOAK_BASE_URL ?? environments.apiTargets.platform;
 const applicationId = process.env.NEBULA_SOAK_APPLICATION_ID ?? 'demo-board';

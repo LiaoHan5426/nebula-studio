@@ -1,11 +1,14 @@
+import type { ApiContext } from '../config/apiContext.ts';
+import type { WindowsConfig } from '../config/windowsManifest.ts';
+
 import { describe, expect, it } from 'vitest';
 
-import { joinOrigin } from '../joinOrigin.mjs';
+import { joinOrigin } from '../joinOrigin.ts';
 import {
   generateApiNamespacesSource,
   generateWindowsTypeScript,
   validateWindowsConfig,
-} from '../windowConfig.mjs';
+} from '../windowConfig.ts';
 
 describe('joinOrigin', () => {
   it('joins origin and path without duplicate slashes', () => {
@@ -23,13 +26,24 @@ describe('validateWindowsConfig', () => {
     const errors = validateWindowsConfig(
       {
         windows: {
-          a: { renderer: 'missing-a', standalone: { port: 5174 } },
-          b: { renderer: 'missing-b', standalone: { port: 5174 } },
+          a: {
+            preload: 'unified',
+            renderer: 'missing-a',
+            standalone: { port: 5174 },
+          },
+          b: {
+            preload: 'unified',
+            renderer: 'missing-b',
+            standalone: { port: 5174 },
+          },
         },
         apiTargets: {},
       },
       { type: 'object' },
-      { subWebDir: '/no-such-sub-web', apiContext: {} },
+      {
+        subWebDir: '/no-such-sub-web',
+        apiContext: {} as ApiContext,
+      },
     );
     expect(errors.some((error) => error.includes('standalone.port 5174'))).toBe(
       true,
@@ -61,7 +75,10 @@ describe('generateWindowsTypeScript', () => {
 describe('generateApiNamespacesSource', () => {
   it('emits namespace and target maps', () => {
     const source = generateApiNamespacesSource(
-      { apiTargets: { platform: 'http://localhost:8090' } },
+      {
+        windows: {},
+        apiTargets: { platform: 'http://localhost:8090' },
+      } satisfies WindowsConfig,
       { namespaces: { platform: { platform: '/api/platform' } } },
     );
     expect(source).toContain('GENERATED_API_TARGETS');
@@ -74,6 +91,7 @@ describe('generateApiNamespacesSource', () => {
         shell: { web: { host: 'localhost', port: 5173 } },
         windows: {
           docs: {
+            preload: 'unified',
             renderer: 'docs',
             webLoad: 'federation',
             standalone: { port: 5176, basePath: '/' },

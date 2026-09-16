@@ -11,6 +11,9 @@ node_modules
 dist
 dist-ssr
 *.local
+# Local dotenv overlays under env/ (also matched by *.local)
+env/.env.local
+env/.env.*.local
 .temp
 playwright-report/
 test-results/

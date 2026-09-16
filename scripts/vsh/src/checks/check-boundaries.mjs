@@ -44,13 +44,10 @@ function depNames(manifest, groups = ['dependencies', 'peerDependencies']) {
   return names;
 }
 
-const windowConfigKitPath = join(
-  root,
-  'internal/node-kit/src/windowConfig.mjs',
-);
+const windowConfigKitPath = join(root, 'internal/node-kit/src/windowConfig.ts');
 if (!existsSync(windowConfigKitPath)) {
   fail(
-    'window config generation must live in internal/node-kit/src/windowConfig.mjs',
+    'window config generation must live in internal/node-kit/src/windowConfig.ts',
   );
 }
 const generateWindowConfigs = readFileSync(
@@ -90,11 +87,11 @@ if (generateContracts.includes('function joinOrigin')) {
 
 const runtimeAddressDriftPath = join(
   root,
-  'internal/node-kit/src/runtimeAddressDrift.mjs',
+  'internal/node-kit/src/runtimeAddressDrift.ts',
 );
 if (!existsSync(runtimeAddressDriftPath)) {
   fail(
-    'runtime address drift scanning must live in internal/node-kit/src/runtimeAddressDrift.mjs',
+    'runtime address drift scanning must live in internal/node-kit/src/runtimeAddressDrift.ts',
   );
 }
 const checkGenerated = readFileSync(

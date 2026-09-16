@@ -4,9 +4,9 @@ import { join } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import { scanRuntimeAddressDrift } from '../runtimeAddressDrift.mjs';
+import { scanRuntimeAddressDrift } from '../runtimeAddressDrift.ts';
 
-function makeFixture(files) {
+function makeFixture(files: Record<string, string>) {
   const root = mkdtempSync(join(tmpdir(), 'nebula-address-drift-'));
   for (const [relativePath, contents] of Object.entries(files)) {
     const absolute = join(root, relativePath);

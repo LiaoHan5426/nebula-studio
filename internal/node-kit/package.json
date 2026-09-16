@@ -35,14 +35,34 @@
       "types": "./src/config/studioRuntime.ts",
       "default": "./src/config/studioRuntime.ts"
     },
+    "./environments": {
+      "types": "./src/config/environments.ts",
+      "default": "./src/config/environments.ts"
+    },
     "./windows-manifest": {
       "types": "./src/config/windowsManifest.ts",
       "default": "./src/config/windowsManifest.ts"
     },
-    "./join-origin": "./src/joinOrigin.mjs",
-    "./window-config": "./src/windowConfig.mjs",
-    "./runtime-address-drift": "./src/runtimeAddressDrift.mjs",
-    "./frontend-openapi": "./src/frontendOpenApi.mjs"
+    "./join-origin": {
+      "types": "./src/joinOrigin.ts",
+      "default": "./src/joinOrigin.ts"
+    },
+    "./window-config": {
+      "types": "./src/windowConfig.ts",
+      "default": "./src/windowConfig.ts"
+    },
+    "./env-config": {
+      "types": "./src/config/environments.ts",
+      "default": "./src/config/environments.ts"
+    },
+    "./runtime-address-drift": {
+      "types": "./src/runtimeAddressDrift.ts",
+      "default": "./src/runtimeAddressDrift.ts"
+    },
+    "./frontend-openapi": {
+      "types": "./src/frontendOpenApi.ts",
+      "default": "./src/frontendOpenApi.ts"
+    }
   },
   "dependencies": {
     "@manypkg/get-packages": "catalog:utils",

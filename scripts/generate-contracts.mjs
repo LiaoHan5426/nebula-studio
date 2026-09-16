@@ -12,13 +12,13 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { loadEnvironmentsConfig } from '@nebula-studio-internal/node-kit/env-config';
 import { ensureFrontendApplicationOpenApi } from '@nebula-studio-internal/node-kit/frontend-openapi';
 import { joinOrigin } from '@nebula-studio-internal/node-kit/join-origin';
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const root = join(scriptDir, '..');
 const outDir = join(root, 'packages/contracts/generated');
-const environmentsConfigPath = join(root, 'configs/environments.json');
 const realStackConfigPath = join(root, 'configs/real-stack.json');
 const fileArg = process.argv.find((a) => a.startsWith('--file='))?.slice(7);
 const strict = process.argv.includes('--strict');
@@ -27,7 +27,7 @@ const snapshotOnUnauthorized =
   process.env.NEBULA_OPENAPI_SNAPSHOT_ON_UNAUTHORIZED === 'true';
 
 function resolveDefaultOpenApiUrl() {
-  const environments = JSON.parse(readFileSync(environmentsConfigPath, 'utf8'));
+  const environments = loadEnvironmentsConfig(root);
   const realStack = JSON.parse(readFileSync(realStackConfigPath, 'utf8'));
   const spec = realStack.openapi?.platform;
   const target = spec?.target
@@ -35,7 +35,7 @@ function resolveDefaultOpenApiUrl() {
     : undefined;
   if (!spec || !target) {
     throw new Error(
-      'Missing real-stack.openapi.platform or referenced apiTargets entry in split configs',
+      'Missing real-stack.openapi.platform or referenced apiTargets entry from .env NEBULA_*_TARGET',
     );
   }
   return joinOrigin(target, spec.path);

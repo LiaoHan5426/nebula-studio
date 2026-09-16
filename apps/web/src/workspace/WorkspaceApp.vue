@@ -342,18 +342,16 @@ const globalSearchItems = computed<GlobalSearchItem[]>(() => {
         required.some((role) => roles.has(role))
       );
     })
-    .map(
-      (meta): GlobalSearchItem => ({
-        id: `app-${meta.id}`,
-        kind: 'app',
-        title: meta.label,
-        description: meta.description,
-        viewId: meta.id,
-        icon: 'layout-grid',
-        keywords: meta.searchKeywords,
-        roles: meta.roles,
-      }),
-    );
+    .map((meta): GlobalSearchItem => ({
+      id: `app-${meta.id}`,
+      kind: 'app',
+      title: meta.label,
+      description: meta.description,
+      viewId: meta.id,
+      icon: 'layout-grid',
+      keywords: meta.searchKeywords,
+      roles: meta.roles,
+    }));
   return [
     ...apps,
     {

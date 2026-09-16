@@ -3,6 +3,8 @@ import type { UserConfig } from 'vite';
 import type { NebulaRendererChunksOptions } from './chunks/types.ts';
 import type { NebulaRendererPluginSelection } from './nebulaRendererPlugins.ts';
 
+import { findMonorepoRoot } from '@nebula-studio-internal/node-kit';
+import { environmentsDir } from '@nebula-studio-internal/node-kit/environments';
 import tailwindcss from '@tailwindcss/vite';
 import { mergeConfig } from 'vite';
 import { defineConfig } from 'vite-plus';
@@ -29,6 +31,11 @@ export interface CreateNebulaRendererViteConfigOptions {
   chunks?: NebulaRendererChunksOptions;
   define?: UserConfig['define'];
   /**
+   * Host-composed Module Federation remotes. Disables optimizer rediscovery so
+   * Vite 8 does not crash with `browserHash` of undefined during parallel boot.
+   */
+  hostedRemote?: boolean;
+  /**
    * 最后与默认配置合并（后者覆盖前者冲突项以 `merge` 为准）。
    *
    * **与 Nebula UI 相关的覆盖入口（择一或组合）：**
@@ -50,16 +57,11 @@ export interface CreateNebulaRendererViteConfigOptions {
    * 新增内置能力时先在 `nebulaRendererPlugins.ts` 的 `NebulaRendererPluginId` / `BUILTIN_REGISTRY` 登记。
    */
   plugins?: NebulaRendererPluginSelection;
-  /**
-   * Host-composed Module Federation remotes. Disables optimizer rediscovery so
-   * Vite 8 does not crash with `browserHash` of undefined during parallel boot.
-   */
-  hostedRemote?: boolean;
   root: string;
   server?: UserConfig['server'];
 }
 
-export function createNebulaRendererViteConfig(
+export function createNebulaRendererViteConfig (
   opts: CreateNebulaRendererViteConfigOptions,
 ): ReturnType<typeof defineConfig> {
   const {
@@ -74,6 +76,8 @@ export function createNebulaRendererViteConfig(
     hostedRemote = false,
   } = opts;
 
+  const envDir = environmentsDir(findMonorepoRoot(root));
+
   let baseConfig: UserConfig = {
     plugins: [
       nebulaTailwindSourcePlugin(root),
@@ -83,6 +87,7 @@ export function createNebulaRendererViteConfig(
     ],
     base,
     root,
+    envDir,
     resolve: nebulaRendererResolve,
     optimizeDeps: createNebulaOptimizeDeps({ root, hostedRemote }),
     define: {

@@ -75,6 +75,8 @@ nebula-studio/
 │  ├─ editors/           # 按需懒加载编辑器（code、dag、flow、low-code、panel、form）
 │  ├─ ui/                # UI 组件库、布局与语义化设计 Token（nebula-ui、shell-ui、tokens 等）
 │  └─ testing/           # 测试夹具（msw 等）
+├─ configs/              # 窗口、federation-dev、E2E 与真实栈配置
+├─ env/                  # 标准 .env*（与 configs 同级）
 ├─ tools/                # TypeScript、Tailwind 与代码质量配置
 └─ docs/                 # 仓库级开发文档
 ```
