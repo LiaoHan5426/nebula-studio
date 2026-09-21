@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 /**
  * Structural locks ESLint cannot express:
  * required package.json deps, deleted-file locations, generated OpenAPI,
- * and generate-*.mjs orchestration (must import node kit / must not inline).
+ * and generate-* orchestration (must import node kit / must not inline).
  *
  * Import graph, Host/Remote production deps, windows.json business fields,
  * detectRuntimeMode, and window.electron/api in product UI are ESLint
@@ -51,7 +51,7 @@ if (!existsSync(windowConfigKitPath)) {
   );
 }
 const generateWindowConfigs = readFileSync(
-  join(root, 'scripts/generate-window-configs.mjs'),
+  join(root, 'scripts/vsh/src/commands/generate-configs.ts'),
   'utf8',
 );
 for (const banned of [
@@ -62,7 +62,7 @@ for (const banned of [
 ]) {
   if (generateWindowConfigs.includes(banned)) {
     fail(
-      `scripts/generate-window-configs.mjs must not contain ${banned}; use @nebula-studio-internal/node-kit/window-config`,
+      `scripts/vsh/src/commands/generate-configs.ts must not contain ${banned}; use @nebula-studio-internal/node-kit/window-config`,
     );
   }
 }
@@ -72,16 +72,16 @@ if (
   )
 ) {
   fail(
-    'scripts/generate-window-configs.mjs must import @nebula-studio-internal/node-kit/window-config',
+    'scripts/vsh/src/commands/generate-configs.ts must import @nebula-studio-internal/node-kit/window-config',
   );
 }
 const generateContracts = readFileSync(
-  join(root, 'scripts/generate-contracts.mjs'),
+  join(root, 'scripts/vsh/src/commands/generate-contracts.ts'),
   'utf8',
 );
 if (generateContracts.includes('function joinOrigin')) {
   fail(
-    'scripts/generate-contracts.mjs must import joinOrigin from @nebula-studio-internal/node-kit/join-origin',
+    'scripts/vsh/src/commands/generate-contracts.ts must import joinOrigin from @nebula-studio-internal/node-kit/join-origin',
   );
 }
 
@@ -95,7 +95,7 @@ if (!existsSync(runtimeAddressDriftPath)) {
   );
 }
 const checkGenerated = readFileSync(
-  join(root, 'scripts/vsh/src/checks/check-generated.mjs'),
+  join(root, 'scripts/vsh/src/checks/check-generated.ts'),
   'utf8',
 );
 for (const banned of [
@@ -125,7 +125,7 @@ if (
   )
 ) {
   fail(
-    'scripts/generate-contracts.mjs must ensure FrontendApplication OpenAPI via @nebula-studio-internal/node-kit/frontend-openapi',
+    'scripts/vsh/src/commands/generate-contracts.ts must ensure FrontendApplication OpenAPI via @nebula-studio-internal/node-kit/frontend-openapi',
   );
 }
 const openApiSpecPath = join(root, 'packages/contracts/generated/openapi.json');

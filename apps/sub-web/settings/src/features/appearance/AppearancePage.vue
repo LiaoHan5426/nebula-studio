@@ -284,8 +284,7 @@ async function saveOrganizationDefault(): Promise<void> {
                 </article>
               </div>
               <div class="theme-preview__actions">
-                <button type="button">主要操作</button
-                ><button type="button">次要操作</button>
+                <button type="button">主要操作</button><button type="button">次要操作</button>
               </div>
             </main>
           </div>

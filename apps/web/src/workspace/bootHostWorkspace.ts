@@ -15,14 +15,14 @@ import { resolveShellEventBus } from '@nebula-studio/shell-protocol';
 import '@nebula-studio/styles/document';
 
 import {
-  installAssemblyForSubApp,
-  wrapSubAppWithAssembly,
-} from '@nebula-studio-renderer/assembly-boot';
-import {
   bootstrapShellIntegratedApps,
   hydrateShellIntegratedAppsFromRuntime,
 } from '@/platform/integratedApps';
 import WorkspaceApp from '@/workspace/WorkspaceApp.vue';
+import {
+  installAssemblyForSubApp,
+  wrapSubAppWithAssembly,
+} from '@nebula-studio-renderer/assembly-boot';
 
 /**
  * Host-owned workspace shell for Web (no embed query) and the Electron main window.

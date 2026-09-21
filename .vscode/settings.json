@@ -162,6 +162,11 @@
     "yaml": false
   },
 
+  // SchemaStore 远程拉取在 Cursor 里常失败（vscode/content）；改用本地副本。
+  "yaml.schemas": {
+    ".vscode/schemas/pnpm-workspace.json": "pnpm-workspace.yaml"
+  },
+
   // 文件嵌套
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.expand": false,

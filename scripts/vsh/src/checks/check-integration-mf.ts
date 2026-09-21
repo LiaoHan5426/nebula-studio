@@ -156,7 +156,7 @@ walkFiles(
 const remoteBlob = remoteFiles
   .map((path) => `${path}\n${readFileSync(path, 'utf8')}`)
   .join('\n');
-const requiredRemoteAssets = [
+const requiredRemoteAssets: Array<[string, RegExp]> = [
   ['bpmn-js', /bpmn-js/],
   ['monaco-editor', /monaco-editor/],
   ['vxe-table', /vxe-table/],

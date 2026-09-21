@@ -3,6 +3,9 @@ import type {
   SseEventRecord,
 } from './subscriptionEventsCore';
 
+import { CAMEL_SUBSCRIBE_BASE } from '@/shared/api/client';
+import { hostAuthToken } from '@/shared/hostCapabilityBridge';
+
 /**
  * Integration-owned SSE subscription events composition.
  *
@@ -10,9 +13,6 @@ import type {
  * (INTEGRATION_BASE URL and auth token) so existing imports continue to work.
  */
 import { useSubscriptionEvents as useCoreSubscriptionEvents } from './subscriptionEventsCore';
-
-import { CAMEL_SUBSCRIBE_BASE } from '@/shared/api/client';
-import { hostAuthToken } from '@/shared/hostCapabilityBridge';
 
 export type { SseConnectionState, SseEventRecord };
 

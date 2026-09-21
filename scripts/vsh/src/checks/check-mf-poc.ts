@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import {
   resolvePocFile,
   rewriteFederationPublicPath,
-} from '../apps/mf-poc-host/electron-poc/poc-protocol.mjs';
+} from '../../../../apps/mf-poc-host/electron-poc/poc-protocol.mjs';
 
 const root = join(
   dirname(fileURLToPath(import.meta.url)),

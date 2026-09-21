@@ -3,11 +3,11 @@ import type { Plugin } from 'vite';
 import { fileURLToPath } from 'node:url';
 
 import { federation } from '@module-federation/vite';
+import { resolveFederationDevRemoteOrigin } from '@nebula-studio-internal/node-kit/runtime-config';
+import { loadWindowsConfig } from '@nebula-studio-internal/node-kit/windows-manifest';
 
 import { createNebulaRendererViteConfig } from '../config/createNebulaRendererViteConfig.ts';
 import { resolveNebulaHostedRemoteEnv } from '../config/nebulaRendererOptimizeDeps.ts';
-import { resolveFederationDevRemoteOrigin } from '@nebula-studio-internal/node-kit/runtime-config';
-import { loadWindowsConfig } from '@nebula-studio-internal/node-kit/windows-manifest';
 import { asVitePlugins } from './asVitePlugins.ts';
 import { createNebulaSharedConfig } from './createNebulaSharedConfig.ts';
 import { nebulaCssNamespacePlugin } from './nebulaCssNamespacePlugin.ts';

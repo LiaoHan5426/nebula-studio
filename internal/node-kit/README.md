@@ -19,7 +19,7 @@
 | `generateWindowsTypeScript` / `generateApiNamespacesSource` | 写出 `_generated-windows.ts` 与 `api-namespaces.ts` 源码 |
 | `writeWindowConfigArtifacts` | 校验后写文件；根脚本再 `vp fmt` |
 
-根 `scripts/generate-window-configs.mjs` 只做编排。`api-namespaces.ts` 同时写出 API target、standalone 与 federation 开发入口，供 Electron / application-runtime 消费。`generate-contracts.mjs` 会调用 `ensureFrontendApplicationOpenApi`，因为 RestService `void` 返回值不会出现在 springdoc 响应 schema 中。
+根 `nebula-vsh generate-configs` 只做编排。`api-namespaces.ts` 同时写出 API target、standalone 与 federation 开发入口，供 Electron / application-runtime 消费。`nebula-vsh generate-contracts` 会调用 `ensureFrontendApplicationOpenApi`，因为 RestService `void` 返回值不会出现在 springdoc 响应 schema 中。
 
 ## 环境配置（`src/config/environments.ts`）
 
@@ -27,7 +27,7 @@
 
 ## 运行时地址漂移（`src/runtimeAddressDrift.ts`）
 
-扫描 apps/e2e/internal/packages/scripts 中硬编码的 localhost / 固定端口。根 `scripts/check-generated.mjs` 在生成制品后调用 `scanRuntimeAddressDrift`。
+扫描 apps/e2e/internal/packages/scripts 中硬编码的 localhost / 固定端口。`nebula-vsh check-generated` 在生成制品后调用 `scanRuntimeAddressDrift`。
 
 ## 仓库内典型用法
 

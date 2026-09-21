@@ -2,19 +2,31 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+type PackageManifest = {
+  dependencies?: Record<string, string>;
+  name?: string;
+  optionalDependencies?: Record<string, string>;
+  peerDependencies?: Record<string, string>;
+};
+
+type ManifestEntry = {
+  manifest: PackageManifest;
+  path: string;
+};
+
 const root = fileURLToPath(new URL('../../../../', import.meta.url));
 const packageRoots = ['apps', 'internal', 'packages', 'tools'];
-const manifests = new Map();
-const failures = [];
+const manifests = new Map<string, ManifestEntry>();
+const failures: string[] = [];
 
-function visit(directory) {
+function visit(directory: string): void {
   if (!existsSync(directory)) return;
   for (const entry of readdirSync(directory, { withFileTypes: true })) {
     if (['dev-dist', 'dist', 'node_modules'].includes(entry.name)) continue;
     const path = join(directory, entry.name);
     if (entry.isDirectory()) visit(path);
     if (entry.isFile() && entry.name === 'package.json') {
-      const manifest = JSON.parse(readFileSync(path, 'utf8'));
+      const manifest = JSON.parse(readFileSync(path, 'utf8')) as PackageManifest;
       if (typeof manifest.name === 'string') {
         manifests.set(manifest.name, { manifest, path });
       }
@@ -32,7 +44,7 @@ for (const group of [
   'dependencies',
   'peerDependencies',
   'optionalDependencies',
-]) {
+] as const) {
   for (const dependency of Object.keys(ui?.manifest[group] ?? {})) {
     if (editorRuntimePattern.test(dependency)) {
       failures.push(`nebula-ui ${group} leaks editor runtime: ${dependency}`);
@@ -43,9 +55,7 @@ for (const group of [
   }
 }
 
-scanSources(join(root, 'packages', 'ui'));
-
-const graph = new Map();
+const graph = new Map<string, string[]>();
 for (const [name, { manifest }] of manifests) {
   const dependencies = {
     ...manifest.dependencies,
@@ -58,9 +68,9 @@ for (const [name, { manifest }] of manifests) {
   );
 }
 
-const visiting = new Set();
-const visited = new Set();
-function detectCycle(name, path = []) {
+const visiting = new Set<string>();
+const visited = new Set<string>();
+function detectCycle(name: string, path: string[] = []): void {
   if (visiting.has(name)) {
     failures.push(
       `workspace dependency cycle: ${[...path, name].join(' -> ')}`,

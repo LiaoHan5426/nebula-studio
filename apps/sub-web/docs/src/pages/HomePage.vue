@@ -59,12 +59,12 @@ const journeyContent = computed(
           面向消费者、提供方、管理员与开发者的统一帮助中心。内容按工作流组织，而不是按功能菜单堆叠。
         </p>
         <div class="docs-hero__actions">
-          <RouterLink to="/help/consumer/getting-started" class="primary-link"
-            >快速开始</RouterLink
-          >
-          <RouterLink to="/patterns/catalog" class="secondary-link"
-            >浏览体验模式</RouterLink
-          >
+          <RouterLink to="/help/consumer/getting-started" class="primary-link">
+快速开始
+</RouterLink>
+          <RouterLink to="/patterns/catalog" class="secondary-link">
+浏览体验模式
+</RouterLink>
         </div>
       </div>
       <aside class="docs-hero__status" aria-label="文档状态">
@@ -99,30 +99,26 @@ const journeyContent = computed(
           <span>{{ journeyContent.description }}</span>
           <ol>
             <li v-for="(step, index) in journeyContent.steps" :key="step">
-              <b>{{ index + 1 }}</b
-              >{{ step }}
+              <b>{{ index + 1 }}</b>{{ step }}
             </li>
           </ol>
-          <RouterLink :to="journeyContent.to"
-            >{{ journeyContent.action }} →</RouterLink
-          >
+          <RouterLink :to="journeyContent.to">
+{{ journeyContent.action }} →
+</RouterLink>
         </article>
       </div>
     </section>
 
     <section class="docs-resources" aria-label="常用入口">
-      <RouterLink to="/help/troubleshooting"
-        ><span>问题排查</span><strong>恢复登录、加载与权限问题</strong
-        ><b>→</b></RouterLink
-      >
-      <RouterLink to="/patterns/catalog"
-        ><span>页面模式</span><strong>列表、详情、设置与编辑器布局</strong
-        ><b>→</b></RouterLink
-      >
-      <RouterLink to="/design/tokens"
-        ><span>设计系统</span><strong>语义 token 与组件状态</strong
-        ><b>→</b></RouterLink
-      >
+      <RouterLink to="/help/troubleshooting">
+<span>问题排查</span><strong>恢复登录、加载与权限问题</strong><b>→</b>
+</RouterLink>
+      <RouterLink to="/patterns/catalog">
+<span>页面模式</span><strong>列表、详情、设置与编辑器布局</strong><b>→</b>
+</RouterLink>
+      <RouterLink to="/design/tokens">
+<span>设计系统</span><strong>语义 token 与组件状态</strong><b>→</b>
+</RouterLink>
     </section>
   </main>
 </template>

@@ -1,16 +1,8 @@
-#!/usr/bin/env node
-/**
- * Migrate docs demo pages from dual .vue + .vue?raw imports to .vue?demo.
- */
 import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 
-const scriptDir = dirname(fileURLToPath(import.meta.url));
-const pagesDir = join(scriptDir, '../apps/sub-web/docs/src/pages');
-
-function walk(dir) {
-  const out = [];
+function walk (dir: string): string[] {
+  const out: string[] = [];
   for (const entry of readdirSync(dir)) {
     const full = join(dir, entry);
     if (statSync(full).isDirectory()) {
@@ -22,11 +14,11 @@ function walk(dir) {
   return out;
 }
 
-function toDemoVar(name) {
+function toDemoVar (name: string): string {
   return `${name.charAt(0).toLowerCase() + name.slice(1)}Demo`;
 }
 
-function migrate(content) {
+function migrate (content: string): string {
   let next = content.replace(
     /\/\/ eslint-disable-next-line import\/no-duplicates\r?\n/g,
     '',
@@ -67,13 +59,19 @@ function migrate(content) {
   return next;
 }
 
-for (const filePath of walk(pagesDir)) {
-  const original = readFileSync(filePath, 'utf8');
-  const migrated = migrate(original);
-  if (migrated !== original) {
-    writeFileSync(filePath, migrated, 'utf8');
-    console.log(`Migrated ${filePath.replace(`${pagesDir}/`, '')}`);
+/** One-shot: migrate docs demo pages from dual .vue + ?raw to .vue?demo. */
+export async function runMigrateDocsDemo (
+  root: string,
+  _args: string[] = [],
+): Promise<void> {
+  const pagesDir = join(root, 'apps/sub-web/docs/src/pages');
+  for (const filePath of walk(pagesDir)) {
+    const original = readFileSync(filePath, 'utf8');
+    const migrated = migrate(original);
+    if (migrated !== original) {
+      writeFileSync(filePath, migrated, 'utf8');
+      console.log(`Migrated ${filePath.replace(`${pagesDir}/`, '')}`);
+    }
   }
+  console.log('Done.');
 }
-
-console.log('Done.');

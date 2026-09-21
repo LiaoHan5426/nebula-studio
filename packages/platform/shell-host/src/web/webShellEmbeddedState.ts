@@ -51,7 +51,7 @@ export function createWebShellEmbeddedStateHandlers(options: {
     return out;
   };
 
-  const normalizeEnabledList = (raw: unknown): string[] | null => {
+  const normalizeEnabledList = (raw: unknown): null | string[] => {
     if (!Array.isArray(raw)) return null;
     const valid = new Set([...embeddedIds, ...listShellIntegrableAppIds()]);
     const out = raw.filter(

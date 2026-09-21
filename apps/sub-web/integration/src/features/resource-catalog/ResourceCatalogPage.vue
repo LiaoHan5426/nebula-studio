@@ -92,22 +92,14 @@ function sourceLabel(id: string): string {
         />
       </label>
       <div class="hero-stats">
-        <span
-          ><strong>{{ items.length }}</strong>
-          {{ t('catalog.stats.discoverable') }}</span
-        >
-        <span
-          ><strong>{{ favorites.length }}</strong>
-          {{ t('catalog.stats.favorites') }}</span
-        >
-        <span
-          ><strong>{{ recentItems.length }}</strong>
-          {{ t('catalog.stats.recent') }}</span
-        >
-        <span
-          ><strong>{{ pendingRequestCount }}</strong>
-          {{ t('catalog.stats.pending') }}</span
-        >
+        <span><strong>{{ items.length }}</strong>
+          {{ t('catalog.stats.discoverable') }}</span>
+        <span><strong>{{ favorites.length }}</strong>
+          {{ t('catalog.stats.favorites') }}</span>
+        <span><strong>{{ recentItems.length }}</strong>
+          {{ t('catalog.stats.recent') }}</span>
+        <span><strong>{{ pendingRequestCount }}</strong>
+          {{ t('catalog.stats.pending') }}</span>
       </div>
     </section>
 

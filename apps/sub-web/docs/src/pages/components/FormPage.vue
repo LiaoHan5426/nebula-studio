@@ -17,8 +17,7 @@ import formValidationDemo from '@/examples/form/FormValidation.vue?demo';
         <strong>NebulaForm</strong><span>表单上下文、提交、重置与校验状态</span>
       </div>
       <div>
-        <strong>NebulaFormItem</strong
-        ><span>字段注册、标签、帮助和错误信息</span>
+        <strong>NebulaFormItem</strong><span>字段注册、标签、帮助和错误信息</span>
       </div>
       <div>
         <strong>NebulaInput</strong><span>输入交互、无效状态和可访问属性</span>

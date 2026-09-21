@@ -19,9 +19,7 @@ const dynamicValue = ref(30);
       >
         +10
       </NebulaButton>
-      <span style="font-size: 12px; color: hsl(var(--muted-foreground))"
-        >{{ dynamicValue }}%</span
-      >
+      <span style="font-size: 12px; color: hsl(var(--muted-foreground))">{{ dynamicValue }}%</span>
     </div>
   </div>
 </template>

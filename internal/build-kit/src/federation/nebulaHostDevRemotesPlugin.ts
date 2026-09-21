@@ -1,3 +1,4 @@
+import type { WindowsConfig } from '@nebula-studio-internal/node-kit/windows-manifest';
 import type { ChildProcess } from 'node:child_process';
 import type { Plugin } from 'vite';
 
@@ -19,7 +20,6 @@ import {
   findMonorepoRoot,
   loadWindowsConfig,
 } from '@nebula-studio-internal/node-kit/windows-manifest';
-import type { WindowsConfig } from '@nebula-studio-internal/node-kit/windows-manifest';
 
 /** Keep in sync with `HOST_MF_GATEWAY_PREFIX` in application-runtime hostDevMf.ts */
 export const HOST_MF_GATEWAY_PREFIX = '/__nebula-mf';

@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=./.vscode/schemas/pnpm-workspace.json
 packages:
   - apps/*
   - apps/sub-web/*

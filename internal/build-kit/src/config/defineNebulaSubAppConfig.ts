@@ -8,6 +8,12 @@ import type {
 import { fileURLToPath } from 'node:url';
 
 import { federation } from '@module-federation/vite';
+import {
+  resolveFederationDevHost,
+  resolveFederationDevRemoteOrigin,
+  resolveStandaloneApp,
+} from '@nebula-studio-internal/node-kit/runtime-config';
+import { loadWindowsConfig } from '@nebula-studio-internal/node-kit/windows-manifest';
 
 import { asVitePlugins } from '../federation/asVitePlugins.ts';
 import { createNebulaSharedConfig } from '../federation/createNebulaSharedConfig.ts';
@@ -15,12 +21,6 @@ import { resolveSubAppRoot } from '../plugin/nebulaWorkspaceManifestPlugin.ts';
 import { createNebulaApiProxy } from '../proxy/createNebulaApiProxy.ts';
 import { createNebulaRendererViteConfig } from './createNebulaRendererViteConfig.ts';
 import { resolveNebulaHostedRemoteEnv } from './nebulaRendererOptimizeDeps.ts';
-import {
-  resolveFederationDevHost,
-  resolveFederationDevRemoteOrigin,
-  resolveStandaloneApp,
-} from '@nebula-studio-internal/node-kit/runtime-config';
-import { loadWindowsConfig } from '@nebula-studio-internal/node-kit/windows-manifest';
 
 export interface DefineNebulaSubAppConfigOptions {
   /** Sub-app directory name under apps/sub-web (e.g. integration). */

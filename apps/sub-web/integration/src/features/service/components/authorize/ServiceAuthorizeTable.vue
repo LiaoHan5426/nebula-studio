@@ -98,9 +98,7 @@ const emit = defineEmits<{
             >
               撤销
             </NebulaButton>
-            <span v-if="row.wildcardAccess" class="action-btns__hint"
-              >通配 *</span
-            >
+            <span v-if="row.wildcardAccess" class="action-btns__hint">通配 *</span>
           </div>
         </template>
       </NebulaTableColumn>

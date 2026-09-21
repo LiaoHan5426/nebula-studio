@@ -24,9 +24,9 @@ export const DEFAULT_ADDRESS_ALLOWLIST = [
   /^packages[\\/]ui[\\/]nebula-agent[\\/]src[\\/]config[\\/]index\.ts$/,
   /^scripts[\\/]e2e[\\/]run-real-stack\.Tests\.ps1$/,
   /^scripts[\\/]smoke[\\/]/,
-  /^scripts[\\/]vsh[\\/]src[\\/]checks[\\/]check-generated\.mjs$/,
-  /^scripts[\\/]vsh[\\/]src[\\/]checks[\\/]check-boundaries\.mjs$/,
-  /^scripts[\\/]vsh[\\/]src[\\/]checks[\\/]check-remote-resilience\.mjs$/,
+  /^scripts[\\/]vsh[\\/]src[\\/]checks[\\/]check-generated\.ts$/,
+  /^scripts[\\/]vsh[\\/]src[\\/]checks[\\/]check-boundaries\.ts$/,
+  /^scripts[\\/]vsh[\\/]src[\\/]checks[\\/]check-remote-resilience\.ts$/,
   /^internal[\\/]node-kit[\\/]src[\\/]runtimeAddressDrift\.ts$/,
   /^internal[\\/]node-kit[\\/]src[\\/]__tests__[\\/]/,
   /[\\/]__tests__[\\/]/,
@@ -77,7 +77,7 @@ interface CollectContext {
   scannedExtensions: Set<string>;
 }
 
-export function scanRuntimeAddressDrift(
+export function scanRuntimeAddressDrift (
   rootDir: string,
   options: ScanRuntimeAddressDriftOptions = {},
 ): string[] {
@@ -102,7 +102,7 @@ export function scanRuntimeAddressDrift(
   return offenders;
 }
 
-function collectOffenders(path: string, ctx: CollectContext): void {
+function collectOffenders (path: string, ctx: CollectContext): void {
   if (!statSync(path, { throwIfNoEntry: false })) return;
   const stat = statSync(path);
   const relativePath = relative(ctx.rootDir, path);

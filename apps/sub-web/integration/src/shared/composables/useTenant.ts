@@ -3,6 +3,9 @@ import type {
   TenantRecord,
 } from './tenantCore';
 
+import { tenantApi } from '@/features/tenant/api';
+import { isApiSuccess } from '@/shared/types';
+
 /**
  * Integration-owned tenant composition. Extract again only when a second app
  * needs the same policy and API shape.
@@ -12,9 +15,6 @@ import type {
  * to work unchanged.
  */
 import { createUseTenant } from './tenantCore';
-
-import { tenantApi } from '@/features/tenant/api';
-import { isApiSuccess } from '@/shared/types';
 
 export type { TenantRecord };
 

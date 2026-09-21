@@ -31,6 +31,7 @@
   },
   "main": "./out/main/index.js",
   "dependencies": {
+    "@nebula-studio/shell-host": "workspace:^",
     "electron-updater": "catalog:electron"
   },
   "devDependencies": {
@@ -49,7 +50,6 @@
     "@nebula-studio/msw": "workspace:^",
     "@nebula-studio/nebula-layout": "workspace:^",
     "@nebula-studio/nebula-ui": "workspace:^",
-    "@nebula-studio/shell-host": "workspace:^",
     "@nebula-studio/shell-protocol": "workspace:^",
     "@nebula-studio/styles": "workspace:^",
     "@nebula-studio/tokens": "workspace:^",

@@ -3,20 +3,42 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
 
+type ViteManifestItem = {
+  file: string;
+  imports?: string[];
+  isEntry?: boolean;
+};
+
+type BundleBaseline = {
+  hostInitialSyncJsGzipKibMax?: number;
+  hostMustNotContainEditorChunkPrefixes?: string[];
+  remotes?: Record<string, { totalJsGzipKibMax: number }>;
+  shared?: unknown;
+};
+
+type RemoteReport =
+  | {
+    budgetKib: number;
+    jsFileCount: number;
+    skipped?: false;
+    totalJsGzipKib: number;
+  }
+  | { skipped: true };
+
 const root = fileURLToPath(new URL('../../../../', import.meta.url));
 const distDir = join(root, 'apps', 'web', 'dist');
 const manifestPath = join(distDir, '.vite', 'manifest.json');
 const baseline = JSON.parse(
   readFileSync(join(root, 'configs', 'bundle-baseline.json'), 'utf8'),
-);
-const kib = (bytes) => bytes / 1024;
-const gzipKib = (file) =>
+) as BundleBaseline;
+const kib = (bytes: number) => bytes / 1024;
+const gzipKib = (file: string) =>
   kib(gzipSync(readFileSync(join(distDir, file))).length);
-const gzipFileKib = (abs) => kib(gzipSync(readFileSync(abs)).length);
+const gzipFileKib = (abs: string) => kib(gzipSync(readFileSync(abs)).length);
 
 const requireRemotes = process.env.NEBULA_CHECK_REMOTE_BUNDLES === 'true';
 
-const failures = [];
+const failures: string[] = [];
 
 if (!existsSync(manifestPath)) {
   throw new Error(
@@ -24,12 +46,15 @@ if (!existsSync(manifestPath)) {
   );
 }
 
-const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+const manifest = JSON.parse(readFileSync(manifestPath, 'utf8')) as Record<
+  string,
+  ViteManifestItem
+>;
 const entry = Object.values(manifest).find((item) => item.isEntry);
 if (!entry) throw new Error('[bundle-budget] Vite manifest has no entry chunk');
 
-const syncFiles = new Set();
-function collectSync(item) {
+const syncFiles = new Set<string>();
+function collectSync (item: undefined | ViteManifestItem) {
   if (!item || syncFiles.has(item.file)) return;
   syncFiles.add(item.file);
   for (const imported of item.imports ?? []) collectSync(manifest[imported]);
@@ -47,7 +72,7 @@ if (initialGzipKib > hostMax) {
   );
 }
 
-const budgets = [['vendor-vxe-', 250]];
+const budgets: Array<[string, number]> = [['vendor-vxe-', 250]];
 const assetFiles = existsSync(join(distDir, 'assets'))
   ? readdirSync(join(distDir, 'assets')).filter((file) => file.endsWith('.js'))
   : [];
@@ -72,10 +97,14 @@ for (const [prefix, limit] of budgets) {
 }
 
 const remoteIds = Object.keys(baseline.remotes ?? {});
-const remotes = {};
+const remotes: Record<string, RemoteReport> = {};
 for (const id of remoteIds) {
   const remoteDist = join(root, 'apps', 'sub-web', id, 'dist');
-  const max = baseline.remotes[id].totalJsGzipKibMax;
+  const max = baseline.remotes?.[id]?.totalJsGzipKibMax;
+  if (max === undefined) {
+    failures.push(`missing remotes.${id}.totalJsGzipKibMax in baseline`);
+    continue;
+  }
   if (!existsSync(remoteDist)) {
     if (requireRemotes) {
       failures.push(`missing remote dist for ${id}: ${remoteDist}`);
@@ -83,8 +112,8 @@ for (const id of remoteIds) {
     remotes[id] = { skipped: true };
     continue;
   }
-  const jsFiles = [];
-  const walk = (dir) => {
+  const jsFiles: string[] = [];
+  const walk = (dir: string) => {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
       const path = join(dir, entry.name);
       if (entry.isDirectory()) {
@@ -133,7 +162,7 @@ console.log(
   `[bundle-budget] Host initial synchronous JS: ${initialGzipKib.toFixed(2)} KiB / ${hostMax} KiB`,
 );
 for (const [id, info] of Object.entries(remotes)) {
-  if (info.skipped) {
+  if (info.skipped === true) {
     console.log(`[bundle-budget] remote ${id}: dist missing (skipped)`);
     continue;
   }

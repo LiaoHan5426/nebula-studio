@@ -11,7 +11,9 @@ const expectedLayers = [
   'packages/testing',
 ];
 
-export async function checkWorkspacePackages(workspaceRoot) {
+export async function checkWorkspacePackages (
+  workspaceRoot: string,
+): Promise<void> {
   const inventory = JSON.parse(
     readFileSync(join(workspaceRoot, 'configs/package-inventory.json'), 'utf8'),
   );

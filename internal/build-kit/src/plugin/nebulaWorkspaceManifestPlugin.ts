@@ -1,6 +1,5 @@
-import type { Plugin } from 'vite';
-
 import type { NebulaAppManifest } from '@nebula-studio-internal/node-kit/windows-manifest';
+import type { Plugin } from 'vite';
 
 import { fileURLToPath } from 'node:url';
 

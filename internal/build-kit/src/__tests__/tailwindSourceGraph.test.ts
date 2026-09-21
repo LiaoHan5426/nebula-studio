@@ -2,9 +2,9 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { findMonorepoRoot } from '@nebula-studio-internal/node-kit/windows-manifest';
 import { describe, expect, it } from 'vitest';
 
-import { findMonorepoRoot } from '@nebula-studio-internal/node-kit/windows-manifest';
 import {
   isRepoWideTailwindSourceCss,
   resolveTailwindSourceGraph,

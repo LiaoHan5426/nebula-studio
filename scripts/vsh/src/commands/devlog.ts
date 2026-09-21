@@ -4,13 +4,28 @@ import { execFileSync } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
-function parseArgs(values) {
-  const result = { lang: 'zh-CN' };
+type DevlogArgs = {
+  all?: boolean;
+  from?: string;
+  lang: string;
+  output?: string;
+  period?: string;
+  since?: string;
+  to?: string;
+  until?: string;
+  week?: string;
+  write?: boolean;
+};
+
+function parseArgs(values: string[]): DevlogArgs {
+  const result: DevlogArgs = {
+    lang: 'zh-CN',
+  };
   for (let index = 0; index < values.length; index += 1) {
     const value = values[index];
     if (value === '--') continue;
     if (value === '--write') result.write = true;
-    else if (value === '--lang') result.lang = values[++index];
+    else if (value === '--lang') result.lang = values[++index] ?? result.lang;
     else if (value === '--output') result.output = values[++index];
     else if (value === '--since') result.since = values[++index];
     else if (value === '--until') result.until = values[++index];
@@ -22,14 +37,14 @@ function parseArgs(values) {
       result.week = 'current';
     else throw new Error(`Unknown argument: ${value}`);
   }
-  if (!['zh-CN', 'en-US', 'zh', 'en', 'bilingual'].includes(result.lang)) {
+  if (!['bilingual', 'en', 'en-US', 'zh', 'zh-CN'].includes(result.lang)) {
     throw new Error('--lang must be zh, en, or bilingual');
   }
   if (result.lang === 'zh') result.lang = 'zh-CN';
   if (result.lang === 'en') result.lang = 'en-US';
   if (
     result.period &&
-    !['month', 'week', 'day', 'none'].includes(result.period)
+    !['day', 'month', 'none', 'week'].includes(result.period)
   )
     throw new Error('--period must be month, week, day, or none');
   return result;
@@ -144,19 +159,19 @@ function changedPaths(sha) {
 function inferScope(explicitScope, paths) {
   if (explicitScope !== 'workspace') return explicitScope;
   const roots = new Map([
-    ['apps/sub-web/docs', 'docs'],
-    ['apps/sub-web/settings', 'settings'],
-    ['apps/sub-web/integration', 'integration'],
-    ['apps/web', 'web-host'],
     ['apps/electron', 'electron'],
+    ['apps/sub-web/docs', 'docs'],
+    ['apps/sub-web/integration', 'integration'],
+    ['apps/sub-web/settings', 'settings'],
+    ['apps/web', 'web-host'],
+    ['configs', 'configuration'],
     ['internal/build-kit', 'build-kit'],
     ['internal/node-kit', 'node-kit'],
-    ['packages/ui/nebula-assembly', 'assembly'],
-    ['packages/ui', 'ui'],
-    ['packages/platform', 'platform'],
     ['packages/core', 'core'],
+    ['packages/platform', 'platform'],
+    ['packages/ui', 'ui'],
+    ['packages/ui/nebula-assembly', 'assembly'],
     ['scripts', 'tooling'],
-    ['configs', 'configuration'],
   ]);
   const matches = [...roots.entries()].filter(([root]) =>
     paths.some((path) => path === root || path.startsWith(`${root}/`)),
@@ -184,19 +199,19 @@ const category = {
 };
 
 const glossary = new Map([
-  ['修复', 'fix'],
   ['优化', 'improve'],
-  ['新增', 'add'],
-  ['支持', 'support'],
-  ['更新', 'update'],
-  ['重构', 'refactor'],
-  ['配置', 'configuration'],
-  ['文档', 'documentation'],
-  ['测试', 'test'],
-  ['组件', 'component'],
   ['依赖', 'dependency'],
+  ['修复', 'fix'],
   ['启动', 'startup'],
   ['地址', 'endpoint'],
+  ['支持', 'support'],
+  ['文档', 'documentation'],
+  ['新增', 'add'],
+  ['更新', 'update'],
+  ['测试', 'test'],
+  ['组件', 'component'],
+  ['配置', 'configuration'],
+  ['重构', 'refactor'],
 ]);
 
 function translate(title) {
@@ -341,48 +356,53 @@ function groupBy(values, key) {
   return groups;
 }
 
-function defaultOutput(range, language) {
+function defaultOutput(_range: string, language: string) {
   const suffix = language === 'bilingual' ? 'bilingual' : language;
   return join('docs', 'development-records', `generated-${suffix}.md`);
 }
 
-const args = parseArgs(process.argv.slice(2));
-const range = resolveRange(args);
-const commits = readCommits(range);
-const records = commits
-  .filter((commit) => !isNoiseCommit(commit))
-  .map(toRecord);
-const languages =
-  args.lang === 'bilingual' ? ['zh-CN', 'en-US'] : [args.lang ?? 'zh-CN'];
-const periodMode = args.period ?? (args.all ? 'month' : 'none');
-const rendered = new Map(
-  languages.map((language) => [
-    language,
-    render(records, range, language, periodMode),
-  ]),
-);
-const markdown = [...rendered.values()].join('\n\n---\n\n');
+export async function runDevlog (
+  _root: string,
+  argv: string[] = [],
+): Promise<void> {
+  const args = parseArgs(argv);
+  const range = resolveRange(args);
+  const commits = readCommits(range);
+  const records = commits
+    .filter((commit) => !isNoiseCommit(commit))
+    .map(toRecord);
+  const languages =
+    args.lang === 'bilingual' ? ['zh-CN', 'en-US'] : [args.lang ?? 'zh-CN'];
+  const periodMode = args.period ?? (args.all ? 'month' : 'none');
+  const rendered = new Map(
+    languages.map((language) => [
+      language,
+      render(records, range, language, periodMode),
+    ]),
+  );
+  const markdown = [...rendered.values()].join('\n\n---\n\n');
 
-if (args.write) {
-  const outputs =
-    args.output && args.lang !== 'bilingual'
-      ? [[args.output, markdown]]
-      : args.lang === 'bilingual'
-        ? languages.map((language) => [
-            defaultOutput(range, language),
-            rendered.get(language),
-          ])
-        : [
-            [
-              args.output ?? defaultOutput(range, args.lang ?? 'zh-CN'),
-              markdown,
-            ],
-          ];
-  for (const [output, content] of outputs) {
-    mkdirSync(dirname(output), { recursive: true });
-    writeFileSync(output, `${content.trim()}\n`, 'utf8');
-    process.stdout.write(`Generated ${output}\n`);
+  if (args.write) {
+    const outputs =
+      args.output && args.lang !== 'bilingual'
+        ? [[args.output, markdown]]
+        : args.lang === 'bilingual'
+          ? languages.map((language) => [
+              defaultOutput(range, language),
+              rendered.get(language),
+            ])
+          : [
+              [
+                args.output ?? defaultOutput(range, args.lang ?? 'zh-CN'),
+                markdown,
+              ],
+            ];
+    for (const [output, content] of outputs) {
+      mkdirSync(dirname(String(output)), { recursive: true });
+      writeFileSync(String(output), `${String(content).trim()}\n`, 'utf8');
+      process.stdout.write(`Generated ${output}\n`);
+    }
+  } else {
+    process.stdout.write(`${markdown.trim()}\n`);
   }
-} else {
-  process.stdout.write(`${markdown.trim()}\n`);
 }

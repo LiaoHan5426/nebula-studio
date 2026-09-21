@@ -1,8 +1,6 @@
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { describe, expect, it } from 'vitest';
-
 import {
   resolveFederationDevEntryOrigin,
   resolveFederationDevHost,
@@ -12,6 +10,8 @@ import {
   findMonorepoRoot,
   loadWindowsConfig,
 } from '@nebula-studio-internal/node-kit/windows-manifest';
+import { describe, expect, it } from 'vitest';
+
 import {
   collectFederationDevRemotes,
   HOST_MF_GATEWAY_PREFIX,

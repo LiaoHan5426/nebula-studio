@@ -1,9 +1,7 @@
 import { promises as fs } from 'node:fs';
 import { join, normalize } from 'node:path';
 
-const rootDir = process.cwd();
 const isWindows = process.platform === 'win32';
-
 const CONCURRENCY_LIMIT = 10;
 const MAX_RECURSION_DEPTH = 10;
 
@@ -22,26 +20,27 @@ const RM_OPTIONS = {
   recursive: true,
 };
 
-/**
- * 删除路径，不进行重试，失败时提示并跳过。
- */
-async function removePathWithRetry(itemPath, { quiet = false } = {}) {
+async function removePathWithRetry (
+  itemPath: string,
+  { quiet = false }: { quiet?: boolean } = {},
+): Promise<boolean> {
   const normalizedPath = normalize(itemPath);
 
   try {
     await fs.rm(normalizedPath, RM_OPTIONS);
     if (!quiet) {
-      console.log(`✅ Deleted: ${normalizedPath}`);
+      console.log(`Deleted: ${normalizedPath}`);
     }
     return true;
   } catch (error) {
-    if (error.code === 'ENOENT') {
+    const err = error as NodeJS.ErrnoException;
+    if (err.code === 'ENOENT') {
       return true;
     }
 
     if (!quiet) {
-      console.error(`⚠️ Skip to delete ${normalizedPath}: ${error.message}`);
-      if (isWindows && error.code === 'EBUSY') {
+      console.error(`Skip to delete ${normalizedPath}: ${err.message}`);
+      if (isWindows && err.code === 'EBUSY') {
         console.error(
           '   Tip: stop running Vite / `vp run dev` processes, close IDE Vite extension tasks, then rerun `vp run clean`.',
         );
@@ -51,7 +50,11 @@ async function removePathWithRetry(itemPath, { quiet = false } = {}) {
   }
 }
 
-async function processItem(currentDir, item, targets, _depth) {
+async function processItem (
+  currentDir: string,
+  item: string,
+  targets: string[],
+): Promise<boolean> {
   if (SKIP_DIRS.has(item)) {
     return false;
   }
@@ -70,17 +73,22 @@ async function processItem(currentDir, item, targets, _depth) {
 
     return true;
   } catch (error) {
-    if (error.code === 'ENOENT') {
+    const err = error as NodeJS.ErrnoException;
+    if (err.code === 'ENOENT') {
       return false;
     }
     console.error(
-      `❌ Error handling item ${item} in ${currentDir}: ${error.message}`,
+      `Error handling item ${item} in ${currentDir}: ${err.message}`,
     );
     return false;
   }
 }
 
-async function cleanTargetsRecursively(currentDir, targets, depth = 0) {
+async function cleanTargetsRecursively (
+  currentDir: string,
+  targets: string[],
+  depth = 0,
+): Promise<void> {
   if (depth > MAX_RECURSION_DEPTH) {
     console.warn(`Max recursion depth reached at: ${currentDir}`);
     return;
@@ -90,7 +98,8 @@ async function cleanTargetsRecursively(currentDir, targets, depth = 0) {
   try {
     dirents = await fs.readdir(currentDir, { withFileTypes: true });
   } catch (error) {
-    console.warn(`Cannot read directory ${currentDir}: ${error.message}`);
+    const err = error as NodeJS.ErrnoException;
+    console.warn(`Cannot read directory ${currentDir}: ${err.message}`);
     return;
   }
 
@@ -99,7 +108,7 @@ async function cleanTargetsRecursively(currentDir, targets, depth = 0) {
 
     const tasks = batch.map(async (dirent) => {
       const item = dirent.name;
-      const shouldRecurse = await processItem(currentDir, item, targets, depth);
+      const shouldRecurse = await processItem(currentDir, item, targets);
 
       if (shouldRecurse && dirent.isDirectory()) {
         const itemPath = normalize(join(currentDir, item));
@@ -121,9 +130,12 @@ async function cleanTargetsRecursively(currentDir, targets, depth = 0) {
   }
 }
 
-(async function startCleanup() {
+export async function runClean (
+  rootDir: string,
+  args: string[] = [],
+): Promise<void> {
   const targets = ['node_modules', 'dist', '.turbo', 'dist.zip'];
-  const deleteLockFile = process.argv.includes('--del-lock');
+  const deleteLockFile = args.includes('--del-lock');
   const cleanupTargets = [...targets];
 
   if (deleteLockFile) {
@@ -131,26 +143,27 @@ async function cleanTargetsRecursively(currentDir, targets, depth = 0) {
   }
 
   console.log(
-    `🚀 Starting cleanup of targets: ${cleanupTargets.join(', ')} from root: ${rootDir}`,
+    `Starting cleanup of targets: ${cleanupTargets.join(', ')} from root: ${rootDir}`,
   );
 
   const startTime = Date.now();
   let hadFailure = false;
 
   try {
-    console.log('📊 Scanning for cleanup targets...');
+    console.log('Scanning for cleanup targets...');
     await cleanTargetsRecursively(rootDir, cleanupTargets);
 
     const rootNodeModules = normalize(join(rootDir, 'node_modules'));
     try {
       await fs.access(rootNodeModules);
-      console.log('🔁 Retrying root node_modules deletion ...');
+      console.log('Retrying root node_modules deletion ...');
       const ok = await removePathWithRetry(rootNodeModules);
       if (!ok) {
         hadFailure = true;
       }
     } catch (error) {
-      if (error.code !== 'ENOENT') {
+      const err = error as NodeJS.ErrnoException;
+      if (err.code !== 'ENOENT') {
         throw error;
       }
     }
@@ -160,17 +173,18 @@ async function cleanTargetsRecursively(currentDir, targets, depth = 0) {
 
     if (hadFailure) {
       console.warn(
-        `⚠️ Cleanup finished with errors in ${duration.toFixed(2)}s (see messages above).`,
+        `Cleanup finished with errors in ${duration.toFixed(2)}s (see messages above).`,
       );
       process.exitCode = 1;
       return;
     }
 
     console.log(
-      `✨ Cleanup process completed successfully in ${duration.toFixed(2)}s`,
+      `Cleanup process completed successfully in ${duration.toFixed(2)}s`,
     );
   } catch (error) {
-    console.error(`💥 Unexpected error during cleanup: ${error.message}`);
-    process.exit(1);
+    const err = error as Error;
+    console.error(`Unexpected error during cleanup: ${err.message}`);
+    process.exitCode = 1;
   }
-})();
+}

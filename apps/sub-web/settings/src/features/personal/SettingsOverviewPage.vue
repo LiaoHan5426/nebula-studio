@@ -65,9 +65,11 @@ const destinations = computed(() => [
         <span>{{ t('profile.rolesHeading') }}</span>
         <div>
           <NebulaTag v-for="role in roles" :key="role">{{ role }}</NebulaTag>
-          <NebulaTag v-if="roles.length === 0">{{
+          <NebulaTag v-if="roles.length === 0">
+{{
             t('profile.member')
-          }}</NebulaTag>
+          }}
+</NebulaTag>
         </div>
       </div>
       <RouterLink v-if="canAccessSettings('organization')" to="/governance">
