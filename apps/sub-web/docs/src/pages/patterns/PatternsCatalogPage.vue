@@ -116,20 +116,21 @@ const feedbackCopy = computed(() => {
       description="选择模式、切换密度并操作实时预览，验证信息架构和完整状态语法。"
     >
       <template #actions>
-<div class="segmented">
+        <div class="segmented">
           <button
             :class="{ active: density === 'comfortable' }"
             @click="density = 'comfortable'"
           >
             舒适
-</button><button
+          </button>
+          <button
             :class="{ active: density === 'compact' }"
             @click="density = 'compact'"
           >
             紧凑
           </button>
         </div>
-</template>
+      </template>
     </NebulaPageHeader>
     <div class="workbench">
       <nav aria-label="页面模式">
@@ -139,7 +140,9 @@ const feedbackCopy = computed(() => {
           :class="{ active: active === item.id }"
           @click="active = item.id"
         >
-          <span>{{ item.index }}</span><strong>{{ item.title }}</strong><small>{{ item.description }}</small>
+          <span>{{ item.index }}</span>
+          <strong>{{ item.title }}</strong>
+          <small>{{ item.description }}</small>
         </button>
       </nav>
       <section class="stage" :aria-label="`${current.title} 交互预览`">
@@ -151,10 +154,8 @@ const feedbackCopy = computed(() => {
           </div>
           <div>
             <NebulaTag v-for="part in current.parts" :key="part">
-{{
-              part
-            }}
-</NebulaTag>
+              {{ part }}
+            </NebulaTag>
           </div>
         </header>
 
@@ -168,12 +169,20 @@ const feedbackCopy = computed(() => {
             <NebulaButton variant="primary">登记资源</NebulaButton>
           </div>
           <NebulaFilterBar :result-summary="`${rows.length} 个结果`">
-<NebulaInput v-model="query" placeholder="搜索名称或类型" />
-</NebulaFilterBar>
+            <NebulaInput v-model="query" placeholder="搜索名称或类型" />
+          </NebulaFilterBar>
           <div class="table">
-            <div><b>名称</b><b>类型</b><b>状态</b><b></b></div>
+            <div>
+              <b>名称</b>
+              <b>类型</b>
+              <b>状态</b>
+              <b></b>
+            </div>
             <div v-for="row in rows" :key="row">
-              <strong>{{ row }}</strong><span>API</span><span class="ok">可用</span><button>查看 →</button>
+              <strong>{{ row }}</strong>
+              <span>API</span>
+              <span class="ok">可用</span>
+              <button>查看 →</button>
             </div>
           </div>
         </div>
@@ -186,7 +195,8 @@ const feedbackCopy = computed(() => {
               <p>为订单查询和履约流程提供统一接口。</p>
             </div>
             <div class="actions">
-              <NebulaTag>运行正常</NebulaTag><NebulaButton variant="primary">申请访问</NebulaButton>
+              <NebulaTag>运行正常</NebulaTag>
+              <NebulaButton variant="primary">申请访问</NebulaButton>
             </div>
           </div>
           <dl class="description">
@@ -210,10 +220,12 @@ const feedbackCopy = computed(() => {
           <div class="activity">
             <h4>最近活动</h4>
             <p>
-              <b>版本 2.4 已发布</b><span>新增批量查询端点 · 8 分钟前</span>
+              <b>版本 2.4 已发布</b>
+              <span>新增批量查询端点 · 8 分钟前</span>
             </p>
             <p>
-              <b>访问策略已更新</b><span>审批范围调整为组织管理员 · 昨天</span>
+              <b>访问策略已更新</b>
+              <span>审批范围调整为组织管理员 · 昨天</span>
             </p>
           </div>
         </div>
@@ -223,19 +235,33 @@ const feedbackCopy = computed(() => {
             <h3>通知策略</h3>
             <p>控制运行异常和审批事件如何通知团队成员。</p>
           </header>
-          <label><span>通知渠道<small>至少保留一种主要渠道</small></span><select>
+          <label>
+            <span>
+              通知渠道
+              <small>至少保留一种主要渠道</small>
+            </span>
+            <select>
               <option>站内通知 + 邮件</option>
               <option>仅站内通知</option>
-            </select></label>
-          <label><span>摘要频率<small>合并低优先级事件</small></span><select>
+            </select>
+          </label>
+          <label>
+            <span>
+              摘要频率
+              <small>合并低优先级事件</small>
+            </span>
+            <select>
               <option>每小时</option>
               <option>每天</option>
-            </select></label>
+            </select>
+          </label>
           <div class="validation">
-            <strong>保存前检查</strong><span>配置完整，没有阻断项。</span>
+            <strong>保存前检查</strong>
+            <span>配置完整，没有阻断项。</span>
           </div>
           <footer>
-            <span>尚未保存更改</span><NebulaButton variant="primary">保存设置</NebulaButton>
+            <span>尚未保存更改</span>
+            <NebulaButton variant="primary">保存设置</NebulaButton>
           </footer>
         </div>
 
@@ -249,40 +275,75 @@ const feedbackCopy = computed(() => {
           </div>
           <div class="metrics">
             <div>
-              <span>请求成功率</span><strong>99.98%</strong><small>+0.04%</small>
+              <span>请求成功率</span>
+              <strong>99.98%</strong>
+              <small>+0.04%</small>
             </div>
             <div>
-              <span>P95 延迟</span><strong>182ms</strong><small>目标 &lt; 250ms</small>
+              <span>P95 延迟</span>
+              <strong>182ms</strong>
+              <small>目标 &lt; 250ms</small>
             </div>
             <div>
-              <span>待处理告警</span><strong>3</strong><small>1 个高优先级</small>
+              <span>待处理告警</span>
+              <strong>3</strong>
+              <small>1 个高优先级</small>
             </div>
           </div>
           <div class="activity">
-            <p><b>API Gateway</b><span class="ok">正常</span></p>
-            <p><b>Event pipeline</b><span>需关注</span></p>
-            <p><b>Registry</b><span class="ok">正常</span></p>
+            <p>
+              <b>API Gateway</b>
+              <span class="ok">正常</span>
+            </p>
+            <p>
+              <b>Event pipeline</b>
+              <span>需关注</span>
+            </p>
+            <p>
+              <b>Registry</b>
+              <span class="ok">正常</span>
+            </p>
           </div>
         </div>
 
         <div v-else-if="active === 'editor'" class="editor-demo">
           <header>
-            <b>页面设计器</b><span>草稿已保存</span><button>预览</button><button class="primary">发布</button>
+            <b>页面设计器</b>
+            <span>草稿已保存</span>
+            <button>预览</button>
+            <button class="primary">发布</button>
           </header>
           <aside>
-            <strong>组件</strong><button>指标组</button><button>数据表格</button><button>状态列表</button>
+            <strong>组件</strong>
+            <button>指标组</button>
+            <button>数据表格</button>
+            <button>状态列表</button>
           </aside>
           <main>
             <span>画布 · 1440px</span>
-            <div><small>Revenue</small><strong>¥ 1,284,300</strong></div>
-            <div><small>Active users</small><strong>8,492</strong></div>
+            <div>
+              <small>Revenue</small>
+              <strong>¥ 1,284,300</strong>
+            </div>
+            <div>
+              <small>Active users</small>
+              <strong>8,492</strong>
+            </div>
           </main>
           <section>
-            <strong>属性</strong><label>标题<input value="Revenue" /></label><label>数据源<select>
+            <strong>属性</strong>
+            <label>
+              标题
+              <input value="Revenue" />
+            </label>
+            <label>
+              数据源
+              <select>
                 <option>orders.summary</option>
-              </select></label>
+              </select>
+            </label>
           </section>
-          <footer>问题 0　警告 1　数据源 4</footer>
+          <footer>问题 0 · 警告 1 · 数据源 4</footer>
         </div>
 
         <div v-else class="surface feedback-demo">
@@ -303,19 +364,20 @@ const feedbackCopy = computed(() => {
             </button>
           </div>
           <div v-if="feedback === 'loading'" class="skeleton" role="status">
-            <i></i><i></i><i></i><span>正在加载资源…</span>
+            <i></i>
+            <i></i>
+            <i></i>
+            <span>正在加载资源…</span>
           </div>
           <NebulaEmptyState
             v-else-if="feedbackCopy"
             :title="feedbackCopy.title"
             :description="feedbackCopy.description"
-            >
-<NebulaButton>
-{{
-              feedback === 'empty' ? '登记资源' : '重试'
-            }}
-</NebulaButton>
-</NebulaEmptyState>
+          >
+            <NebulaButton>
+              {{ feedback === 'empty' ? '登记资源' : '重试' }}
+            </NebulaButton>
+          </NebulaEmptyState>
         </div>
       </section>
     </div>

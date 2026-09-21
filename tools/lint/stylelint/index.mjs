@@ -39,6 +39,8 @@ export default {
   plugins: ['stylelint-order', '@stylistic/stylelint-plugin', 'stylelint-scss'],
   rules: {
     'at-rule-no-deprecated': null,
+    // Tailwind `@apply util…` is not a CSS prelude; standard Stylelint rejects it.
+    'at-rule-prelude-no-invalid': null,
     'at-rule-no-unknown': [
       true,
       {

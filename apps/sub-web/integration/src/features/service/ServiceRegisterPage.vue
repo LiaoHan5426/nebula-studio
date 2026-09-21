@@ -241,9 +241,7 @@ function formatTime(value?: string) {
         <NebulaButton variant="outline" @click="showDialog = false">
           取消
         </NebulaButton>
-        <NebulaButton variant="primary" @click="saveService">
-          保存
-        </NebulaButton>
+        <NebulaButton variant="primary" @click="saveService">保存</NebulaButton>
       </div>
     </NebulaDialog>
   </div>

@@ -201,9 +201,9 @@ onMounted(() => {
 
 .token-list code {
   overflow: hidden;
+  text-overflow: ellipsis;
   font-size: 11px;
   color: hsl(var(--muted-foreground));
-  text-overflow: ellipsis;
   white-space: nowrap;
 }
 </style>

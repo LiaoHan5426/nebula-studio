@@ -5,6 +5,8 @@ import { defineConfig } from 'vite-plus';
 export default defineConfig({
   staged: {
     '*': 'vp check --fix',
+    '*.{css,scss,vue}':
+      'vp exec stylelint --fix --allow-empty-input --ignore-pattern "**/out/**" --ignore-pattern "**/dist/**" --ignore-pattern "**/dev-dist/**"',
   },
   fmt: {
     ...fmtDefineConfig({

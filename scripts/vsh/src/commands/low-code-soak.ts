@@ -3,7 +3,7 @@ import { join } from 'node:path';
 
 import { loadEnvironmentsConfig } from '@nebula-studio-internal/node-kit/env-config';
 
-export async function runLowCodeSoak (
+export async function runLowCodeSoak(
   root: string,
   _args: string[] = [],
 ): Promise<void> {
@@ -27,7 +27,7 @@ export async function runLowCodeSoak (
   let errors = 0;
   const deadline = Date.now() + durationMs;
 
-  async function worker (): Promise<void> {
+  async function worker(): Promise<void> {
     while (Date.now() < deadline) {
       const started = performance.now();
       try {

@@ -70,7 +70,18 @@ export async function vue(): Promise<Linter.Config[]> {
         'vue/dot-location': ['error', 'property'],
         'vue/dot-notation': ['error', { allowKeywords: true }],
         'vue/eqeqeq': ['error', 'smart'],
-        'vue/html-closing-bracket-newline': 'error',
+        // Align with oxfmt Vue `bracketSameLine: false` (printWidth wrap owned by oxfmt).
+        'vue/html-closing-bracket-newline': [
+          'error',
+          {
+            singleline: 'never',
+            multiline: 'always',
+            selfClosingTag: {
+              singleline: 'never',
+              multiline: 'always',
+            },
+          },
+        ],
         'vue/html-indent': 'off',
         // 'vue/html-indent': ['error', 2],
         'vue/html-quotes': ['error', 'double'],
@@ -88,7 +99,7 @@ export async function vue(): Promise<Linter.Config[]> {
         ],
         'vue/max-attributes-per-line': 'off',
         'vue/multi-word-component-names': 'off',
-        'vue/multiline-html-element-content-newline': 'error',
+        'vue/multiline-html-element-content-newline': 'off',
         'vue/no-empty-pattern': 'error',
         'vue/no-extra-parens': ['error', 'functions'],
         'vue/no-irregular-whitespace': 'error',

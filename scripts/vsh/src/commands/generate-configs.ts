@@ -3,7 +3,7 @@ import { execFileSync } from 'node:child_process';
 import { writeWindowConfigArtifacts } from '@nebula-studio-internal/node-kit/window-config';
 
 /** Generate window / API namespace artifacts from configs + env. */
-export async function runGenerateConfigs (
+export async function runGenerateConfigs(
   rootDir: string,
   _args: string[] = [],
 ): Promise<void> {

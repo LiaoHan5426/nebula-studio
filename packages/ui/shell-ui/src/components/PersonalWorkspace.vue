@@ -87,11 +87,13 @@ function summaryVariant(
       <div class="personal-workspace__focus-copy">
         <span class="personal-workspace__focus-mark" aria-hidden="true"></span>
         <div>
-          <strong>{{
-            attentionCount
-              ? `有 ${attentionCount} 项需要关注`
-              : '工作区运行平稳'
-          }}</strong>
+          <strong>
+            {{
+              attentionCount
+                ? `有 ${attentionCount} 项需要关注`
+                : '工作区运行平稳'
+            }}
+          </strong>
           <p>
             {{
               attentionCount
@@ -272,15 +274,15 @@ function summaryVariant(
 }
 
 .personal-workspace__summary {
+  position: relative;
   display: grid;
   gap: var(--space-2);
   min-width: 0;
   padding: var(--space-4);
+  overflow: hidden;
   color: hsl(var(--foreground));
   text-align: left;
   cursor: pointer;
-  position: relative;
-  overflow: hidden;
   background: linear-gradient(
     145deg,
     hsl(var(--card) / 92%),

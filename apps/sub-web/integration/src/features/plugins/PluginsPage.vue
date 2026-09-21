@@ -120,9 +120,7 @@ const pluginDescription = computed(() => {
         <NebulaButton variant="primary" @click="showUploadDialog = true">
           新增插件
         </NebulaButton>
-        <NebulaButton variant="outline" @click="loadPlugins">
-          刷新
-        </NebulaButton>
+        <NebulaButton variant="outline" @click="loadPlugins">刷新</NebulaButton>
       </div>
 
       <div class="page__table-wrap">
@@ -153,7 +151,7 @@ const pluginDescription = computed(() => {
             <template #default="{ row }">
               <NebulaTag :variant="statusVariant(row)">
                 {{ row.statusLabel }}
-                <template v-if="row.transitioning"> · 过渡中</template>
+                <template v-if="row.transitioning">· 过渡中</template>
               </NebulaTag>
             </template>
           </NebulaTableColumn>

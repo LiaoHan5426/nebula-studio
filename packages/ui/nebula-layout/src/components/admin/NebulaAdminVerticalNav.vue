@@ -116,9 +116,9 @@ function resetSearch() {
               class="nebula-admin-vertical-nav__icon"
               aria-hidden="true"
             />
-            <span class="nebula-admin-vertical-nav__label">{{
-              item.label
-            }}</span>
+            <span class="nebula-admin-vertical-nav__label">
+              {{ item.label }}
+            </span>
             <NebulaIcon
               icon="chevronRight"
               class="nebula-admin-vertical-nav__arrow"

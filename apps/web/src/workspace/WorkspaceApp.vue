@@ -668,9 +668,9 @@ async function handleLogin(): Promise<void> {
             v-html="getShellIntegratedAppMeta(appId).iconSvg"
           ></span>
           <!-- eslint-enable vue/no-v-html -->
-          <span class="nebula-layout-nav-item__label">{{
-            getShellIntegratedAppMeta(appId).label
-          }}</span>
+          <span class="nebula-layout-nav-item__label">
+            {{ getShellIntegratedAppMeta(appId).label }}
+          </span>
         </button>
       </template>
 

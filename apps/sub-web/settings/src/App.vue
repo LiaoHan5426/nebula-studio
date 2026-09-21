@@ -59,8 +59,8 @@ body::selection {
 
 .page__table-wrap {
   overflow: hidden;
-  border: 1px solid hsl(var(--border) / 72%);
   background: hsl(var(--background));
+  border: 1px solid hsl(var(--border) / 72%);
   border-radius: var(--radius-md);
 }
 

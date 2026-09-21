@@ -45,7 +45,7 @@ const COMMAND_HELP = [
   'split-console-api',
 ].join('|');
 
-export async function runCli (argv: string[]): Promise<void> {
+export async function runCli(argv: string[]): Promise<void> {
   const [command, ...args] = argv;
 
   if (!command) {

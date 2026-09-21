@@ -154,9 +154,9 @@ function resolveTypeLabel(connector: Connector): string {
         class="connector-section__row"
       >
         <div class="connector-section__row-main">
-          <span class="connector-section__name">{{
-            connector.connectorId
-          }}</span>
+          <span class="connector-section__name">
+            {{ connector.connectorId }}
+          </span>
           <span
             v-if="
               resolvePluginName(connector) || resolvePluginVersion(connector)

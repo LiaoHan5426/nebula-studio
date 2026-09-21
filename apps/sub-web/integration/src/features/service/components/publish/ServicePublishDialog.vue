@@ -105,9 +105,7 @@ const dagSelectOptions = computed(
       />
     </label>
     <div class="modal__actions">
-      <NebulaButton variant="outline" @click="emit('close')">
-        取消
-      </NebulaButton>
+      <NebulaButton variant="outline" @click="emit('close')">取消</NebulaButton>
       <NebulaButton @click="emit('submit')">确认发布</NebulaButton>
     </div>
   </NebulaDialog>

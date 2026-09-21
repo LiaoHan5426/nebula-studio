@@ -226,10 +226,12 @@ function selectApp(viewId: string): void {
                   "
                 ></span>
                 <!-- eslint-enable vue/no-v-html -->
-                <span class="integration-tile-label">{{
-                  getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId)
-                    .label
-                }}</span>
+                <span class="integration-tile-label">
+                  {{
+                    getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId)
+                      .label
+                  }}
+                </span>
                 <span class="integration-tile-description">
                   {{
                     getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId)
@@ -324,10 +326,12 @@ function selectApp(viewId: string): void {
                   "
                 ></span>
                 <!-- eslint-enable vue/no-v-html -->
-                <span>{{
-                  getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId)
-                    .label
-                }}</span>
+                <span>
+                  {{
+                    getShellIntegratedAppMeta(viewId as EmbeddedShellWindowId)
+                      .label
+                  }}
+                </span>
                 <span class="integration-add-hint">启用</span>
               </button>
             </li>

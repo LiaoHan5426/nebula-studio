@@ -472,9 +472,9 @@ body {
 }
 
 .docs-search input:focus {
+  outline: 0;
   border-color: hsl(var(--primary) / 65%);
   box-shadow: 0 0 0 3px hsl(var(--primary) / 12%);
-  outline: 0;
 }
 
 .docs-search kbd {
@@ -482,7 +482,10 @@ body {
   top: 9px;
   right: 8px;
   padding: 3px 6px;
-  font: 600 10px/1.2 inherit;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.2;
   color: hsl(var(--muted-foreground));
   pointer-events: none;
   background: hsl(var(--muted) / 65%);
@@ -491,9 +494,9 @@ body {
 }
 
 .docs-search__results {
+  position: absolute;
   top: calc(100% + 8px);
   left: 0;
-  position: absolute;
   z-index: 20;
   display: grid;
   width: min(520px, calc(100vw - 32px));

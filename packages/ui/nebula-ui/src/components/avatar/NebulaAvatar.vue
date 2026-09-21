@@ -72,7 +72,9 @@ const resolvedStatusLabel = computed(
       role="status"
       :title="resolvedStatusLabel"
       :aria-label="resolvedStatusLabel"
-      ><span class="sr-only">{{ resolvedStatusLabel }}</span></span>
+    >
+      <span class="sr-only">{{ resolvedStatusLabel }}</span>
+    </span>
   </span>
 </template>
 

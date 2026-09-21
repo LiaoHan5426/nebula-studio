@@ -100,9 +100,7 @@ const emit = defineEmits<{
       />
     </label>
     <div class="modal__actions">
-      <NebulaButton variant="outline" @click="emit('close')">
-        取消
-      </NebulaButton>
+      <NebulaButton variant="outline" @click="emit('close')">取消</NebulaButton>
       <NebulaButton @click="emit('submit')">
         {{
           form.orchestrationType === 'DAG'

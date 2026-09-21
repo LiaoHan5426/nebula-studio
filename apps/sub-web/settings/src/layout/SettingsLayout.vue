@@ -176,10 +176,10 @@ const navGroups = computed(() =>
   padding: 8px 10px 8px 34px;
   font: inherit;
   color: hsl(var(--foreground));
+  outline: 0;
   background: hsl(var(--card));
   border: 1px solid hsl(var(--border));
   border-radius: 10px;
-  outline: 0;
 }
 
 .settings-nav__search input:focus {

@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-function walk (dir: string): string[] {
+function walk(dir: string): string[] {
   const out: string[] = [];
   for (const entry of readdirSync(dir)) {
     const full = join(dir, entry);
@@ -14,11 +14,11 @@ function walk (dir: string): string[] {
   return out;
 }
 
-function toDemoVar (name: string): string {
+function toDemoVar(name: string): string {
   return `${name.charAt(0).toLowerCase() + name.slice(1)}Demo`;
 }
 
-function migrate (content: string): string {
+function migrate(content: string): string {
   let next = content.replace(
     /\/\/ eslint-disable-next-line import\/no-duplicates\r?\n/g,
     '',
@@ -60,7 +60,7 @@ function migrate (content: string): string {
 }
 
 /** One-shot: migrate docs demo pages from dual .vue + ?raw to .vue?demo. */
-export async function runMigrateDocsDemo (
+export async function runMigrateDocsDemo(
   root: string,
   _args: string[] = [],
 ): Promise<void> {

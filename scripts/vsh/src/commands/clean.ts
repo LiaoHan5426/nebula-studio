@@ -20,7 +20,7 @@ const RM_OPTIONS = {
   recursive: true,
 };
 
-async function removePathWithRetry (
+async function removePathWithRetry(
   itemPath: string,
   { quiet = false }: { quiet?: boolean } = {},
 ): Promise<boolean> {
@@ -50,7 +50,7 @@ async function removePathWithRetry (
   }
 }
 
-async function processItem (
+async function processItem(
   currentDir: string,
   item: string,
   targets: string[],
@@ -84,7 +84,7 @@ async function processItem (
   }
 }
 
-async function cleanTargetsRecursively (
+async function cleanTargetsRecursively(
   currentDir: string,
   targets: string[],
   depth = 0,
@@ -130,7 +130,7 @@ async function cleanTargetsRecursively (
   }
 }
 
-export async function runClean (
+export async function runClean(
   rootDir: string,
   args: string[] = [],
 ): Promise<void> {

@@ -79,7 +79,8 @@ async function copyName(name: string): Promise<void> {
 
     <section v-for="group in filteredGroups" :key="group.name">
       <h3>
-        {{ group.name }} <small>{{ group.keys.length }}</small>
+        {{ group.name }}
+        <small>{{ group.keys.length }}</small>
       </h3>
       <div class="icon-browser__grid">
         <button

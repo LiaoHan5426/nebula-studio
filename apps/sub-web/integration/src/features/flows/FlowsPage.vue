@@ -153,9 +153,7 @@ function statusVariant(status: string) {
         <NebulaButton variant="outline" @click="showEditor = false">
           关闭
         </NebulaButton>
-        <NebulaButton variant="primary" @click="saveDesign">
-          保存
-        </NebulaButton>
+        <NebulaButton variant="primary" @click="saveDesign">保存</NebulaButton>
       </div>
     </NebulaDialog>
   </div>

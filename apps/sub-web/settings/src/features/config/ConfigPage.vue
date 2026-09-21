@@ -289,9 +289,9 @@ function displayValue(config: ConfigItem): string {
           </div>
           <div>
             <span>敏感性</span>
-            <strong>{{
-              sensitive ? '敏感配置，将掩码展示' : '普通配置'
-            }}</strong>
+            <strong>
+              {{ sensitive ? '敏感配置，将掩码展示' : '普通配置' }}
+            </strong>
           </div>
           <div>
             <span>Schema 类型</span>
@@ -299,9 +299,11 @@ function displayValue(config: ConfigItem): string {
           </div>
           <div>
             <span>运行影响</span>
-            <strong>{{
-              activeSchema?.restartRequired ? '保存后需要重启' : '动态生效'
-            }}</strong>
+            <strong>
+              {{
+                activeSchema?.restartRequired ? '保存后需要重启' : '动态生效'
+              }}
+            </strong>
           </div>
         </section>
         <section v-if="previewOpen" class="change-preview">

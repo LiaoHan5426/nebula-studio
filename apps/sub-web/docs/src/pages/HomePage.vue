@@ -60,15 +60,16 @@ const journeyContent = computed(
         </p>
         <div class="docs-hero__actions">
           <RouterLink to="/help/consumer/getting-started" class="primary-link">
-快速开始
-</RouterLink>
+            快速开始
+          </RouterLink>
           <RouterLink to="/patterns/catalog" class="secondary-link">
-浏览体验模式
-</RouterLink>
+            浏览体验模式
+          </RouterLink>
         </div>
       </div>
       <aside class="docs-hero__status" aria-label="文档状态">
-        <span>当前版本</span><strong>v0.0.0</strong>
+        <span>当前版本</span>
+        <strong>v0.0.0</strong>
         <p>产品帮助、设计系统与开发者参考在同一版本中维护。</p>
         <RouterLink to="/design/theme-matrix">检查主题矩阵 →</RouterLink>
       </aside>
@@ -99,26 +100,33 @@ const journeyContent = computed(
           <span>{{ journeyContent.description }}</span>
           <ol>
             <li v-for="(step, index) in journeyContent.steps" :key="step">
-              <b>{{ index + 1 }}</b>{{ step }}
+              <b>{{ index + 1 }}</b>
+              {{ step }}
             </li>
           </ol>
           <RouterLink :to="journeyContent.to">
-{{ journeyContent.action }} →
-</RouterLink>
+            {{ journeyContent.action }} →
+          </RouterLink>
         </article>
       </div>
     </section>
 
     <section class="docs-resources" aria-label="常用入口">
       <RouterLink to="/help/troubleshooting">
-<span>问题排查</span><strong>恢复登录、加载与权限问题</strong><b>→</b>
-</RouterLink>
+        <span>问题排查</span>
+        <strong>恢复登录、加载与权限问题</strong>
+        <b>→</b>
+      </RouterLink>
       <RouterLink to="/patterns/catalog">
-<span>页面模式</span><strong>列表、详情、设置与编辑器布局</strong><b>→</b>
-</RouterLink>
+        <span>页面模式</span>
+        <strong>列表、详情、设置与编辑器布局</strong>
+        <b>→</b>
+      </RouterLink>
       <RouterLink to="/design/tokens">
-<span>设计系统</span><strong>语义 token 与组件状态</strong><b>→</b>
-</RouterLink>
+        <span>设计系统</span>
+        <strong>语义 token 与组件状态</strong>
+        <b>→</b>
+      </RouterLink>
     </section>
   </main>
 </template>
@@ -131,6 +139,7 @@ const journeyContent = computed(
   padding: clamp(24px, 5vw, 68px);
   margin: 0 auto;
 }
+
 .docs-hero {
   display: grid;
   grid-template-columns: minmax(0, 1.45fr) minmax(260px, 0.55fr);
@@ -139,6 +148,7 @@ const journeyContent = computed(
   padding-bottom: clamp(28px, 5vw, 56px);
   border-bottom: 1px solid hsl(var(--border));
 }
+
 .docs-hero__eyebrow,
 .journey header p,
 .journey__detail > p {
@@ -149,6 +159,7 @@ const journeyContent = computed(
   text-transform: uppercase;
   letter-spacing: 0.12em;
 }
+
 .docs-hero h1 {
   max-width: 720px;
   margin: 12px 0 0;
@@ -156,6 +167,7 @@ const journeyContent = computed(
   line-height: 1.02;
   letter-spacing: -0.055em;
 }
+
 .docs-hero__lead {
   max-width: 660px;
   margin: 22px 0 0;
@@ -163,12 +175,14 @@ const journeyContent = computed(
   line-height: 1.75;
   color: hsl(var(--muted-foreground));
 }
+
 .docs-hero__actions {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 28px;
 }
+
 .primary-link,
 .secondary-link {
   display: inline-flex;
@@ -177,43 +191,52 @@ const journeyContent = computed(
   text-decoration: none;
   border-radius: var(--radius-md);
 }
+
 .primary-link {
   color: hsl(var(--primary-foreground));
   background: hsl(var(--primary));
 }
+
 .secondary-link {
   color: hsl(var(--foreground));
   border: 1px solid hsl(var(--border));
 }
+
 .docs-hero__status {
   padding: 22px;
   background: hsl(var(--muted) / 22%);
   border-left: 3px solid hsl(var(--primary));
 }
+
 .docs-hero__status span {
   font-size: 12px;
   color: hsl(var(--muted-foreground));
 }
+
 .docs-hero__status strong {
   display: block;
   margin-top: 4px;
   font-size: 25px;
 }
+
 .docs-hero__status p {
   line-height: 1.55;
   color: hsl(var(--muted-foreground));
 }
+
 .docs-hero__status a,
 .journey__detail a {
   font-weight: 700;
   color: hsl(var(--primary));
   text-decoration: none;
 }
+
 .journey > header h2 {
   margin: 8px 0 0;
   font-size: clamp(24px, 3vw, 34px);
   letter-spacing: -0.025em;
 }
+
 .journey__body {
   display: grid;
   grid-template-columns: minmax(220px, 0.42fr) minmax(0, 1fr);
@@ -222,6 +245,7 @@ const journeyContent = computed(
   border: 1px solid hsl(var(--border));
   border-radius: var(--radius-lg);
 }
+
 .journey__tabs {
   display: grid;
   align-content: start;
@@ -229,6 +253,7 @@ const journeyContent = computed(
   background: hsl(var(--muted) / 22%);
   border-right: 1px solid hsl(var(--border));
 }
+
 .journey__tabs button {
   padding: 15px 16px;
   font: inherit;
@@ -240,26 +265,32 @@ const journeyContent = computed(
   border: 0;
   border-radius: var(--radius-md);
 }
+
 .journey__tabs button:hover,
 .journey__tabs button.is-active {
   color: hsl(var(--foreground));
   background: hsl(var(--card));
 }
+
 .journey__tabs button.is-active {
   color: hsl(var(--primary));
 }
+
 .journey__detail {
   min-height: 310px;
   padding: clamp(24px, 4vw, 44px);
 }
+
 .journey__detail h3 {
   margin: 10px 0 8px;
   font-size: clamp(24px, 3vw, 36px);
   letter-spacing: -0.03em;
 }
+
 .journey__detail > span {
   color: hsl(var(--muted-foreground));
 }
+
 .journey__detail ol {
   display: grid;
   gap: 10px;
@@ -267,11 +298,13 @@ const journeyContent = computed(
   margin: 28px 0;
   list-style: none;
 }
+
 .journey__detail li {
   display: flex;
   gap: 12px;
   align-items: center;
 }
+
 .journey__detail li b {
   display: grid;
   place-items: center;
@@ -282,12 +315,14 @@ const journeyContent = computed(
   background: hsl(var(--primary) / 10%);
   border-radius: 50%;
 }
+
 .docs-resources {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   border-top: 1px solid hsl(var(--border));
   border-bottom: 1px solid hsl(var(--border));
 }
+
 .docs-resources a {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -296,9 +331,11 @@ const journeyContent = computed(
   color: inherit;
   text-decoration: none;
 }
+
 .docs-resources a + a {
   border-left: 1px solid hsl(var(--border));
 }
+
 .docs-resources span {
   grid-column: 1;
   font-size: 11px;
@@ -307,25 +344,30 @@ const journeyContent = computed(
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
+
 .docs-resources strong {
   grid-column: 1;
 }
+
 .docs-resources b {
   grid-row: 1 / span 2;
   grid-column: 2;
   align-self: center;
   color: hsl(var(--muted-foreground));
 }
+
 @media (width <= 760px) {
   .docs-hero,
   .journey__body,
   .docs-resources {
     grid-template-columns: 1fr;
   }
+
   .journey__tabs {
     border-right: 0;
     border-bottom: 1px solid hsl(var(--border));
   }
+
   .docs-resources a + a {
     border-top: 1px solid hsl(var(--border));
     border-left: 0;

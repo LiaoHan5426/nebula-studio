@@ -1,6 +1,6 @@
 import { circularDepsDetect } from 'circular-dependency-scanner';
 
-export async function scanCircularDependencies (
+export async function scanCircularDependencies(
   workspaceRoot: string,
 ): Promise<void> {
   const circles = await circularDepsDetect({

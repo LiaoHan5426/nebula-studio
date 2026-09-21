@@ -18,7 +18,7 @@ const DOMAIN_MAP: Record<string, string> = {
 };
 
 /** One-shot: split consoleApi.ts into feature-domain api.ts files. */
-export async function runSplitConsoleApi (
+export async function runSplitConsoleApi(
   root: string,
   _args: string[] = [],
 ): Promise<void> {
@@ -34,7 +34,7 @@ export async function runSplitConsoleApi (
   const exportRe = /export const (\w+) = \{[\s\S]*?\n\};/g;
   const blocks = [...source.matchAll(exportRe)];
 
-  const byDomain = new Map<string, { code: string; name: string; }[]>();
+  const byDomain = new Map<string, { code: string; name: string }[]>();
   for (const match of blocks) {
     const name = match[1];
     const domain = DOMAIN_MAP[name];

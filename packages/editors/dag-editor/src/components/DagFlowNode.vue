@@ -35,9 +35,9 @@ const showType = computed(
     <div class="dag-flow-node__body" :title="displayLabel">
       <span class="dag-flow-node__label">{{ displayLabel }}</span>
       <span v-if="showKind" class="dag-flow-node__type">原子服务</span>
-      <span v-else-if="showType" class="dag-flow-node__type">{{
-        data.type
-      }}</span>
+      <span v-else-if="showType" class="dag-flow-node__type">
+        {{ data.type }}
+      </span>
     </div>
     <Handle
       id="source"

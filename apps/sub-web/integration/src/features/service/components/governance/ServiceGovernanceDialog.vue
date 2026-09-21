@@ -246,9 +246,7 @@ const whitelistServiceOptions = computed(
       </label>
     </div>
     <div class="modal-card__actions">
-      <NebulaButton variant="outline" @click="emit('close')">
-        取消
-      </NebulaButton>
+      <NebulaButton variant="outline" @click="emit('close')">取消</NebulaButton>
       <NebulaButton @click="emit('submit')">保存</NebulaButton>
     </div>
   </NebulaDialog>

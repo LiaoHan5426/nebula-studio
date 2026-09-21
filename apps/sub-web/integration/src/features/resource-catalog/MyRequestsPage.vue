@@ -152,9 +152,9 @@ function nextAction(
         ]"
         :aria-label="t('portal.requests.filterAria')"
       />
-      <span>{{
-        t('portal.requests.count', { n: visibleRequests.length })
-      }}</span>
+      <span>
+        {{ t('portal.requests.count', { n: visibleRequests.length }) }}
+      </span>
     </div>
 
     <div v-if="loading" class="request-list">

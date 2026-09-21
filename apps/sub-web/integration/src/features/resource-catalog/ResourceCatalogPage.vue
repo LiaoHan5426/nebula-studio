@@ -92,14 +92,22 @@ function sourceLabel(id: string): string {
         />
       </label>
       <div class="hero-stats">
-        <span><strong>{{ items.length }}</strong>
-          {{ t('catalog.stats.discoverable') }}</span>
-        <span><strong>{{ favorites.length }}</strong>
-          {{ t('catalog.stats.favorites') }}</span>
-        <span><strong>{{ recentItems.length }}</strong>
-          {{ t('catalog.stats.recent') }}</span>
-        <span><strong>{{ pendingRequestCount }}</strong>
-          {{ t('catalog.stats.pending') }}</span>
+        <span>
+          <strong>{{ items.length }}</strong>
+          {{ t('catalog.stats.discoverable') }}
+        </span>
+        <span>
+          <strong>{{ favorites.length }}</strong>
+          {{ t('catalog.stats.favorites') }}
+        </span>
+        <span>
+          <strong>{{ recentItems.length }}</strong>
+          {{ t('catalog.stats.recent') }}
+        </span>
+        <span>
+          <strong>{{ pendingRequestCount }}</strong>
+          {{ t('catalog.stats.pending') }}
+        </span>
       </div>
     </section>
 
@@ -280,9 +288,9 @@ function sourceLabel(id: string): string {
         >
           {{ t('catalog.prevPage') }}
         </NebulaButton>
-        <span>{{
-          t('catalog.pageOf', { page: query.page, total: pageCount })
-        }}</span>
+        <span>
+          {{ t('catalog.pageOf', { page: query.page, total: pageCount }) }}
+        </span>
         <NebulaButton
           variant="outline"
           :disabled="query.page >= pageCount"
@@ -504,6 +512,7 @@ function sourceLabel(id: string): string {
   margin: 0;
   overflow: hidden;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   line-height: 1.65;
   color: hsl(var(--muted-foreground));
   -webkit-box-orient: vertical;

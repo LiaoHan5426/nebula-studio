@@ -26,7 +26,9 @@ function visit(directory: string): void {
     const path = join(directory, entry.name);
     if (entry.isDirectory()) visit(path);
     if (entry.isFile() && entry.name === 'package.json') {
-      const manifest = JSON.parse(readFileSync(path, 'utf8')) as PackageManifest;
+      const manifest = JSON.parse(
+        readFileSync(path, 'utf8'),
+      ) as PackageManifest;
       if (typeof manifest.name === 'string') {
         manifests.set(manifest.name, { manifest, path });
       }

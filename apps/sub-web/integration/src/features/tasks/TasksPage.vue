@@ -271,9 +271,7 @@ function taskTypeLabel(type: string) {
         <NebulaButton variant="outline" @click="showEdit = false">
           取消
         </NebulaButton>
-        <NebulaButton variant="primary" @click="handleEdit">
-          保存
-        </NebulaButton>
+        <NebulaButton variant="primary" @click="handleEdit">保存</NebulaButton>
       </div>
     </NebulaDialog>
   </div>

@@ -54,7 +54,8 @@ function selectValue(fieldKey: string, defaultValue?: unknown): string {
       class="plugin-node-form__field"
     >
       <span class="plugin-node-form__label">
-        {{ field.label }}<span v-if="field.required"> *</span>
+        {{ field.label }}
+        <span v-if="field.required">*</span>
       </span>
       <input
         v-if="field.type === 'text'"

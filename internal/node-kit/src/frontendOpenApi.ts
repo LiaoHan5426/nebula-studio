@@ -5,11 +5,11 @@ const booleanSchema: JsonSchema = { type: 'boolean' };
 const int32Schema: JsonSchema = { type: 'integer', format: 'int32' };
 const stringArraySchema: JsonSchema = { type: 'array', items: stringSchema };
 
-function objectSchema (properties: Record<string, JsonSchema>): JsonSchema {
+function objectSchema(properties: Record<string, JsonSchema>): JsonSchema {
   return { type: 'object', properties };
 }
 
-function okArray (schemaName: string): Record<string, unknown> {
+function okArray(schemaName: string): Record<string, unknown> {
   return {
     200: {
       description: 'OK',
@@ -25,7 +25,7 @@ function okArray (schemaName: string): Record<string, unknown> {
   };
 }
 
-function okObject (schemaName: string): Record<string, unknown> {
+function okObject(schemaName: string): Record<string, unknown> {
   return {
     200: {
       description: 'OK',
@@ -38,7 +38,7 @@ function okObject (schemaName: string): Record<string, unknown> {
   };
 }
 
-function jsonBody (schemaName: string): Record<string, unknown> {
+function jsonBody(schemaName: string): Record<string, unknown> {
   return {
     required: true,
     content: {
@@ -355,7 +355,7 @@ export interface EnsuredOpenApiDocument extends OpenApiDocument {
   paths: Record<string, OpenApiPathItem>;
 }
 
-export function ensureFrontendApplicationOpenApi (
+export function ensureFrontendApplicationOpenApi(
   spec: unknown,
 ): EnsuredOpenApiDocument {
   const next: OpenApiDocument =

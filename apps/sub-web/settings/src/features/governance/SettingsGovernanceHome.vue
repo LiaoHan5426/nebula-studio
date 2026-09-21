@@ -58,11 +58,13 @@ const tasks = computed(() =>
     <section class="summary-grid" :aria-label="t('governance.scopeAria')">
       <article>
         <span>{{ t('governance.roleScope') }}</span>
-        <strong>{{
-          platformAdmin
-            ? t('governance.platformAdmin')
-            : t('governance.orgAdmin')
-        }}</strong>
+        <strong>
+          {{
+            platformAdmin
+              ? t('governance.platformAdmin')
+              : t('governance.orgAdmin')
+          }}
+        </strong>
         <p>{{ t('governance.roleHint') }}</p>
       </article>
       <article>

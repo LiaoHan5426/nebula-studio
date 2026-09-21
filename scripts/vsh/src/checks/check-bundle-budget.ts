@@ -18,11 +18,11 @@ type BundleBaseline = {
 
 type RemoteReport =
   | {
-    budgetKib: number;
-    jsFileCount: number;
-    skipped?: false;
-    totalJsGzipKib: number;
-  }
+      budgetKib: number;
+      jsFileCount: number;
+      skipped?: false;
+      totalJsGzipKib: number;
+    }
   | { skipped: true };
 
 const root = fileURLToPath(new URL('../../../../', import.meta.url));
@@ -54,7 +54,7 @@ const entry = Object.values(manifest).find((item) => item.isEntry);
 if (!entry) throw new Error('[bundle-budget] Vite manifest has no entry chunk');
 
 const syncFiles = new Set<string>();
-function collectSync (item: undefined | ViteManifestItem) {
+function collectSync(item: undefined | ViteManifestItem) {
   if (!item || syncFiles.has(item.file)) return;
   syncFiles.add(item.file);
   for (const imported of item.imports ?? []) collectSync(manifest[imported]);

@@ -52,7 +52,7 @@ const MODE_ALIASES: Record<string, NebulaEnvMode> = {
  * Prefer explicit NEBULA_ENV / VITE_NEBULA_ENV so Vite `mode=production` builds
  * do not accidentally require production API secrets during local packaging.
  */
-export function resolveNebulaEnvMode (
+export function resolveNebulaEnvMode(
   explicit?: string,
   env: NodeJS.ProcessEnv = process.env,
 ): NebulaEnvMode {
@@ -82,7 +82,7 @@ export function resolveNebulaEnvMode (
  * Parse a dotenv file body into key/value pairs (Vite-compatible subset).
  * Does not expand nested variable references.
  */
-export function parseEnvFile (contents: string): Record<string, string> {
+export function parseEnvFile(contents: string): Record<string, string> {
   const result: Record<string, string> = {};
   for (const rawLine of contents.split(/\r?\n/)) {
     const line = rawLine.trim();
@@ -111,21 +111,16 @@ export function parseEnvFile (contents: string): Record<string, string> {
  * `.env` → `.env.local` → `.env.[mode]` → `.env.[mode].local`
  * Existing keys in `processEnv` are not overwritten (same as Vite loadEnv).
  */
-export function environmentsDir (rootDir: string): string {
+export function environmentsDir(rootDir: string): string {
   return join(rootDir, 'env');
 }
 
-export function loadDotEnvFiles (
+export function loadDotEnvFiles(
   envDir: string,
   mode: string,
   processEnv: NodeJS.ProcessEnv = process.env,
 ): Record<string, string> {
-  const files = [
-    '.env',
-    '.env.local',
-    `.env.${mode}`,
-    `.env.${mode}.local`,
-  ];
+  const files = ['.env', '.env.local', `.env.${mode}`, `.env.${mode}.local`];
   const merged: Record<string, string> = {};
   for (const file of files) {
     const path = join(envDir, file);
@@ -139,7 +134,7 @@ export function loadDotEnvFiles (
   return resolved;
 }
 
-function readFederationDevConfig (rootDir: string): EnvironmentsConfig {
+function readFederationDevConfig(rootDir: string): EnvironmentsConfig {
   const path = join(rootDir, 'configs', 'federation-dev.json');
   if (!existsSync(path)) {
     throw new Error(`[nebula-env] Missing ${path}`);
@@ -147,7 +142,7 @@ function readFederationDevConfig (rootDir: string): EnvironmentsConfig {
   return JSON.parse(readFileSync(path, 'utf8')) as EnvironmentsConfig;
 }
 
-function buildApiTargets (
+function buildApiTargets(
   env: Record<string, string>,
   mode: NebulaEnvMode,
 ): Record<string, string> {
@@ -170,7 +165,7 @@ function buildApiTargets (
 }
 
 /** Load `env/.env*` (Vite order) plus `configs/federation-dev.json`. */
-export function loadEnvironmentsConfig (
+export function loadEnvironmentsConfig(
   rootDir: string,
   options: { env?: NodeJS.ProcessEnv; mode?: string } = {},
 ): ResolvedEnvironmentsConfig {
@@ -180,8 +175,7 @@ export function loadEnvironmentsConfig (
   const federation = readFederationDevConfig(rootDir);
 
   const host =
-    env.NEBULA_FEDERATION_DEV_HOST?.trim() ||
-    federation.federationDev?.host;
+    env.NEBULA_FEDERATION_DEV_HOST?.trim() || federation.federationDev?.host;
   const remoteCacheDir =
     env.NEBULA_FEDERATION_REMOTE_CACHE_DIR?.trim() ||
     federation.federationDev?.remoteCacheDir;

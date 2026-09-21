@@ -265,26 +265,35 @@ async function saveOrganizationDefault(): Promise<void> {
 
         <aside class="theme-preview" aria-label="主题实时预览">
           <div class="theme-preview__bar">
-            <span></span><span></span><span></span>
+            <span></span>
+            <span></span>
+            <span></span>
             <b>实时预览</b>
           </div>
           <div class="theme-preview__body">
             <nav aria-label="预览导航">
               <strong>N</strong>
-              <i class="is-active"></i><i></i><i></i>
+              <i class="is-active"></i>
+              <i></i>
+              <i></i>
             </nav>
             <main>
               <span class="theme-preview__eyebrow">Workspace</span>
               <h4>清晰、一致的工作界面</h4>
               <p>主题色只强调操作和选中状态，状态语义保持稳定。</p>
               <div class="theme-preview__metrics">
-                <article><span>待处理</span><strong>12</strong></article>
                 <article>
-                  <span>运行状态</span><strong class="is-success">正常</strong>
+                  <span>待处理</span>
+                  <strong>12</strong>
+                </article>
+                <article>
+                  <span>运行状态</span>
+                  <strong class="is-success">正常</strong>
                 </article>
               </div>
               <div class="theme-preview__actions">
-                <button type="button">主要操作</button><button type="button">次要操作</button>
+                <button type="button">主要操作</button>
+                <button type="button">次要操作</button>
               </div>
             </main>
           </div>
@@ -357,12 +366,14 @@ async function saveOrganizationDefault(): Promise<void> {
   background: hsl(var(--muted) / 45%);
   border-bottom: 1px solid hsl(var(--border));
 }
+
 .theme-preview__bar span {
   width: 7px;
   height: 7px;
   background: hsl(var(--muted-foreground) / 35%);
   border-radius: 50%;
 }
+
 .theme-preview__bar b {
   margin-left: auto;
   font-size: 10px;
@@ -370,11 +381,13 @@ async function saveOrganizationDefault(): Promise<void> {
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
+
 .theme-preview__body {
   display: grid;
   grid-template-columns: 48px minmax(0, 1fr);
   min-height: 330px;
 }
+
 .theme-preview__body nav {
   display: flex;
   flex-direction: column;
@@ -384,6 +397,7 @@ async function saveOrganizationDefault(): Promise<void> {
   background: hsl(var(--sidebar));
   border-right: 1px solid hsl(var(--border));
 }
+
 .theme-preview__body nav strong {
   display: grid;
   place-items: center;
@@ -393,18 +407,22 @@ async function saveOrganizationDefault(): Promise<void> {
   background: hsl(var(--primary));
   border-radius: 8px;
 }
+
 .theme-preview__body nav i {
   width: 22px;
   height: 5px;
   background: hsl(var(--muted-foreground) / 24%);
   border-radius: 99px;
 }
+
 .theme-preview__body nav i.is-active {
   background: hsl(var(--primary));
 }
+
 .theme-preview__body main {
   padding: 24px 20px;
 }
+
 .theme-preview__eyebrow {
   font-size: 9px;
   font-weight: 800;
@@ -412,47 +430,56 @@ async function saveOrganizationDefault(): Promise<void> {
   text-transform: uppercase;
   letter-spacing: 0.12em;
 }
+
 .theme-preview h4 {
   margin: 7px 0;
   font-size: 20px;
 }
+
 .theme-preview p {
   margin: 0;
   font-size: 12px;
   line-height: 1.6;
   color: hsl(var(--muted-foreground));
 }
+
 .theme-preview__metrics {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
   margin-top: 22px;
 }
+
 .theme-preview__metrics article {
   padding: 12px;
   background: hsl(var(--muted) / 28%);
   border: 1px solid hsl(var(--border));
   border-radius: var(--radius-md);
 }
+
 .theme-preview__metrics span {
   display: block;
   font-size: 10px;
   color: hsl(var(--muted-foreground));
 }
+
 .theme-preview__metrics strong {
   display: block;
   margin-top: 6px;
   font-size: 18px;
 }
+
 .theme-preview__metrics strong.is-success {
   font-size: 13px;
   color: hsl(var(--success));
 }
+
 .theme-preview__actions {
   display: flex;
   gap: 8px;
   margin-top: 22px;
 }
+
 .theme-preview__actions button {
   padding: 8px 11px;
   font: inherit;
@@ -462,17 +489,20 @@ async function saveOrganizationDefault(): Promise<void> {
   border: 0;
   border-radius: var(--radius-sm);
 }
+
 .theme-preview__actions button + button {
   color: hsl(var(--foreground));
   background: transparent;
   border: 1px solid hsl(var(--border));
 }
+
 .theme-preview footer {
   display: flex;
   gap: 6px;
   padding: 11px 14px;
   border-top: 1px solid hsl(var(--border));
 }
+
 .theme-preview footer span {
   padding: 3px 7px;
   font-size: 9px;
@@ -485,6 +515,7 @@ async function saveOrganizationDefault(): Promise<void> {
   .appearance-grid {
     grid-template-columns: 1fr;
   }
+
   .theme-preview {
     position: static;
   }

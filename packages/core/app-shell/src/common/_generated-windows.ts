@@ -12,7 +12,7 @@ export interface GeneratedWindowEntry {
   preloadCapabilities: GeneratedPreloadCapability[];
   proxyPreset?: 'integration' | 'standard';
   renderer: string;
-  standalone?: { basePath?: string; host?: string; port: number; };
+  standalone?: { basePath?: string; host?: string; port: number };
   webEmbedEntry?: string;
   webLoad?: 'embed' | 'federation' | 'host';
 }
@@ -22,7 +22,7 @@ export interface GeneratedModalRendererEntry {
   preloadCapabilities: GeneratedPreloadCapability[];
   proxyPreset?: 'integration' | 'standard';
   renderer: string;
-  standalone?: { basePath?: string; host?: string; port: number; };
+  standalone?: { basePath?: string; host?: string; port: number };
   webEmbedEntry?: string;
   webLoad?: 'embed' | 'federation' | 'host';
 }

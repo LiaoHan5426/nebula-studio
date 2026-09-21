@@ -19,7 +19,7 @@ const emit = defineEmits<{
       <div class="tree-node__title">{{ node.orgName }}</div>
       <div class="tree-node__meta">
         {{ node.orgCode }}
-        <span v-if="node.status"> · {{ node.status }}</span>
+        <span v-if="node.status">· {{ node.status }}</span>
       </div>
       <div class="tree-node__actions">
         <NebulaButton variant="ghost" @click="emit('addChild', node.id)">

@@ -51,7 +51,7 @@
     "check:generated": "nebula-vsh check-generated",
     "soak:low-code": "nebula-vsh soak-low-code",
     "cap": "vp run mobile#cap",
-    "check": "vp check --fix",
+    "check": "vp check --fix && vp run lint:style",
     "lint:ox": "vp lint --fix --threads=2",
     "lint:eslint": "vp exec eslint . --fix --cache",
     "lint:style": "vp exec stylelint \"**/*.{css,scss,vue}\" --fix --allow-empty-input --ignore-pattern \"**/out/**\" --ignore-pattern \"**/dist/**\" --ignore-pattern \"**/dev-dist/**\"",

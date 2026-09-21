@@ -10,7 +10,7 @@ import { joinOrigin } from '@nebula-studio-internal/node-kit/join-origin';
  * Generate TypeScript contracts from platform-console OpenAPI.
  * Args: --url= --file= --strict --snapshot-on-unauthorized
  */
-export async function runGenerateContracts (
+export async function runGenerateContracts(
   root: string,
   args: string[] = [],
 ): Promise<void> {
@@ -22,7 +22,7 @@ export async function runGenerateContracts (
     args.includes('--snapshot-on-unauthorized') ||
     process.env.NEBULA_OPENAPI_SNAPSHOT_ON_UNAUTHORIZED === 'true';
 
-  function resolveDefaultOpenApiUrl (): string {
+  function resolveDefaultOpenApiUrl(): string {
     const environments = loadEnvironmentsConfig(root);
     const realStack = JSON.parse(readFileSync(realStackConfigPath, 'utf8')) as {
       openapi?: { platform?: { path: string; target: string } };
@@ -46,7 +46,7 @@ export async function runGenerateContracts (
   const specFile = join(outDir, 'openapi.json');
   const outFile = join(outDir, 'platform-api.ts');
 
-  function loadSnapshotSpec (reason: string): unknown {
+  function loadSnapshotSpec(reason: string): unknown {
     if (!existsSync(specFile)) {
       throw new Error(`OpenAPI snapshot missing at ${specFile} (${reason})`);
     }
@@ -54,7 +54,7 @@ export async function runGenerateContracts (
     return JSON.parse(readFileSync(specFile, 'utf8'));
   }
 
-  async function fetchLiveSpec (url: string): Promise<unknown> {
+  async function fetchLiveSpec(url: string): Promise<unknown> {
     const res = await fetch(url);
     if (res.ok) {
       return await res.json();

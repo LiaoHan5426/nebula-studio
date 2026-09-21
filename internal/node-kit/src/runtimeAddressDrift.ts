@@ -77,7 +77,7 @@ interface CollectContext {
   scannedExtensions: Set<string>;
 }
 
-export function scanRuntimeAddressDrift (
+export function scanRuntimeAddressDrift(
   rootDir: string,
   options: ScanRuntimeAddressDriftOptions = {},
 ): string[] {
@@ -102,7 +102,7 @@ export function scanRuntimeAddressDrift (
   return offenders;
 }
 
-function collectOffenders (path: string, ctx: CollectContext): void {
+function collectOffenders(path: string, ctx: CollectContext): void {
   if (!statSync(path, { throwIfNoEntry: false })) return;
   const stat = statSync(path);
   const relativePath = relative(ctx.rootDir, path);

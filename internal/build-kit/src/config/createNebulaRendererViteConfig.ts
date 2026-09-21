@@ -61,7 +61,7 @@ export interface CreateNebulaRendererViteConfigOptions {
   server?: UserConfig['server'];
 }
 
-export function createNebulaRendererViteConfig (
+export function createNebulaRendererViteConfig(
   opts: CreateNebulaRendererViteConfigOptions,
 ): ReturnType<typeof defineConfig> {
   const {

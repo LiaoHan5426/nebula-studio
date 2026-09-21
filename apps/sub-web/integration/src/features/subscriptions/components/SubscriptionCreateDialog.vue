@@ -146,9 +146,7 @@ const emit = defineEmits<{
       </label>
     </template>
     <div class="modal__actions">
-      <NebulaButton variant="outline" @click="emit('close')">
-        取消
-      </NebulaButton>
+      <NebulaButton variant="outline" @click="emit('close')">取消</NebulaButton>
       <NebulaButton @click="emit('submit')">创建</NebulaButton>
     </div>
   </NebulaDialog>

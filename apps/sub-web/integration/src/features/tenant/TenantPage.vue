@@ -220,7 +220,8 @@ async function confirmDelete() {
       @update:open="showFormDialog = $event"
     >
       <p v-if="formMode === 'create'" class="field-hint">
-        预览租户 ID：<strong>{{ previewTenantId }}</strong>
+        预览租户 ID：
+        <strong>{{ previewTenantId }}</strong>
       </p>
       <label v-else class="field">
         <span>租户 ID</span>
@@ -237,7 +238,8 @@ async function confirmDelete() {
         </select>
       </label>
       <p v-else-if="formMode === 'create'" class="field-hint">
-        将绑定当前账号：<strong>{{ username }}</strong>
+        将绑定当前账号：
+        <strong>{{ username }}</strong>
       </p>
       <label v-else class="field">
         <span>绑定系统用户</span>

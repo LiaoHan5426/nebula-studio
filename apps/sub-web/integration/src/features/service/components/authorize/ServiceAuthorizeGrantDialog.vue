@@ -158,9 +158,7 @@ const emit = defineEmits<{
       </label>
     </div>
     <div class="modal-card__actions">
-      <NebulaButton variant="outline" @click="emit('close')">
-        取消
-      </NebulaButton>
+      <NebulaButton variant="outline" @click="emit('close')">取消</NebulaButton>
       <NebulaButton
         :disabled="actingId === target?.serviceId"
         @click="emit('submit')"

@@ -14,15 +14,21 @@ import formValidationDemo from '@/examples/form/FormValidation.vue?demo';
     <h2 id="architecture">职责边界</h2>
     <div class="form-architecture">
       <div>
-        <strong>NebulaForm</strong><span>表单上下文、提交、重置与校验状态</span>
+        <strong>NebulaForm</strong>
+        <span>表单上下文、提交、重置与校验状态</span>
       </div>
       <div>
-        <strong>NebulaFormItem</strong><span>字段注册、标签、帮助和错误信息</span>
+        <strong>NebulaFormItem</strong>
+        <span>字段注册、标签、帮助和错误信息</span>
       </div>
       <div>
-        <strong>NebulaInput</strong><span>输入交互、无效状态和可访问属性</span>
+        <strong>NebulaInput</strong>
+        <span>输入交互、无效状态和可访问属性</span>
       </div>
-      <div><strong>Zod</strong><span>Schema、类型推导和业务校验规则</span></div>
+      <div>
+        <strong>Zod</strong>
+        <span>Schema、类型推导和业务校验规则</span>
+      </div>
     </div>
 
     <h2 id="validation">Schema 校验</h2>
@@ -57,7 +63,8 @@ import formValidationDemo from '@/examples/form/FormValidation.vue?demo';
           <td><code>validationSchema</code></td>
           <td>
             Zod 4 Schema，直接传入
-            <code>z.object({ ... })</code>，无需适配器
+            <code>z.object({ ... })</code>
+            ，无需适配器
           </td>
           <td>—</td>
         </tr>

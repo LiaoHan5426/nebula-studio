@@ -23,9 +23,9 @@ withDefaults(
   >
     <div class="nebula-empty-state__icon" aria-hidden="true">
       <slot name="icon">
-        <span>{{
-          tone === 'error' ? '!' : tone === 'restricted' ? '×' : '·'
-        }}</span>
+        <span>
+          {{ tone === 'error' ? '!' : tone === 'restricted' ? '×' : '·' }}
+        </span>
       </slot>
     </div>
     <h2>{{ title }}</h2>

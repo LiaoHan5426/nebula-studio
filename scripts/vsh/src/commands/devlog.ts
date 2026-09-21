@@ -361,7 +361,7 @@ function defaultOutput(_range: string, language: string) {
   return join('docs', 'development-records', `generated-${suffix}.md`);
 }
 
-export async function runDevlog (
+export async function runDevlog(
   _root: string,
   argv: string[] = [],
 ): Promise<void> {

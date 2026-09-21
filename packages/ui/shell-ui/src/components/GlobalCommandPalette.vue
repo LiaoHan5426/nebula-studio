@@ -142,9 +142,19 @@ function onKeydown(event: KeyboardEvent): void {
           没有匹配结果。可尝试应用名称、资源类型或任务关键词。
         </p>
         <footer>
-          <span><kbd>↑</kbd><kbd>↓</kbd> 选择</span>
-          <span><kbd>Enter</kbd> 打开</span>
-          <span>快捷键 <kbd>Ctrl K</kbd></span>
+          <span>
+            <kbd>↑</kbd>
+            <kbd>↓</kbd>
+            选择
+          </span>
+          <span>
+            <kbd>Enter</kbd>
+            打开
+          </span>
+          <span>
+            快捷键
+            <kbd>Ctrl K</kbd>
+          </span>
         </footer>
       </section>
     </div>

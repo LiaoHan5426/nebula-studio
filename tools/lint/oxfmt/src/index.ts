@@ -11,6 +11,16 @@ const oxfmtConfig: OxfmtConfig = defineOxfmtConfig({
   trailingComma: 'all',
   overrides: [
     {
+      files: ['*.vue', '**/*.vue'],
+      options: {
+        // Default `css` treats inline tags as whitespace-sensitive and wraps as
+        // `</span\n>` / `<span\n>`, which fights Vue/ESLint and looks broken on save.
+        htmlWhitespaceSensitivity: 'ignore',
+        // Keep `>` on its own line for multiline tags (matches vue/html-closing-bracket-newline).
+        bracketSameLine: false,
+      },
+    },
+    {
       files: [
         '*.json',
         '*.json5',
