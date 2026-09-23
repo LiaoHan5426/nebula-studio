@@ -31,19 +31,25 @@ ignoreWorkspaceRootCheck: true
 
 minimumReleaseAgeExclude:
   - xe-utils@4.0.11
+  - '@voidzero-dev/vite-plus-core@1.0.0-rc.0'
+  - '@voidzero-dev/vite-plus-darwin-arm64@1.0.0-rc.0'
+  - '@voidzero-dev/vite-plus-darwin-x64@1.0.0-rc.0'
+  - '@voidzero-dev/vite-plus-linux-arm64-gnu@1.0.0-rc.0'
+  - '@voidzero-dev/vite-plus-linux-arm64-musl@1.0.0-rc.0'
+  - '@voidzero-dev/vite-plus-linux-x64-gnu@1.0.0-rc.0'
+  - '@voidzero-dev/vite-plus-linux-x64-musl@1.0.0-rc.0'
+  - '@voidzero-dev/vite-plus-win32-arm64-msvc@1.0.0-rc.0'
+  - '@voidzero-dev/vite-plus-win32-x64-msvc@1.0.0-rc.0'
+  - vite-plus@1.0.0-rc.0
 overrides:
   '@codemirror/state': 'catalog:editor'
   '@codemirror/view': 'catalog:editor'
   # app-builder-lib 26 调用 ElectronDownloadCacheMode.ReadWrite（@electron/get v5+）。
   # 其声明依赖 ^3.0.0 会解析到 3.0.0，pack:win 报 Cannot read properties of undefined (reading 'ReadWrite')。
   '@electron/get': 'catalog:electron'
-  # 与 vite-plus@0.3.2 锁定的 oxfmt/oxlint 对齐，避免 fmt/lint 配置出现双版本类型冲突。
-  'oxfmt@*': 'catalog:lint'
-  'oxlint@*': 'catalog:lint'
   # Vite+：用 @* 只覆盖 semver/peer 声明，保留 catalog: 引用由 catalog 解析到 vite-plus-core。
   # 禁止把 vite override 成上游 vite@8，否则 vp pack 会报 Expected vite-plus-core, found vite。
-  'vite@*': 'catalog:vite'
-  'vitest@*': 'catalog:vite'
+  'vite@*': catalog:vite
 catalogMode: prefer
 
 catalog:
@@ -120,8 +126,6 @@ catalogs:
     eslint-plugin-unused-imports: ^4.4.1
     eslint-plugin-vue: ^10.11.0
     eslint-plugin-yml: ^3.8.1
-    oxfmt: 0.67.0
-    oxlint: 1.82.0
     stylelint: ^17.15.0
     stylelint-config-recess-order: ^7.8.0
     stylelint-config-recommended-scss: ^17.0.1
@@ -194,9 +198,8 @@ catalogs:
     '@vitejs/plugin-vue-jsx': ^5.1.6
     happy-dom: ^20.14.5
     # Vite+ 要求 vite 解析到同版本的 vite-plus-core，不能使用上游 vite。
-    vite: npm:@voidzero-dev/vite-plus-core@0.3.2
-    vite-plus: 0.3.2
-    vitest: ^5.0.0
+    vite: npm:@voidzero-dev/vite-plus-core@1.0.0-rc.0
+    vite-plus: 1.0.0-rc.0
   vue:
     '@vue/test-utils': ^2.5.0
     '@vueuse/core': ^13.9.0
@@ -215,7 +218,5 @@ allowBuilds:
 peerDependencyRules:
   allowAny:
     - vite
-    - vitest
   allowedVersions:
     vite: '*'
-    vitest: '*'

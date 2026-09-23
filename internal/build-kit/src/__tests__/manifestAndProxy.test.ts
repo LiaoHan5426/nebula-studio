@@ -9,7 +9,7 @@ import {
   findMonorepoRoot,
   loadWindowsConfig,
 } from '@nebula-studio-internal/node-kit/windows-manifest';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 import { createNebulaApiProxy } from '../proxy/createNebulaApiProxy.ts';
 

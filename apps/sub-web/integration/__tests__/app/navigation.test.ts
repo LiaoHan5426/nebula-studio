@@ -9,7 +9,7 @@ import {
   USER_MANAGE_HOME,
 } from '@/app/navigation';
 import router from '@/router';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 describe('integration navigation model', () => {
   it('uses role-specific landing pages', () => {

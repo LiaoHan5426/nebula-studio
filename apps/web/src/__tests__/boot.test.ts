@@ -2,7 +2,7 @@
 
 import { startApplication } from '@nebula-studio/application-bootstrap';
 
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 
 import { bootHostWorkspace } from '../workspace/bootHostWorkspace';
 

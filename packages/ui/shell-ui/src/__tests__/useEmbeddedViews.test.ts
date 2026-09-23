@@ -3,7 +3,7 @@
  *
  * Plan-11 Task 2: 测试 iframe src 构建 / 加载状态。
  */
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 
 import { useEmbeddedViews } from '../composables/useEmbeddedViews.js';
 

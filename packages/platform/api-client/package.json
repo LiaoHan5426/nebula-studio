@@ -44,7 +44,6 @@
     "@types/nprogress": "catalog:types",
     "happy-dom": "catalog:vite",
     "typescript": "catalog:types",
-    "vite-plus": "catalog:vite",
-    "vitest": "catalog:vite"
+    "vite-plus": "catalog:vite"
   }
 }

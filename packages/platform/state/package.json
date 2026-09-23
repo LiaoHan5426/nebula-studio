@@ -21,7 +21,6 @@
   "devDependencies": {
     "@nebula-studio-internal/tsconfig": "workspace:^",
     "happy-dom": "catalog:vite",
-    "typescript": "catalog:types",
-    "vitest": "catalog:vite"
+    "typescript": "catalog:types"
   }
 }

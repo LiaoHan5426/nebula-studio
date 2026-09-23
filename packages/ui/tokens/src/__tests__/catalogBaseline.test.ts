@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 import { resolveTheme } from '../resolve';
 import { PRODUCT_DEFAULT_PREFERENCE, STATUS_TOKENS } from '../types';

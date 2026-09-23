@@ -48,7 +48,6 @@
     "@vue/test-utils": "catalog:vue",
     "happy-dom": "catalog:vite",
     "vite-plus": "catalog:vite",
-    "vitest": "catalog:vite",
     "vue-tsc": "catalog:vue"
   }
 }

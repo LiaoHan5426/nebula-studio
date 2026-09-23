@@ -1,7 +1,7 @@
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, ref } from 'vue';
 
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vite-plus/test';
 
 import NebulaButton from '../button/NebulaButton.vue';
 import NebulaCheckbox from '../checkbox/NebulaCheckbox.vue';

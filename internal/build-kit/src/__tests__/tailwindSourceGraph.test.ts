@@ -3,7 +3,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { findMonorepoRoot } from '@nebula-studio-internal/node-kit/windows-manifest';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 import {
   isRepoWideTailwindSourceCss,

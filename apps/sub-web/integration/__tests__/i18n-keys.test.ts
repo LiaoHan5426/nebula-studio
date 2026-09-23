@@ -1,6 +1,6 @@
 import { diffMessageKeys } from '@nebula-studio/i18n';
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 import enUS from '../src/i18n/en-US.ts';
 import zhCN from '../src/i18n/zh-CN.ts';

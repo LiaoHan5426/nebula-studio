@@ -3,7 +3,7 @@ import type { NebulaRemoteApplication } from '@nebula-studio/application-contrac
 import { CONTRACT_VERSION } from '@nebula-studio/application-contract';
 import { createPocHostCapabilities } from '@nebula-studio/host-capabilities';
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 import {
   asNebulaRemoteApplication,

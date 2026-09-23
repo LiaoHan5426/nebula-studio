@@ -8,7 +8,7 @@ import {
   THEME_STORAGE_KEY,
 } from '@nebula-studio/tokens';
 
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 
 import { createPocHostCapabilities } from '../index';
 import { resetHostThemeCapabilityForTests } from '../themeHost';

@@ -1,6 +1,6 @@
 import type { FrontendRuntimeEntry } from '@nebula-studio/contracts/system';
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 import {
   integrableOrderFromRuntime,

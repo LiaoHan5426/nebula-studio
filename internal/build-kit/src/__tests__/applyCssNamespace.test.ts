@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 import { applyCssNamespace } from '../federation/applyCssNamespace.ts';
 import { nebulaCssNamespacePlugin } from '../federation/nebulaCssNamespacePlugin.ts';

@@ -39,7 +39,6 @@
     "@nebula-studio-internal/tsconfig": "workspace:^",
     "@nebula-studio/types": "workspace:^",
     "happy-dom": "catalog:vite",
-    "typescript": "catalog:types",
-    "vitest": "catalog:vite"
+    "typescript": "catalog:types"
   }
 }

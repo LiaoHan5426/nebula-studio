@@ -2,6 +2,10 @@ import { defineConfig } from 'vite-plus';
 
 export default defineConfig({
   pack: {
+    deps: {
+      neverBundle: ['oxlint'],
+      onlyBundle: false,
+    },
     dts: true,
     exports: true,
   },

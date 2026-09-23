@@ -1,6 +1,6 @@
 import type { ResourceSummaryViewModel } from '../types';
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 import { DEFAULT_CATALOG_QUERY } from '../types';
 import { filterCatalogItems } from '../useResourceCatalogPage';

@@ -1,6 +1,6 @@
 import { createQueryKey } from '@nebula-studio/query';
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 import { dataSourcesQueryKey } from '../src/features/datasources/queryOptions.ts';
 import { pluginCatalogQueryKey } from '../src/features/plugin-catalog/queryOptions.ts';

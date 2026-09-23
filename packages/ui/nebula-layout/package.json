@@ -52,7 +52,6 @@
     "@vitejs/plugin-vue": "catalog:vite",
     "happy-dom": "catalog:vite",
     "sass": "catalog:style",
-    "vite-plus": "catalog:vite",
-    "vitest": "catalog:vite"
+    "vite-plus": "catalog:vite"
   }
 }

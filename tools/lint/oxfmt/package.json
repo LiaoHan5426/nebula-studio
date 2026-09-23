@@ -26,8 +26,9 @@
     ".": "./dist/index.mjs",
     "./package.json": "./package.json"
   },
-  "dependencies": {
-    "oxfmt": "catalog:lint"
+  "peerDependencies": {
+    "oxfmt": "*",
+    "vite-plus": "*"
   },
   "devDependencies": {
     "@types/node": "catalog:types",

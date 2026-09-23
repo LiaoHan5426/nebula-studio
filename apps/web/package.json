@@ -18,9 +18,9 @@
   "scripts": {
     "typecheck": "vue-tsc --noEmit -p tsconfig.json --composite false",
     "test": "vp test run",
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "vp dev",
+    "build": "vp build",
+    "preview": "vp preview"
   },
   "dependencies": {
     "@nebula-studio-electron/electron-bridge": "workspace:^",
@@ -50,7 +50,6 @@
     "typescript": "catalog:types",
     "vite": "catalog:vite",
     "vite-plus": "catalog:vite",
-    "vitest": "catalog:vite",
     "vue-tsc": "catalog:vue"
   }
 }

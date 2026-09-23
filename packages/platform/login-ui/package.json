@@ -39,7 +39,6 @@
     "typescript": "catalog:types",
     "vite": "catalog:vite",
     "vite-plus": "catalog:vite",
-    "vitest": "catalog:vite",
     "vue-tsc": "catalog:vue"
   }
 }

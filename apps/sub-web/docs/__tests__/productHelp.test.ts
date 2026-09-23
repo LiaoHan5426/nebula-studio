@@ -1,5 +1,5 @@
 import { HELP_DOCUMENTS } from '@/content/productHelp';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 describe('product help registry', () => {
   it('keeps document ids and routes unique', () => {

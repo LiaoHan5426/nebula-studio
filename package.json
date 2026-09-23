@@ -101,11 +101,10 @@
     "tailwindcss": "catalog:style",
     "unconfig": "catalog:utils",
     "vite": "catalog:vite",
-    "vite-plus": "catalog:vite",
-    "vitest": "catalog:vite"
+    "vite-plus": "catalog:vite"
   },
   "engines": {
-    "node": ">=22.12.0"
+    "node": "^22.18.0 || ^24.11.0 || >=26.0.0"
   },
   "packageManager": "pnpm@11.27.0"
 }

@@ -6,7 +6,7 @@ import {
   provideNebulaAssembly,
 } from '@nebula-studio/nebula-assembly';
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 import { useShellHosted } from '../useShellHosted';
 

@@ -4,7 +4,7 @@ import {
   InterfaceStatus,
   InterfaceType,
 } from '@/shared/types';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 import { catalogApplyPath, catalogDetailPath } from './catalog-routes';
 import {

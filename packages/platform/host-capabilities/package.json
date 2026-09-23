@@ -33,7 +33,6 @@
   },
   "devDependencies": {
     "@nebula-studio-internal/tsconfig": "workspace:^",
-    "typescript": "catalog:types",
-    "vitest": "catalog:vite"
+    "typescript": "catalog:types"
   }
 }

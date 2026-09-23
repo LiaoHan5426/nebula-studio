@@ -286,8 +286,15 @@ export function resolveViteCli(fromDir: string): string {
   const require = createRequire(join(fromDir, 'package.json'));
   let current = dirname(require.resolve('vite'));
   while (true) {
-    const candidate = join(current, 'bin', 'vite.js');
-    if (existsSync(candidate)) return candidate;
+    // Classic vite: <pkg>/bin/vite.js
+    // Vite+ 1.x (vite-plus-core): <pkg>/dist/vite/node/cli.js
+    const candidates = [
+      join(current, 'bin', 'vite.js'),
+      join(current, 'cli.js'),
+    ];
+    for (const candidate of candidates) {
+      if (existsSync(candidate)) return candidate;
+    }
     const parent = dirname(current);
     if (parent === current) {
       throw new Error(`[nebula-vite] cannot resolve vite CLI from ${fromDir}`);

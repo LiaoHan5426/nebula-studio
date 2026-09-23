@@ -1,6 +1,6 @@
 import { createMemoryStorage } from '@nebula-studio/storage';
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 import { createNebulaPinia, defineStore } from '../index.ts';
 

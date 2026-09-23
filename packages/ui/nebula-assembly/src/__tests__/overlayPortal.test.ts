@@ -1,6 +1,6 @@
 import { createApp, defineComponent, h, nextTick } from 'vue';
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 import { wrapWithAssemblyRoot } from '../components/wrapWithAssemblyRoot';
 import { createNebulaComponentContext } from '../context/createNebulaComponentContext';

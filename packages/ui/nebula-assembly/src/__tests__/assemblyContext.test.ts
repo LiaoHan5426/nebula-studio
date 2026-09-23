@@ -4,7 +4,7 @@ import { createApp, defineComponent, h, inject, nextTick } from 'vue';
 
 import { overlayContainerKey } from '@nebula-studio/nebula-ui';
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 import { createNebulaComponentContext } from '../context/createNebulaComponentContext';
 import { tryUseNebulaAssembly } from '../context/useNebulaAssembly';

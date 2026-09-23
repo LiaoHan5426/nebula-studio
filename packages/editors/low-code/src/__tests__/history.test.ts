@@ -4,7 +4,7 @@ import { reactive } from 'vue';
 
 import { createDemoBoardSnapshot } from '@nebula-studio/low-code-contract';
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 import { cloneDraft, createDocumentHistory } from '../host.ts';
 

@@ -10,7 +10,7 @@ import {
   findMonorepoRoot,
   loadWindowsConfig,
 } from '@nebula-studio-internal/node-kit/windows-manifest';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 import {
   collectFederationDevRemotes,
@@ -90,7 +90,7 @@ describe('host dev remotes gateway', () => {
     const docs = remotes.find((remote) => remote.appId === 'docs');
     expect(docs).toBeDefined();
     expect(resolveViteCli(docs?.appDir ?? '')).toMatch(
-      /vite[\\/]bin[\\/]vite\.js$/,
+      /(vite[\\/]bin[\\/]vite\.js|vite[\\/]node[\\/]cli\.js)$/,
     );
   });
 

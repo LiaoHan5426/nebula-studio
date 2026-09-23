@@ -35,7 +35,6 @@
     "@vitejs/plugin-vue": "catalog:vite",
     "@vue/test-utils": "catalog:vue",
     "happy-dom": "catalog:vite",
-    "typescript": "catalog:types",
-    "vitest": "catalog:vite"
+    "typescript": "catalog:types"
   }
 }

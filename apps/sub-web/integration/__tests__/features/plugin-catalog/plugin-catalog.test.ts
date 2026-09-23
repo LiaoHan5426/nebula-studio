@@ -3,7 +3,7 @@ import {
   mapPluginCatalogItem,
 } from '@/features/plugin-catalog/mappers';
 import { readPluginConfigFields } from '@/features/plugin-catalog/schema';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 describe('plugin catalog schema', () => {
   it.each([

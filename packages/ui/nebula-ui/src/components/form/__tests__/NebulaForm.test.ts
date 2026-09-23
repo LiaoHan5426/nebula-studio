@@ -1,7 +1,7 @@
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent } from 'vue';
 
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vite-plus/test';
 
 import NebulaCheckbox from '../../checkbox/NebulaCheckbox.vue';
 import NebulaDatePicker from '../../date-picker/NebulaDatePicker.vue';

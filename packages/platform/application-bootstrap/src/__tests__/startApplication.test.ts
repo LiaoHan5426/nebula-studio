@@ -7,7 +7,7 @@ import {
 } from '@nebula-studio/shell-protocol';
 
 import { bootSubApp } from '@nebula-studio-electron/electron-bridge/vue';
-import { assert, beforeEach, describe, expect, it, vi } from 'vitest';
+import { assert, beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 
 import {
   resetActiveApplicationHandleForTests,

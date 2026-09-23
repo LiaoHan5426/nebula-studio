@@ -5,7 +5,7 @@ import {
   resolveFederationDevRemoteCacheDir,
   resolveFederationDevRemoteOrigin,
 } from '@nebula-studio-internal/node-kit/runtime-config';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 import {
   createNebulaOptimizeDeps,

@@ -2,7 +2,7 @@ import {
   formatGrantScheduleLabel,
   isOutsideGrantSchedule,
 } from '@/shared/grant/schedule';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 describe('grant schedule', () => {
   it('formats always-on schedules', () => {

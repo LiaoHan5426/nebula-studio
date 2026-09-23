@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { defineComponent, h, nextTick, ref } from 'vue';
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 import { overlayContainerKey } from '../../composables/useOverlayContainer';
 import { hideFloatingTooltip } from '../../utils/tooltip';

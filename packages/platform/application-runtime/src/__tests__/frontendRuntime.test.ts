@@ -1,6 +1,6 @@
 import type { FrontendRuntimeEntry } from '@nebula-studio/contracts/system';
 
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 
 import {
   federationRegistrationFromRuntime,

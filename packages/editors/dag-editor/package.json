@@ -41,7 +41,6 @@
     "@nebula-studio-internal/tsconfig": "workspace:^",
     "@nebula-studio/types": "workspace:^",
     "happy-dom": "catalog:vite",
-    "vite-plus": "catalog:vite",
-    "vitest": "catalog:vite"
+    "vite-plus": "catalog:vite"
   }
 }

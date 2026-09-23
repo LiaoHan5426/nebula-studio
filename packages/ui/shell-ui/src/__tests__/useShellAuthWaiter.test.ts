@@ -4,7 +4,14 @@
  *
  * Plan-11 Task 2: 测试认证等待 / 超时 / 清除场景。
  */
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vite-plus/test';
 
 import { useShellAuthWaiter } from '../composables/useShellAuthWaiter.js';
 

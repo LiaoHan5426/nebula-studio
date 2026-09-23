@@ -22,9 +22,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: voidzero-dev/setup-vp@v1
+      - uses: voidzero-dev/setup-vp@v1.21.1
         with:
-          node-version: '22'
+          node-version: '24.11'
           cache: true
           run-install: |
             - args: ['--frozen-lockfile']
@@ -94,9 +94,9 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: voidzero-dev/setup-vp@v1
+      - uses: voidzero-dev/setup-vp@v1.21.1
         with:
-          node-version: '22'
+          node-version: '24.11'
           cache: true
           run-install: |
             - args: ['--frozen-lockfile']
@@ -123,9 +123,9 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: voidzero-dev/setup-vp@v1
+      - uses: voidzero-dev/setup-vp@v1.21.1
         with:
-          node-version: '22'
+          node-version: '24.11'
           cache: true
           run-install: |
             - args: ['--frozen-lockfile']
@@ -165,9 +165,9 @@ jobs:
           java-version: '25'
           cache: maven
 
-      - uses: voidzero-dev/setup-vp@v1
+      - uses: voidzero-dev/setup-vp@v1.21.1
         with:
-          node-version: '22'
+          node-version: '24.11'
           cache: true
 
       - name: Install frontend dependencies

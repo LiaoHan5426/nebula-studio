@@ -1,5 +1,5 @@
 import { camelSubscribeApi } from '@/shared/api/subscribeApi';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 
 const { camelSubscribeRequest } = vi.hoisted(() => ({
   camelSubscribeRequest: vi.fn(),

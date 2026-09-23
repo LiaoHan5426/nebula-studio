@@ -1,7 +1,7 @@
 import type { ApiContext } from '../config/apiContext.ts';
 import type { WindowsConfig } from '../config/windowsManifest.ts';
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 import { joinOrigin } from '../joinOrigin.ts';
 import {

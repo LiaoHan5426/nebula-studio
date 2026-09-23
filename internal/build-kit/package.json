@@ -79,7 +79,6 @@
     "@nebula-studio-internal/tsconfig": "workspace:^",
     "@nebula-studio/types": "workspace:^",
     "electron-vite": "catalog:electron",
-    "typescript": "catalog:types",
-    "vitest": "catalog:vite"
+    "typescript": "catalog:types"
   }
 }

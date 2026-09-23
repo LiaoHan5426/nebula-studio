@@ -1,7 +1,7 @@
 import { createNebulaPinia } from '@nebula-studio/state';
 import { createMemoryStorage } from '@nebula-studio/storage';
 
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vite-plus/test';
 
 import {
   PORTAL_DEVICE_PERSIST_KEY,

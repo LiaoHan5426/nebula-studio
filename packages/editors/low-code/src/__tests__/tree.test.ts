@@ -1,6 +1,6 @@
 import { createDemoBoardSnapshot } from '@nebula-studio/low-code-contract';
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 
 import {
   appendChild,
